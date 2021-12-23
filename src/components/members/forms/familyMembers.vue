@@ -46,7 +46,7 @@ const props = defineProps({
       <!-- <p>{{ family['data_'+family.family] }}</p> -->
       
       <inputsLayaut
-        :inputsStep="family['data_'+family.family]"
+        :inputs-step="family['data_'+family.family]"
       />
 
       <V-Button

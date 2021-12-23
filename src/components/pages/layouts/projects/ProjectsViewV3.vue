@@ -111,13 +111,13 @@ const filterProjects = ref(0)
               </p>
 
               <div class="item-people">
-                <V-AvatarStack
+                <!-- <V-AvatarStack
                   size="small"
                   :avatars="[
                     { picture: '/demo/avatars/13.jpg' },
                     { picture: '/demo/avatars/11.jpg' },
                   ]"
-                />
+                /> -->
 
                 <span class="label">1 month left</span>
               </div>
@@ -147,7 +147,7 @@ const filterProjects = ref(0)
               </p>
 
               <div class="item-people">
-                <V-AvatarStack
+                <!-- <V-AvatarStack
                   size="small"
                   :avatars="[
                     { picture: '/demo/avatars/7.jpg' },
@@ -160,7 +160,7 @@ const filterProjects = ref(0)
                     { picture: '/demo/avatars/25.jpg' },
                     { picture: '/demo/avatars/25.jpg' },
                   ]"
-                />
+                /> -->
 
                 <span class="label">3 days left</span>
               </div>
@@ -191,10 +191,10 @@ const filterProjects = ref(0)
               </p>
 
               <div class="item-people">
-                <V-AvatarStack
+                <!-- <V-AvatarStack
                   size="small"
                   :avatars="[{ picture: '/demo/avatars/14.jpg' }]"
-                />
+                /> -->
 
                 <span class="label">1 week left</span>
               </div>
@@ -224,7 +224,7 @@ const filterProjects = ref(0)
               </p>
 
               <div class="item-people">
-                <V-AvatarStack
+                <!-- <V-AvatarStack
                   size="small"
                   :avatars="[
                     { picture: '/demo/avatars/8.jpg' },
@@ -233,7 +233,7 @@ const filterProjects = ref(0)
                     { picture: '/demo/avatars/10.jpg' },
                     { picture: '/demo/avatars/26.jpg' },
                   ]"
-                />
+                /> -->
 
                 <span class="label">2 months left</span>
               </div>
@@ -263,7 +263,7 @@ const filterProjects = ref(0)
               </p>
 
               <div class="item-people">
-                <V-AvatarStack
+                <!-- <V-AvatarStack
                   size="small"
                   :avatars="[
                     { picture: '/demo/avatars/13.jpg' },
@@ -271,7 +271,7 @@ const filterProjects = ref(0)
                     { picture: '/demo/avatars/8.jpg' },
                     { picture: '/demo/avatars/22.jpg' },
                   ]"
-                />
+                /> -->
 
                 <span class="label">3 months left</span>
               </div>
@@ -302,13 +302,13 @@ const filterProjects = ref(0)
               </p>
 
               <div class="item-people">
-                <V-AvatarStack
+                <!-- <V-AvatarStack
                   size="small"
                   :avatars="[
                     { picture: '/demo/avatars/13.jpg' },
                     { picture: '/demo/avatars/11.jpg' },
                   ]"
-                />
+                /> -->
 
                 <span class="label">2 months left</span>
               </div>
@@ -338,7 +338,7 @@ const filterProjects = ref(0)
               </p>
 
               <div class="item-people">
-                <V-AvatarStack
+                <!-- <V-AvatarStack
                   size="small"
                   :avatars="[
                     { picture: '/demo/avatars/13.jpg' },
@@ -346,7 +346,7 @@ const filterProjects = ref(0)
                     { picture: '/demo/avatars/10.jpg' },
                     { picture: '/demo/avatars/9.jpg' },
                   ]"
-                />
+                /> -->
 
                 <span class="label">2 months left</span>
               </div>
@@ -376,14 +376,14 @@ const filterProjects = ref(0)
               </p>
 
               <div class="item-people">
-                <V-AvatarStack
+               <!--  <V-AvatarStack
                   size="small"
                   :avatars="[
                     { picture: '/demo/avatars/22.jpg' },
                     { picture: '/demo/avatars/10.jpg' },
                     { picture: '/demo/avatars/26.jpg' },
                   ]"
-                />
+                /> -->
 
                 <span class="label">5 days left</span>
               </div>
@@ -413,14 +413,14 @@ const filterProjects = ref(0)
               </p>
 
               <div class="item-people">
-                <V-AvatarStack
+                <!-- <V-AvatarStack
                   size="small"
                   :avatars="[
                     { picture: '/demo/avatars/14.jpg' },
                     { picture: '/demo/avatars/16.jpg' },
                     { picture: '/demo/avatars/10.jpg' },
                   ]"
-                />
+                /> -->
 
                 <span class="label">1 week left</span>
               </div>

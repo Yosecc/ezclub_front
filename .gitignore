@@ -82,7 +82,7 @@ out
 
 # Nuxt.js build / generate output
 .nuxt
-dist
+# dist
 
 # Gatsby files
 .cache/
@@ -125,3 +125,6 @@ cypress/videos
 
 # sonarqube
 .scannerwork
+
+.htdocs
+htdocs

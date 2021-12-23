@@ -458,7 +458,7 @@ watchEffect(
                         Shared photos
                       </div>
                       <div class="detail-photo-grid">
-                        <img
+                        <!-- <img
                           src="/demo/photos/demo-apps/1.jpg"
                           alt=""
                           @error.once="
@@ -553,7 +553,7 @@ watchEffect(
                             $event.target.src =
                               'https://via.placeholder.com/1600x900'
                           "
-                        />
+                        /> -->
                       </div>
                       <a class="view-more">View More</a>
                     </div>

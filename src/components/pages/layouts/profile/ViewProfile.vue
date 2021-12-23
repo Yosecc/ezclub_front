@@ -1,11 +1,11 @@
 <template>
   <div class="profile-wrapper">
     <div class="profile-header has-text-centered">
-      <V-Avatar
+      <!-- <V-Avatar
         size="xl"
         picture="/demo/avatars/8.jpg"
         badge="/images/icons/flags/united-states-of-america.svg"
-      />
+      /> -->
 
       <h3 class="title is-4 is-narrow is-thin">Erik Kovalsky</h3>
       <p class="light-text">
@@ -65,14 +65,14 @@
               <div class="section-content">
                 <div class="experience-wrapper">
                   <div class="experience-item">
-                    <img
+                    <!-- <img
                       src="/demo/photos/brands/airbnb.svg"
                       alt=""
                       @error.once="
                         $event.target.src =
                           'https://via.placeholder.com/150x150'
                       "
-                    />
+                    /> -->
                     <div class="meta">
                       <span class="dark-inverted">Airbnb HQ</span>
                       <span>
@@ -84,14 +84,14 @@
                     </div>
                   </div>
                   <div class="experience-item">
-                    <img
+                    <!-- <img
                       src="/demo/photos/brands/facebook.svg"
                       alt=""
                       @error.once="
                         $event.target.src =
                           'https://via.placeholder.com/150x150'
                       "
-                    />
+                    /> -->
                     <div class="meta">
                       <span class="dark-inverted">Facebook</span>
                       <span>
@@ -103,14 +103,14 @@
                     </div>
                   </div>
                   <div class="experience-item">
-                    <img
+                    <!-- <img
                       src="/demo/photos/brands/atlassian.svg"
                       alt=""
                       @error.once="
                         $event.target.src =
                           'https://via.placeholder.com/150x150'
                       "
-                    />
+                    /> -->
                     <div class="meta">
                       <span class="dark-inverted">Atlassian</span>
                       <span>
@@ -122,14 +122,14 @@
                     </div>
                   </div>
                   <div class="experience-item">
-                    <img
+                   <!--  <img
                       src="/demo/photos/brands/github.svg"
                       alt=""
                       @error.once="
                         $event.target.src =
                           'https://via.placeholder.com/150x150'
                       "
-                    />
+                    /> -->
                     <div class="meta">
                       <span class="dark-inverted">Github</span>
                       <span>
@@ -217,9 +217,9 @@
                     </div>
                     <div class="people">
                       <V-Avatar size="small" initials="BT" color="warning" />
-                      <V-Avatar size="small" picture="/demo/avatars/18.jpg" />
+                      <!-- <V-Avatar size="small" picture="/demo/avatars/18.jpg" /> -->
                       <V-Avatar size="small" initials="JD" color="info" />
-                      <V-Avatar size="small" picture="/demo/avatars/7.jpg" />
+                      <!-- <V-Avatar size="small" picture="/demo/avatars/7.jpg" /> -->
                       <V-Avatar size="small" initials="38" />
                     </div>
                   </div>
@@ -233,10 +233,10 @@
                       <span>4 years of experience</span>
                     </div>
                     <div class="people">
-                      <V-Avatar size="small" picture="/demo/avatars/21.jpg" />
+                      <!-- <V-Avatar size="small" picture="/demo/avatars/21.jpg" /> -->
                       <V-Avatar size="small" initials="AT" color="success" />
-                      <V-Avatar size="small" picture="/demo/avatars/39.jpg" />
-                      <V-Avatar size="small" picture="/demo/avatars/23.jpg" />
+                      <!-- <V-Avatar size="small" picture="/demo/avatars/39.jpg" /> -->
+                      <!-- <V-Avatar size="small" picture="/demo/avatars/23.jpg" /> -->
                       <V-Avatar size="small" initials="27" />
                     </div>
                   </div>
@@ -250,10 +250,10 @@
                       <span>10+ years of experience</span>
                     </div>
                     <div class="people">
-                      <V-Avatar size="small" picture="/demo/avatars/38.jpg" />
-                      <V-Avatar size="small" picture="/demo/avatars/11.jpg" />
+                      <!-- <V-Avatar size="small" picture="/demo/avatars/38.jpg" /> -->
+                      <!-- <V-Avatar size="small" picture="/demo/avatars/11.jpg" /> -->
                       <V-Avatar size="small" initials="SC" color="h-purple" />
-                      <V-Avatar size="small" picture="/demo/avatars/13.jpg" />
+                      <!-- <V-Avatar size="small" picture="/demo/avatars/13.jpg" /> -->
                       <V-Avatar size="small" initials="19" />
                     </div>
                   </div>
@@ -267,10 +267,10 @@
                       <span>10+ years of experience</span>
                     </div>
                     <div class="people">
-                      <V-Avatar size="small" picture="/demo/avatars/21.jpg" />
+                      <!-- <V-Avatar size="small" picture="/demo/avatars/21.jpg" /> -->
                       <V-Avatar size="small" initials="SC" color="h-purple" />
-                      <V-Avatar size="small" picture="/demo/avatars/5.jpg" />
-                      <V-Avatar size="small" picture="/demo/avatars/7.jpg" />
+                      <!-- <V-Avatar size="small" picture="/demo/avatars/5.jpg" /> -->
+                      <!-- <V-Avatar size="small" picture="/demo/avatars/7.jpg" /> -->
                       <V-Avatar size="small" initials="31" />
                     </div>
                   </div>
@@ -295,11 +295,11 @@
                 <div class="recommendations-wrapper">
                   <!--Recommendation-->
                   <div class="recommendations-item">
-                    <V-Avatar
+                    <!-- <V-Avatar
                       size="large"
                       picture="/demo/avatars/5.jpg"
                       badge="/images/icons/flags/united-states-of-america.svg"
-                    />
+                    /> -->
                     <h3 class="dark-inverted">Project Manager</h3>
                     <p>
                       Lorem ipsum dolor sit amet, consectetur adipiscing elit.
@@ -314,11 +314,11 @@
 
                   <!--Recommendation-->
                   <div class="recommendations-item">
-                    <V-Avatar
+                    <!-- <V-Avatar
                       size="large"
                       picture="/demo/avatars/18.jpg"
                       badge="/images/icons/flags/united-states-of-america.svg"
-                    />
+                    /> -->
 
                     <h3 class="dark-inverted">UI/UX Designer</h3>
                     <p>
@@ -389,7 +389,7 @@
 
                   <!--Tool-->
                   <div class="tools-item">
-                    <V-IconWrap picture="/demo/photos/brands/jira.svg" />
+                    <!-- <V-IconWrap picture="/demo/photos/brands/jira.svg" /> -->
 
                     <div class="meta">
                       <span class="dark-inverted">Jira Software</span>
@@ -399,7 +399,7 @@
 
                   <!--Tool-->
                   <div class="tools-item">
-                    <V-IconWrap picture="/demo/photos/brands/office.svg" />
+                    <!-- <V-IconWrap picture="/demo/photos/brands/office.svg" /> -->
 
                     <div class="meta">
                       <span class="dark-inverted">MS Office</span>
@@ -422,10 +422,10 @@
                 <div class="people-wrapper">
                   <!--People-->
                   <a href="#" class="people-item">
-                    <V-Avatar
+                    <!-- <V-Avatar
                       picture="/demo/avatars/25.jpg"
                       badge="/images/icons/stacks/js.svg"
-                    />
+                    /> -->
 
                     <div class="meta">
                       <span class="dark-inverted">Melany W.</span>
@@ -435,10 +435,10 @@
 
                   <!--People-->
                   <a href="#" class="people-item">
-                    <V-Avatar
+                    <!-- <V-Avatar
                       picture="/demo/avatars/29.jpg"
                       badge="/images/icons/stacks/python.svg"
-                    />
+                    /> -->
 
                     <div class="meta">
                       <span class="dark-inverted">Hakeem C.</span>
@@ -448,10 +448,10 @@
 
                   <!--People-->
                   <a href="#" class="people-item">
-                    <V-Avatar
+                    <!-- <V-Avatar
                       picture="/demo/avatars/38.jpg"
                       badge="/images/icons/stacks/vuejs.svg"
-                    />
+                    /> -->
 
                     <div class="meta">
                       <span class="dark-inverted">Christie D.</span>
@@ -461,10 +461,10 @@
 
                   <!--People-->
                   <a href="#" class="people-item">
-                    <V-Avatar
+                    <!-- <V-Avatar
                       picture="/demo/avatars/28.jpg"
                       badge="/images/icons/stacks/angular.svg"
-                    />
+                    /> -->
 
                     <div class="meta">
                       <span class="dark-inverted">Edouard F.</span>
@@ -474,10 +474,10 @@
 
                   <!--People-->
                   <a href="#" class="people-item">
-                    <V-Avatar
+                    <!-- <V-Avatar
                       picture="/demo/avatars/19.jpg"
                       badge="/images/icons/stacks/cplus.svg"
-                    />
+                    /> -->
 
                     <div class="meta">
                       <span class="dark-inverted">Greta K.</span>

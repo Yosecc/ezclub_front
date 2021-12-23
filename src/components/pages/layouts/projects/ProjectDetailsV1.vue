@@ -6,13 +6,13 @@ import { activePanel } from '/@src/state/activePanelState'
 const filterTasks = ref(0)
 
 const participants = [
-  { picture: '/demo/avatars/7.jpg' },
-  { picture: '/demo/avatars/9.jpg' },
-  { picture: '/demo/avatars/12.jpg' },
-  { picture: '/demo/avatars/8.jpg' },
-  { picture: '/demo/avatars/25.jpg' },
-  { picture: '/demo/avatars/25.jpg' },
-  { picture: '/demo/avatars/25.jpg' },
+  { picture: '' },
+  { picture: '' },
+  { picture: '' },
+  { picture: '' },
+  { picture: '' },
+  { picture: '' },
+  { picture: '' },
 ]
 
 const props = defineProps({
@@ -295,7 +295,7 @@ const props = defineProps({
               <div class="column is-6 has-border-bottom">
                 <V-Block center title="Alice C." subtitle="Software Engineer">
                   <template #icon>
-                    <V-Avatar size="medium" picture="/demo/avatars/7.jpg" />
+                    <!-- <V-Avatar size="medium" picture="/demo/avatars/7.jpg" /> -->
                   </template>
 
                   <template #action>
@@ -313,7 +313,7 @@ const props = defineProps({
               <div class="column is-6 has-border-bottom">
                 <V-Block center title="Anna B." subtitle="UX Designer">
                   <template #icon>
-                    <V-Avatar size="medium" picture="/demo/avatars/9.jpg" />
+                    <!-- <V-Avatar size="medium" picture="/demo/avatars/9.jpg" /> -->
                   </template>
 
                   <template #action>
@@ -331,7 +331,7 @@ const props = defineProps({
               <div class="column is-6 has-border-bottom">
                 <V-Block center title="Joshua S." subtitle="Backend Developer">
                   <template #icon>
-                    <V-Avatar size="medium" picture="/demo/avatars/12.jpg" />
+                    <!-- <V-Avatar size="medium" picture="/demo/avatars/12.jpg" /> -->
                   </template>
 
                   <template #action>
@@ -349,7 +349,7 @@ const props = defineProps({
               <div class="column is-6 has-border-bottom">
                 <V-Block center title="Erik K." subtitle="Product Manager">
                   <template #icon>
-                    <V-Avatar size="medium" picture="/demo/avatars/8.jpg" />
+                    <!-- <V-Avatar size="medium" picture="/demo/avatars/8.jpg" /> -->
                   </template>
 
                   <template #action>
@@ -367,7 +367,7 @@ const props = defineProps({
               <div class="column is-6 has-border-bottom">
                 <V-Block center title="Melany W." subtitle="Web Developer">
                   <template #icon>
-                    <V-Avatar size="medium" picture="/demo/avatars/25.jpg" />
+                    <!-- <V-Avatar size="medium" picture="/demo/avatars/25.jpg" /> -->
                   </template>
 
                   <template #action>
@@ -385,7 +385,7 @@ const props = defineProps({
               <div class="column is-6 has-border-bottom">
                 <V-Block center title="Tara S." subtitle="UI/UX Designer">
                   <template #icon>
-                    <V-Avatar size="medium" picture="/demo/avatars/13.jpg" />
+                    <!-- <V-Avatar size="medium" picture="/demo/avatars/13.jpg" /> -->
                   </template>
 
                   <template #action>
@@ -403,7 +403,7 @@ const props = defineProps({
               <div class="column is-6">
                 <V-Block center title="Esteban C." subtitle="UI/UX Designer">
                   <template #icon>
-                    <V-Avatar size="medium" picture="/demo/avatars/18.jpg" />
+                    <!-- <V-Avatar size="medium" picture="/demo/avatars/18.jpg" /> -->
                   </template>
 
                   <template #action>
@@ -421,7 +421,7 @@ const props = defineProps({
               <div class="column is-6">
                 <V-Block center title="Mary L." subtitle="Project Manager">
                   <template #icon>
-                    <V-Avatar size="medium" picture="/demo/avatars/5.jpg" />
+                    <!-- <V-Avatar size="medium" picture="/demo/avatars/5.jpg" /> -->
                   </template>
 
                   <template #action>
@@ -471,14 +471,14 @@ const props = defineProps({
                   </a>
                   <div class="content-wrap">
                     <div class="left">
-                      <V-AvatarStack
+                      <!-- <V-AvatarStack
                         size="small"
                         :avatars="[
                           { picture: '/demo/avatars/7.jpg' },
                           { picture: '/demo/avatars/8.jpg' },
                           { picture: '/demo/avatars/5.jpg' },
                         ]"
-                      />
+                      /> -->
                       <div class="attachments">
                         <i aria-hidden="true" class="lnil lnil-paperclip"></i>
                         <span>3 attachments</span>
@@ -501,10 +501,10 @@ const props = defineProps({
                   </a>
                   <div class="content-wrap">
                     <div class="left">
-                      <V-AvatarStack
+                     <!--  <V-AvatarStack
                         size="small"
                         :avatars="[{ picture: '/demo/avatars/12.jpg' }]"
-                      />
+                      /> -->
                       <div class="attachments">
                         <i aria-hidden="true" class="lnil lnil-paperclip"></i>
                         <span>1 attachment</span>
@@ -527,10 +527,10 @@ const props = defineProps({
                   </a>
                   <div class="content-wrap">
                     <div class="left">
-                      <V-AvatarStack
+                      <!-- <V-AvatarStack
                         size="small"
                         :avatars="[{ picture: '/demo/avatars/12.jpg' }]"
-                      />
+                      /> -->
                       <div class="attachments">
                         <i aria-hidden="true" class="lnil lnil-paperclip"></i>
                         <span>1 attachment</span>
@@ -553,13 +553,13 @@ const props = defineProps({
                   </a>
                   <div class="content-wrap">
                     <div class="left">
-                      <V-AvatarStack
+                      <!-- <V-AvatarStack
                         size="small"
                         :avatars="[
                           { picture: '/demo/avatars/5.jpg' },
                           { picture: '/demo/avatars/7.jpg' },
                         ]"
-                      />
+                      /> -->
                       <div class="attachments">
                         <i aria-hidden="true" class="lnil lnil-paperclip"></i>
                         <span>1 attachment</span>
@@ -582,10 +582,10 @@ const props = defineProps({
                   </a>
                   <div class="content-wrap">
                     <div class="left">
-                      <V-AvatarStack
+                      <!-- <V-AvatarStack
                         size="small"
                         :avatars="[{ picture: '/demo/avatars/25.jpg' }]"
-                      />
+                      /> -->
                       <div class="attachments">
                         <i aria-hidden="true" class="lnil lnil-paperclip"></i>
                         <span>2 attachments</span>
@@ -608,13 +608,13 @@ const props = defineProps({
                   </a>
                   <div class="content-wrap">
                     <div class="left">
-                      <V-AvatarStack
+                      <!-- <V-AvatarStack
                         size="small"
                         :avatars="[
                           { picture: '/demo/avatars/25.jpg' },
                           { picture: '/demo/avatars/12.jpg' },
                         ]"
-                      />
+                      /> -->
                       <div class="attachments">
                         <i aria-hidden="true" class="lnil lnil-paperclip"></i>
                         <span>3 attachments</span>
@@ -637,13 +637,13 @@ const props = defineProps({
                   </a>
                   <div class="content-wrap">
                     <div class="left">
-                      <V-AvatarStack
+                      <!-- <V-AvatarStack
                         size="small"
                         :avatars="[
                           { picture: '/demo/avatars/25.jpg' },
                           { picture: '/demo/avatars/12.jpg' },
                         ]"
-                      />
+                      /> -->
                       <div class="attachments">
                         <i aria-hidden="true" class="lnil lnil-paperclip"></i>
                         <span>3 attachments</span>
@@ -666,13 +666,13 @@ const props = defineProps({
                   </a>
                   <div class="content-wrap">
                     <div class="left">
-                      <V-AvatarStack
+                     <!--  <V-AvatarStack
                         size="small"
                         :avatars="[
                           { picture: '/demo/avatars/25.jpg' },
                           { picture: '/demo/avatars/12.jpg' },
                         ]"
-                      />
+                      /> -->
                       <div class="attachments">
                         <i aria-hidden="true" class="lnil lnil-paperclip"></i>
                         <span>2 attachments</span>

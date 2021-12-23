@@ -23,13 +23,13 @@ const activeTab = ref<TabId>('overview')
     <div class="dashboard-header-wrapper">
       <div class="dashboard-header">
         <div class="avatar-container">
-          <img
+          <!-- <img
             src="/demo/photos/faces/girl1.jpg"
             alt=""
             @error.once="
               $event.target.src = 'https://via.placeholder.com/150x150'
             "
-          />
+          /> -->
           <button class="button is-circle">
             <span class="icon is-small">
               <i
@@ -638,14 +638,14 @@ const activeTab = ref<TabId>('overview')
               <div class="heatmap-wrapper">
                 <div class="heatmap-title">
                   <div class="title-avatar">
-                    <img
+                    <!-- <img
                       src="/demo/photos/faces/girl1.jpg"
                       alt=""
                       @error.once="
                         $event.target.src =
                           'https://via.placeholder.com/150x150'
                       "
-                    />
+                    /> -->
                   </div>
                   <div class="title-meta">
                     <p>
@@ -1136,56 +1136,56 @@ const activeTab = ref<TabId>('overview')
               </header>
               <div class="card-image">
                 <figure class="image is-4by3">
-                  <img
+                  <!-- <img
                     src="/demo/photos/30.jpg"
                     alt=""
                     @error.once="
                       $event.target.src = 'https://via.placeholder.com/1280x960'
                     "
-                  />
+                  /> -->
                 </figure>
               </div>
               <div class="card-content post-group-wrap">
                 <div class="post-group">
                   <a>
-                    <img
+                    <!-- <img
                       src="/demo/photos/33.jpg"
                       alt=""
                       @error.once="
                         $event.target.src =
                           'https://via.placeholder.com/1280x960'
                       "
-                    />
+                    /> -->
                   </a>
                   <a>
-                    <img
+                   <!--  <img
                       src="/demo/photos/34.jpg"
                       alt=""
                       @error.once="
                         $event.target.src =
                           'https://via.placeholder.com/1280x960'
                       "
-                    />
+                    /> -->
                   </a>
                   <a>
-                    <img
+                   <!--  <img
                       src="/demo/photos/35.jpeg"
                       alt=""
                       @error.once="
                         $event.target.src =
                           'https://via.placeholder.com/1280x960'
                       "
-                    />
+                    /> -->
                   </a>
                   <a>
-                    <img
+                    <!-- <img
                       src="/demo/photos/36.jpg"
                       alt=""
                       @error.once="
                         $event.target.src =
                           'https://via.placeholder.com/1280x960'
                       "
-                    />
+                    /> -->
                   </a>
                 </div>
               </div>
@@ -1209,56 +1209,56 @@ const activeTab = ref<TabId>('overview')
               </header>
               <div class="card-image">
                 <figure class="image is-4by3">
-                  <img
+                  <!-- <img
                     src="/demo/photos/31.png"
                     alt=""
                     @error.once="
                       $event.target.src = 'https://via.placeholder.com/1280x960'
                     "
-                  />
+                  /> -->
                 </figure>
               </div>
               <div class="card-content post-group-wrap">
                 <div class="post-group">
                   <a>
-                    <img
+                    <!-- <img
                       src="/demo/photos/33.jpg"
                       alt=""
                       @error.once="
                         $event.target.src =
                           'https://via.placeholder.com/1280x960'
                       "
-                    />
+                    /> -->
                   </a>
                   <a>
-                    <img
+                    <!-- <img
                       src="/demo/photos/34.jpg"
                       alt=""
                       @error.once="
                         $event.target.src =
                           'https://via.placeholder.com/1280x960'
                       "
-                    />
+                    /> -->
                   </a>
                   <a>
-                    <img
+                    <!-- <img
                       src="/demo/photos/35.jpeg"
                       alt=""
                       @error.once="
                         $event.target.src =
                           'https://via.placeholder.com/1280x960'
                       "
-                    />
+                    /> -->
                   </a>
                   <a>
-                    <img
+                    <!-- <img
                       src="/demo/photos/36.jpg"
                       alt=""
                       @error.once="
                         $event.target.src =
                           'https://via.placeholder.com/1280x960'
                       "
-                    />
+                    /> -->
                   </a>
                 </div>
               </div>
@@ -1282,56 +1282,56 @@ const activeTab = ref<TabId>('overview')
               </header>
               <div class="card-image">
                 <figure class="image is-4by3">
-                  <img
+                  <!-- <img
                     src="/demo/photos/32.jpg"
                     alt=""
                     @error.once="
                       $event.target.src = 'https://via.placeholder.com/1280x960'
                     "
-                  />
+                  /> -->
                 </figure>
               </div>
               <div class="card-content post-group-wrap">
                 <div class="post-group">
                   <a>
-                    <img
+                    <!-- <img
                       src="/demo/photos/33.jpg"
                       alt=""
                       @error.once="
                         $event.target.src =
                           'https://via.placeholder.com/1280x960'
                       "
-                    />
+                    /> -->
                   </a>
                   <a>
-                    <img
+                    <!-- <img
                       src="/demo/photos/34.jpg"
                       alt=""
                       @error.once="
                         $event.target.src =
                           'https://via.placeholder.com/1280x960'
                       "
-                    />
+                    /> -->
                   </a>
                   <a>
-                    <img
+                    <!-- <img
                       src="/demo/photos/35.jpeg"
                       alt=""
                       @error.once="
                         $event.target.src =
                           'https://via.placeholder.com/1280x960'
                       "
-                    />
+                    /> -->
                   </a>
                   <a>
-                    <img
+                    <!-- <img
                       src="/demo/photos/36.jpg"
                       alt=""
                       @error.once="
                         $event.target.src =
                           'https://via.placeholder.com/1280x960'
                       "
-                    />
+                    /> -->
                   </a>
                 </div>
               </div>

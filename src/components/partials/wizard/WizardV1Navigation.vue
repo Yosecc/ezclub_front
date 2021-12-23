@@ -119,14 +119,14 @@ const setStep = (target: number) => {
     >
       <div class="is-trigger" aria-haspopup="true" @click="dropdown2.toggle">
         <div class="profile-avatar">
-          <img
+         <!--  <img
             class="avatar"
             src="/demo/avatars/8.jpg"
             alt=""
             @error.once="
               $event.target.src = 'https://via.placeholder.com/150x150'
             "
-          />
+          /> -->
         </div>
         <i
           aria-hidden="true"

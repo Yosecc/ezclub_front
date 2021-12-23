@@ -90,7 +90,7 @@ const changeMembershipsId = (data) => {
       <!-- <p>{{ inputsStepPrincipal.data }}</p> -->
       <h2 class="title is-5 is-narrow">{{ toPrayerCase(inputsStepPrincipal.member.name)}} {{ toPrayerCase(inputsStepPrincipal.member.last_name) }}</h2>
       <inputsLayaut
-        :inputsStep="inputsStepPrincipal.data"
+        :inputs-step="inputsStepPrincipal.data"
         @changeSelect="changeMembershipsId"
       />
 
@@ -114,7 +114,7 @@ const changeMembershipsId = (data) => {
           <div class="column is-12 bb-1 mb-5">
             <h2 class="title is-5 mt-4 is-narrow">{{ toPrayerCase(data.member.name)}} {{ toPrayerCase(data.member.last_name) }}</h2>
             <inputsLayaut
-              :inputsStep="data.data"
+              :inputs-step="data.data"
               @changeSelect="changeMembershipsId"
             />
           </div>

@@ -3,7 +3,7 @@ import { Api } from '/@src/services'
 
 export const  getMeberships = ()=>{
 	Api.get('memberships').then((response)=>{
-	    let inputMembershipsId = membershipsData.value.find((item)=> item.name == "memberships_id")
+	    const inputMembershipsId = membershipsData.value.find((item)=> item.name == "memberships_id")
 	    inputMembershipsId.values = response.data.memberships
 	})
 }

@@ -82,7 +82,7 @@ import { trendWidgetChartOptions } from '/@src/data/widgets/charts/trendWidgetCh
       <!--Widget-->
       <UIWidget class="video-widget">
         <template #body>
-          <UIWidgetMovie picture="/demo/photos/widgets/1.jpg" views="38,274" />
+          <!-- <UIWidgetMovie picture="/demo/photos/widgets/1.jpg" views="38,274" /> -->
         </template>
       </UIWidget>
 
@@ -234,13 +234,13 @@ import { trendWidgetChartOptions } from '/@src/data/widgets/charts/trendWidgetCh
       <!--Widget-->
       <UIWidget class="image-widget">
         <template #body>
-          <img
+          <!-- <img
             src="/demo/photos/widgets/2.jpg"
             alt=""
             @error.once="
               $event.target.src = 'https://via.placeholder.com/400x300'
             "
-          />
+          /> -->
           <div class="progress-wrap">
             <progress class="progress is-primary is-tiny" max="100">
               55%

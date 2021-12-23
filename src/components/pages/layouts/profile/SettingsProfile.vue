@@ -1,11 +1,11 @@
 <template>
   <div class="profile-wrapper">
     <div class="profile-header has-text-centered">
-      <V-Avatar
+      <!-- <V-Avatar
         size="xl"
         picture="/demo/avatars/8.jpg"
         badge="/images/icons/flags/united-states-of-america.svg"
-      />
+      /> -->
 
       <h3 class="title is-4 is-narrow">Erik Kovalsky</h3>
       <p class="light-text">

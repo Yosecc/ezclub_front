@@ -194,10 +194,10 @@ useHead({
           subtitle="Jimmy H. invited you to join the Heartman &amp; Sons project."
         >
           <template #image>
-            <V-Avatar
+            <!-- <V-Avatar
               picture="/demo/avatars/22.jpg"
               badge="/images/icons/flags/united-states-of-america.svg"
-            />
+            /> -->
           </template>
         </V-PlaceholderSection>
       </template>
@@ -219,10 +219,10 @@ useHead({
           subtitle="Jimmy H. invited you to join the Heartman &amp; Sons project."
         >
           <template #image>
-            <V-Avatar
+            <!-- <V-Avatar
               picture="/demo/avatars/22.jpg"
               badge="/images/icons/flags/united-states-of-america.svg"
-            />
+            /> -->
           </template>
         </V-PlaceholderSection>
       </template>
@@ -245,10 +245,10 @@ useHead({
           subtitle="Jimmy H. invited you to join the Heartman &amp; Sons project."
         >
           <template #image>
-            <V-Avatar
+            <!-- <V-Avatar
               picture="/demo/avatars/22.jpg"
               badge="/images/icons/flags/united-states-of-america.svg"
-            />
+            /> -->
           </template>
         </V-PlaceholderSection>
       </template>
@@ -271,10 +271,10 @@ useHead({
           subtitle="Jimmy H. invited you to join the Heartman &amp; Sons project."
         >
           <template #image>
-            <V-Avatar
+            <!-- <V-Avatar
               picture="/demo/avatars/22.jpg"
               badge="/images/icons/flags/united-states-of-america.svg"
-            />
+            /> -->
           </template>
         </V-PlaceholderSection>
       </template>
@@ -297,10 +297,10 @@ useHead({
           subtitle="Jimmy H. invited you to join the Heartman &amp; Sons project."
         >
           <template #image>
-            <V-Avatar
+           <!--  <V-Avatar
               picture="/demo/avatars/22.jpg"
               badge="/images/icons/flags/united-states-of-america.svg"
-            />
+            /> -->
           </template>
         </V-PlaceholderSection>
       </template>
@@ -492,14 +492,14 @@ useHead({
                         <ul>
                           <li>
                             <span class="item-icon">
-                              <img
+                              <!-- <img
                                 src="/demo/avatars/22.jpg"
                                 alt=""
                                 @error.once="
                                   $event.target.src =
                                     'https://via.placeholder.com/150x150'
                                 "
-                              />
+                              /> -->
                             </span>
                             <span class="item-name">Jimmy H.</span>
                             <span class="checkmark">
@@ -512,14 +512,14 @@ useHead({
                           </li>
                           <li>
                             <span class="item-icon">
-                              <img
+                              <!-- <img
                                 src="/demo/avatars/8.jpg"
                                 alt=""
                                 @error.once="
                                   $event.target.src =
                                     'https://via.placeholder.com/150x150'
                                 "
-                              />
+                              /> -->
                             </span>
                             <span class="item-name">Erik K.</span>
                             <span class="checkmark">
@@ -532,14 +532,14 @@ useHead({
                           </li>
                           <li>
                             <span class="item-icon">
-                              <img
+                              <!-- <img
                                 src="/demo/avatars/7.jpg"
                                 alt=""
                                 @error.once="
                                   $event.target.src =
                                     'https://via.placeholder.com/150x150'
                                 "
-                              />
+                              /> -->
                             </span>
                             <span class="item-name">Alice C.</span>
                             <span class="checkmark">
@@ -552,14 +552,14 @@ useHead({
                           </li>
                           <li>
                             <span class="item-icon">
-                              <img
+                              <!-- <img
                                 src="/demo/avatars/25.jpg"
                                 alt=""
                                 @error.once="
                                   $event.target.src =
                                     'https://via.placeholder.com/150x150'
                                 "
-                              />
+                              /> -->
                             </span>
                             <span class="item-name">Melany W.</span>
                             <span class="checkmark">
@@ -572,14 +572,14 @@ useHead({
                           </li>
                           <li>
                             <span class="item-icon">
-                              <img
+                              <!-- <img
                                 src="/demo/avatars/12.jpg"
                                 alt=""
                                 @error.once="
                                   $event.target.src =
                                     'https://via.placeholder.com/150x150'
                                 "
-                              />
+                              /> -->
                             </span>
                             <span class="item-name">Joshua S.</span>
                             <span class="checkmark">
@@ -713,14 +713,14 @@ useHead({
                   <div class="stacked-combo-box has-rounded-images">
                     <div class="box-inner">
                       <div class="combo-item">
-                        <img
+                        <!-- <img
                           src="/images/avatars/placeholder.jpg"
                           alt=""
                           @error.once="
                             $event.target.src =
                               'https://via.placeholder.com/150x150'
                           "
-                        />
+                        /> -->
                         <span class="selected-item">Add people</span>
                       </div>
                     </div>
@@ -736,14 +736,14 @@ useHead({
                         <ul>
                           <li>
                             <span class="item-icon">
-                              <img
+                              <!-- <img
                                 src="/demo/avatars/22.jpg"
                                 alt=""
                                 @error.once="
                                   $event.target.src =
                                     'https://via.placeholder.com/150x150'
                                 "
-                              />
+                              /> -->
                             </span>
                             <span class="item-name">Jimmy H.</span>
                             <span class="checkmark">
@@ -756,14 +756,14 @@ useHead({
                           </li>
                           <li>
                             <span class="item-icon">
-                              <img
+                              <!-- <img
                                 src="/demo/avatars/8.jpg"
                                 alt=""
                                 @error.once="
                                   $event.target.src =
                                     'https://via.placeholder.com/150x150'
                                 "
-                              />
+                              /> -->
                             </span>
                             <span class="item-name">Erik K.</span>
                             <span class="checkmark">
@@ -776,14 +776,14 @@ useHead({
                           </li>
                           <li>
                             <span class="item-icon">
-                              <img
+                              <!-- <img
                                 src="/demo/avatars/7.jpg"
                                 alt=""
                                 @error.once="
                                   $event.target.src =
                                     'https://via.placeholder.com/150x150'
                                 "
-                              />
+                              /> -->
                             </span>
                             <span class="item-name">Alice C.</span>
                             <span class="checkmark">
@@ -796,14 +796,14 @@ useHead({
                           </li>
                           <li>
                             <span class="item-icon">
-                              <img
+                              <!-- <img
                                 src="/demo/avatars/25.jpg"
                                 alt=""
                                 @error.once="
                                   $event.target.src =
                                     'https://via.placeholder.com/150x150'
                                 "
-                              />
+                              /> -->
                             </span>
                             <span class="item-name">Melany W.</span>
                             <span class="checkmark">
@@ -816,14 +816,14 @@ useHead({
                           </li>
                           <li>
                             <span class="item-icon">
-                              <img
+                             <!--  <img
                                 src="/demo/avatars/12.jpg"
                                 alt=""
                                 @error.once="
                                   $event.target.src =
                                     'https://via.placeholder.com/150x150'
                                 "
-                              />
+                              /> -->
                             </span>
                             <span class="item-name">Joshua S.</span>
                             <span class="checkmark">

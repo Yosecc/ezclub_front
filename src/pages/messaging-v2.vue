@@ -12,7 +12,7 @@ const conversations = [
     name: 'Kelly Marston',
     role: 'Product Manager',
     avatar: {
-      picture: '/demo/avatars/11.jpg',
+      picture: 'marketing-2.vue',
     },
     lastMessage: '20m',
     lastMessagePreview: 'What time was our meeting scheduled for?',
@@ -22,7 +22,7 @@ const conversations = [
     name: 'Alejandro Badajoz',
     role: 'Business Analyst',
     avatar: {
-      picture: '/demo/avatars/39.jpg',
+      picture: '',
     },
     lastMessage: '24m',
     lastMessagePreview: 'Nah, I have a meeting that starts in 5.',
@@ -44,7 +44,7 @@ const conversations = [
     name: 'Alice Carasca',
     role: 'Software Engineer',
     avatar: {
-      picture: '/demo/avatars/7.jpg',
+      picture: '',
     },
     lastMessage: '47m',
     lastMessagePreview: 'I like the curves in this one.',
@@ -54,7 +54,7 @@ const conversations = [
     name: 'Irina Vierbovsky',
     role: 'Project Manager',
     avatar: {
-      picture: '/demo/avatars/23.jpg',
+      picture: '',
     },
     lastMessage: '56m',
     lastMessagePreview: 'I need some help on something Iam working on.',
@@ -64,7 +64,7 @@ const conversations = [
     name: 'Mary Lebowski',
     role: 'Project Manager',
     avatar: {
-      picture: '/demo/avatars/5.jpg',
+      picture: '',
     },
     lastMessage: '1h',
     lastMessagePreview: 'Still down for that movie?',
@@ -74,7 +74,7 @@ const conversations = [
     name: 'Esteban Castellanos',
     role: 'UI/UX Designer',
     avatar: {
-      picture: '/demo/avatars/18.jpg',
+      picture: '',
     },
     lastMessage: '1h',
     lastMessagePreview: 'I can send you the files.',
@@ -84,7 +84,7 @@ const conversations = [
     name: 'Melany Wallace',
     role: 'Web Developer',
     avatar: {
-      picture: '/demo/avatars/25.jpg',
+      picture: '',
     },
     lastMessage: '2h',
     lastMessagePreview: 'I has some issues with the headers tough.',
@@ -94,7 +94,7 @@ const conversations = [
     name: 'Jimmy Hector',
     role: 'Project Manager',
     avatar: {
-      picture: '/demo/avatars/22.jpg',
+      picture: '',
     },
     lastMessage: '3h',
     lastMessagePreview: 'When are you available?',
@@ -104,7 +104,7 @@ const conversations = [
     name: 'Greta Kroppfer',
     role: 'Sales Manager',
     avatar: {
-      picture: '/demo/avatars/19.jpg',
+      picture: '',
     },
     lastMessage: '3h',
     lastMessagePreview:
@@ -115,7 +115,7 @@ const conversations = [
     name: 'Tara Svenson',
     role: 'UI/UX Designer',
     avatar: {
-      picture: '/demo/avatars/13.jpg',
+      picture: '',
     },
     lastMessage: '9h',
     lastMessagePreview: 'Hope you like them.',
@@ -193,14 +193,14 @@ useHead({
               @click="dropdown1.toggle"
             >
               <div class="profile-avatar">
-                <img
+                <!-- <img
                   class="avatar"
                   src="/demo/avatars/8.jpg"
                   alt=""
                   @error.once="
                     $event.target.src = 'https://via.placeholder.com/150x150'
                   "
-                />
+                /> -->
               </div>
               <i
                 aria-hidden="true"
@@ -494,7 +494,7 @@ useHead({
                 Shared photos
               </div>
               <div class="detail-photo-grid">
-                <img
+                <!-- <img
                   src="/demo/photos/demo-apps/1.jpg"
                   alt=""
                   @error.once="
@@ -577,7 +577,7 @@ useHead({
                   @error.once="
                     $event.target.src = 'https://via.placeholder.com/1600x900'
                   "
-                />
+                /> -->
               </div>
               <a class="view-more">View More</a>
             </div>

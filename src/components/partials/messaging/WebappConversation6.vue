@@ -19,7 +19,7 @@ const emit = defineEmit(['toggleMobileConversation'])
       </button>
       <div class="chat-area-title">Mary L.</div>
       <div class="chat-area-group">
-        <img
+        <!-- <img
           class="chat-area-profile"
           src="/demo/avatars/5.jpg"
           alt=""
@@ -27,13 +27,13 @@ const emit = defineEmit(['toggleMobileConversation'])
           @error.once="
             $event.target.src = 'https://via.placeholder.com/150x150'
           "
-        />
+        /> -->
       </div>
     </div>
     <div class="chat-area-main">
       <div class="chat-msg">
         <div class="chat-msg-profile">
-          <img
+          <!-- <img
             class="chat-msg-img"
             src="/demo/avatars/5.jpg"
             alt=""
@@ -41,7 +41,7 @@ const emit = defineEmit(['toggleMobileConversation'])
             @error.once="
               $event.target.src = 'https://via.placeholder.com/150x150'
             "
-          />
+          /> -->
           <div class="chat-msg-date">Sent at 12:14pm</div>
         </div>
         <div class="chat-msg-content">
@@ -51,7 +51,7 @@ const emit = defineEmit(['toggleMobileConversation'])
       </div>
       <div class="chat-msg owner">
         <div class="chat-msg-profile">
-          <img
+          <!-- <img
             class="chat-msg-img"
             src="/demo/avatars/8.jpg"
             alt=""
@@ -59,7 +59,7 @@ const emit = defineEmit(['toggleMobileConversation'])
             @error.once="
               $event.target.src = 'https://via.placeholder.com/150x150'
             "
-          />
+          /> -->
           <div class="chat-msg-date">Sent at 12:14pm</div>
         </div>
         <div class="chat-msg-content">

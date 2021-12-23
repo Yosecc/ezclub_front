@@ -15,7 +15,7 @@ defineProps({
   picture: {
     type: String,
     required: true,
-    default: '/demo/avatars/7.jpg',
+    default: '',
   },
   time: {
     type: String,

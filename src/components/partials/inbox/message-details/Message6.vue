@@ -33,12 +33,12 @@ const dropdown2 = useDropdown(dropdownElement2)
     class="inbox-message-details"
   >
     <div class="header-area">
-      <img
+      <!-- <img
         class="sender-pic"
         src="/demo/avatars/23.jpg"
         alt=""
         @error.once="$event.target.src = 'https://via.placeholder.com/150x150'"
-      />
+      /> -->
       <div class="message-meta">
         <span class="message-title">This month's lead generation report</span>
         <span class="sender-email">&lt;irina@vuero.io&gt;</span>
@@ -191,13 +191,13 @@ const dropdown2 = useDropdown(dropdownElement2)
       <div class="reply-box-wrap">
         <div class="reply-bubble">
           <div class="reply-as">
-            <img
+            <!-- <img
               src="/demo/avatars/8.jpg"
               alt=""
               @error.once="
                 $event.target.src = 'https://via.placeholder.com/150x150'
               "
-            />
+            /> -->
             <div class="reply-details">
               <span>Reply as</span>
               <span>erik@vuero.io</span>

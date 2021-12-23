@@ -136,11 +136,11 @@
                 size="small"
                 :limit="3"
                 :avatars="[
-                  { picture: '/demo/avatars/7.jpg' },
+                  { picture: '' },
                   { color: 'info', initials: 'JD' },
-                  { picture: '/demo/avatars/12.jpg' },
-                  { picture: '/demo/avatars/12.jpg' },
-                  { picture: '/demo/avatars/12.jpg' },
+                  { picture: '' },
+                  { picture: '' },
+                  { picture: '' },
                 ]"
               />
             </div>
@@ -190,14 +190,14 @@
               <span class="tag is-solid is-rounded">Active</span>
             </div>
             <div class="flex-table-cell" data-th="Contacts">
-              <V-AvatarStack
+              <!-- <V-AvatarStack
                 class="is-pushed-mobile"
                 size="small"
                 :avatars="[
                   { color: 'success', initials: 'BT' },
                   { picture: '/demo/avatars/8.jpg' },
                 ]"
-              />
+              /> -->
             </div>
             <div class="flex-table-cell cell-end" data-th="Actions">
               <FlexTableDropdown />
@@ -219,11 +219,11 @@
               <V-Tag label="Disabled" color="solid" rounded />
             </div>
             <div class="flex-table-cell" data-th="Contacts">
-              <V-AvatarStack
+              <!-- <V-AvatarStack
                 class="is-pushed-mobile"
                 size="small"
                 :avatars="[{ picture: '/demo/avatars/13.jpg' }]"
-              />
+              /> -->
             </div>
             <div class="flex-table-cell cell-end" data-th="Actions">
               <FlexTableDropdown />
@@ -245,7 +245,7 @@
               <V-Tag label="Suspended" color="solid" rounded />
             </div>
             <div class="flex-table-cell" data-th="Contacts">
-              <V-AvatarStack
+              <!-- <V-AvatarStack
                 class="is-pushed-mobile"
                 size="small"
                 :avatars="[
@@ -253,7 +253,7 @@
                   { picture: '/demo/avatars/16.jpg' },
                   { picture: '/demo/avatars/19.jpg' },
                 ]"
-              />
+              /> -->
             </div>
             <div class="flex-table-cell cell-end" data-th="Actions">
               <FlexTableDropdown />

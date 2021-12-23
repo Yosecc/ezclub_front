@@ -83,13 +83,13 @@ const optionsSingle = [
         <div class="tile is-parent">
           <a href="#" class="tile is-child tile-grid-item is-medium">
             <div class="tile-grid-item-inner">
-              <img
+              <!-- <img
                 src="/demo/photos/11.jpg"
                 alt=""
                 @error.once="
                   $event.target.src = 'https://via.placeholder.com/400x300'
                 "
-              />
+              /> -->
               <div class="meta">
                 <div class="tile-title">
                   <h3 class="dark-inverted" data-filter-match>
@@ -101,7 +101,7 @@ const optionsSingle = [
                   </p>
                 </div>
                 <div class="tile-meta">
-                  <V-Avatar picture="/demo/avatars/39.jpg" size="small" />
+                  <!-- <V-Avatar picture="/demo/avatars/39.jpg" size="small" /> -->
                   <div class="meta-inner">
                     <span class="dark-inverted" data-filter-match>
                       Alejandro B.</span
@@ -116,13 +116,13 @@ const optionsSingle = [
         <div class="tile is-parent">
           <a href="#" class="tile is-child tile-grid-item is-medium">
             <div class="tile-grid-item-inner">
-              <img
+             <!--  <img
                 src="/demo/photos/12.jpg"
                 alt=""
                 @error.once="
                   $event.target.src = 'https://via.placeholder.com/400x300'
                 "
-              />
+              /> -->
               <div class="meta">
                 <div class="tile-title">
                   <h3 class="dark-inverted" data-filter-match>
@@ -134,7 +134,7 @@ const optionsSingle = [
                   </p>
                 </div>
                 <div class="tile-meta">
-                  <V-Avatar picture="/demo/avatars/15.jpg" size="small" />
+                  <!-- <V-Avatar picture="/demo/avatars/15.jpg" size="small" /> -->
                   <div class="meta-inner">
                     <span class="dark-inverted" data-filter-match>
                       Hilde V.</span
@@ -149,13 +149,13 @@ const optionsSingle = [
         <div class="tile is-parent">
           <a href="#" class="tile is-child tile-grid-item is-medium">
             <div class="tile-grid-item-inner">
-              <img
+              <!-- <img
                 src="/demo/photos/13.jpg"
                 alt=""
                 @error.once="
                   $event.target.src = 'https://via.placeholder.com/400x300'
                 "
-              />
+              /> -->
               <div class="meta">
                 <div class="tile-title">
                   <h3 class="dark-inverted" data-filter-match>
@@ -167,7 +167,7 @@ const optionsSingle = [
                   </p>
                 </div>
                 <div class="tile-meta">
-                  <V-Avatar picture="/demo/avatars/24.jpg" size="small" />
+                  <!-- <V-Avatar picture="/demo/avatars/24.jpg" size="small" /> -->
                   <div class="meta-inner">
                     <span class="dark-inverted" data-filter-match>
                       Sandrine C.</span
@@ -187,13 +187,13 @@ const optionsSingle = [
             <div class="tile is-parent is-vertical">
               <a href="#" class="tile is-child tile-grid-item is-medium">
                 <div class="tile-grid-item-inner">
-                  <img
+                 <!--  <img
                     src="/demo/photos/14.jpg"
                     alt=""
                     @error.once="
                       $event.target.src = 'https://via.placeholder.com/400x300'
                     "
-                  />
+                  /> -->
                   <div class="meta">
                     <div class="tile-title">
                       <h3 class="dark-inverted" data-filter-match>
@@ -206,7 +206,7 @@ const optionsSingle = [
                       </p>
                     </div>
                     <div class="tile-meta">
-                      <V-Avatar picture="/demo/avatars/27.jpg" size="small" />
+                      <!-- <V-Avatar picture="/demo/avatars/27.jpg" size="small" /> -->
                       <div class="meta-inner">
                         <span class="dark-inverted" data-filter-match>
                           Carmen E.</span
@@ -219,13 +219,13 @@ const optionsSingle = [
               </a>
               <a href="#" class="tile is-child tile-grid-item is-medium">
                 <div class="tile-grid-item-inner">
-                  <img
+                  <!-- <img
                     src="/demo/photos/15.jpg"
                     alt=""
                     @error.once="
                       $event.target.src = 'https://via.placeholder.com/400x300'
                     "
-                  />
+                  /> -->
                   <div class="meta">
                     <div class="tile-title">
                       <h3 class="dark-inverted" data-filter-match>
@@ -238,7 +238,7 @@ const optionsSingle = [
                       </p>
                     </div>
                     <div class="tile-meta">
-                      <V-Avatar picture="/demo/avatars/10.jpg" size="small" />
+                      <!-- <V-Avatar picture="/demo/avatars/10.jpg" size="small" /> -->
                       <div class="meta-inner">
                         <span class="dark-inverted" data-filter-match>
                           Henry G.</span
@@ -253,13 +253,13 @@ const optionsSingle = [
             <div class="tile is-parent">
               <a href="#" class="tile is-child tile-grid-item is-large">
                 <div class="tile-grid-item-inner">
-                  <img
+                 <!--  <img
                     src="/demo/photos/16.jpg"
                     alt=""
                     @error.once="
                       $event.target.src = 'https://via.placeholder.com/400x300'
                     "
-                  />
+                  /> -->
                   <div class="meta">
                     <div class="tile-title">
                       <h3 class="dark-inverted" data-filter-match>
@@ -271,7 +271,7 @@ const optionsSingle = [
                       </p>
                     </div>
                     <div class="tile-meta">
-                      <V-Avatar picture="/demo/avatars/22.jpg" size="small" />
+                      <!-- <V-Avatar picture="/demo/avatars/22.jpg" size="small" /> -->
                       <div class="meta-inner">
                         <span class="dark-inverted" data-filter-match>
                           Jimmy H.</span
@@ -287,13 +287,13 @@ const optionsSingle = [
           <div class="tile is-parent">
             <a href="#" class="tile is-child tile-grid-item is-wide">
               <div class="tile-grid-item-inner">
-                <img
+                <!-- <img
                   src="/demo/photos/18.jpg"
                   alt=""
                   @error.once="
                     $event.target.src = 'https://via.placeholder.com/400x300'
                   "
-                />
+                /> -->
                 <div class="meta">
                   <div class="tile-title">
                     <h3 class="dark-inverted" data-filter-match>
@@ -309,7 +309,7 @@ const optionsSingle = [
                     </p>
                   </div>
                   <div class="tile-meta">
-                    <V-Avatar picture="/demo/avatars/16.jpg" size="small" />
+                    <!-- <V-Avatar picture="/demo/avatars/16.jpg" size="small" /> -->
                     <div class="meta-inner">
                       <span class="dark-inverted" data-filter-match>
                         Jason G.</span
@@ -325,13 +325,13 @@ const optionsSingle = [
         <div class="tile is-parent">
           <a href="#" class="tile is-child tile-grid-item is-tall">
             <div class="tile-grid-item-inner">
-              <img
+              <!-- <img
                 src="/demo/photos/19.jpg"
                 alt=""
                 @error.once="
                   $event.target.src = 'https://via.placeholder.com/400x300'
                 "
-              />
+              /> -->
               <div class="meta">
                 <div class="tile-title">
                   <h3 class="dark-inverted" data-filter-match>
@@ -347,7 +347,7 @@ const optionsSingle = [
                   </p>
                 </div>
                 <div class="tile-meta">
-                  <V-Avatar picture="/demo/avatars/26.jpg" size="small" />
+                  <!-- <V-Avatar picture="/demo/avatars/26.jpg" size="small" /> -->
                   <div class="meta-inner">
                     <span class="dark-inverted" data-filter-match>
                       Courtney W.</span
@@ -365,13 +365,13 @@ const optionsSingle = [
         <div class="tile is-parent">
           <a href="#" class="tile is-child tile-grid-item is-wide">
             <div class="tile-grid-item-inner">
-              <img
+             <!--  <img
                 src="/demo/photos/20.jpg"
                 alt=""
                 @error.once="
                   $event.target.src = 'https://via.placeholder.com/400x300'
                 "
-              />
+              /> -->
               <div class="meta">
                 <div class="tile-title">
                   <h3 class="dark-inverted" data-filter-match>
@@ -383,7 +383,7 @@ const optionsSingle = [
                   </p>
                 </div>
                 <div class="tile-meta">
-                  <V-Avatar picture="/demo/avatars/8.jpg" size="small" />
+                  <!-- <V-Avatar picture="/demo/avatars/8.jpg" size="small" /> -->
                   <div class="meta-inner">
                     <span class="dark-inverted" data-filter-match>Erik K.</span>
                     <span>2 days ago</span>
@@ -396,13 +396,13 @@ const optionsSingle = [
         <div class="tile is-parent is-6">
           <a href="#" class="tile is-child tile-grid-item is-wide">
             <div class="tile-grid-item-inner">
-              <img
+              <!-- <img
                 src="/demo/photos/23.jpg"
                 alt=""
                 @error.once="
                   $event.target.src = 'https://via.placeholder.com/400x300'
                 "
-              />
+              /> -->
               <div class="meta">
                 <div class="tile-title">
                   <h3 class="dark-inverted" data-filter-match>
@@ -414,7 +414,7 @@ const optionsSingle = [
                   </p>
                 </div>
                 <div class="tile-meta">
-                  <V-Avatar picture="/demo/avatars/40.jpg" size="small" />
+                  <!-- <V-Avatar picture="/demo/avatars/40.jpg" size="small" /> -->
                   <div class="meta-inner">
                     <span class="dark-inverted" data-filter-match>
                       Jeanne M.</span
@@ -432,13 +432,13 @@ const optionsSingle = [
         <div class="tile is-parent">
           <a href="#" class="tile is-child tile-grid-item is-medium">
             <div class="tile-grid-item-inner">
-              <img
+              <!-- <img
                 src="/demo/photos/22.jpg"
                 alt=""
                 @error.once="
                   $event.target.src = 'https://via.placeholder.com/400x300'
                 "
-              />
+              /> -->
               <div class="meta">
                 <div class="tile-title">
                   <h3 class="dark-inverted" data-filter-match>
@@ -450,7 +450,7 @@ const optionsSingle = [
                   </p>
                 </div>
                 <div class="tile-meta">
-                  <V-Avatar picture="/demo/avatars/9.jpg" size="small" />
+                  <!-- <V-Avatar picture="/demo/avatars/9.jpg" size="small" /> -->
                   <div class="meta-inner">
                     <span class="dark-inverted" data-filter-match>Ana B.</span>
                     <span>3 days ago</span>
@@ -463,13 +463,13 @@ const optionsSingle = [
         <div class="tile is-parent">
           <a href="#" class="tile is-child tile-grid-item is-medium">
             <div class="tile-grid-item-inner">
-              <img
+              <!-- <img
                 src="/demo/photos/24.jpg"
                 alt=""
                 @error.once="
                   $event.target.src = 'https://via.placeholder.com/400x300'
                 "
-              />
+              /> -->
               <div class="meta">
                 <div class="tile-title">
                   <h3 class="dark-inverted" data-filter-match>
@@ -481,7 +481,7 @@ const optionsSingle = [
                   </p>
                 </div>
                 <div class="tile-meta">
-                  <V-Avatar picture="/demo/avatars/19.jpg" size="small" />
+                  <!-- <V-Avatar picture="/demo/avatars/19.jpg" size="small" /> -->
                   <div class="meta-inner">
                     <span class="dark-inverted" data-filter-match>
                       Greta K.</span
@@ -496,13 +496,13 @@ const optionsSingle = [
         <div class="tile is-parent">
           <a href="#" class="tile is-child tile-grid-item is-medium">
             <div class="tile-grid-item-inner">
-              <img
+              <!-- <img
                 src="/demo/photos/27.jpg"
                 alt=""
                 @error.once="
                   $event.target.src = 'https://via.placeholder.com/400x300'
                 "
-              />
+              /> -->
               <div class="meta">
                 <div class="tile-title">
                   <h3 class="dark-inverted" data-filter-match>
@@ -514,7 +514,7 @@ const optionsSingle = [
                   </p>
                 </div>
                 <div class="tile-meta">
-                  <V-Avatar picture="/demo/avatars/33.jpg" size="small" />
+                  <!-- <V-Avatar picture="/demo/avatars/33.jpg" size="small" /> -->
                   <div class="meta-inner">
                     <span class="dark-inverted" data-filter-match>
                       Harvey M.</span

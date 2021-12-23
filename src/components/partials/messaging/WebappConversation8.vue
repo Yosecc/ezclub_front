@@ -19,7 +19,7 @@ const emit = defineEmit(['toggleMobileConversation'])
       </button>
       <div class="chat-area-title">Melany W.</div>
       <div class="chat-area-group">
-        <img
+        <!-- <img
           class="chat-area-profile"
           src="/demo/avatars/25.jpg"
           alt=""
@@ -27,13 +27,13 @@ const emit = defineEmit(['toggleMobileConversation'])
           @error.once="
             $event.target.src = 'https://via.placeholder.com/150x150'
           "
-        />
+        /> -->
       </div>
     </div>
     <div class="chat-area-main">
       <div class="chat-msg">
         <div class="chat-msg-profile">
-          <img
+          <!-- <img
             class="chat-msg-img"
             src="/demo/avatars/25.jpg"
             alt=""
@@ -41,19 +41,19 @@ const emit = defineEmit(['toggleMobileConversation'])
             @error.once="
               $event.target.src = 'https://via.placeholder.com/150x150'
             "
-          />
+          /> -->
           <div class="chat-msg-date">Sent at 9:43pm</div>
         </div>
         <div class="chat-msg-content">
           <div class="chat-msg-text">Just finished implementing this one.</div>
           <div class="chat-msg-text">
-            <img
+            <!-- <img
               src="/demo/photos/apps/13.png"
               alt=""
               @error.once="
                 $event.target.src = 'https://via.placeholder.com/400x300'
               "
-            />
+            /> -->
           </div>
           <div class="chat-msg-text">
             I has some issues with the headers tough.
@@ -62,7 +62,7 @@ const emit = defineEmit(['toggleMobileConversation'])
       </div>
       <div class="chat-msg owner">
         <div class="chat-msg-profile">
-          <img
+          <!-- <img
             class="chat-msg-img"
             src="/demo/avatars/8.jpg"
             alt=""
@@ -70,7 +70,7 @@ const emit = defineEmit(['toggleMobileConversation'])
             @error.once="
               $event.target.src = 'https://via.placeholder.com/150x150'
             "
-          />
+          /> -->
           <div class="chat-msg-date">Sent at 9:43pmpm</div>
         </div>
         <div class="chat-msg-content">

@@ -83,7 +83,7 @@ const localFlagSrc = computed(() => {
               <li>
                 <a class="notification-item">
                   <div class="img-left">
-                    <img
+                    <!-- <img
                       class="user-photo"
                       alt=""
                       src="/demo/avatars/7.jpg"
@@ -91,7 +91,7 @@ const localFlagSrc = computed(() => {
                         $event.target.src =
                           'https://via.placeholder.com/150x150'
                       "
-                    />
+                    /> -->
                   </div>
                   <div class="user-content">
                     <p class="user-info">
@@ -104,7 +104,7 @@ const localFlagSrc = computed(() => {
               <li>
                 <a class="notification-item">
                   <div class="img-left">
-                    <img
+                    <!-- <img
                       class="user-photo"
                       alt=""
                       src="/demo/avatars/12.jpg"
@@ -112,7 +112,7 @@ const localFlagSrc = computed(() => {
                         $event.target.src =
                           'https://via.placeholder.com/150x150'
                       "
-                    />
+                    /> -->
                   </div>
                   <div class="user-content">
                     <p class="user-info">
@@ -125,7 +125,7 @@ const localFlagSrc = computed(() => {
               <li>
                 <a class="notification-item">
                   <div class="img-left">
-                    <img
+                    <!-- <img
                       class="user-photo"
                       alt=""
                       src="/demo/avatars/13.jpg"
@@ -133,7 +133,7 @@ const localFlagSrc = computed(() => {
                         $event.target.src =
                           'https://via.placeholder.com/150x150'
                       "
-                    />
+                    /> -->
                   </div>
                   <div class="user-content">
                     <p class="user-info">
@@ -146,7 +146,7 @@ const localFlagSrc = computed(() => {
               <li>
                 <a class="notification-item">
                   <div class="img-left">
-                    <img
+                    <!-- <img
                       class="user-photo"
                       alt=""
                       src="/demo/avatars/25.jpg"
@@ -154,7 +154,7 @@ const localFlagSrc = computed(() => {
                         $event.target.src =
                           'https://via.placeholder.com/150x150'
                       "
-                    />
+                    /> -->
                   </div>
                   <div class="user-content">
                     <p class="user-info">

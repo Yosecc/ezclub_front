@@ -25,7 +25,7 @@ import { products } from '/@src/data/widgets/ui/productList'
       />
 
       <!--Widget-->
-      <ContactWidget
+      <!-- <ContactWidget
         picture="/demo/avatars/8.jpg"
         username="Erik K."
         email="erikkovalsky@vuero.io"
@@ -33,7 +33,7 @@ import { products } from '/@src/data/widgets/ui/productList'
         position="Product Manager"
         location="Los Angeles, CA"
         phone="+1 444-5156"
-      />
+      /> -->
 
       <!--Widget-->
       <IllustrationWidget
@@ -106,7 +106,7 @@ import { products } from '/@src/data/widgets/ui/productList'
       />
 
       <!--Widget-->
-      <ContactWidget
+      <!-- <ContactWidget
         picture="/demo/avatars/8.jpg"
         username="Erik K."
         email="erikkovalsky@vuero.io"
@@ -116,7 +116,7 @@ import { products } from '/@src/data/widgets/ui/productList'
         phone="+1 444-5156"
         squared
         reversed
-      />
+      /> -->
 
       <!--Widget-->
       <SocialButtonsWidget :buttons="socialButtonList2" rounded />
@@ -144,11 +144,11 @@ import { products } from '/@src/data/widgets/ui/productList'
       </UIWidget>
 
       <!--Widget-->
-      <CallWidget
+      <!-- <CallWidget
         picture="/@src/assets/illustrations/widgets/6.svg"
         badge="/demo/avatars/7.jpg"
         username="Alice"
-      />
+      /> -->
 
       <!--Widget-->
       <IllustrationWidget

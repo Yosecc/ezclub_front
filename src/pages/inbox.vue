@@ -267,13 +267,13 @@ useHead({
               <div class="contact-list has-slimscroll">
                 <!--Contact-->
                 <div class="contact-block">
-                  <img
+                  <!-- <img
                     src="/demo/avatars/7.jpg"
                     alt=""
                     @error.once="
                       $event.target.src = 'https://via.placeholder.com/150x150'
                     "
-                  />
+                  /> -->
                   <div class="contact-meta">
                     <span>Alice Carasca</span>
                     <span>alice@vuero.io</span>
@@ -281,13 +281,13 @@ useHead({
                 </div>
                 <!--Contact-->
                 <div class="contact-block">
-                  <img
+                  <!-- <img
                     src="/demo/avatars/25.jpg"
                     alt=""
                     @error.once="
                       $event.target.src = 'https://via.placeholder.com/150x150'
                     "
-                  />
+                  /> -->
                   <div class="contact-meta">
                     <span>Melany Wallace</span>
                     <span>melany@vuero.io</span>
@@ -295,13 +295,13 @@ useHead({
                 </div>
                 <!--Contact-->
                 <div class="contact-block">
-                  <img
+                  <!-- <img
                     src="/demo/avatars/18.jpg"
                     alt=""
                     @error.once="
                       $event.target.src = 'https://via.placeholder.com/150x150'
                     "
-                  />
+                  /> -->
                   <div class="contact-meta">
                     <span>Esteban Castellanos</span>
                     <span>esteban@vuero.io</span>
@@ -309,13 +309,13 @@ useHead({
                 </div>
                 <!--Contact-->
                 <div class="contact-block">
-                  <img
+                  <!-- <img
                     src="/demo/avatars/32.jpg"
                     alt=""
                     @error.once="
                       $event.target.src = 'https://via.placeholder.com/150x150'
                     "
-                  />
+                  /> -->
                   <div class="contact-meta">
                     <span>Jonathan Krugger</span>
                     <span>jonathan@vuero.io</span>
@@ -323,13 +323,13 @@ useHead({
                 </div>
                 <!--Contact-->
                 <div class="contact-block">
-                  <img
+                  <!-- <img
                     src="/demo/avatars/38.jpg"
                     alt=""
                     @error.once="
                       $event.target.src = 'https://via.placeholder.com/150x150'
                     "
-                  />
+                  /> -->
                   <div class="contact-meta">
                     <span>Christie Dallas</span>
                     <span>christie@vuero.io</span>

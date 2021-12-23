@@ -614,7 +614,7 @@ export const configClassColumn = (input) => {
   }
 }
 
-var controlador = null
+let controlador = null
 
 export const toggleMemberActive = ((status, id = null) => {
 

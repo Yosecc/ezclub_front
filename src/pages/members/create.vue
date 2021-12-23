@@ -123,33 +123,33 @@ const changeCategory = (category) => {
           <p>{{ categories.model }}</p> -->
           <memberInformation 
             v-if="stepActive == 1" 
-            :stepSelected="stepActive" />
+            :step-selected="stepActive" />
           <!--  -->
           <familyMembers 
             v-if="stepActive == 2 && typeDataSteps == 'family' " 
-            :stepSelected="stepActive"
+            :step-selected="stepActive"
              />
           <!--  -->
           <parentGuardian 
             v-if="stepActive == 2 && typeDataSteps == 'parent' " 
-            :stepSelected="stepActive" />
+            :step-selected="stepActive" />
           <!--  -->
           <contactPreference
             v-if="stepActive == 3" 
-            :stepSelected="stepActive"
+            :step-selected="stepActive"
           />
           <!--  -->
           <selectMembership
             v-if="stepActive == 4" 
-            :stepSelected="stepActive"
+            :step-selected="stepActive"
           />
           <paymentMethod
             v-if="stepActive == 5" 
-            :stepSelected="stepActive"
+            :step-selected="stepActive"
           />
           <sign
             v-if="stepActive == 6" 
-            :stepSelected="stepActive"
+            :step-selected="stepActive"
           />
         </template>
         <template #footer-left>

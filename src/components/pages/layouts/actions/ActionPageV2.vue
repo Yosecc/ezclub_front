@@ -30,11 +30,11 @@ const accept = async () => {
       <div class="wrapper-inner">
         <div class="action-box">
           <div class="box-content">
-            <V-Avatar
+            <!-- <V-Avatar
               size="big"
               picture="/demo/avatars/16.jpg"
               badge="/demo/photos/apps/9.png"
-            />
+            /> -->
 
             <h3 class="dark-inverted">
               Jason G. has invited you to the
@@ -54,7 +54,7 @@ const accept = async () => {
             <div class="people-wrap">
               <div class="people">
                 <tippy class="has-help-cursor" interactive placement="bottom">
-                  <V-Avatar size="small" picture="/demo/avatars/21.jpg" />
+                  <!-- <V-Avatar size="small" picture="/demo/avatars/21.jpg" /> -->
                   <template #content>
                     <UserPopoverContent :user="popovers.user21" />
                   </template>
@@ -68,7 +68,7 @@ const accept = async () => {
                 </tippy>
 
                 <tippy class="has-help-cursor" interactive placement="bottom">
-                  <V-Avatar size="small" picture="/demo/avatars/39.jpg" />
+                  <!-- <V-Avatar size="small" picture="/demo/avatars/39.jpg" /> -->
                   <template #content>
                     <UserPopoverContent :user="popovers.user39" />
                   </template>

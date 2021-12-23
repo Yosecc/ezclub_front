@@ -1,0 +1,1 @@
+import{R as a,a as s,z as e,w as o}from"./vendor.777d9173.js";const t=a(),l=s("color-schema","auto"),u=e({get:()=>"auto"===l.value?t.value:"dark"===l.value,set(a){a===t.value?l.value="auto":l.value=a?"dark":"light"}});o((()=>{const a=document.body;u.value?a.classList.add("is-dark"):a.classList.remove("is-dark")}));export{u as i};

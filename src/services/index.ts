@@ -1,6 +1,6 @@
 import axios from "axios";
 
-let url = 'https://dev-api.ushuaiacreative.com/api/'
+const url = 'https://dev-api.ushuaiacreative.com/api/'
 // let url = 'https://ezclub.loc/api/'
 
 export const Api = axios.create({

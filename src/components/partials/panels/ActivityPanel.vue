@@ -51,10 +51,10 @@ const activeTab = ref<TabId>('team')
           >
             <!--Team Member-->
             <div class="team-card">
-              <V-Avatar
+              <!-- <V-Avatar
                 picture="/demo/avatars/12.jpg"
                 badge="/images/icons/flags/united-states-of-america.svg"
-              />
+              /> -->
 
               <div class="meta">
                 <span>Joshua S.</span>
@@ -78,10 +78,10 @@ const activeTab = ref<TabId>('team')
 
             <!--Team Member-->
             <div class="team-card">
-              <V-Avatar
+              <!-- <V-Avatar
                 picture="/demo/avatars/25.jpg"
                 badge="/images/icons/flags/united-states-of-america.svg"
-              />
+              /> -->
 
               <div class="meta">
                 <span>Melany W.</span>
@@ -105,10 +105,10 @@ const activeTab = ref<TabId>('team')
 
             <!--Team Member-->
             <div class="team-card">
-              <V-Avatar
+              <!-- <V-Avatar
                 picture="/demo/avatars/18.jpg"
                 badge="/images/icons/flags/united-states-of-america.svg"
-              />
+              /> -->
 
               <div class="meta">
                 <span>Esteban C.</span>
@@ -132,10 +132,10 @@ const activeTab = ref<TabId>('team')
 
             <!--Team Member-->
             <div class="team-card">
-              <V-Avatar
+              <!-- <V-Avatar
                 picture="/demo/avatars/13.jpg"
                 badge="/images/icons/flags/united-states-of-america.svg"
-              />
+              /> -->
 
               <div class="meta">
                 <span>Tara S.</span>
@@ -198,9 +198,9 @@ const activeTab = ref<TabId>('team')
                   <span>5 / 24</span>
 
                   <div class="avatar-stack">
-                    <V-Avatar size="small" picture="/demo/avatars/5.jpg" />
+                    <!--< V-Avatar size="small" picture="/demo/avatars/5.jpg" />
                     <V-Avatar size="small" picture="/demo/avatars/7.jpg" />
-                    <V-Avatar size="small" picture="/demo/avatars/8.jpg" />
+                    <V-Avatar size="small" picture="/demo/avatars/8.jpg" /> -->
                   </div>
                 </div>
               </div>
@@ -241,8 +241,8 @@ const activeTab = ref<TabId>('team')
                   <span>28 / 31</span>
 
                   <div class="avatar-stack">
-                    <V-Avatar size="small" picture="/demo/avatars/13.jpg" />
-                    <V-Avatar size="small" picture="/demo/avatars/18.jpg" />
+                    <!-- <V-Avatar size="small" picture="/demo/avatars/13.jpg" />
+                    <V-Avatar size="small" picture="/demo/avatars/18.jpg" /> -->
                   </div>
                 </div>
               </div>
@@ -283,8 +283,8 @@ const activeTab = ref<TabId>('team')
                   <span>25 / 39</span>
 
                   <div class="avatar-stack">
-                    <V-Avatar size="small" picture="/demo/avatars/7.jpg" />
-                    <V-Avatar size="small" picture="/demo/avatars/25.jpg" />
+                   <!--  <V-Avatar size="small" picture="/demo/avatars/7.jpg" />
+                    <V-Avatar size="small" picture="/demo/avatars/25.jpg" /> -->
                   </div>
                 </div>
               </div>
@@ -315,14 +315,14 @@ const activeTab = ref<TabId>('team')
               <!--Timeline item-->
               <div class="timeline-item">
                 <div class="timeline-icon">
-                  <img
+                  <!-- <img
                     class="avatar"
                     src="/demo/avatars/7.jpg"
                     alt=""
                     @error.once="
                       $event.target.src = 'https://via.placeholder.com/150x150'
                     "
-                  />
+                  /> -->
                 </div>
                 <div class="timeline-content">
                   <p>Meeting with Alice</p>

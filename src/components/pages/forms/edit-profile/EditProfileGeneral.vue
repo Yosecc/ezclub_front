@@ -88,7 +88,7 @@ const onSave = async () => {
 
         <V-Avatar size="xl" class="profile-v-avatar">
           <template #avatar>
-            <img
+            <!-- <img
               v-if="!isUploading"
               class="avatar"
               src="/demo/avatars/8.jpg"
@@ -96,8 +96,8 @@ const onSave = async () => {
               @error.once="
                 $event.target.src = 'https://via.placeholder.com/150x150'
               "
-            />
-            <V-FilePond
+            /> -->
+            <!-- <V-FilePond
               v-else
               class="profile-filepond"
               name="profile_filepond"
@@ -115,7 +115,7 @@ const onSave = async () => {
               style-button-process-item-position="right bottom"
               @addfile="onAddFile"
               @removefile="onRemoveFile"
-            />
+            /> -->
             <V-IconButton
               v-if="!isUploading"
               icon="feather:edit-2"

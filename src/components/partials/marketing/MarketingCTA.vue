@@ -3,7 +3,7 @@
     <div class="container">
       <div class="">
         <div class="boxed-cta">
-          <V-Avatar
+          <!-- <V-Avatar
             class="v-avatar-1"
             picture="/demo/avatars/8.jpg"
             size="xl"
@@ -82,7 +82,7 @@
             class="v-avatar-16"
             picture="/demo/avatars/11.jpg"
             size="large"
-          />
+          /> -->
           <div class="boxed-cta-content has-text-centered">
             <h2 class="title is-1">Get Started Now</h2>
             <h3 class="subtitle">

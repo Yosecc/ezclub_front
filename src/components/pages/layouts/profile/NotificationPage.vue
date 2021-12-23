@@ -12,7 +12,7 @@
           <div class="content-wrap">
             <div class="content-box">
               <div class="status"></div>
-              <V-Avatar picture="/demo/avatars/13.jpg" />
+              <!-- <V-Avatar picture="/demo/avatars/13.jpg" /> -->
 
               <div class="box-text">
                 <div class="meta-text">
@@ -24,7 +24,7 @@
                 </div>
               </div>
               <div class="box-end">
-                <V-Avatar size="small" picture="/demo/avatars/8.jpg" />
+                <!-- <V-Avatar size="small" picture="/demo/avatars/8.jpg" /> -->
               </div>
             </div>
           </div>
@@ -39,7 +39,7 @@
           <div class="content-wrap">
             <div class="content-box">
               <div class="status"></div>
-              <V-Avatar picture="/demo/avatars/23.jpg" />
+              <!-- <V-Avatar picture="/demo/avatars/23.jpg" /> -->
 
               <div class="box-text">
                 <div class="meta-text">
@@ -63,7 +63,7 @@
           <div class="content-wrap">
             <div class="content-box">
               <div class="status"></div>
-              <V-Avatar picture="/demo/avatars/5.jpg" />
+              <!-- <V-Avatar picture="/demo/avatars/5.jpg" /> -->
 
               <div class="box-text">
                 <div class="meta-text">
@@ -76,7 +76,7 @@
               </div>
               <div class="box-end">
                 <V-Avatar size="small" color="warning" initials="BT" />
-                <V-Avatar size="small" picture="/demo/avatars/18.jpg" />
+                <!-- <V-Avatar size="small" picture="/demo/avatars/18.jpg" /> -->
                 <V-Avatar size="small" color="info" initials="JD" />
               </div>
             </div>
@@ -92,7 +92,7 @@
           <div class="content-wrap">
             <div class="content-box">
               <div class="status"></div>
-              <V-Avatar picture="/demo/avatars/12.jpg" />
+              <!-- <V-Avatar picture="/demo/avatars/12.jpg" /> -->
 
               <div class="box-text">
                 <div class="meta-text">
@@ -119,7 +119,7 @@
           <div class="content-wrap">
             <div class="content-box">
               <div class="status"></div>
-              <V-Avatar picture="/demo/avatars/26.jpg" />
+              <!-- <V-Avatar picture="/demo/avatars/26.jpg" /> -->
 
               <div class="box-text">
                 <div class="meta-text">
@@ -131,7 +131,7 @@
                 </div>
               </div>
               <div class="box-end">
-                <V-Avatar
+                <!-- <V-Avatar
                   size="small"
                   squared
                   picture="/demo/photos/apps/5.png"
@@ -140,7 +140,7 @@
                   size="small"
                   squared
                   picture="/demo/photos/apps/8.png"
-                />
+                /> -->
               </div>
             </div>
           </div>
@@ -155,7 +155,7 @@
           <div class="content-wrap">
             <div class="content-box">
               <div class="status"></div>
-              <V-Avatar picture="/demo/avatars/31.jpg" />
+              <!-- <V-Avatar picture="/demo/avatars/31.jpg" /> -->
 
               <div class="box-text">
                 <div class="meta-text">
@@ -167,7 +167,7 @@
                 </div>
               </div>
               <div class="box-end">
-                <V-Avatar size="small" picture="/demo/avatars/8.jpg" />
+                <!-- <V-Avatar size="small" picture="/demo/avatars/8.jpg" /> -->
               </div>
             </div>
           </div>
@@ -182,7 +182,7 @@
           <div class="content-wrap">
             <div class="content-box">
               <div class="status"></div>
-              <V-Avatar picture="/demo/avatars/13.jpg" />
+              <!-- <V-Avatar picture="/demo/avatars/13.jpg" /> -->
 
               <div class="box-text">
                 <div class="meta-text">
@@ -206,7 +206,7 @@
           <div class="content-wrap">
             <div class="content-box">
               <div class="status"></div>
-              <V-Avatar picture="/demo/avatars/25.jpg" />
+              <!-- <V-Avatar picture="/demo/avatars/25.jpg" /> -->
 
               <div class="box-text">
                 <div class="meta-text">

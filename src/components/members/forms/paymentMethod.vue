@@ -70,13 +70,13 @@ const props = defineProps({
   
   <inputsLayaut
     v-if="inputsStepFamily.length > 0"
-    :inputsStep="diferenteCard"
+    :inputs-step="diferenteCard"
    
   />
 
   <V-Card  class="mb-4" >
     <inputsLayaut
-      :inputsStep="inputsStepPrincipal.data"
+      :inputs-step="inputsStepPrincipal.data"
     />
   </V-Card>
   <!-- <p>{{ inputsStepFamily }}</p> -->
@@ -88,7 +88,7 @@ const props = defineProps({
       <div class="column is-12 bb-1 mb-5">
         <h2 class="title is-5 mt-4 is-narrow">{{ toPrayerCase(data.member.name)}} {{ toPrayerCase(data.member.last_name) }}</h2>
         <inputsLayaut
-          :inputsStep="data.data"
+          :inputs-step="data.data"
         />
       </div>
     </V-Card>

@@ -66,7 +66,7 @@ useHead({
               <div class="flex-table-cell" data-th="Contacts">
                 <div class="avatar-stack is-pushed-mobile">
                   <div class="v-avatar is-small">
-                    <img
+                    <!-- <img
                       class="avatar"
                       src="/demo/avatars/25.jpg"
                       alt=""
@@ -74,7 +74,7 @@ useHead({
                         $event.target.src =
                           'https://via.placeholder.com/150x150'
                       "
-                    />
+                    /> -->
                   </div>
                   <div class="v-avatar is-small">
                     <span class="avatar is-fake is-info">
@@ -82,7 +82,7 @@ useHead({
                     </span>
                   </div>
                   <div class="v-avatar is-small">
-                    <img
+                    <!-- <img
                       class="avatar"
                       src="/demo/avatars/8.jpg"
                       alt=""
@@ -90,7 +90,7 @@ useHead({
                         $event.target.src =
                           'https://via.placeholder.com/150x150'
                       "
-                    />
+                    /> -->
                   </div>
                   <div class="v-avatar is-small">
                     <span class="avatar is-more">
@@ -156,7 +156,7 @@ useHead({
                     </span>
                   </div>
                   <div class="v-avatar is-small">
-                    <img
+                    <!-- <img
                       class="avatar"
                       src="/demo/avatars/7.jpg"
                       alt=""
@@ -164,7 +164,7 @@ useHead({
                         $event.target.src =
                           'https://via.placeholder.com/150x150'
                       "
-                    />
+                    /> -->
                   </div>
                 </div>
               </div>
@@ -190,7 +190,7 @@ useHead({
               <div class="flex-table-cell" data-th="Contacts">
                 <div class="avatar-stack is-pushed-mobile">
                   <div class="v-avatar is-small">
-                    <img
+                    <!-- <img
                       class="avatar"
                       src="/demo/avatars/13.jpg"
                       alt=""
@@ -198,7 +198,7 @@ useHead({
                         $event.target.src =
                           'https://via.placeholder.com/150x150'
                       "
-                    />
+                    /> -->
                   </div>
                 </div>
               </div>
@@ -224,7 +224,7 @@ useHead({
               <div class="flex-table-cell" data-th="Contacts">
                 <div class="avatar-stack is-pushed-mobile">
                   <div class="v-avatar is-small">
-                    <img
+                    <!-- <img
                       class="avatar"
                       src="/demo/avatars/25.jpg"
                       alt=""
@@ -232,10 +232,10 @@ useHead({
                         $event.target.src =
                           'https://via.placeholder.com/150x150'
                       "
-                    />
+                    /> -->
                   </div>
                   <div class="v-avatar is-small">
-                    <img
+                    <!-- <img
                       class="avatar"
                       src="/demo/avatars/11.jpg"
                       alt=""
@@ -243,10 +243,10 @@ useHead({
                         $event.target.src =
                           'https://via.placeholder.com/150x150'
                       "
-                    />
+                    /> -->
                   </div>
                   <div class="v-avatar is-small">
-                    <img
+                    <!-- <img
                       class="avatar"
                       src="/demo/avatars/5.jpg"
                       alt=""
@@ -254,7 +254,7 @@ useHead({
                         $event.target.src =
                           'https://via.placeholder.com/150x150'
                       "
-                    />
+                    /> -->
                   </div>
                 </div>
               </div>

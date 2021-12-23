@@ -27,7 +27,7 @@ const props = defineProps({
 <template>
 
   <inputsLayaut
-    :inputsStep="inputsStep"
+    :inputs-step="inputsStep"
   />
 
 </template>
