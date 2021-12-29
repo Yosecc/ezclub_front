@@ -7,19 +7,39 @@ import { isDark } from '/@src/state/darkModeState'
 import useNotyf from '/@src/composable/useNotyf'
 import sleep from '/@src/utils/sleep'
 
+import { Api } from '/@src/services'
+import { setAuthStorage, remember } from '/@src/state/auth.ts'
+
 type StepId = 'login' | 'forgot-password'
 const step = ref<StepId>('login')
 const isLoading = ref(false)
 const router = useRouter()
 const notif = useNotyf()
 
+const email    = ref('')
+const password = ref('')
+
 const handleLogin = async () => {
-  if (!isLoading.value) {
-    isLoading.value = true
-    await sleep(2000)
-    notif.success('Welcome back, Erik Kovalsky')
-    router.push({ name: 'sidebar-dashboards' })
-    isLoading.value = false
+  if(email.value != '' && password.value != ''){
+
+    await Api.post('login',{ email:email.value , password:password.value }).then((response)=>{
+      let user = response.data.user
+  
+      if (response.data.status) {
+        isLoading.value = true
+        setAuthStorage(user)
+        notif.success(`Welcome back, ${user.name}`)
+        router.push({ name: 'index' })
+        isLoading.value = false
+      }
+    }).catch((error)=>{
+
+      if(error.response.status == 422){
+        notif.error(error.response.data.message)
+      }
+    })
+
+    
   }
 }
 
@@ -87,6 +107,7 @@ useHead({
                   class="input"
                   placeholder=""
                   autocomplete="email"
+                  v-model="email"
                 />
                 <small class="error-text">This is a required field</small>
                 <div class="auth-label">Email Address</div>
@@ -103,6 +124,7 @@ useHead({
               <div class="control has-validation">
                 <input
                   type="password"
+                  v-model="password"
                   class="input"
                   autocomplete="current-password"
                 />
@@ -114,7 +136,7 @@ useHead({
 
               <div class="control is-flex">
                 <label class="remember-toggle">
-                  <input type="checkbox" />
+                  <input type="checkbox" v-model="remember" />
                   <span class="toggler">
                     <span class="active">
                       <i

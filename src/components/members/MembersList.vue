@@ -77,12 +77,12 @@ const initials = (name, lastname) => {
 
 onMounted(() => {
 
-  Api.post('login', {
-    email:"test@test.com",
-    password:"123456"
-  }).then((response)=>{
-    localStorage.setItem('x-api-key',response.data.user.token)
-  })
+  // Api.post('login', {
+  //   email:"test@test.com",
+  //   password:"123456"
+  // }).then((response)=>{
+  //   localStorage.setItem('x-api-key',response.data.user.token)
+  // })
 
   getMembers('all',filters.value,route.query.page)
 

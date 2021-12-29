@@ -98,7 +98,7 @@ watch(
 
         <div class="brand-end">
           <NotificationsMobileDropdown />
-          <UserProfileDropdown />
+          <UserProfileDropdown  />
         </div>
       </template>
     </MobileNavbar>
@@ -108,7 +108,7 @@ watch(
       :is-open="isMobileSidebarOpen"
       @toggle="isMobileSidebarOpen = !isMobileSidebarOpen"
     >
-      <!-- <template #links>
+      <template #links>
         <li>
           <a
             :class="[activeMobileSubsidebar === 'dashboard' && 'is-active']"
@@ -154,9 +154,9 @@ watch(
             ></i>
           </RouterLink>
         </li>
-      </template> -->
+      </template>
 
-      <!-- <template #bottom-links>
+      <template #bottom-links>
         <li>
           <a @click="activePanel = 'search'">
             <i
@@ -175,7 +175,7 @@ watch(
             ></i>
           </a>
         </li>
-      </template> -->
+      </template>
     </MobileSidebar>
 
     <!-- Mobile subsidebar links -->
@@ -204,7 +204,7 @@ watch(
     <Sidebar :theme="props.theme" :is-open="isDesktopSidebarOpen">
       <template #links>
         <!-- Dashboards -->
-        <!-- <li>
+        <li>
           <a
             :class="[activeMobileSubsidebar === 'dashboard' && 'is-active']"
             @click="switchSidebar('dashboard')"
@@ -216,7 +216,7 @@ watch(
               data-icon="feather:activity"
             ></i>
           </a>
-        </li> -->
+        </li>
         <li>
           <a
             :class="[activeMobileSubsidebar === 'members' && 'is-active']"
@@ -291,12 +291,12 @@ watch(
 
       <template #bottom-links>
         <!-- Switch Sidebar  Layouts -->
-        <!-- <li>
+        <li>
           <LayoutSwitcher />
-        </li> -->
+        </li>
 
         <!-- Search -->
-        <!-- <li class="right-panel-trigger">
+        <li class="right-panel-trigger">
           <a data-content="Search" @click="activePanel = 'search'">
             <i
               aria-hidden="true"
@@ -311,7 +311,7 @@ watch(
               data-icon="feather-x"
             />
           </a>
-        </li> -->
+        </li>
 
         <!-- Settings -->
         <li>
@@ -365,10 +365,10 @@ watch(
     </transition>
     <!-- //// -->
 
-    <!-- <LanguagesPanel /> -->
-    <!-- <ActivityPanel /> -->
-    <!-- <SearchPanel /> -->
-    <!-- <TaskPanel /> -->
+    <LanguagesPanel />
+    <ActivityPanel />
+    <SearchPanel />
+    <TaskPanel />
 
     <div class="view-wrapper">
       <div class="page-content-wrapper">
@@ -400,7 +400,7 @@ watch(
               <h1 class="title is-4">{{ pageTitle }}</h1>
             </div>
 
-            <!-- <Toolbar class="desktop-toolbar" /> -->
+            <Toolbar class="desktop-toolbar" />
           </div>
 
           <slot></slot>

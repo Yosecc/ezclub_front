@@ -30,6 +30,8 @@ useHead({
           You can see pages content samples from 
           files in /src/components/pages directory
       -->
+      <PersonalDashboardV1 />
     </div>
   </SidebarLayout>
 </template>
+
