@@ -42,3 +42,21 @@ watchEffect(() => {
     body.classList.remove(DARK_MODE_BODY_CLASS)
   }
 })
+
+// isDark.value = false
+
+export const logo = computed(()=>{
+  if (isDark.value) {
+    return '/@src/assets/logo_positive.svg'
+  }else{
+    return '/@src/assets/logo_negative.svg'
+  }
+})
+
+export const iso = computed(()=>{
+  if (isDark.value) {
+    return '/@src/assets/iso_positive.svg'
+  }else{
+    return '/@src/assets/iso_negative.svg'
+  }
+})

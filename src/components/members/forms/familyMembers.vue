@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, defineProps, ref } from 'vue'
-import { memberData, steps, configClassColumn, categories, typeMember, inputsStepData , stepActive } from '/@src/components/members/MembersData'
+import { memberData, steps, categories, typeMember, inputsStepData , stepActive } from '/@src/components/members/MembersData'
 
 
 const inputsFamily = computed(()=>{

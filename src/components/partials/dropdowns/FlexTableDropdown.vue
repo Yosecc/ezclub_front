@@ -1,3 +1,22 @@
+<script setup lang="ts">
+import { computed, defineProps } from 'vue'
+
+import { useRoute, useRouter } from 'vue-router' 
+
+const router = useRouter()
+
+const editMember = () => {
+  router.push({ name: 'members-edit', query: { member: props.idMember }  })
+}
+// import { inputsStepData } from '/@src/components/members/MembersData'
+
+const props = defineProps({
+  idMember:{
+    type: Number
+  }
+})
+</script>
+
 <template>
   <V-Dropdown
     icon="feather:more-vertical"
@@ -6,12 +25,12 @@
     right
   >
     <template #content>
-      <a role="menuitem" href="#" class="dropdown-item is-media">
+      <a @click.prevent="editMember" role="menuitem" href="#" class="dropdown-item is-media">
         <div class="icon">
           <i aria-hidden="true" class="lnil lnil-eye"></i>
         </div>
         <div class="meta">
-          <span>View</span>
+          <span>View/Edit</span>
           <span>View user details</span>
         </div>
       </a>

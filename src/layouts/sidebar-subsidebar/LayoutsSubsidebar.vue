@@ -473,12 +473,12 @@ const emit = defineEmit(['close'])
             </a>
           </div>
           <ul>
-            <li>
+            <!-- <li>
               <RouterLink :to="{ name: 'auth-login-1' }" class="is-submenu">
                 <i aria-hidden="true" class="lnil lnil-pointer-right"></i>
                 <span>Login v1</span>
               </RouterLink>
-            </li>
+            </li> -->
             <li>
               <RouterLink :to="{ name: 'auth-login-2' }" class="is-submenu">
                 <i aria-hidden="true" class="lnil lnil-pointer-right"></i>

@@ -77,13 +77,6 @@ const initials = (name, lastname) => {
 
 onMounted(() => {
 
-  // Api.post('login', {
-  //   email:"test@test.com",
-  //   password:"123456"
-  // }).then((response)=>{
-  //   localStorage.setItem('x-api-key',response.data.user.token)
-  // })
-
   getMembers('all',filters.value,route.query.page)
 
 })
@@ -253,7 +246,9 @@ onMounted(() => {
                   />
                 </div> -->
                 <div class="flex-table-cell cell-end" data-th="Actions">
-                  <FlexTableDropdown />
+                  <FlexTableDropdown 
+                    :idMember="item.id"
+                  />
                 </div>
               </div>
             </transition-group>
@@ -263,8 +258,8 @@ onMounted(() => {
         <!--Table Pagination-->
         <V-FlexPagination
           v-if="filteredData.length > 0"
-          :item-per-page="paginationData.itemPerPage"
-          :total-items="paginationData.totalItems"
+          :item-per-page="paginationData.itemPerPage ?? 15"
+          :total-items="paginationData.totalItems ?? 0"
           :current-page="paginationData.currentPage"
           :max-links-displayed="paginationData.maxLinksDisplayed"
         />

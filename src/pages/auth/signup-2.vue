@@ -57,7 +57,7 @@ useHead({
                 <div class="auth-content">
                   <h2>Join Us Now.</h2>
                   <p>Start by creating your account</p>
-                  <RouterLink :to="{ name: 'auth-login-2' }">
+                  <RouterLink :to="{ name: 'auth' }">
                     I already have an account
                   </RouterLink>
                 </div>

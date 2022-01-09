@@ -2,6 +2,8 @@
 import type { PropType } from 'vue'
 import { computed, defineProps } from 'vue'
 
+import { iso } from '/@src/state/darkModeState'
+
 type SidebarTheme =
   | 'default'
   | 'color'
@@ -45,7 +47,7 @@ const themeClasses = computed(() => {
   <div class="main-sidebar" :class="[themeClasses]">
     <div class="sidebar-brand">
       <RouterLink :to="{ name: 'index' }">
-        <AnimatedLogo width="36px" />
+        <img :src="iso" alt="">
       </RouterLink>
     </div>
     <div class="sidebar-inner">

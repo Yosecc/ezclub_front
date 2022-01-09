@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-  import { user, onLogout } from '/@src/state/auth.ts'
+  import { user, onLogout } from '/@src/pages/auth/auth.ts'
 
 </script>
 

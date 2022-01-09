@@ -8,47 +8,54 @@ import * as NProgress from 'nprogress'
  */
 import routes from 'pages-generated'
 
-import { isAuthenticated } from '/@src/state/auth.ts'
+import { isAuthenticated } from '/@src/pages/auth/auth.ts'
 
-/**
- * Here is how a simple route is generated:
- * import { RouteRecordRaw } from 'vue-router'
- *
- * const routes: RouteRecordRaw = [{
- *    component: () => import('/src/pages/wizard-1.vue'),
- *    name: 'wizard-v1',
- *    path: '/wizard-v1',
- *    props: true,
- * }]
- *
- * Here is how nested routes are generated:
- */
+/*Here is how a simple route is generated:
+ */ 
   // import { RouteRecordRaw } from 'vue-router'
  
-  // const routes: RouteRecordRaw = [{
-  //    component: () => import('/src/pages/auth.vue'),
-  //    path: '/auth',
+  // const routesCustom: RouteRecordRaw = [{
+  //    component: () => import('/src/pages/members/edit.vue'),
+  //    name: 'wizard-v11wwert',
+  //    path: '/wizard-v145234',
   //    props: true,
-  //    children: [
-  //      {
-  //        component: () => import('/src/pages/auth/login-1.vue'),
-  //        name: 'auth-login-1',
-  //        path: 'login-1',
-  //        props: true,
-  //      },
-  //    ],
   // }]
+ 
+ //* Here is how nested routes are generated:
+ 
+  // import { RouteRecordRaw } from 'vue-router'
+ 
+  // const routesCustom: RouteRecordRaw = [{
+  //    component: () => import('/src/pages/members/edit.vue'),
+  //    path: 'membders/edit/:id',
+  //    props: true,
+  //    // children: [
+  //    //   {
+  //    //     component: () => import('/src/pages/auth/login-1.vue'),
+  //    //     name: 'auth-login-1',
+  //    //     path: 'login-1',
+  //    //     props: true,
+  //    //   },
+  //    // ],
+  // }]
+
+// console.log('custom',routesCustom)
  /*
  * Uncomment the line below to view the generated routes
  */
- // console.log(routes)
+
+// routes.value = routes.concat(routesCustom)
+
+
+ // console.log('routes',routes)
 
 const router = createRouter({
   history: createWebHistory(),
   routes,
+  
 })
 
-const routesPublic = ['auth']
+const routesPublic = ['auth','auth-register','auth-register-steps']
 
 router.beforeResolve((to, from, next)=>{
  if (!routesPublic.includes(to.name) && !isAuthenticated.value){

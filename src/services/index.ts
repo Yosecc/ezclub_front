@@ -1,8 +1,12 @@
 import axios from "axios";
 
-import { user, onLogout } from '/@src/state/auth.ts'
+import { user, onLogout } from '/@src/pages/auth/auth.ts'
 
 const url = 'https://dev-api.ushuaiacreative.com/api/'
+// const url = 'https://ezclub.loc/api/'
+
+import { useCookies } from "vue3-cookies";
+const { cookies } = useCookies();
 
 let intance = axios.create({
   baseURL: url,
@@ -10,15 +14,11 @@ let intance = axios.create({
     Accept: 'application/json',
     'Content-type': 'application/json',
     // "Authorization": "Bearer "+localStorage.getItem("x-api-key"),
-    "x-api-key": user.value != null ? user.value.token : '',
+    // "x-api-key": user.value != null ? user.value.token : '',
   },
-
 });
 
 intance.interceptors.response.use(function (response) {
-  // Any status code that lie within the range of 2xx cause this function to trigger
-  // Do something with response data
-  // console.log(response)
   return response;
 }, function (error) {
   // Any status codes that falls outside the range of 2xx cause this function to trigger
@@ -30,5 +30,7 @@ intance.interceptors.response.use(function (response) {
   }
   
 });
+
+
 
 export const Api = intance

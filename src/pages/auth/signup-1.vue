@@ -262,7 +262,7 @@ onUnmounted(() => {
                       </V-Button>
                       <span>
                         Or
-                        <RouterLink :to="{ name: 'auth-login-1' }">
+                        <RouterLink :to="{ name: 'auth' }">
                           Sign In
                         </RouterLink>
                         to your account.

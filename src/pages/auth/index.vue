@@ -1,14 +1,16 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useHead } from '@vueuse/head'
 
-import { isDark } from '/@src/state/darkModeState'
+import { isDark, logo } from '/@src/state/darkModeState'
 import useNotyf from '/@src/composable/useNotyf'
 import sleep from '/@src/utils/sleep'
 
 import { Api } from '/@src/services'
-import { setAuthStorage, remember } from '/@src/state/auth.ts'
+import { setAuthStorage, remember, isAuthenticated} from '/@src/pages/auth/auth.ts'
+
+import { getCompany } from '/@src/pages/companies/companies.ts'
 
 type StepId = 'login' | 'forgot-password'
 const step = ref<StepId>('login')
@@ -27,10 +29,12 @@ const handleLogin = async () => {
   
       if (response.data.status) {
         isLoading.value = true
-        setAuthStorage(user)
-        notif.success(`Welcome back, ${user.name}`)
-        router.push({ name: 'index' })
-        isLoading.value = false
+        setAuthStorage(user).then((response)=>{
+            notif.success(`Welcome back, ${user.name}`)
+            router.push({ name: 'index' })
+            isLoading.value = false
+        })
+        
       }
     }).catch((error)=>{
 
@@ -38,13 +42,17 @@ const handleLogin = async () => {
         notif.error(error.response.data.message)
       }
     })
-
-    
   }
 }
 
+onMounted(()=>{
+  if(isAuthenticated.value){
+     router.push({ path: '/' })
+  }
+})
+
 useHead({
-  title: 'Auth Login 1 - Vuero',
+  title: 'Login',
 })
 </script>
 
@@ -55,13 +63,13 @@ useHead({
     <div class="columns is-gapless is-vcentered">
       <div class="column is-relative is-8 h-hidden-mobile h-hidden-tablet-p">
         <div class="hero is-fullheight is-image">
-          <div class="hero-body">
+          <div class="hero-body" style="background: #F39C12">
             <div class="container">
               <div class="columns">
                 <div class="column">
                   <img
                     class="hero-image"
-                    src="/@src/assets/illustrations/login/station.svg"
+                    src="/@src/assets/img-hero.svg"
                     alt=""
                   />
                 </div>
@@ -71,8 +79,8 @@ useHead({
         </div>
       </div>
       <div class="column is-4 is-relative">
-        <RouterLink :to="{ name: 'index' }" class="top-logo">
-          <AnimatedLogo width="38px" height="38px" />
+        <RouterLink :to="{ name: 'index' }" class="">
+          <img :src="logo" width="250" class="d-block mr-auto ml-auto"  alt="">
         </RouterLink>
         <label class="dark-mode ml-auto">
           <input
@@ -170,7 +178,7 @@ useHead({
                 </V-Button>
                 <span>
                   Or
-                  <RouterLink :to="{ name: 'auth-signup-1' }">
+                  <RouterLink :to="{ name: 'auth-register' }">
                     Create
                   </RouterLink>
                   an account.

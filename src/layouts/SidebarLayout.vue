@@ -93,7 +93,8 @@ watch(
     >
       <template #brand>
         <RouterLink :to="{ name: 'index' }" class="navbar-item is-brand">
-          <AnimatedLogo width="38px" height="38px" />
+          <!-- <AnimatedLogo width="38px" height="38px" /> -->
+          <img src="/@src/assets/iso_positive.svg" alt="">
         </RouterLink>
 
         <div class="brand-end">
@@ -205,17 +206,16 @@ watch(
       <template #links>
         <!-- Dashboards -->
         <li>
-          <a
-            :class="[activeMobileSubsidebar === 'dashboard' && 'is-active']"
-            @click="switchSidebar('dashboard')"
-            data-content="Dashboards"
-          >
-            <i
+          <router-link 
+          :class="[activeMobileSubsidebar === 'dashboard' && 'is-active']"
+          :to="{ name: 'index' }">
+          <i
               aria-hidden="true"
               class="iconify sidebar-svg"
-              data-icon="feather:activity"
+              data-icon="feather:home"
             ></i>
-          </a>
+          </router-link>
+          
         </li>
         <li>
           <a
@@ -229,7 +229,7 @@ watch(
           </a>
         </li>
         <!-- Layouts -->
-        <li>
+        <!-- <li>
           <a
             :class="[activeMobileSubsidebar === 'layout' && 'is-active']"
             @click="switchSidebar('layout')"
@@ -241,10 +241,10 @@ watch(
               data-icon="feather:grid"
             ></i>
           </a>
-        </li>
+        </li> -->
 
         <!-- Elements -->
-        <li>
+        <!-- <li>
           <a
             :class="[activeMobileSubsidebar === 'elements' && 'is-active']"
             @click="switchSidebar('elements')"
@@ -256,10 +256,10 @@ watch(
               data-icon="feather:box"
             ></i>
           </a>
-        </li>
+        </li> -->
 
         <!-- Components -->
-        <li>
+        <!-- <li>
           <a
             :class="[activeMobileSubsidebar === 'components' && 'is-active']"
             @click="switchSidebar('components')"
@@ -271,10 +271,10 @@ watch(
               data-icon="feather:cpu"
             ></i>
           </a>
-        </li>
+        </li> -->
 
         <!-- Messaging -->
-        <li>
+        <!-- <li>
           <RouterLink
             id="open-messages"
             :to="{ name: 'messaging-v1' }"
@@ -286,7 +286,7 @@ watch(
               data-icon="feather:message-circle"
             ></i>
           </RouterLink>
-        </li>
+        </li> -->
       </template>
 
       <template #bottom-links>
@@ -297,13 +297,13 @@ watch(
 
         <!-- Search -->
         <li class="right-panel-trigger">
-          <a data-content="Search" @click="activePanel = 'search'">
+          <!-- <a data-content="Search" @click="activePanel = 'search'">
             <i
               aria-hidden="true"
               class="iconify sidebar-svg"
               data-icon="feather-search"
             />
-          </a>
+          </a> -->
           <a class="is-hidden is-inactive" @click="activePanel = 'none'">
             <i
               aria-hidden="true"

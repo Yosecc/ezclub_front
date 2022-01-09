@@ -1,6 +1,7 @@
 import { ref, computed, watch, reactive } from 'vue'
 import { membershipsData } from '/@src/components/memberships/MembershipsData'
 import { paymentData } from '/@src/components/payment/PaymentMethodsData'
+import { Api } from '/@src/services/index.ts'
 
 export const stepActive = ref(1)
 
@@ -106,7 +107,7 @@ export const memberData = ref([
         placeholder: 'Member Picture',
         model: '',
         required: true,
-        class: categories.value.model == 'Minor' ? 'is-12':'is-6',
+        class: categories.value.model == 'Minor' ? 'is-12':'is-6 d-flex justify-content-end',
         categories:['Adult','Minor'],
         typeMember: ['Individual','Company']
       },
@@ -262,12 +263,14 @@ export const memberData = ref([
             typeInput: 'switch',
             name: 'category',
             values: ['Adult','Minor'],
+            class:'is-6',
             model: false
           },
           {
             typeInput: 'file',
             name: 'photo',
             placeholder: 'Member Picture',
+            class:'is-6 d-flex justify-content-end',
             model: '',
             required: false,
           },
@@ -277,6 +280,7 @@ export const memberData = ref([
             placeholder: 'Relationship',
             values: ['Sand','Dother','Wife','Girlfriend','Boyfriend','Father','Mother'],
             model: '',
+            class:'is-6',
             required: false,
           },
           {
@@ -284,6 +288,7 @@ export const memberData = ref([
             name:'bar_code',
             placeholder: 'Client ID Card',
             model: '',
+            class:'is-6',
             required: false,
           },
           {
@@ -291,6 +296,7 @@ export const memberData = ref([
             name:'date_birth',
             placeholder: 'Date of Birth',
             model: '',
+            class:'is-6',
             required: false,
           },
           {
@@ -299,6 +305,7 @@ export const memberData = ref([
             placeholder: 'Gender',
             values: ['Male','Female','Binario'],
             model: '',
+            class:'is-6',
             required: false,
           },
           {
@@ -306,6 +313,7 @@ export const memberData = ref([
             name:'name',
             placeholder: 'First Name',
             model: '',
+            class:'is-6',
             required: false,
           },
           {
@@ -313,6 +321,7 @@ export const memberData = ref([
             name:'second_name',
             placeholder: 'Middle Name',
             model: '',
+            class:'is-6',
             required: false,
           },
           {
@@ -320,6 +329,7 @@ export const memberData = ref([
             name:'last_name',
             placeholder: 'Last Name',
             model: '',
+            class:'is-6',
             required: false,
           },
           {
@@ -328,6 +338,7 @@ export const memberData = ref([
             placeholder: 'Goverment ID Type',
             values: ['Card ID','Identification ID','Passport'],
             model: '',
+            class:'is-6',
             required: false
           },
           {
@@ -335,6 +346,7 @@ export const memberData = ref([
             name:'personal_identifications',
             placeholder: 'ID #',
             model: '',
+            class:'is-6',
             required: false,
           },
           {
@@ -342,6 +354,7 @@ export const memberData = ref([
             name:'address',
             placeholder: 'Address',
             model: '',
+            class:'is-6',
             required: false,
           },
           {
@@ -349,6 +362,7 @@ export const memberData = ref([
             name:'email',
             placeholder: 'Email',
             model: '',
+            class:'is-6',
             required: false,
           },
           {
@@ -356,6 +370,7 @@ export const memberData = ref([
             name:'phone',
             placeholder: 'Phone Number',
             model: '',
+            class:'is-6',
             required: false,
           },
         ]
@@ -523,96 +538,6 @@ export const memberData = ref([
   }
 ])
 
-export const configClassColumn = (input) => {
-  switch (input.name) {
-    case 'select_type':
-        return 'is-6'
-      break;
-    case 'photo':
-        if(categories.value.model == 'Minor'){
-          return 'is-12'
-        }
-        return 'is-6'
-      break;
-    case 'bar_code':
-        return 'is-6'
-      break;
-    case 'date_birth':
-        if(categories.value.model == 'Prospect'){
-          return 'is-6'
-        }
-        return 'is-3'
-      break;
-    case 'gender':
-        if(categories.value.model == 'Prospect'){
-          return 'is-6'
-        }
-        return 'is-3'
-      break;
-    case 'goverment_id':
-        return 'is-4'
-      break;
-    case 'personal_identifications':
-        return 'is-8'
-      break;
-    case 'address':
-        return 'is-12'
-      break;
-    case 'email':
-        return 'is-6'
-      break;
-    case 'phone':
-        return 'is-6'
-      break;
-    case 'leo_vet_fr':
-        return 'is-6'
-      break;
-    case 'id_leo_vet_fr':
-        return 'is-6'
-      break;
-    case 'company_name':
-      return 'is-12'
-      break;
-    case 'category':
-      return 'is-6'
-      break;
-    case 'relationships':
-      return 'is-12'
-      break;
-    case 'memberships_id':
-      return 'is-8'
-      break;
-    case 'diciplines':
-      return 'is-12 py-0'
-      break;
-    case 'discount':
-      return 'is-4'
-      break;
-    case 'notifications':
-        return 'is-12'
-        break;
-    case 'initiation_fee':
-        return 'is-12 py-0 text-right'
-        break;
-    case 'is_diferent_card':
-      return 'is-12'
-      break;
-    case 'swipe':
-      return 'is-12'
-      break;
-    case 'card_number':
-      return 'is-12'
-      break;
-    case 'date_expired':
-      return 'is-6'
-      break;
-    case 'cvv':
-      return 'is-6'
-      break;
-    default:
-      return 'is-4'
-  }
-}
 
 let controlador = null
 
@@ -636,3 +561,12 @@ export const toggleMemberActive = ((status, id = null) => {
  
 })
 
+export const getMember = async (id) => {
+
+  memberActive.value = { active: true, member_id: id }
+
+  await Api.get(`members/${id}`).then((response)=>{
+    members.value.push(response.data.member)
+  })
+
+}

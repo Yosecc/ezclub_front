@@ -11,13 +11,23 @@
  * @see /src/router.ts
  */
 
+import { onMounted, watch } from 'vue'
 import { useHead } from '@vueuse/head'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
+import { getCompany, company_name} from '/@src/pages/companies/companies.ts'
 
-pageTitle.value = 'EZCLUB'
-useHead({
-  title: 'EZCLUB',
+onMounted(()=>{
+  getCompany()
 })
+
+watch(company_name,()=>{
+  pageTitle.value = company_name.value
+})
+
+useHead({
+  title: 'Home',
+})
+
 </script>
 
 <template>
