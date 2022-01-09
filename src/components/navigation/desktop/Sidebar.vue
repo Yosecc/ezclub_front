@@ -2,7 +2,7 @@
 import type { PropType } from 'vue'
 import { computed, defineProps } from 'vue'
 
-import { iso } from '/@src/state/darkModeState'
+import { isDark } from '/@src/state/darkModeState'
 
 type SidebarTheme =
   | 'default'
@@ -47,7 +47,9 @@ const themeClasses = computed(() => {
   <div class="main-sidebar" :class="[themeClasses]">
     <div class="sidebar-brand">
       <RouterLink :to="{ name: 'index' }">
-        <img :src="iso" alt="">
+        <img v-if="isDark" :src="'/@src/assets/iso_positive.svg'" width="250" class="d-block mr-auto ml-auto"  alt="">
+
+        <img v-else :src="'/@src/assets/iso_negative.svg'" width="250" class="d-block mr-auto ml-auto"  alt="">
       </RouterLink>
     </div>
     <div class="sidebar-inner">

@@ -47,16 +47,16 @@ watchEffect(() => {
 
 export const logo = computed(()=>{
   if (isDark.value) {
-    return '/public/images/logo_positive.svg'
+    return '/@src/assets/logo_positive.svg'
   }else{
-    return '/public/images/logo_negative.svg'
+    return '/@src/assets/logo_negative.svg'
   }
 })
 
 export const iso = computed(()=>{
   if (isDark.value) {
-    return '/public/images/iso_positive.svg'
+    return '/@src/assets/iso_positive.svg'
   }else{
-    return '/public/images/iso_negative.svg'
+    return '/@src/assets/iso_negative.svg'
   }
 })

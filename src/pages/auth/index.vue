@@ -80,7 +80,12 @@ useHead({
       </div>
       <div class="column is-4 is-relative">
         <RouterLink :to="{ name: 'index' }" class="">
-          <img :src="logo" width="250" class="d-block mr-auto ml-auto"  alt="">
+          
+
+          <img v-if="isDark" :src="'/@src/assets/logo_positive.svg'" width="250" class="d-block mr-auto ml-auto"  alt="">
+
+          <img v-else :src="'/@src/assets/logo_negative.svg'" width="250" class="d-block mr-auto ml-auto"  alt="">
+
         </RouterLink>
         <label class="dark-mode ml-auto">
           <input
