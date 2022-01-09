@@ -47,9 +47,9 @@ const themeClasses = computed(() => {
   <div class="main-sidebar" :class="[themeClasses]">
     <div class="sidebar-brand">
       <RouterLink :to="{ name: 'index' }">
-        <img v-if="isDark" :src="'/@src/assets/iso_positive.svg'" width="250" class="d-block mr-auto ml-auto"  alt="">
+        <img v-if="isDark" src="/@src/assets/iso_positive.svg" width="250" class="d-block mr-auto ml-auto"  alt="">
 
-        <img v-else :src="'/@src/assets/iso_negative.svg'" width="250" class="d-block mr-auto ml-auto"  alt="">
+        <img v-else src="/@src/assets/iso_negative.svg" width="250" class="d-block mr-auto ml-auto"  alt="">
       </RouterLink>
     </div>
     <div class="sidebar-inner">
