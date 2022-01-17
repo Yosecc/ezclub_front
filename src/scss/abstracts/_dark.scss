@@ -47,4 +47,8 @@
     background: lighten($dark-sidebar, 10%);
     border-color: lighten($dark-sidebar, 10%);
   }
+
+  .border-1{
+    border: 1px solid rgba(255,255,255,.1);
+  }
 }

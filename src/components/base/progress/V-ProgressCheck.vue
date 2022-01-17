@@ -28,12 +28,53 @@
 	})
 </script>
 <template>
-	<div class="position-relative progressCheck">
+	<div class="content">
 		<div class="circle" :class="active ? 'active':''"></div>
-		<V-progress class="rotate90 bar-progress" :value="progressBarNumber" size="smaller" />
+		<V-progress class="progressbar" :value="progressBarNumber" size="smaller" />
 		<div class="content-text">
 			<p>STEP {{ step }} </p>
 			<p><b>{{ text }}</b></p>
 		</div>
 	</div>
 </template>
+
+<style lang="scss" scoped>
+	@import '../../../scss/abstracts/_variables.scss';
+	.progressbar{
+		transform: rotate(90deg);
+	    position: absolute;
+	    width: 5rem;
+	    left: -70%;
+	    top: 4rem;
+	}
+	.circle{
+		position: absolute;
+	    width: 20px;
+	    height: 20px;
+	    background: #232326;
+	    border-radius: 100%;
+	    // border: 3px solid #2f3237;
+	    left: 15%;
+	    &.active{
+			background: $primary;
+		}
+	}
+
+	.content{
+		display: block;
+    	position: relative;
+    	width: 30px;
+    	height: calc(5rem + 10px);
+	}
+	.content-text{
+		position: absolute;
+		left: 120%;
+    	width: 10rem;
+    	p{
+    		margin-bottom: 0px;
+    	}
+	}
+	// position-relative progressCheck
+	// rotate90 bar-progress
+	// content-text
+</style>

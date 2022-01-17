@@ -30,6 +30,14 @@ const emit = defineEmit(['close'])
           </RouterLink>
         </li>
         <!-- <li v-has-nested-router-link class="has-children">
+          <RouterLink :to="{ name: 'members-create' }" class="is-submenu">
+            <i aria-hidden="true" class="fas fa-user mr-2"></i>
+            
+            <span>Prospect</span>
+          </RouterLink>
+        </li> -->
+        <!-- sub dropdown -->
+        <!-- <li v-has-nested-router-link class="has-children">
           <div class="collapse-wrap">
             <a class="parent-link">
               Lists

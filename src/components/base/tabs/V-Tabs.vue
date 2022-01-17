@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { PropType } from 'vue'
-import { computed, ref, defineProps } from 'vue'
+import { computed, ref, defineProps, watch, defineEmit } from 'vue'
 
 type TabItem = {
   label: string
@@ -87,6 +87,16 @@ const sliderClass = computed(() => {
 
   return ''
 })
+
+const emit = defineEmit(['changeTab'])
+
+watch(activeValue,(val)=>{
+  emit('changeTab', val)
+})
+
+
+
+
 </script>
 
 <template>

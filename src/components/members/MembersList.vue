@@ -51,7 +51,8 @@ const getMembers = async (filter, value = '', page = null) => {
   await Api.get('members', { params:{
       [filterDate.value]: true,
       filter: value,
-      page: page
+      page: page,
+      category: 'Adult'
     }
   })
   .then((response) => {

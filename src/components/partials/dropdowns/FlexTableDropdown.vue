@@ -6,7 +6,7 @@ import { useRoute, useRouter } from 'vue-router'
 const router = useRouter()
 
 const editMember = () => {
-  router.push({ name: 'members-edit', query: { member: props.idMember }  })
+  router.push({ name: 'members-profile', query: { member: props.idMember }  })
 }
 // import { inputsStepData } from '/@src/components/members/MembersData'
 
@@ -31,11 +31,11 @@ const props = defineProps({
         </div>
         <div class="meta">
           <span>View/Edit</span>
-          <span>View user details</span>
+          <span>View member details</span>
         </div>
       </a>
 
-      <a role="menuitem" href="#" class="dropdown-item is-media">
+      <!-- <a role="menuitem" href="#" class="dropdown-item is-media">
         <div class="icon">
           <i aria-hidden="true" class="lnil lnil-briefcase"></i>
         </div>
@@ -43,9 +43,9 @@ const props = defineProps({
           <span>Projects</span>
           <span>View user projects</span>
         </div>
-      </a>
+      </a> -->
 
-      <a role="menuitem" href="#" class="dropdown-item is-media">
+     <!--  <a role="menuitem" href="#" class="dropdown-item is-media">
         <div class="icon">
           <i aria-hidden="true" class="lnil lnil-calendar"></i>
         </div>
@@ -53,11 +53,11 @@ const props = defineProps({
           <span>Schedule</span>
           <span>Schedule a meeting</span>
         </div>
-      </a>
+      </a> -->
 
-      <hr class="dropdown-divider" />
+      <!-- <hr class="dropdown-divider" /> -->
 
-      <a role="menuitem" href="#" class="dropdown-item is-media">
+      <!-- <a role="menuitem" href="#" class="dropdown-item is-media">
         <div class="icon">
           <i aria-hidden="true" class="lnil lnil-trash-can-alt"></i>
         </div>
@@ -65,7 +65,7 @@ const props = defineProps({
           <span>Remove</span>
           <span>Remove from list</span>
         </div>
-      </a>
+      </a> -->
     </template>
   </V-Dropdown>
 </template>

@@ -35,33 +35,24 @@
 .rotate90{
 	transform: rotate(90deg) translate(calc(50% + 25px), 100%);
 }
-.progressCheck{
-	margin-bottom: 10%;
-	.bar-progress{
-		background: red;
-		position: absolute;
-    left: 0%;
-    top: 0px;
-    width: 20%;
-    height: 10px;
-    &::-webkit-progress-bar {
-		   background-color: #2f3237;
-		}
-	}
-	.content-text{
-		margin-left: 15%;
-	}
-	.circle{
-		width: 25px;
-		height: 25px;
-		border-radius: 100%;
-		margin-left: 14.5px;
-		border: 3px solid #2f3237;
-		&.active{
-			background: $primary;
-		}
-	}
-}
+// .progressCheck{
+// 	margin-bottom: 10%;
+// 	.bar-progress{
+// 		background: red;
+// 		position: absolute;
+//     left: 0%;
+//     top: 0px;
+//     width: 20%;
+//     height: 10px;
+//     &::-webkit-progress-bar {
+// 		   background-color: #2f3237;
+// 		}
+// 	}
+// 	.content-text{
+// 		margin-left: 15%;
+// 	}
+	
+// }
 
 $porcentajes: (
 		"10":10%,
@@ -136,4 +127,26 @@ body.is-dark{
 .onboarding-wrapper.onboarding-v2 .onboarding-wrap .onboarding-wrap-inner .onboarding-card, .onboarding-wrapper.onboarding-v4 .onboarding-wrap .onboarding-wrap-inner .onboarding-card{
 	width: auto !important;
 	max-width: 33.33%;
+}
+
+.border-1{
+	border: 1px solid rgba(0,0,0,.1);
+}
+.radius-small{
+	border-radius: 5px;
+}
+
+.document_box{
+  cursor: pointer;
+  & a{
+  	& p{
+  		color: $secondary;
+  	}
+  }
+  &:hover{
+    background: $primary;
+	  & img{
+	  	filter: grayscale(1);
+	  }
+	}
 }

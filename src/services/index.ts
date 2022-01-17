@@ -2,8 +2,8 @@ import axios from "axios";
 
 import { user, onLogout } from '/@src/pages/auth/auth.ts'
 
-const url = 'https://dev-api.ushuaiacreative.com/api/'
-// const url = 'https://ezclub.loc/api/'
+// const url = 'https://dev-api.ushuaiacreative.com/api/'
+const url = 'https://ezclub.loc/api/'
 
 import { useCookies } from "vue3-cookies";
 const { cookies } = useCookies();

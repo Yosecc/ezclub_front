@@ -27,7 +27,7 @@ const configClassCol = () => {
     element.childNodes.forEach((e)=>{
 
       if(e.dataset != undefined){
-        console.log(Object.values(e.dataset).length)
+
         if(Object.values(e.dataset).length > 0){
 
           e.dataset.class.split(' ').forEach((ele)=>{
@@ -136,7 +136,7 @@ onMounted(()=>{
       <!--  -->
       <V-Field 
         class="px-0 field"
-        v-if="['text','date','number','email'].includes(input.typeInput) "
+        v-if="['text','date','number','email','password'].includes(input.typeInput) "
         :data-class="input.class"
       >
         <V-Control
@@ -275,8 +275,25 @@ onMounted(()=>{
               
             />
           </V-Control>
-           </div>
-        </V-Field>
+        </div>
+      </V-Field>
+      <!--  -->
+      <VField
+        v-if="input.typeInput == 'textarea'"
+        :data-class="input.class"
+      >
+        <VControl>
+          <textarea
+            :rows="input.rows ?? 4"
+            v-model="input.model"
+            class="textarea"
+            :placeholder="input.placeholder"
+            :disabled="input.disabled ?? false"
+            :maxLength="input.maxLength ?? ''"
+            @keyup="input.keyUp ? input.keyUp($event, input) : null"
+          ></textarea>
+        </VControl>
+       </VField>
     </div>
   </div>
 

@@ -11,13 +11,15 @@
  * @see /src/router.ts
  */
 
-import { onMounted, watch } from 'vue'
+import { onMounted, watch, ref,computed } from 'vue'
 import { useHead } from '@vueuse/head'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
 import { getCompany, company_name} from '/@src/pages/companies/companies.ts'
+import { Api } from '/@src/services'
 
 onMounted(()=>{
   getCompany()
+  getMembers()
 })
 
 watch(company_name,()=>{
@@ -26,6 +28,52 @@ watch(company_name,()=>{
 
 useHead({
   title: 'Home',
+})
+
+const members = ref([])
+
+// const filtersSearch = () => {
+//   // if(filteredData.value.length == 0 || filters.value.length == 0){
+//     router.push({ query: { page: 1 } })
+//     getMembers(filterDate.value, filters.value, null)
+//   // }
+// }
+
+
+const getMembers = async (filter, value = '', page = null) => {
+  // filterDate.value = filter
+  await Api.get('accessday', { params:{
+      // [filterDate.value]: true,
+      // filter: value,
+      page: page
+    }
+  })
+  .then((response) => {
+    // console.log(response.data)
+    members.value = response.data.members.data
+
+
+    // if(response.data.members.data.length > 0){
+      // paginationData.value = {
+      //   itemPerPage:       response.data.members.per_page,
+      //   totalItems:        response.data.members.total,
+      //   currentPage:       response.data.members.current_page,
+      //   maxLinksDisplayed: 7,
+      // }
+      // members.value = response.data.members.data
+    // }
+  })
+  .catch((error) => {
+    console.log(error);
+  })
+}
+
+const computedMembers = computed(()=>{
+  let membersData = []
+  members.value.forEach((element)=>{
+    membersData.push(element.member)
+  })
+  return membersData
 })
 
 </script>
@@ -40,7 +88,10 @@ useHead({
           You can see pages content samples from 
           files in /src/components/pages directory
       -->
-      <PersonalDashboardV1 />
+      
+       <MembersListV2
+        :members="computedMembers"
+        />
     </div>
   </SidebarLayout>
 </template>

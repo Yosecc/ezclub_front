@@ -304,20 +304,20 @@ watch(
               data-icon="feather-search"
             />
           </a> -->
-          <a class="is-hidden is-inactive" @click="activePanel = 'none'">
+          <!-- <a class="is-hidden is-inactive" @click="activePanel = 'none'">
             <i
               aria-hidden="true"
               class="iconify sidebar-svg"
               data-icon="feather-x"
             />
-          </a>
+          </a> -->
         </li>
 
         <!-- Settings -->
         <li>
           <RouterLink
             id="open-settings"
-            :to="{ name: 'sidebar-layouts-profile-settings' }"
+            :to="{ name: 'settings' }"
             data-content="Settings"
           >
             <i
