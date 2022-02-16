@@ -1,91 +1,18 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, defineProps } from 'vue'
 
-import { projects } from '/@src/data/layouts/card-grid-v3'
+const props = defineProps({
+  memberships:{
+    type: Array,
+    default: []
+  }
+})
 
 const filters = ref('')
 
-const items = ref([
-    {
-      amount: '80',
-      image: 'https://picsum.photos/150/152',
-      name: 'Gym Access',
-      description: 'This membership allow members full access gyn facility',
-      locations:[
-        {
-          img: 'https://picsum.photos/151/152'
-        },
-        {
-          img: 'https://picsum.photos/151/151'
-        },
-      ],
-      status: true,
-    },
-    {
-      amount: '80',
-      image: 'https://picsum.photos/150/152',
-      name: 'Gym Access',
-      description: 'This membership allow members full access gyn facility',
-      locations:[
-        {
-          img: 'https://picsum.photos/151/152'
-        },
-        {
-          img: 'https://picsum.photos/151/151'
-        },
-      ],
-      status: true,
-    },
-    {
-      amount: '80',
-      image: 'https://picsum.photos/150/152',
-      name: 'Gym Access',
-      description: 'This membership allow members full access gyn facility',
-      locations:[
-        {
-          img: 'https://picsum.photos/151/152'
-        },
-        {
-          img: 'https://picsum.photos/151/151'
-        },
-      ],
-      status: true,
-    },
-    {
-      amount: '80',
-      image: 'https://picsum.photos/150/152',
-      name: 'Gym Access',
-      description: 'This membership allow members full access gyn facility',
-      locations:[
-        {
-          img: 'https://picsum.photos/151/152'
-        },
-        {
-          img: 'https://picsum.photos/151/151'
-        },
-      ],
-      status: true,
-    },
-    {
-      amount: '80',
-      image: 'https://picsum.photos/150/152',
-      name: 'Gym Access',
-      description: 'This membership allow members full access gyn facility',
-      locations:[
-        {
-          img: 'https://picsum.photos/151/152'
-        },
-        {
-          img: 'https://picsum.photos/151/151'
-        },
-      ],
-      status: true,
-    },
-  ])
-
 const filteredData = computed(() => {
   if (!filters.value) {
-    return items.value
+    return props.memberships
   } else {
     // return projects.filter((item) => {
     //   return (
@@ -96,14 +23,6 @@ const filteredData = computed(() => {
   }
 })
 
-const valueSingle = ref(0)
-const optionsSingle = [
-  'All Projects',
-  'Web Apps',
-  'Mobile Apps',
-  'Dashboards',
-  'Landing Pages',
-]
 </script>
 
 <template>
@@ -129,7 +48,7 @@ const optionsSingle = [
     </div>
 
     <div class="card-grid card-grid-v3">
-      <!--List Empty Search Placeholder -->
+       <!--List Empty Search Placeholder -->
       <V-PlaceholderPage
         :class="[filteredData.length !== 0 && 'is-hidden']"
         title="We couldn't find any matching results."
@@ -151,77 +70,22 @@ const optionsSingle = [
           />
         </template>
       </V-PlaceholderPage>
+      <!--  -->
 
-      <!--Card Grid v3-->
       <transition-group
         name="list"
         tag="div"
         class="columns is-multiline is-flex-tablet-p is-half-tablet-p"
       >
-        <!--Grid Item-->
         <div v-for="item in filteredData" :key="item.id" class="column is-4">
-          <div class="card-grid-item">
-            <!-- <p>{{ item }}</p> -->
-            <div class="d-flex justify-content-between">
-              <h1 class="title is-4">${{ item.amount }}</h1>
-              <label  class="h-toggle">
-                <input type="checkbox" :checked="!item.status" />
-                <span class="toggler">
-                  <span class="active">
-                    <i
-                      aria-hidden="true"
-                      class="iconify"
-                      data-icon="feather:lock"
-                    ></i>
-                  </span>
-                  <span class="inactive">
-                    <i
-                      aria-hidden="true"
-                      class="iconify"
-                      data-icon="feather:check"
-                    ></i>
-                  </span>
-                </span>
-              </label>
-            </div>
-
-            <div class="cardBox mb-4">
-              <i class="fas fa-dumbbell"></i>
-            </div>
-
-            <div class="mb-3">
-              <h1 class="title is-4 mb-0">{{ item.name }}</h1>
-              <p>This membership allows members full access to gym facilyty</p>
-            </div>
-
-            <VFlex 
-              class="mb-3"
-              flex-wrap="wrap" 
-              align-items="flex-end" 
-              row-gap=".5rem" 
-              column-gap=".25rem">
-             
-              <VAvatar class="mr-3" picture="https://picsum.photos/151/152" />
-              <VAvatar class="mr-3" picture="https://picsum.photos/150/152" />
-              
-            </VFlex>
-
-            <div class="d-flex justify-content-end mt-5">
-              <V-Button
-                :to="{ name: 'settings-memberships-edit', query:{id:1}}"
-               raised>
-                <span class="icon">
-                  <i class="fas fa-edit"></i>
-                </span>
-                <span>Edit Membership</span>
-              </V-Button>
-            </div>
-            
-            
-          </div>
+          <membershipCard
+            class="card-grid-item"
+            :membership="item"
+          />
         </div>
       </transition-group>
     </div>
+    
   </div>
 </template>
 

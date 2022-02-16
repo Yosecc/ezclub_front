@@ -1,65 +1,104 @@
 <script setup lang="ts">
-import { computed, defineProps, ref } from 'vue'
-import { memberData, steps, categories, typeMember, inputsStepData , stepActive } from '/@src/components/members/MembersData'
-
-
-const inputsFamily = computed(()=>{
-  let stepData =  inputsStepData(props.stepSelected,'family')
-  return  stepData
-})
-
-inputsFamily.value[0].f = 'data_1'
-const dataFamily = JSON.parse (JSON.stringify (inputsFamily.value[0]))
-
-const addFamily = () => {
-  let family = inputsFamily.value.length + 1
-  let f = 'data_'+family
-
-  const data = {
-    family: inputsFamily.value.length + 1,
-    [f]: ref(dataFamily.data_1).value,
-  }
-  inputsFamily.value.push(JSON.parse (JSON.stringify (data)))
-}
-
-const removeFamilyMember = (ke) => {
-  inputsFamily.value.splice(ke, 1)
-}
+import { computed, ref, defineProps, defineEmit, onMounted, watch } from 'vue'
 
 const props = defineProps({
-  stepSelected:{
-    type: Number
+  type:{
+    type: String,
+    default: 'create'
+  },
+  inputs:{
+    type: Array,
+    default: []
+  },
+  title:{
+    type: String,
+    default: ''
   },
 })
+
+const isLoading = ref(false)
+
+watch(
+  () => props.inputs,
+  (count, prevCount) => {
+    reloadForm()
+  }
+)
+
+const reloadForm = () =>{
+  isLoading.value= true
+  setTimeout(()=>{
+    isLoading.value= false
+  }, 500);
+}
+
+const families = ref([JSON.parse(JSON.stringify(props.inputs))])
+
+const inputsSteps = computed(()=>{
+  reloadForm()
+  families.value.forEach((inputs, key)=>{
+    if(minorsKeys.value.includes(key)){
+     families.value[key] = inputs.filter((input)=>input.category.includes('Minor'))
+    }else{
+      families.value[key] = JSON.parse(JSON.stringify(props.inputs))
+    }
+  })
+
+  return families.value
+})
+
+const addFamily = () => {
+  families.value.push(JSON.parse(JSON.stringify(props.inputs)))
+}
+
+const emit = defineEmit(['changeStep','returData'])
+
+const change = (val) => {
+  emit('returData',families)
+  emit('changeStep',val)
+}
+
+const minorsKeys = ref([])
+
+const changeSwitchKey = (key) =>{
+  let index = minorsKeys.value.findIndex((element)=> element == key)
+  if(index == '-1' || index == -1){
+    minorsKeys.value.push(key)
+  }else{
+    minorsKeys.value.splice(index, 1)
+  }
+}
+
 </script>
 
-
 <template>
-  <!-- <p>{{ inputsStep }}</p> -->
-  <V-Card  
-    v-for="(family, ke) in inputsFamily"
+ <formLayaut
+  :titles="{title: title }"
+  :isLoading="isLoading"
+  :buttons="['next','prev']"
+  :step="2"
+  @changeStep="change"
+ >
+ <!-- <p>{{ minorsKeys }}</p> -->
+ <V-Card  
+    v-for="(family, ke) in inputsSteps"
     :key="ke"
-    class="columns is-multiline bb-1 mb-5"
-    :class="ke > 0 ? 'py-6':'pb-6'"
+    class="mb-4"
   >
-
-      <!-- <p>{{ family['data_'+family.family] }}</p> -->
-      
-      <inputsLayaut
-        :inputs-step="family['data_'+family.family]"
-      />
-
+    <inputsLayaut
+      :inputs-step="family"
+      @changeSwitch="changeSwitchKey(ke) "
+    />
       <V-Button
         v-if="ke > 0"
-        @click="removeFamilyMember(ke)"
+        @click="families.splice(ke,1)"
         color="danger" 
         class="mx-auto" 
         icon="fas fa-times" >
         Remove Family Member
       </V-Button>
-  </V-Card >
-
-  <div class="column is-12">
+  </V-Card>
+  <div class="column d-flex justify-content-center is-12">
     <V-Button
       @click="addFamily"
       color="info" 
@@ -68,5 +107,12 @@ const props = defineProps({
       Add Another Family Member
     </V-Button>
   </div>
-
+ </formLayaut>
 </template>
+
+<style lang="scss">
+// @import '../../scss/abstracts/_variables.scss';
+// @import '../../scss/abstracts/_mixins.scss';
+
+
+</style>

@@ -1,7 +1,13 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, defineProps } from 'vue'
+import { putStatus } from '/@src/models/Diciplines.ts'
 
-import { projects } from '/@src/data/layouts/card-grid-v3'
+const props = defineProps({
+  diciplines:{
+    type: Array,
+    default: []
+  }
+})
 
 const filters = ref('')
 
@@ -95,7 +101,7 @@ const items = ref([
 
 const filteredData = computed(() => {
   if (!filters.value) {
-    return items.value
+    return props.diciplines
   } else {
     // return projects.filter((item) => {
     //   return (
@@ -175,7 +181,7 @@ const optionsSingle = [
             <div class="d-flex justify-content-between">
 
               <label  class="h-toggle">
-                <input type="checkbox" :checked="!item.status" />
+                <input type="checkbox" @change="putStatus(item)" :checked="!item.status" />
                 <span class="toggler">
                   <span class="active">
                     <i
@@ -196,30 +202,26 @@ const optionsSingle = [
             </div>
 
             <div class="cardBox mb-4">
-
               <i class="fas fa-dumbbell"></i>
             </div>
 
             <div class="mb-3">
               <h1 class="title is-4 mb-0">{{ item.name }}</h1>
-              <p>This membership allows members full access to gym facilyty</p>
+              <p>{{ item.descrptions }}</p>
             </div>
 
-            <VFlex 
-              class="mb-3"
-              flex-wrap="wrap" 
-              align-items="flex-end" 
-              row-gap=".5rem" 
-              column-gap=".25rem">
-             
-              <VAvatar class="mr-3" picture="https://picsum.photos/151/152" />
-              <VAvatar class="mr-3" picture="https://picsum.photos/150/152" />
-              
-            </VFlex>
+            <div class="d-flex">
+              <VAvatar 
+                v-tooltip="location.location.name"
+                v-for="(location, key) in item.locations"
+                :key="`membership_location-${key}`"
+                class="mr-3" 
+                :picture="location.location.image" />
+            </div>
 
             <div class="d-flex justify-content-end mt-5">
               <V-Button
-                :to="{ name: 'settings-disciplines-edit', query:{id:1}}"
+                :to="{ name: 'settings-disciplines-edit', query:{id:item.id}}"
                raised>
                 <span class="icon">
                   <i class="fas fa-edit"></i>
@@ -227,7 +229,6 @@ const optionsSingle = [
                 <span>Edit discipline</span>
               </V-Button>
             </div>
-            
             
           </div>
         </div>

@@ -4,14 +4,17 @@ import { onMounted, watch, ref,computed } from 'vue'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
 // import { useRoute, useRouter } from 'vue-router'
 // import { Api } from '/@src/services'
-import { getCompany, company } from '/@src/pages/companies/companies.ts'
+import { getDiciplines, diciplines } from '/@src/models/Diciplines.ts'
 pageTitle.value = 'Disciplines'
 useHead({
   title: 'Disciplines',
 })
 
+const isLoading  = ref(false)
 onMounted(()=>{
-
+  getDiciplines().then((response)=>{
+    isLoading.value = true
+  })
 })
 
 </script>
@@ -22,8 +25,11 @@ onMounted(()=>{
     <!-- Content Wrapper -->
     <div class="page-content-inner ">
 
-    <disciplinesList
-    />
+      <VPlaceload v-if="!isLoading" height="500px"   />
+      <disciplinesList
+        v-else
+        :diciplines="diciplines"
+      />
        
     </div>
     

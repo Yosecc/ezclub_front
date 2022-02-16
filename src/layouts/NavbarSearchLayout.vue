@@ -44,7 +44,7 @@ const users = [
   },
   {
     id: 22,
-    picture: '/demo/avatars/22.jpg',
+    picture: '',
     initials: 'JH',
     color: 'info',
   },

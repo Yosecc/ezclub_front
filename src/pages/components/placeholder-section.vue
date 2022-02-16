@@ -52,10 +52,10 @@ useHead({
                 subtitle="Jimmy H. invited you to join the Heartman &amp; Sons project."
               >
                 <template #image>
-                  <V-Avatar
+                  <!-- <V-Avatar
                     picture="/demo/avatars/22.jpg"
                     badge="/images/icons/flags/united-states-of-america.svg"
-                  />
+                  /> -->
                 </template>
               </V-PlaceholderSection>
             </V-Card>

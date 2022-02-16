@@ -1,6 +1,11 @@
 <script setup lang="ts">
-import { computed, ref, defineProps, defineEmit } from 'vue'
+import { computed, ref, defineProps, defineEmit, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
+
+import { setInputValuesData, perpareDataInputs, cleanUpModelInputs } from '/@src/models/Mixin.ts'
+import { inputs, saveDicipline } from '/@src/models/Diciplines.ts'
+import { company } from '/@src/models/Companies.ts'
+import { trainers } from '/@src/models/Staffs.ts'
 
 const router = useRouter()
 
@@ -17,6 +22,10 @@ const props = defineProps({
     type: Number,
     default: 1
   },
+  isLoading:{
+    type: Boolean,
+    default: false
+  }
 })
 
 const titles = computed(()=>{
@@ -32,78 +41,32 @@ const titles = computed(()=>{
   }
 })
 
-const inputs = ref([
-  {
-    typeInput: 'text',
-    name:'discipline_name',
-    placeholder: 'Discipline Name',
-    model: '',
-    required: true,
-    class: 'is-8',
-  },
-  {
-    typeInput: 'select',
-    name:'Locations',
-    placeholder: 'Locations',
-    model: '',
-    values:['', ''],
-    required: true,
-    class: 'is-4',
-  },
-  {
-    typeInput: 'textarea',
-    name:'discipline_description',
-    placeholder: 'Discipline Description',
-    model: '',
-    required: true,
-    class: 'is-12',
-  },
-  {
-    typeInput: 'select',
-    name:'Trainer',
-    placeholder: 'Trainer',
-    model: '',
-    values:['', ''],
-    required: true,
-    class: 'is-4',
-  },
-  {
-    typeInput: 'select',
-    name:'CombineDiscipline',
-    placeholder: 'Combine Discipline',
-    model: '',
-    values:['', ''],
-    required: true,
-    class: 'is-4',
-  },
-  {
-    typeInput: 'select',
-    name:'CamBeAddToMembership',
-    placeholder: 'CamBeAddToMembership',
-    model: '',
-    values:['', ''],
-    required: true,
-    class: 'is-4',
-  },
-   {
-    typeInput: 'textarea',
-    name:'internalNotes',
-    placeholder: 'Internal Notes',
-    model: '',
-    required: true,
-    class: 'is-12',
-  },
-])
+watch( company, ()=>{
+  setInputValuesData(inputs,'locations',company.value.locations)
+})
+watch(trainers,()=>{
+  setInputValuesData(inputs,'trainers',trainers.value)
+})
+onMounted(()=>{
+  // console.log(company.value.locations)
+})
 
-// const emit = defineEmit(['changeStep','saveData']);
+const saveData = () => {
+  const data = perpareDataInputs(inputs.value)
+  saveDicipline(data).then((response)=>{
+    cleanUpModelInputs(inputs.value)
+    router.back()
+  })  
+}
 
 </script>
 
 <template>
   <formLayaut
     :buttons="props.buttons"
-    :step="props.step"
     :titles="titles"
+    :isLoading="isLoading"
+    @saveData="saveData"
   >
     <inputsLayaut
       :inputs-step="inputs"

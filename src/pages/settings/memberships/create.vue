@@ -1,19 +1,29 @@
 <script setup lang="ts">
-import { useHead } from '@vueuse/head'
-import { onMounted, watch, ref,computed } from 'vue'
-import { pageTitle } from '/@src/state/sidebarLayoutState'
-// import { useRoute, useRouter } from 'vue-router'
-// import { Api } from '/@src/services'
-import { getCompany, company } from '/@src/pages/companies/companies.ts'
+import { onMounted, ref } from 'vue'
+import { getCompany, locations } from '/@src/models/Companies.ts'
+import { getTaxes, taxes } from '/@src/services/config.ts'
+import { setInputValuesData, setInputModelData } from '/@src/models/Mixin.ts'
+import { getRecurrences, recurrences } from '/@src/models/Recurrences.ts'
+import { inputs } from '/@src/models/Memberships.ts'
 
-pageTitle.value = 'New Membership'
-
-useHead({
-  title: 'Memberships',
-})
+const isLoading = ref(true)
 
 onMounted(()=>{
-  getCompany()
+  getTaxes().then(()=>{
+    setInputValuesData(inputs, 'taxes_id', taxes)
+  })
+  getCompany().then(()=>{
+    setInputValuesData(inputs, 'locations', locations)
+  }) 
+  getRecurrences().then(()=>{
+    setInputValuesData(inputs, 'amounts', recurrences)
+    let model = {}
+    recurrences.value.forEach((element)=>{
+      model[element.id] = ''
+    })
+    setInputModelData(inputs,'amounts', model)
+    isLoading.value = false
+  })
 })
 
 </script>
@@ -25,10 +35,16 @@ onMounted(()=>{
     <div class="page-content-inner ">
 
       <membershipForm
+        :isLoading="isLoading"
         type="create"
       />
-       
+
     </div>
     
   </SidebarLayout>
+
+
+    
+       
+
 </template>

@@ -1,6 +1,9 @@
 <script setup lang="ts">
-import { computed, ref, defineProps } from 'vue'
+import { computed, ref, defineProps,  onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
+import { inputs, saveMembership } from '/@src/models/Memberships.ts'
+import { getLocationsDiciplines } from '/@src/models/Diciplines.ts'
+import { setInputValuesData, viewInput, notyf, perpareDataInputs, cleanUpModelInputs } from '/@src/models/Mixin.ts'
 
 const router = useRouter()
 
@@ -8,6 +11,14 @@ const props = defineProps({
   type:{
     type: String,
     default: 'create'
+  },
+  buttons:{
+    type: Array,
+    default: ['save', 'back']
+  },
+  isLoading:{
+    type: Boolean,
+    default: false
   }
 })
 
@@ -24,122 +35,118 @@ const titles = computed(()=>{
   }
 })
 
-const inputs = ref([
-  {
-    typeInput: 'text',
-    name: 'membership_name',
-    placeholder: 'Membership Name',
-    model: '',
-    class: 'is-4'
-  },
-  {
-    typeInput: 'select',
-    name: 'locationstosale',
-    placeholder: 'Locations to Sale',
-    model: '',
-    values:[''],
-    class: 'is-4'
-  },
-  {
-    typeInput: 'select',
-    name: 'locationstoaccess',
-    placeholder: 'Locations to Access',
-    model: '',
-    values:[''],
-    class: 'is-4'
-  },
-  {
-    typeInput: 'textarea',
-    name: 'membership_description',
-    placeholder: 'Membership Description',
-    model: '',
-    class: 'is-12'
-  },
-  {
-    typeInput: 'number',
-    name: 'monthly_cost',
-    placeholder: '$ Monthly Cost',
-    model: '',
-    class: 'is-4'
-  },
-  {
-    typeInput: 'number',
-    name: '6monthly_cost',
-    placeholder: '$ 6Monthly Cost',
-    model: '',
-    class: 'is-4'
-  },
-  {
-    typeInput: 'number',
-    name: '12monthly_cost',
-    placeholder: '$ 12 Monthly Cost',
-    model: '',
-    class: 'is-4'
-  },
-  {
-    typeInput: 'select',
-    name: 'apply_taxes',
-    placeholder: 'Apply Taxes',
-    model: '',
-    values:[''],
-    class: 'is-4'
-  },
-  {
-    typeInput: 'select',
-    name: 'can_discount_by_apply',
-    placeholder: 'Can Discount by Apply',
-    model: '',
-    values:[''],
-    class: 'is-4'
-  },
-  {
-    typeInput: 'select',
-    name: 'initiation_fee',
-    placeholder: 'Initation Fee',
-    model: '',
-    values:[''],
-    class: 'is-4'
-  },
-  {
-    typeInput: 'textarea',
-    name: 'internals_notes',
-    placeholder: 'Internals Notes',
-    model: '',
-    class: 'is-12'
-  },
-])
+const locations_options = computed(()=>{
+  return inputs.value.find((element)=>element.name == 'locations_options')
+})
+
+const locations = computed(()=>{
+  return inputs.value.find((element)=>element.name == 'locations')
+})
+
+watch( locations.value , (to)=>{
+  changeLocation(to) 
+})
+
+const changeLocation = (data) =>{
+  let dat = []
+  if(data.model.length > 0){
+    data.model.forEach((element)=>{
+      let location = data.values.find((e)=>e.id == element)
+      dat.push({
+        name: 'locationsSaleOrAccess',
+        value: location.id,
+        placeholder: location.name,
+        values: [
+          {
+            placeholder: 'Access',
+            name: 'access',
+            model: ['access']
+          },
+          {
+            placeholder: 'Sale',
+            name: 'sale',
+            model: ['sale']
+          },
+        ]
+      })
+    })
+    setInputValuesData(inputs, "locations_options", dat)
+  }
+  getLocationsDiciplines(locations.value.model).then((response)=>{
+    setInputValuesData(inputs, 'diciplines', response.data)
+  })
+}
+
+const diciplines = computed(()=>{
+  return inputs.value.find((element)=>element.name == 'diciplines')
+})
+
+watch( diciplines.value, (to)=>{
+  let number = parseFloat(viewInput(inputs.value,'diciplines_number'))
+  if(!isNaN(number)){
+    if(to.model.length > number){
+      notyf.error('You must select a limit of '+number+' diciplines')
+    }
+  }
+})
+
+const saveData = () => {
+  let data = perpareDataInputs(inputs.value)
+  let locationsData = []
+  if(data.locations.length > 0){
+    data.locations.forEach((element)=>{
+      let option = locations_options.value.values.find((e)=> e.value == element)
+      locationsData.push({
+        id: element,
+        access: option.values.find((access)=> access.name == 'access').model.length ? 1:0 ,
+        sale: option.values.find((access)=> access.name == 'sale').model.length ? 1:0
+      })
+    })
+    data.locations = locationsData
+    delete data.locations_options
+  }
+  
+  let amountsData = []
+  let obj = data.amounts
+  for (var i in obj) {
+    amountsData.push({recurrences_id: parseFloat(i), amount: parseFloat(obj[i])})
+  }
+  data.amounts = amountsData
+  console.log(data)
+  saveMembership(data).then((response)=>{
+    cleanUpModelInputs(inputs.value)
+    router.back()
+  }).catch((error)=>{
+    for (var i in error.response.data.rerrores) {
+      error.response.data.rerrores[i].forEach((e)=>{
+        notyf.error(e)
+      })
+      
+    }
+  })
+}
+
 </script>
 
 <template>
-<VCardAdvanced>
-    <template #header-left>
-      <div>
-        <h1 class="title is-4 mb-0">
-       {{titles.title}}
-      </h1>
-      <p>{{titles.subtitle}}</p>
-      </div>
-    </template>
-    <template #header-right>
-      <VButton @click="router.back()" class="mr-3"> Go Back </VButton>
 
-      <VButton color="primary"> Save Changes </VButton>
-    </template>
-    <template #content>
-      
-      <div class="column is-8 mx-auto">
-        <inputsLayaut
-          :inputs-step="inputs"
-        />
-      </div>
-    </template>
-    
-  </VCardAdvanced>
+  <formLayaut
+    :buttons="props.buttons"
+    :titles="titles"
+    :isLoading="isLoading"
+    @saveData="saveData"
+  >
+
+    <inputsLayaut
+      :inputs-step="inputs"
+    />
+  </formLayaut>
+
 </template>
 
 <style lang="scss">
-@import '../../scss/abstracts/_variables.scss';
-@import '../../scss/abstracts/_mixins.scss';
+// @import '../../scss/abstracts/_variables.scss';
+// @import '../../scss/abstracts/_mixins.scss';
 
 
 </style>

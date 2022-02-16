@@ -1,97 +1,357 @@
 <script setup lang="ts">
-import { computed, defineProps, ref } from 'vue'
-import { inputsStepData } from '/@src/components/members/MembersData'
-import { diferenteCard, paymentData } from '/@src/components/payment/PaymentMethodsData'
+import { computed, ref, defineProps, defineEmit, watch } from 'vue'
+import { viewInput, setInputValuesData, setInputModelData, moneda } from '/@src/models/Mixin.ts'
+import { getLocationsDiciplines } from '/@src/models/Diciplines.ts'
+import { paymentData, flipped, optionsCreditCard } from '/@src/models/PaymentMethodsData.ts'
+import { calcularMeses, getValueInput } from '/@src/models/Mixin.ts'
+import moment from 'moment'
 
-const inputsStepPrincipal = computed(()=>{
-  let stepData =  inputsStepData(props.stepSelected,'data')
-  stepData = stepData.find((data) => data.member.type == 'principal')
-  let memberPrincipal = inputsStepData(1,'data')
-  
-  stepData.member.name = memberPrincipal.find((input) => input.name == 'name').model
-  stepData.member.last_name = memberPrincipal.find((input) => input.name == 'last_name').model
+import { idMember } from '/@src/models/Members.ts'
 
-  return  stepData
-})
-
-const inputsStepFamily = computed(()=>{
-
-  // let data_membership =  JSON.parse(JSON.stringify(membershipsData))
-  let memberFamily =  inputsStepData(2,'family')
-
-  let num = 0
-  let family = []
-  let member = {}
-  let stepData =  inputsStepData(props.stepSelected,'data')
-
-  memberFamily.forEach((element, index)=>{
-
-    if(element['data_'+element.family].find((fa) => fa.name == 'name').model != ''){
-
-      member = {
-        type: 'family',
-        family: element.family,
-        name: element['data_'+element.family].find((fa) => fa.name == 'name').model,
-        last_name: element['data_'+element.family].find((fa) => fa.name == 'last_name').model
-      }
-
-      var data = JSON.parse (JSON.stringify (paymentData.value))
-      var g = {member,data : ref(data).value}
-      family.push(g)
-      stepData.push(g)
-
-    }
-
-  })
-
-  return  family
-
-})
-
-const isSameCreditCard = computed(()=>{
-  return diferenteCard.value[0].model
-})
-
-
-const toPrayerCase = (value) =>{
-  return value.charAt(0).toUpperCase() + value.slice(1)
-}
+// watch(
+//   ()=> idMember,
+//   (data, prevData)=>{
+//     cardPayment.value = true
+//   }
+// )
 
 const props = defineProps({
-  stepSelected:{
-    type: Number
+  type:{
+    type: String,
+    default: 'create'
+  },
+  // inputs:{
+  //   type: Array,
+  //   default: []
+  // },
+  title:{
+    type: String,
+    default: ''
+  },
+  member:{
+    type: Array,
+    default: []
+  },
+  familiares:{
+    type: Array,
+    default: []
+  },
+  memberMembership:{
+    type: Array,
+    default: []
+  },
+  familyMembership:{
+    type: Array,
+    default: []
+  },
+})
+
+const isLoading = ref(false)
+
+const emit = defineEmit(['changeStep','returnData'])
+
+const change = (val) => {
+
+  let obj = {
+    paymentData,
+    dataCardFamiliares,
+    total
+  }
+  emit('returnData', obj)
+  emit('changeStep',val)
+}
+
+
+//  MEMBER //////////////////
+
+const infoMembership = computed(()=>{
+  let data = getValueInput(props.memberMembership, 'memberships_id')
+  return data != undefined ? data : []
+})
+
+const recurrence = computed(()=>{
+  let data = getValueInput(props.memberMembership, 'recurrences_id')
+  return data != undefined ? data : []
+})
+
+const initiationFeeMember = computed(()=>{
+  let data = viewInput(props.memberMembership,"initiation_fee")
+  return data != undefined ? data : []
+})
+
+
+const prorated = computed(() => {
+  let hoyDay = parseFloat(moment().format('DD'))
+  let calculo = 0 
+  let diferencia = 0
+  if(recurrence.value.days >= 30){
+    diferencia = (hoyDay - recurrence.value.payday)
+    calculo = (recurrence.value.amount / 30) * diferencia
+  }
+  return {
+    days: diferencia,
+    amount: Math.abs(Math.round(calculo))
   }
 })
+
+const proratedMethod = (recurrence) => {
+  console.log(recurrence)
+  let hoyDay = parseFloat(moment().format('DD'))
+  let calculo = 0 
+  let diferencia = 0
+  if(recurrence.days >= 30){
+    diferencia = (hoyDay - recurrence.payday)
+    calculo = (recurrence.amount / 30) * diferencia
+  }
+  return {
+    days: diferencia,
+    amount: Math.abs(Math.round(calculo))
+  }
+}
+
+const objTax = (membership) =>{
+  if(!membership.value){
+    membership = membership
+  }else{
+    membership = membership.value
+  }
+
+
+  if(membership.tax.type == 'percentaje'){
+    return {
+      text: `${membership.tax.value}%`,
+      value: membership.tax.value
+    }
+  }
+  return {
+    text: moneda(membership.tax.value),
+    value: membership.tax.value
+  }
+}
+
+const tax = computed(()=>{
+    return objTax(infoMembership)
+})
+
+const subtotalMemberMembership = computed(()=>{
+  let suma = 0
+  suma += recurrence.value.amount * calcularMeses(recurrence.value.days)
+  suma += initiationFeeMember.value
+  suma = (suma / 100 * tax.value.value) + suma
+  suma -= prorated.value.amount
+
+  return suma
+})
+
+const total = computed(()=>{
+  let suma = 0
+  suma += subtotalMemberMembership.value
+  suma += totalFamily.value
+  return suma
+})
+
+// FAMILY ///////////////////
+
+const totalFamily = ref(0)
+
+const dataCardFamiliares = computed(()=>{
+  infoFamliarMembership.value.map((familiar)=>{
+    familiar.paymentData = inputspaymentData
+  })
+  return infoFamliarMembership.value
+})
+
+const FamiliaresMemberships = computed(()=>{
+
+  console.log('familiares',props.familiares)
+  return props.familyMembership
+})
+
+// const infoFamliarMembership = computed(()=>{
+//   let familiares = []
+//   props.familiares.forEach((familiar)=>{
+
+//     let member = null
+//     let membership = null
+//     let amount = null
+//     let initiation_fee = null
+//     let tax = null
+//     let subtotal = 0
+//     props.familyMembership.filter((element)=>{
+
+//       if(viewInput(element.family, 'name') == viewInput(familiar,'name') ){
+
+//        member = {name: viewInput(familiar,'name') + ' ' +viewInput(familiar,'second_name') + ' ' +viewInput(familiar,'last_name')}
+
+//        membership = element.inputs.find((e)=>e.name == 'memberships_id' ).values
+//        .find((i)=> i.id == viewInput(element.inputs,'memberships_id'))
+
+//        amount = element.inputs.find((e)=>e.name == 'type_amount' ).values
+//        .find((i)=> i.id == viewInput(element.inputs,'type_amount'))
+
+//        amount = defineAmount(amount.id, membership)
+
+//        tax = objTax(membership)
+
+//        initiation_fee = viewInput(element.inputs,"is_initiation_fee").length == 0 ? viewInput(element.inputs,"initiation_fee") : 0
+
+//        subtotal = amount.amount + initiation_fee
+
+//        subtotal = (subtotal / 100 * tax.value) + subtotal
+
+//        totalFamily.value = totalFamily.value + subtotal
+//        familiares.push({member, membership, amount, initiation_fee, tax, subtotal})
+//       }
+
+//     })
+    
+//   })
+//   console.log('familiares',familiares)
+//   return familiares
+// })
+
+// watch(
+//   () => props.inputs,
+//   (data, prevData) => {
+//     reloadForm()
+//   }
+// )
+
+// const reloadForm = () =>{
+//   isLoading.value= true
+//   setTimeout(()=>{
+//     isLoading.value= false
+//   }, 500);
+// }
+
+
+// const inputsSteps = computed(()=>{
+//   return JSON.parse(JSON.stringify(props.inputs))
+// })
+
+// const inputsFamilies = computed(()=>{
+//   let data = []
+//   props.familiares.forEach((element)=>{
+//     if(element.find((e)=> e.name == 'name').model != ''){
+//       data.push({ 
+//         family: element,
+//         inputs: JSON.parse(JSON.stringify(props.inputs))
+//       })
+//     }
+//   })
+//   return data
+// })
+
+
+
+
+
+
+
+
+// const isDiferentCard = ref(false)
+
+// const changeSwitch = (obj) => {
+//   isDiferentCard.value = !obj.input.model
+// }
+
+// const inputspaymentData = JSON.parse(JSON.stringify(paymentData.value))
+
+
+
+// const changeCheckbox = (input) => {
+//   console.log(input)
+// }
+
+
+
+// const cardPayment = ref(false)
+
+
+
 </script>
 
-
 <template>
-  <!-- <p>{{ inputsStep }}</p> -->
-  
-  <inputsLayaut
-    v-if="inputsStepFamily.length > 0"
-    :inputs-step="diferenteCard"
-   
-  />
+  <formLayaut
+  :titles="{title: title }"
+  :isLoading="isLoading"
+  :buttons="['prev']"
+  :step="5"
+  @changeStep="change"
+  >
 
-  <V-Card  class="mb-4" >
-    <inputsLayaut
-      :inputs-step="inputsStepPrincipal.data"
-    />
-  </V-Card>
-  <!-- <p>{{ inputsStepFamily }}</p> -->
-    <V-Card 
-      v-if="isSameCreditCard"
-      v-for="data in inputsStepFamily"
-      class="mb-4"
-    >
-      <div class="column is-12 bb-1 mb-5">
-        <h2 class="title is-5 mt-4 is-narrow">{{ toPrayerCase(data.member.name)}} {{ toPrayerCase(data.member.last_name) }}</h2>
-        <inputsLayaut
-          :inputs-step="data.data"
-        />
-      </div>
-    </V-Card>
-  
-  
+<p>{{ FamiliaresMemberships }}</p>
+   <table class="table is-hoverable is-striped is-fullwidth ">
+      <thead>
+        <tr>
+          <th scope="col">Members</th>
+          <th scope="col">Membership Name</th>
+          <th scope="col">Recurrence</th>
+          <th scope="col">Prorated</th>
+          <th scope="col">Membership Cost</th>
+          <th scope="col">Initiation Fee</th>
+          <!-- <th scope="col">Discount</th> -->
+          <th scope="col">Taxes</th>
+          <th scope="col">Sub Total</th>
+        </tr>
+      </thead>
+      <tbody>
+         <tr>
+          <td><p><b>{{ viewInput(member,'name') }} {{ viewInput(member,'second_name') }} {{ viewInput(member,'last_name') }}</b></p></td>
+          <td v-if="infoMembership.legnth != 0">{{ infoMembership.name }}</td>
+          <td v-if="recurrence.length != 0">{{ recurrence.descriptions }}</td>
+          <td v-if="recurrence.length != 0">  
+            <span v-if="recurrence.days > 30">
+              {{ prorated.days }} days : <br> - {{ moneda(prorated.amount) }}
+            </span>
+            <span v-else>-</span>
+          </td>
+          <td>{{ moneda(recurrence.amount) }} <span v-if="calcularMeses(recurrence.days) > 1">x {{ calcularMeses(recurrence.days) }}</span></td>
+          <td>{{ moneda(initiationFeeMember) }}</td>
+          <td>{{ tax.text }}</td>
+          <td>{{ moneda(subtotalMemberMembership) }}</td>
+          
+        </tr>
+        <tr
+          v-for="familiar in props.familyMembership" 
+        >
+        <!--   <td>{{ viewInput(familiar.family,'name') }}</td>
+           <td>{{ getValueInput(familiar.inputs,"memberships_id").name }}</td>
+          <td>{{ getValueInput(familiar.inputs,'recurrences_id').descriptions }}</td> -->
+         <!--  <td>
+            <span v-if="getValueInput(familiar.inputs,'recurrences_id').days > 30">
+              {{ proratedMethod(getValueInput(familiar.inputs,'recurrences_id')).days }} days : <br> - {{ moneda(proratedMethod(getValueInput(familiar.inputs,'recurrences_id')).amount) }}
+            </span>
+            <span v-else>-</span>
+          </td> -->
+         <!--  <td>dfg
+            dfgf
+            {{ moneda(getValueInput(familiar.inputs,'recurrences_id').amount) }}
+
+         </td> -->
+          <td>{{ moneda(familiar.initiation_fee) }}</td>
+          <td></td>
+          <td>{{ familiar.tax.text }}</td>
+          <td>{{ moneda(familiar.subtotal) }}</td> 
+
+        </tr>
+        <tr>
+          <td style="text-align: right;" colspan="7">
+            Total
+          </td>
+          <td class="is-end">
+            {{ moneda(total) }}
+          </td>
+        </tr>
+        
+      </tbody>
+    </table>
+
+  </formLayaut>
 </template>
+
+<style lang="scss">
+
+
+
+</style>

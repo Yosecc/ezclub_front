@@ -2,8 +2,8 @@ import axios from "axios";
 
 import { user, onLogout } from '/@src/pages/auth/auth.ts'
 
-const url = 'https://dev-api.ushuaiacreative.com/api/'
-// const url = 'https://ezclub.loc/api/'
+// const url = 'https://dev-api.ushuaiacreative.com/api/'
+const url = 'https://ezclub.loc/api/'
 
 import { useCookies } from "vue3-cookies";
 const { cookies } = useCookies();
@@ -18,18 +18,18 @@ let intance = axios.create({
   },
 });
 
-intance.interceptors.response.use(function (response) {
-  return response;
-}, function (error) {
-  // Any status codes that falls outside the range of 2xx cause this function to trigger
-  // Do something with response error
-  if(error.response.status == 401){
-    onLogout()
-  }else{
-    return Promise.reject(error);
-  }
+// intance.interceptors.response.use(function (response) {
+//   return response;
+// }, function (error) {
+//   // Any status codes that falls outside the range of 2xx cause this function to trigger
+//   // Do something with response error
+//   if(error.response.status == 401){
+//     // onLogout()
+//   }else{
+//     return Promise.reject(error);
+//   }
   
-});
+// });
 
 
 

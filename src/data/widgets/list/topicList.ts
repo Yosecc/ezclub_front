@@ -12,7 +12,7 @@ export const topicList = [
       },
       {
         id: 5,
-        picture: '/demo/avatars/22.jpg',
+        picture: '',
       },
       {
         id: 11,
@@ -128,7 +128,7 @@ export const topicList = [
       },
       {
         id: 20,
-        picture: '/demo/avatars/22.jpg',
+        picture: '',
       },
     ],
   },

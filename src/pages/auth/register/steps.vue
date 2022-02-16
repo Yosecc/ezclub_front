@@ -13,7 +13,9 @@ import { Api } from '/@src/services'
 import { isDark, logo } from '/@src/state/darkModeState'
 // import sleep from '/@src/utils/sleep'
 
-import { company, contact, userNew, step, locationsData, locations, servicesPacksSelected, creditCard, flipped, setAuthStorage} from '/@src/pages/auth/auth.ts'
+import { contact, userNew, step, locationsData, locations, servicesPacksSelected, creditCard, flipped, setAuthStorage} from '/@src/pages/auth/auth.ts'
+
+import { companyInputs } from '/@src/models/Companies.ts'
 
 const router = useRouter()
 const notif = useNotyf()
@@ -29,7 +31,7 @@ onMounted(()=>{
     router.push({ name: 'auth-register' })
   }
 
-  company.value.map((element)=>{
+  companyInputs.value.map((element)=>{
     if(element.name == "company_city_id"){
       element.values = cities.value
     }
@@ -39,7 +41,6 @@ onMounted(()=>{
     if(element.name == "company_country_id"){
       element.values = contries.value
     }
-
   })
 
   locationsData.value.map((element)=>{
@@ -125,7 +126,7 @@ const processData = (inputs, options = { anidados: false, array: true })=>{ //Ar
 const handleSignup = async () => {
 
   const data = { 
-    ...processData(company.value),
+    ...processData(companyInputs.value),
     ...processData(contact.value),
     ...userNew.value,
     ...processData(servicesPacksSelected.value, { array: false }),
@@ -227,7 +228,7 @@ const removeLocation = (key) =>{
         <!-- STEP 1 COMPANY -->
           <div  class="form-card" v-if="step == 1">
             <inputsLayaut
-              :inputs-step="company"
+              :inputs-step="companyInputs"
             />
             <div class="d-flex justify-content-end"> 
               <VButton @click="next(2)" color="primary"> Continue </VButton>

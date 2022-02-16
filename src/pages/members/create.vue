@@ -1,9 +1,23 @@
 <script setup lang="ts">
 import { useHead } from '@vueuse/head'
 import { computed, ref, onMounted, watch, onBeforeMount } from 'vue'
-import { steps, memberData, categories, stepActive, typeDataSteps } from '/@src/components/members/MembersData'
 
-import { Notyf } from 'notyf'
+import {  categoriesMembers, 
+          inputsInformation, 
+          inputsFamily, 
+          inputsContact, 
+          inputsMembership,
+          notasInput,
+          saveMember, 
+          idMember } from '/@src/models/Members.ts'
+
+import { getMeberships, memberships } from '/@src/models/Memberships.ts'
+import { getRecurrences } from '/@src/models/Recurrences.ts'
+import { getDiscounts } from '/@src/models/Discounts.ts'
+import { setInputValuesData, perpareDataInputs } from '/@src/models/Mixin.ts'
+import { getcities, getstates, getcontries } from '/@src/services/config.ts'
+import { getTrainers } from '/@src/models/Staffs.ts'
+import { optionsCreditCard } from '/@src/models/PaymentMethodsData.ts'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
 
 pageTitle.value = 'Add New members'
@@ -11,156 +25,291 @@ useHead({
   title: 'Members',
 })
 
-const notyf = new Notyf({
-  duration: 3000,
-  position: {
-    x: 'right',
-    y: 'top',
-  }})
-
-const errors = (validateData) => {
-  validateData.forEach((element)=>{
-    if(element.placeholder != undefined){
-      element.hasError = true
-      notyf.error(element.placeholder+' is required')
-    }
-  }) 
-}
-
-watch(stepActive, ()=>{
-  if(categories.value.model == 'Minor' && stepActive.value == 2){
-    typeDataSteps.value = 'parent'
-  }else if(categories.value.model == 'Adult' && stepActive.value == 2){
-    typeDataSteps.value = 'family'
-  }else{
-    typeDataSteps.value = 'data'
-  }
+onMounted(()=>{
+  getMeberships().then((response)=>{
+    setInputValuesData(inputsMembership,'memberships_id', response.data.memberships)
+  })
+  getDiscounts().then((response)=>{
+    setInputValuesData(inputsMembership,'discount', response.data.discounts)
+  })
+  getRecurrences().then((response)=>{
+    // setInputValuesData(inputsMembership,'recurrences_id', response.data)
+  })
+  getcities().then((response)=>{
+    setInputValuesData(inputsInformation,'city_id',response.value)
+  })
+  getstates().then((response)=>{
+    setInputValuesData(inputsInformation,'state_id',response.value)
+  })
+  getcontries().then((response)=>{
+    setInputValuesData(inputsInformation,'country_id',response.value)
+  })
+  getTrainers().then((response)=>{
+    setInputValuesData(inputsMembership,'staff_id',response.data)
+  })
 })
 
-const validateData = () => {
-  let validate = []
-  
-  const data = memberData.value.find((step)=> step.step == stepActive.value)[typeDataSteps.value]
+const stepActive = ref(1)
 
-  if(data.length > 0 || data != undefined){
-    data.forEach((element)=>{
-      if(element.model == '' && element.required){
-        validate.push(element)
-      }else{
-        element.hasError = false
-      }
-    })
-  }else{
-    console.error('No hay datos en: '+ stepActive.value+':'+typeDataSteps.value)
-    console.error(data)
-  }
-  return validate
-}
+const steps = ref([
+  {
+    step: 1,
+    text: 'Member Information',
+    categories:['Adult','Minor']
+  },
+  {
+    step: 1,
+    text: 'Prospect Information',
+    categories:['Prospect']
+  },
+  {
+    step: 2,
+    text: 'Add Family Member',
+    categories:['Adult']
+  },
+  {
+    step: 2,
+    text: 'Add Payment Method',
+    categories:['Prospect']
+  },
+  {
+    step: 2,
+    text: 'Parent / Guardian',
+    categories:['Minor']
+  },
+  {
+    step: 3,
+    text: 'Contact Preference',
+    categories:['Adult','Minor']
+  },
+  {
+    step: 3,
+    text: 'Sing Waiver',
+    categories:['Prospect']
+  },
+  {
+    step: 4,
+    text: 'Select membership',
+    categories:['Adult','Minor']
+  },
+  {
+    step: 5,
+    text: 'Add Payment Method',
+    categories:['Adult','Minor']
+  },
+  {
+    step: 6,
+    text: 'Sing Contract & Waiver',
+    categories:['Adult','Minor']
+  },
+])
 
-const changeStep = (type) => {
-  if(type == 'advance') {
-    let validate = validateData()
-    
-    stepActive.value++
-    if(!validate.length){
-      // stepActive.value++
-    }else{
-     errors(validate)
-    }
-    
-  }else{
-    if(stepActive.value > 1){
-      stepActive.value--
-    }
-  }
-}
+const inputsInputsInformationStep = computed(()=>{
+  return inputsInformation.value.filter((input)=>input.categories.includes(categoriesMembers.value.model))
+})
 
 const step = computed(()=>{
-  return steps.value.find((step)=>step.step == stepActive.value && step.categories.includes(categories.value.model))
+  return steps.value.find((step)=>step.step == stepActive.value && step.categories.includes(categoriesMembers.value.model))
 })
 
 const stepsList = computed(()=>{
-  return steps.value.filter((step)=> step.categories.includes(categories.value.model))
+  return steps.value.filter((step)=> step.categories.includes(categoriesMembers.value.model))
 })
 
-const changeCategory = (category) => {
-  categories.value.model = category
+const changeStep = (val)=>{
+  if(val == 6){
+    sendData()
+  }else{
+     stepActive.value = val
+  }
 }
+const dataInformationMember = ref(null)
+
+const returDataInformationMember = (val) => {
+  dataInformationMember.value = val
+}
+
+const dataContact = ref(null)
+const returnDataContact = (val) => {
+  dataContact.value = val
+}
+
+const familiares = ref([])
+const returDataFamily = (data) =>{
+  familiares.value = data.value
+}
+
+const memberMembership = ref([])
+const familyMembership = ref([])
+const returnDataMembership = (obj) => {
+  familyMembership.value = obj.familyMembership.value
+  memberMembership.value = obj.memberMembership.value
+}
+
+const memberPayment = ref(null)
+const familiaresPayment = ref(null)
+const total = ref(null)
+const returnDataPayment = (obj) => {
+  // console.log(obj.total.value)
+  total.value = obj.total.value
+  // memberPayment.value = obj.paymentData.value
+  // familiaresPayment.value = obj.dataCardFamiliares
+}
+
+
+
+const sendData = () => {
+  console.log('dataInformationMember.value',dataInformationMember.value)
+  console.log('familiares.value',familiares.value)
+  console.log('dataContact.value',dataContact.value)
+  console.log('familyMembership.value',familyMembership.value)
+  console.log('memberMembership.value',perpareDataInputs(memberMembership.value))
+  console.log('memberPayment.value',perpareDataInputs(memberPayment.value))
+  console.log('familiaresPayment.value',familiaresPayment.value)
+  console.log('categoriesMembers',perpareDataInputs(categoriesMembers.value,{array:false}))
+  console.log('notasInput',perpareDataInputs(notasInput.value))
+  console.log('optionsCreditCard', perpareDataInputs(optionsCreditCard.value))
+
+  const fd = new FormData()
+
+  for (var i in dataInformationMember.value) {
+   fd.append(i,dataInformationMember.value[i])
+  }
+
+  let dataContactFD = dataContact.value
+  for (var i = 0; i < dataContactFD.length; i++) {
+    var item = dataContactFD[i]
+    for (var prop in item) {
+      fd.append(`notifications[${i}][${prop}]`,item[prop])
+    }
+  }
+  
+  let memberMembershipFD = perpareDataInputs(memberMembership.value)
+  for (var i in memberMembershipFD) {
+    if(i == 'diciplines'){
+      let ite = memberMembershipFD[i]
+      for (var e = 0; e < ite.length; ++e) {
+        fd.append('diciplines[]',ite[e])
+      }
+    }else{
+      fd.append(i,memberMembershipFD[i])
+    }
+  }
+
+  // let memberPaymentFD = perpareDataInputs(memberPayment.value)
+  // for (var i in memberPaymentFD) {
+  //   fd.append(i,memberPaymentFD[i])
+  // }
+
+  fd.append('total',total.value)
+
+  let categoriesMembersFD = perpareDataInputs(categoriesMembers.value,{array:false})
+  for (var i in categoriesMembersFD) {
+    fd.append(i,categoriesMembersFD[i])
+  }
+
+  let notasInputFD = perpareDataInputs(notasInput.value)
+  for (var i in notasInputFD) {
+    fd.append(i, notasInputFD[i])
+  }
+
+  let optionsCreditCardFD = perpareDataInputs(optionsCreditCard.value)
+  for (var i in optionsCreditCardFD) {
+    fd.append(i,optionsCreditCardFD[i])
+  }
+
+  console.log(...fd)
+  // saveMember(fd).then((response)=>{
+  //   console.log(response.data.member.id)
+  //   idMember.value = response.data.member.id
+  // })
+}
+
 
 
 </script>
 
 
 <template>
-  <SidebarLayout >
-    <!-- Content Wrapper -->
-    <!--  -->
-    <!-- <p>{{ stepsList }}</p> -->
-    <V-Field
-      v-if="stepActive == 1"
-      class="w-100"
-      addons
-    >
-      <V-Control 
-        v-for="(category, categoryIndex) in categories.values"
-      >
-        <V-Button 
-          @click="changeCategory(category)"
-          :color="categories.model == category ? 'primary':undefined"
-        > 
-        {{ category }}</V-Button>
-      </V-Control>
-    </V-Field>
-    <!--  -->
-    <div class="page-content-inner d-flex">
-      
-      <V-CardAdvanced class="w-70 flex-column d-flex card-form-member">
-        <template #header-left>
-          <h2  class="title is-4 is-narrow ">{{ step.text }} </h2>
-        </template>
-        <template #content class="mb-auto">
-          <!-- <p>{{ typeDataSteps }}</p>
-          <p>{{ categories.model }}</p> -->
-          <memberInformation 
-            v-if="stepActive == 1" 
-            :step-selected="stepActive" />
-          <!--  -->
-          <familyMembers 
-            v-if="stepActive == 2 && typeDataSteps == 'family' " 
-            :step-selected="stepActive"
-             />
-          <!--  -->
-          <parentGuardian 
-            v-if="stepActive == 2 && typeDataSteps == 'parent' " 
-            :step-selected="stepActive" />
-          <!--  -->
-          <contactPreference
-            v-if="stepActive == 3" 
-            :step-selected="stepActive"
-          />
-          <!--  -->
-          <selectMembership
-            v-if="stepActive == 4" 
-            :step-selected="stepActive"
-          />
-          <paymentMethod
-            v-if="stepActive == 5" 
-            :step-selected="stepActive"
-          />
-          <sign
-            v-if="stepActive == 6" 
-            :step-selected="stepActive"
-          />
-        </template>
-        <template #footer-left>
-          <V-Button color="warning" v-if="stepActive > 1" class="mr-2" @click="changeStep('back')"> Back </V-Button>
-        </template>
-        <template #footer-right>
-          <V-Button color="primary" @click="changeStep('advance')"> Continue </V-Button>
-        </template>
-      </V-CardAdvanced>
-
-      <div class="w-30 px-5 ">
+  <SidebarLayout>
+    <!-- Display a payment form -->
+    
+    <div class="columns is-multiline">
+      <div class="column is-12">
+        <V-Field
+          v-if="stepActive == 1"
+          class="w-100"
+          addons
+        >
+          <V-Control 
+            v-for="(category, categoryIndex) in categoriesMembers.values"
+            :key="`categoymember-${categoryIndex}`"
+          >
+            <V-Button 
+              @click="categoriesMembers.model = category"
+              :color="categoriesMembers.model == category ? 'primary':undefined"
+              rounded
+            > 
+            {{ category }}</V-Button>
+          </V-Control>
+        </V-Field>
+      </div>
+      <div class="column is-9">
+      <!-- memberInformation -->
+        <memberInformation 
+          v-show="stepActive == 1"
+          type="create"
+          :title="step.text"
+          :inputs="inputsInputsInformationStep"
+          @changeStep="changeStep"
+          @returData="returDataInformationMember"
+        />
+      <!-- familyMembers -->
+        <familyMembers 
+          v-show="stepActive == 2 && categoriesMembers.model == 'Adult' "
+          type="create"
+          :title="step.text"
+          :inputs="inputsFamily" 
+          @changeStep="changeStep"
+          @returData="returDataFamily"
+        />
+      <!-- contactPreference -->
+        <contactPreference
+          v-show="stepActive == 3"
+          type="create"
+          :title="step.text"
+          :inputs="inputsContact" 
+          @changeStep="changeStep"
+          @returnData="returnDataContact"
+        />
+      <!-- selectMembership -->
+        <selectMembership
+          v-if="stepActive == 4"
+          type="create"
+          :member="inputsInputsInformationStep"
+          :familiares="familiares"
+          :title="step.text"
+          :inputs="inputsMembership"
+          :memberships="memberships"
+          :notes="notasInput"
+          @changeStep="changeStep"
+          @returnData="returnDataMembership"
+        />
+      <!-- paymentMethod -->
+        <paymentMethod
+          v-if="stepActive == 5"
+          type="create"
+          :title="step.text"
+          :member="inputsInputsInformationStep"
+          :familiares="familiares"
+          :inputs="inputsMembership"
+          :memberMembership="memberMembership"
+          :familyMembership="familyMembership"
+          @changeStep="changeStep"
+          @returnData="returnDataPayment"
+        />
+      </div>
+      <div class="column is-3">
         <V-progress-check
           v-for="(step,key) in stepsList"
           :key="key"
@@ -168,7 +317,6 @@ const changeCategory = (category) => {
           :step="step.step"
           :text="step.text"
         ></V-progress-check>
-        
       </div>
     </div>
   </SidebarLayout>

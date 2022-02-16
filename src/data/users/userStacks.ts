@@ -46,7 +46,7 @@ export const userStack1 = [
 export const userStack2 = [
   {
     id: 5,
-    picture: '/demo/avatars/12.jpg',
+    picture: '',
     initials: 'JS',
     color: 'info',
   },

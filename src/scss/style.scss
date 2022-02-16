@@ -150,3 +150,14 @@ body.is-dark{
 	  }
 	}
 }
+
+.flex-wrap{
+	flex-wrap: wrap;
+}
+
+.color-white{
+	color: white !important;
+	td{
+		color: white !important;
+	}
+}

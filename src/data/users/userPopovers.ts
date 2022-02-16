@@ -13,7 +13,7 @@ export const popovers = {
   },
   user7: {
     id: 7,
-    avatar: '/demo/avatars/7.jpg',
+    avatar: '',
     badge: '/images/icons/flags/united-states-of-america.svg',
     username: 'Alice C.',
     fullName: 'Alice Carasca',
@@ -85,7 +85,7 @@ export const popovers = {
   },
   user13: {
     id: 13,
-    avatar: '/demo/avatars/13.jpg',
+    avatar: '',
     badge: '/images/icons/flags/united-states-of-america.svg',
     username: 'Tara S.',
     fullName: 'Tara Svenson',
@@ -169,7 +169,7 @@ export const popovers = {
   },
   user22: {
     id: 22,
-    avatar: '/demo/avatars/22.jpg',
+    avatar: '',
     badge: '/images/icons/flags/united-states-of-america.svg',
     username: 'Dwayne H.',
     fullName: 'Dwayne Hicks',

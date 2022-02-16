@@ -4,6 +4,8 @@ const citiesData = ref([])
 const statesData = ref([])
 const contriesData = ref([])
 
+const taxesData = ref([])
+
 export const cities = computed(()=>{
 	return JSON.parse(JSON.stringify(citiesData.value))
 })
@@ -13,6 +15,13 @@ export const states = computed(()=>{
 export const contries = computed(()=>{
 	return JSON.parse(JSON.stringify(contriesData.value))
 })
+
+export const taxes = computed(()=>{
+	return JSON.parse(JSON.stringify(taxesData.value))
+})
+
+
+
 
 
 /*
@@ -38,5 +47,11 @@ export const getcontries = async ()=>{
 		contriesData.value = response.data
 	})
 	return contries
+}
+export const getTaxes = async ()=>{
+	await Api.get('taxes').then((response)=>{
+		taxesData.value = response.data.taxes
+	})
+	return taxes
 }
 

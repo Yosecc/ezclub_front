@@ -10,7 +10,7 @@ import sleep from '/@src/utils/sleep'
 import { Api } from '/@src/services'
 import { setAuthStorage, remember, isAuthenticated} from '/@src/pages/auth/auth.ts'
 
-import { getCompany } from '/@src/pages/companies/companies.ts'
+import { getCompany } from '/@src/models/Companies.ts'
 
 type StepId = 'login' | 'forgot-password'
 const step = ref<StepId>('login')

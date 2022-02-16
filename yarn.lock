@@ -7018,6 +7018,11 @@
   dependencies:
     "minimist" "^1.2.5"
 
+"moment@^2.29.1":
+  "integrity" "sha512-kHmoybcPV8Sqy59DwNDY3Jefr64lK/by/da0ViFcuA4DH0vQg5Q6Ze5VimxkfQNSC+Mls/Kx53s7TjP1RhFEDQ=="
+  "resolved" "https://registry.npmjs.org/moment/-/moment-2.29.1.tgz"
+  "version" "2.29.1"
+
 "mozjpeg@^7.0.0":
   "integrity" "sha512-A6nVpI33DVi04HxatRx3PZTeVAOP1AC/T/5kXEvP0U8F+J11mmFFDv46BM2j5/cEyzDDtK8ptHeBSphNMrQLqA=="
   "resolved" "https://registry.npmjs.org/mozjpeg/-/mozjpeg-7.1.0.tgz"
@@ -11170,10 +11175,17 @@
     "@mapbox/vector-tile" "^1.3.1"
     "pbf" "^3.2.1"
 
-"vue-demi@*":
+"vue-demi@*", "vue-demi@latest":
   "integrity" "sha512-7s1lufRD2l369eFWPjgLvhqCRk0XzGWJsQc7K4q+0mZtixyGIvsK1Cg88P4NcaRIEiBuuN4q1NN4SZKFKwQswA=="
   "resolved" "https://registry.npmjs.org/vue-demi/-/vue-demi-0.9.1.tgz"
   "version" "0.9.1"
+
+"vue-drawing-canvas@^1.0.9":
+  "integrity" "sha512-BDSx5RK+mhUoMWNM69UkPVymIfKslfLoZyVYX14yMjVkuRZ807pXeT21fATbVqLpWYm9cNJL99fYpCpxlICgzA=="
+  "resolved" "https://registry.npmjs.org/vue-drawing-canvas/-/vue-drawing-canvas-1.0.9.tgz"
+  "version" "1.0.9"
+  dependencies:
+    "vue-demi" "latest"
 
 "vue-eslint-parser@^7.6.0":
   "integrity" "sha512-QXxqH8ZevBrtiZMZK0LpwaMfevQi9UL7lY6Kcp+ogWHC88AuwUPwwCIzkOUc1LR4XsYAt/F9yHXAB/QoD17QXA=="
@@ -11223,7 +11235,7 @@
   dependencies:
     "vscode-vue-languageservice" "^0.25.22"
 
-"vue@^2.5.17 || ^2.6", "vue@^2.6.0 || >=3.0.0-rc.1", "vue@^3.0.0", "vue@> 3.0.0", "vue@>=3", "vue@3.0.11", "vue@3.1.1":
+"vue@^2.0.0 || ^3.0.5", "vue@^2.5.17 || ^2.6", "vue@^2.6.0 || >=3.0.0-rc.1", "vue@^3.0.0", "vue@> 3.0.0", "vue@>=3", "vue@3.0.11", "vue@3.1.1":
   "integrity" "sha512-3/eUi4InQz8MPzruHYSTQPxtM3LdZ1/S/BvaU021zBnZi0laRUyH6pfuE4wtUeLvI8wmUNwj5wrZFvbHUXL9dw=="
   "resolved" "https://registry.npmjs.org/vue/-/vue-3.0.11.tgz"
   "version" "3.0.11"

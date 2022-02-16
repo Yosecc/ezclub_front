@@ -14,7 +14,7 @@
 import { onMounted, watch, ref,computed } from 'vue'
 import { useHead } from '@vueuse/head'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
-import { getCompany, company_name} from '/@src/pages/companies/companies.ts'
+import { getCompany, company_name} from '/@src/models/Companies.ts'
 import { Api } from '/@src/services'
 
 onMounted(()=>{

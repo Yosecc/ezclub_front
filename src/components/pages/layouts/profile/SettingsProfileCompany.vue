@@ -22,6 +22,12 @@
       icon: 'lnil lnil-package'
     },
     {
+      name: 'Inventory',
+      subname: 'Inventory products',
+      toName: 'settings-inventory',
+      icon: 'lnir lnir-tablet-alt'
+    },
+    {
       name: 'Staff',
       subname: 'Manage Team',
       toName: 'settings-staff',

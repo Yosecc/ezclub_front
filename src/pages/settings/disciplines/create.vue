@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { useHead } from '@vueuse/head'
-import { onMounted, watch, ref,computed } from 'vue'
+import { onMounted, ref } from 'vue'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
 // import { useRoute, useRouter } from 'vue-router'
 // import { Api } from '/@src/services'
-import { getCompany, company } from '/@src/pages/companies/companies.ts'
+import { getCompany } from '/@src/models/Companies.ts'
+import { getTrainers } from '/@src/models/Staffs.ts'
 
 pageTitle.value = 'New Discipline'
 
@@ -12,8 +13,12 @@ useHead({
   title: 'Disciplines',
 })
 
+const isLoading = ref(true)
 onMounted(()=>{
-  // getCompany()
+  getCompany()
+  getTrainers().then((response)=>{
+    isLoading.value = false
+  })
 })
 
 </script>
@@ -25,7 +30,7 @@ onMounted(()=>{
     <div class="page-content-inner ">
 
       <disciplinesForm
-      
+        :isLoading="isLoading"
       />
      
 

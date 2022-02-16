@@ -228,6 +228,18 @@ watch(
               class="fas fa-users fa-lg sidebar-svg"></i>
           </a>
         </li>
+        <li>
+          <RouterLink
+            id="open-store"
+            :to="{ name: 'store' }"
+            data-content="store"
+            title="Store"
+          >
+            <i 
+              aria-hidden="true" 
+              class="fa-lg fas fa-cash-register sidebar-svg"></i>
+          </RouterLink>
+        </li>
         <!-- Layouts -->
         <!-- <li>
           <a

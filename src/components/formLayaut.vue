@@ -23,6 +23,10 @@ const props = defineProps({
   newRoute:{
     type: Object,
     default: { name: '', to: '' }
+  },
+  isLoading:{
+    type: Boolean,
+    default: false
   }
 })
 
@@ -31,7 +35,8 @@ const emit = defineEmit(['changeStep','saveData']);
 </script>
 
 <template>
-<VCardAdvanced>
+  <VPlaceload v-if="isLoading" height="500px"   />
+  <VCardAdvanced v-else>
     <template #header-left>
       <div>
         <h1 class="title is-4 mb-0">

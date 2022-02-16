@@ -1,34 +1,32 @@
 <script setup lang="ts">
-import { useHead } from '@vueuse/head'
-import { onMounted, watch, ref,computed } from 'vue'
-import { pageTitle } from '/@src/state/sidebarLayoutState'
 // import { useRoute, useRouter } from 'vue-router'
 // import { Api } from '/@src/services'
-import { getCompany, company } from '/@src/pages/companies/companies.ts'
+import { company } from '/@src/models/Companies.ts'
+import { onMounted, watch, ref,computed } from 'vue'
+import { memberships, getMeberships } from '/@src/models/Memberships.ts'
 
-pageTitle.value = 'Memberships'
-
-useHead({
-  title: 'Memberships',
-})
-
+const isLoading  = ref(false)
 onMounted(()=>{
-  getCompany()
+  getMeberships().then((response)=>{
+    if(response.data.status){
+      isLoading.value = true
+    }
+    // console.log(memberships.value)
+  })
+
 })
 
 </script>
 
 
 <template>
-  <SidebarLayout >
-    <!-- Content Wrapper -->
-    <div class="page-content-inner ">
-
+  <settingLayaout
+    title="Memberships"
+  >
+    <VPlaceload v-if="!isLoading" height="500px"   />
     <membershipsList
-      company="company"
+      v-if="isLoading"
+      :memberships="memberships"
     />
-       
-    </div>
-    
-  </SidebarLayout>
+  </settingLayaout>
 </template>
