@@ -107,7 +107,7 @@ onMounted(()=>{
               :label-true="input.values[1]"
               :label-false="input.values[0]"
               color="primary"
-              @change="$emit('changeSwitch',{input,inputsStep })"
+              @change="$emit('changeSwitch',{ input, inputsStep })"
             />
           </V-Control>
         </V-Field>
@@ -312,6 +312,7 @@ onMounted(()=>{
                 :value="check.id"
                 :label="!input.filter ? check.name:input.filter(check)"
                 color="primary"
+                @change="$emit('changeCheckbox',input)"
               />
             </V-Control>
           </div>
@@ -380,7 +381,7 @@ onMounted(()=>{
                           v-model="input.model"
                           :value="check.id" 
                           :name="input.name"
-                          @change="$emit('changeRadio', input)"
+                          @change="$emit('changeRadio', input, inputsStep)"
                         />
                         <div class="radio-pill-inner">
 

@@ -61,12 +61,15 @@ const change = (val) => {
 const minorsKeys = ref([])
 
 const changeSwitchKey = (key) =>{
+  console.log('es este')
+  console.log(key)
+  console.log(inputsSteps.value)
   let index = minorsKeys.value.findIndex((element)=> element == key)
-  if(index == '-1' || index == -1){
-    minorsKeys.value.push(key)
-  }else{
-    minorsKeys.value.splice(index, 1)
-  }
+  // if(index == '-1' || index == -1){
+  //   minorsKeys.value.push(key)
+  // }else{
+  //   minorsKeys.value.splice(index, 1)
+  // }
 }
 
 </script>

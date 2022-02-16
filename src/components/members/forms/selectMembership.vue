@@ -166,6 +166,7 @@ const inputsFamilies = computed(()=>{
       setInputValuesData(membershipDataFor,'memberships_id', memberships.value)
       setInputValuesData(membershipDataFor,'discount', discountsData.value)
       setInputValuesData(membershipDataFor,'staff_id', trainers.value)
+      
       data.push({ 
         family: element,
         inputs: membershipDataFor
@@ -209,8 +210,12 @@ const changeMembership = (obj) => {
   }
 }
 
-const changeRecurrence = (input) => {
+const changeRecurrence = (input, inputs) => {
   setInputModelData(inputsSteps, 'amount', input.values.find((e)=>e.id == input.model).amount)
+}
+
+const changeRecurrenceFamily = (input, inputs) => {
+  setInputModelData(inputs, 'amount', input.values.find((e)=>e.id == input.model).amount)
 }
 
 const emit = defineEmit(['changeStep','returnData'])
@@ -228,6 +233,7 @@ const emit = defineEmit(['changeStep','returnData'])
 
   <V-Card class="mb-4">
     <p class=""><b> {{ viewInput(member,'name') }} {{ viewInput(member,'second_name') }} {{ viewInput(member,'last_name') }}</b></p>
+    <p>{{ viewInput(inputsSteps,'diciplines') }}</p>
     <inputsLayaut
       :inputs-step="inputsSteps"
       @changeSelect="changeMembership"
@@ -241,9 +247,12 @@ const emit = defineEmit(['changeStep','returnData'])
     v-for="(data, key) in inputsFamilies">
 
     <p class="mb-5"><b> {{ viewInput(data.family,'name') }} {{ viewInput(data.family,'second_name') }} {{ viewInput(data.family,'last_name') }}</b></p>
+    <!-- <p>{{ viewInput(data.inputs,'diciplines') }}</p> -->
     <inputsLayaut
       :inputs-step="data.inputs"
       @changeSelect="changeMembership"
+      @changeRadio="changeRecurrenceFamily"
+      @changeCheckbox="reloadForm"
     />
 
   </V-Card>

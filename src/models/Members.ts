@@ -216,6 +216,26 @@ export const inputsInformation = ref([
         categories:['Adult'],
         typeMember: ['Individual']
       },
+      {
+        typeInput: 'hidden',
+        name:'is_family',
+        placeholder: 'LEO / VET / FR ID#',
+        model: 0,
+        class: 'is-6',
+        categories:['Adult','Minor','Prospect'],
+        typeMember: ['Individual','Company']
+      },
+      {
+        typeInput: 'hidden',
+        name:'principal_family',
+        placeholder: 'LEO / VET / FR ID#',
+        model: 0,
+        class: 'is-6',
+        categories:['Adult','Minor','Prospect'],
+        typeMember: ['Individual','Company']
+      },
+      
+
 ])
 
 const familyData = ref([
@@ -321,6 +341,45 @@ const familyData = ref([
             category:['Adult']
           },
           {
+        typeInput: 'number',
+        name:'postal_code',
+        placeholder: 'Postal Code',
+        model: '',
+        class: 'is-3',
+        categories:['Adult','Prospect','Minor'],
+        typeMember: ['Individual','Company']
+      },
+      {
+        typeInput: 'selectData',
+        name:'country_id',
+        placeholder: 'Country',
+        model: '',
+        values: [''],
+        class: 'is-3',
+        categories:['Adult','Prospect','Minor'],
+        typeMember: ['Individual','Company']
+      },
+      {
+        typeInput: 'selectData',
+        name:'city_id',
+        placeholder: 'City',
+        model: '',
+        values: [''],
+        class: 'is-3',
+        categories:['Adult','Prospect','Minor'],
+        typeMember: ['Individual','Company']
+      },
+      {
+        typeInput: 'selectData',
+        name:'state_id',
+        placeholder: 'State',
+        model: '',
+        values: [''],
+        class: 'is-3',
+        categories:['Adult','Prospect','Minor'],
+        typeMember: ['Individual','Company']
+      },
+          {
             typeInput: 'text',
             name:'address',
             placeholder: 'Address',
@@ -347,10 +406,48 @@ const familyData = ref([
             required: false,
             category:['Adult']
           },
+          {
+        typeInput: 'checkbox',
+        name:'leo_vet_fr',
+        placeholder: 'LEO / VET / FR',
+        model: [],
+        required: false,
+        class: 'is-6',
+        categories:['Adult'],
+        typeMember: ['Individual']
+      },
+      {
+        typeInput: 'text',
+        name:'id_leo_vet_fr',
+        placeholder: 'LEO / VET / FR ID#',
+        model: '',
+        required: false,
+        class: 'is-6',
+        categories:['Adult'],
+        typeMember: ['Individual']
+      },
+       {
+        typeInput: 'hidden',
+        name:'is_family',
+        placeholder: 'LEO / VET / FR ID#',
+        model: 1,
+        class: 'is-6',
+        categories:['Adult','Minor','Prospect'],
+        typeMember: ['Individual','Company']
+      },
+      {
+        typeInput: 'hidden',
+        name:'principal_family',
+        placeholder: 'LEO / VET / FR ID#',
+        model: 0,
+        class: 'is-6',
+        categories:['Adult','Minor','Prospect'],
+        typeMember: ['Individual','Company']
+      },
 ])
 
 export const inputsFamily = computed(()=>{
-  return JSON.parse(JSON.stringify(familyData.value))
+  return familyData.value
 })
 
 export const inputsContact = ref([{

@@ -25,7 +25,7 @@ const viewFirma = async () => {
   let base64 = VueCanvasDrawing.value.save()
   firma.value = base64
   load.value = true
-  
+
   let response = Api.post(`sign/${props.member.membership_members.id}`,{sign: base64})
                   .then((response)=>{
                     firmado.value = true
@@ -74,6 +74,7 @@ const viewFirma = async () => {
         v-if="!firmado && !load"
         class="column is-6 mx-auto"
         ref="VueCanvasDrawing"
+
         saveAs="jpeg"
         width="600"
         height="200"

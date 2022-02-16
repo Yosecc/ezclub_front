@@ -37,12 +37,15 @@ onMounted(()=>{
   })
   getcities().then((response)=>{
     setInputValuesData(inputsInformation,'city_id',response.value)
+    setInputValuesData(inputsFamily,'city_id',response.value)
   })
   getstates().then((response)=>{
     setInputValuesData(inputsInformation,'state_id',response.value)
+    setInputValuesData(inputsFamily,'state_id',response.value)
   })
   getcontries().then((response)=>{
     setInputValuesData(inputsInformation,'country_id',response.value)
+    setInputValuesData(inputsFamily,'country_id',response.value)
   })
   getTrainers().then((response)=>{
     setInputValuesData(inputsMembership,'staff_id',response.data)
@@ -117,6 +120,7 @@ const stepsList = computed(()=>{
 })
 
 const changeStep = (val)=>{
+  // console.log(val)
   if(val == 6){
     sendData()
   }else{
@@ -156,26 +160,30 @@ const returnDataPayment = (obj) => {
   // familiaresPayment.value = obj.dataCardFamiliares
 }
 
+const convertFormData = (fd, objeto)=>{
 
+  for (var i in objeto) {
+   fd.append(i,objeto[i])
+  }
+  // return fd
+}
 
 const sendData = () => {
-  console.log('dataInformationMember.value',dataInformationMember.value)
-  console.log('familiares.value',familiares.value)
-  console.log('dataContact.value',dataContact.value)
-  console.log('familyMembership.value',familyMembership.value)
-  console.log('memberMembership.value',perpareDataInputs(memberMembership.value))
-  console.log('memberPayment.value',perpareDataInputs(memberPayment.value))
-  console.log('familiaresPayment.value',familiaresPayment.value)
-  console.log('categoriesMembers',perpareDataInputs(categoriesMembers.value,{array:false}))
-  console.log('notasInput',perpareDataInputs(notasInput.value))
-  console.log('optionsCreditCard', perpareDataInputs(optionsCreditCard.value))
+  // console.log('dataInformationMember.value',dataInformationMember.value)
+  // console.log('familiares.value',perpareDataInputs(familiares.value))
+  // console.log('memberMembership.value',perpareDataInputs(memberMembership.value))
+  // console.log('memberPayment.value',perpareDataInputs(memberPayment.value))
+  // console.log('familiaresPayment.value',familiaresPayment.value)
+  // console.log('categoriesMembers',perpareDataInputs(categoriesMembers.value,{array:false}))
+  // console.log('notasInput',perpareDataInputs(notasInput.value))
+  // console.log('optionsCreditCard', perpareDataInputs(optionsCreditCard.value))
 
   const fd = new FormData()
 
-  for (var i in dataInformationMember.value) {
-   fd.append(i,dataInformationMember.value[i])
-  }
+  // Informacion
+  convertFormData(fd, dataInformationMember.value)
 
+  // Contacto
   let dataContactFD = dataContact.value
   for (var i = 0; i < dataContactFD.length; i++) {
     var item = dataContactFD[i]
@@ -218,11 +226,64 @@ const sendData = () => {
     fd.append(i,optionsCreditCardFD[i])
   }
 
+  // console.log('familyMembership',familyMembership.value)
+
+  familyMembership.value.forEach((element, index)=>{
+    // Informacion
+    let familiarX = perpareDataInputs(element.family)
+
+    for (var i in familiarX) {
+      if(i == 'category'){
+        if(familiarX[i]){
+          familiarX[i] = 'Minor'
+        }else{
+          familiarX[i] = 'Adult'
+        }
+      }
+      fd.append(`familiares[${index}][${i}]`,familiarX[i])
+    }
+    // contacto
+    let dataContactX = dataContact.value
+    for (var i = 0; i < dataContactX.length; i++) {
+      var item = dataContactX[i]
+      for (var prop in item) {
+        fd.append(`familiares[${index}][notifications][${i}][${prop}]`,item[prop])
+      }
+    } 
+
+    let membresiaX = perpareDataInputs(element.inputs)
+    for (var i in membresiaX) {
+      if(i == 'diciplines'){
+        let ite = membresiaX[i]
+        for (var e = 0; e < ite.length; ++e) {
+          fd.append(`familiares[${index}][diciplines][]`,ite[e])
+        }
+      }else{
+        // console.log(membresiaX[i])
+        fd.append(`familiares[${index}][${i}]`,membresiaX[i])
+      }
+
+    }
+
+    fd.append(`familiares[${index}][total]`, total.value)
+
+    let notasInputFD = perpareDataInputs(notasInput.value)
+    for (var i in notasInputFD) {
+      fd.append(`familiares[${index}][${i}]`, notasInputFD[i])
+    }
+
+    let optionsCreditCardFD = perpareDataInputs(optionsCreditCard.value)
+    for (var i in optionsCreditCardFD) {
+      fd.append(`familiares[${index}][${i}]`,optionsCreditCardFD[i])
+    }
+  })
+
+
   console.log(...fd)
-  // saveMember(fd).then((response)=>{
-  //   console.log(response.data.member.id)
-  //   idMember.value = response.data.member.id
-  // })
+  saveMember(fd).then((response)=>{
+    console.log(response.data.member.id)
+    idMember.value = response.data.member.id
+  })
 }
 
 

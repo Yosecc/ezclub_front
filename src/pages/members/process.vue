@@ -11,12 +11,14 @@ useHead({
 })
 
 const route = useRoute()
-
+const router = useRouter()
 const member = ref([])
 
 const paymentStatus = ref(null)
 
 const urlPdf = ref(null)
+
+let familiares = ref([])
 
 onMounted(() => {
   Api.post(`payment/${route.query.id}`,{
@@ -27,10 +29,22 @@ onMounted(() => {
       paymentStatus.value = route.query.redirect_status
       urlPdf.value = response.data.urlPDF
       member.value = response.data.member
+      familiares.value = response.data.familiares
     }
   })
 })
 
+const nextFamily = (familiar) =>{
+
+  window.location.href= `http://localhost:3000/members/process?id=${familiar.id}&payment_intent=${route.query.payment_intent}&payment_intent_client_secret=${route.query.payment_intent_client_secret}&redirect_status=${route.query.redirect_status}`
+  // router.push({name: 'members-process', query: {
+  //     id: familiar.id,
+  //     payment_intent: route.query.payment_intent,
+  //     payment_intent_client_secret: route.query.payment_intent_client_secret,
+  //     redirect_status:route.query.redirect_status
+  //   }
+  // })
+}
 
 </script>
 
@@ -48,10 +62,25 @@ onMounted(() => {
           color="success">
          <h1 class="title is-4">Successful Payment</h1>
         </VCard>
-        <h2 class="title is-3"  >Sign</h2>
+        <h2 class="title is-3"  >Sign {{ member.name }} {{ member.second_name }} {{ member.last_name }}</h2>
         <sign
           :member="member"
         />
+
+        <div v-if="familiares.length > 0" class="mt-6">
+          <div v-for="(familiar, key) in familiares">
+            <VCard 
+              class="mb-4"
+              radius="small" 
+              >
+                <h2 class="title is-3"  >Sign Family:  {{ familiar.name }} {{ familiar.second_name }} {{ familiar.last_name }}</h2>
+
+                <V-Button color="warning" class="text-center mx-auto" @click="nextFamily(familiar)"> View and sign:  Family </V-Button>
+            </VCard>
+            
+            
+          </div>
+        </div>
       </div>
       
        

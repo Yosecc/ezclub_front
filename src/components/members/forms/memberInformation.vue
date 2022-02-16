@@ -51,8 +51,8 @@ const change = (val) => {
   let datos = perpareDataInputs(inputsSteps.value)
   if(!hasErrors.value){
     datos.select_type = !datos.select_type ? 'Individual':'Company'
-    datos.is_family = 0
-    datos.principal_family = 1
+    // datos.is_family = 0
+    // datos.principal_family = 1
     emit('returData', datos)
     emit('changeStep',val)
   }
