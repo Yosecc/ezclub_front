@@ -1,14 +1,14 @@
-import axios from "axios";
+import axios from 'axios'
 
 import { user, onLogout } from '/@src/pages/auth/auth.ts'
 
-// const url = 'https://dev-api.ushuaiacreative.com/api/'
-const url = 'https://ezclub.loc/api/'
+const url = 'https://dev-api.ushuaiacreative.com/api/'
+// const url = 'https://ezclub.loc/api/'
 
-import { useCookies } from "vue3-cookies";
-const { cookies } = useCookies();
+import { useCookies } from 'vue3-cookies'
+const { cookies } = useCookies()
 
-let intance = axios.create({
+const intance = axios.create({
   baseURL: url,
   headers: {
     Accept: 'application/json',
@@ -16,7 +16,7 @@ let intance = axios.create({
     // "Authorization": "Bearer "+localStorage.getItem("x-api-key"),
     // "x-api-key": user.value != null ? user.value.token : '',
   },
-});
+})
 
 // intance.interceptors.response.use(function (response) {
 //   return response;
@@ -28,9 +28,7 @@ let intance = axios.create({
 //   }else{
 //     return Promise.reject(error);
 //   }
-  
+
 // });
-
-
 
 export const Api = intance
