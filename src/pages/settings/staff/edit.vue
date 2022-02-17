@@ -7,10 +7,29 @@ import {
   staff,
   inputsInformation,
   inputsPermitions,
+  inputsSign,
   getstaffRoles,
+  putStaff,
 } from '/@src/models/Staffs'
 import { useRoute, useRouter } from 'vue-router'
-import { setInputModelData, setInputValuesData } from '/@src/models/Mixin.ts'
+import {
+  setInputModelData,
+  setInputValuesData,
+  perpareDataInputs,
+} from '/@src/models/Mixin.ts'
+
+import { getCompany } from '/@src/models/Companies.ts'
+
+import {
+  getcities,
+  getstates,
+  getcontries,
+  cities,
+  states,
+  contries,
+} from '/@src/services/config.ts'
+
+// import { Api } from '/@src/services/index.ts'
 
 const route = useRoute()
 
@@ -21,6 +40,22 @@ useHead({
 })
 
 onMounted(() => {
+  getCompany().then((response) => {
+    setInputValuesData(
+      inputsPermitions,
+      'locations_id',
+      response.data.locations
+    )
+  })
+  getcities().then((response) => {
+    setInputValuesData(inputsInformation, 'city_id', cities.value)
+  })
+  getstates().then((response) => {
+    setInputValuesData(inputsInformation, 'state_id', states.value)
+  })
+  getcontries().then((response) => {
+    setInputValuesData(inputsInformation, 'country_id', contries.value)
+  })
   getstaffRoles().then((response) => {
     setInputValuesData(
       inputsPermitions,
@@ -60,6 +95,24 @@ const steps = ref([
 const changeStep = (val) => {
   stepActive.value = val
 }
+
+const saveData = () => {
+  let obj = {
+    ...perpareDataInputs(inputsInformation.value),
+    ...perpareDataInputs(inputsPermitions.value),
+    ...perpareDataInputs(inputsSign.value, { array: false }),
+  }
+
+  const fd = new FormData()
+
+  for (var i in obj) {
+    fd.append(i, obj[i])
+  }
+
+  putStaff(route.query.id, obj).then((response) => {
+    console.log(response)
+  })
+}
 </script>
 
 <template>
@@ -67,13 +120,14 @@ const changeStep = (val) => {
     <!-- Content Wrapper -->
     <div class="page-content-inner">
       <div class="columns is-multiline">
-        <div class="column is-9">
+        <div class="column is-12">
           <!-- <transition name="fade" mode="out-in" appear> -->
           <staffInformation
             type="edit"
-            :buttons="['save']"
+            :buttons="['back', 'save']"
             :step="1"
             class="mb-3"
+            @saveData="saveData"
           />
 
           <staffSystemPermitions
@@ -86,15 +140,6 @@ const changeStep = (val) => {
           <staffWaiver type="edit" :buttons="[]" :step="3" />
           <!-- </transition> -->
         </div>
-        <!-- <div class="column is-3">
-          <V-progress-check
-            v-for="(step,key) in steps"
-            :key="key"
-            :active="step.step <= stepActive"
-            :step="step.step"
-            :text="step.text"
-          ></V-progress-check>
-        </div> -->
       </div>
     </div>
   </SidebarLayout>

@@ -4,18 +4,18 @@ import VueDrawingCanvas from 'vue-drawing-canvas'
 import { Api } from '/@src/services'
 
 onMounted(() => {
-  var canvasElm = document.querySelector('canvas')
-  canvasElm.setAttribute('tabindex', '0')
-  canvasElm.focus()
+  // var canvasElm = document.querySelector('canvas')
+  // canvasElm.setAttribute('tabindex', '0')
+  // canvasElm.focus()
 })
 
 const emit = defineEmit(['onSign'])
 
 const props = defineProps({
-  firmado: {
-    type: Boolean,
-    required: false,
-  },
+  // input: {
+  //   type: Object,
+  //   required: false,
+  // },
 })
 
 const firmado = ref(false)
@@ -80,20 +80,12 @@ const viewFirma = async () => {
         </div>
       </div>
 
-      <!-- <VPlaceload
+      <VPlaceload
         v-if="props.load && !firmado"
         width="400px"
         height="135px"
         style="margin-top: 10px"
         class="mx-auto"
-      /> -->
-
-      <VueDrawingCanvas
-        class="column is-6 mx-auto"
-        ref="VueCanvasDrawing"
-        save-as="jpeg"
-        width="600"
-        height="200"
       />
 
       <div v-if="props.firmado" class="text-center mb-4 mt-5 mx-auto">

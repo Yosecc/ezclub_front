@@ -99,7 +99,7 @@ onMounted(() => {
     evt.preventDefault() //For Firefox, needed for browser closure
   }
 })
-function isSigWeb_1_6_4_0_Installed(sigWebVer) {
+const isSigWeb_1_6_4_0_Installed = (sigWebVer) => {
   var minSigWebVersionResetSupport = '1.6.4.0'
 
   if (isOlderSigWebVersionInstalled(minSigWebVersionResetSupport, sigWebVer)) {
@@ -109,7 +109,7 @@ function isSigWeb_1_6_4_0_Installed(sigWebVer) {
   return true
 }
 
-function isSigWeb_1_7_0_0_Installed(sigWebVer) {
+const isSigWeb_1_7_0_0_Installed = (sigWebVer) => {
   var minSigWebVersionGetDaysUntilCertificateExpiresSupport = '1.7.0.0'
 
   if (
@@ -124,11 +124,11 @@ function isSigWeb_1_7_0_0_Installed(sigWebVer) {
   return true
 }
 
-function isOlderSigWebVersionInstalled(cmprVer, sigWebVer) {
+const isOlderSigWebVersionInstalled = (cmprVer, sigWebVer) => {
   return isOlderVersion(cmprVer, sigWebVer)
 }
 
-function isOlderVersion(oldVer, newVer) {
+const isOlderVersion = (oldVer, newVer) => {
   const oldParts = oldVer.split('.')
   const newParts = newVer.split('.')
   for (var i = 0; i < newParts.length; i++) {
@@ -140,20 +140,27 @@ function isOlderVersion(oldVer, newVer) {
   return false
 }
 
-function onSign() {
+const onSign = () => {
   if (IsSigWebInstalled()) {
     var ctx = document.getElementById('cnv').getContext('2d')
     SetDisplayXSize(500)
+    console.log('1')
     SetDisplayYSize(100)
+    console.log('2')
     SetTabletState(0, tmr)
+    console.log('3')
     SetJustifyMode(0)
+    console.log('4')
     ClearTablet()
+    console.log('5')
     if (tmr == null) {
       tmr = SetTabletState(1, ctx, 50)
+      console.log('1', tmr)
     } else {
       SetTabletState(0, tmr)
       tmr = null
       tmr = SetTabletState(1, ctx, 50)
+      console.log('2', tmr)
     }
   } else {
     alert(
@@ -162,14 +169,15 @@ function onSign() {
   }
 }
 
-function onClear() {
+const onClear = () => {
   ClearTablet()
 }
 
-function onDone() {
+const onDone = () => {
   if (NumberOfTabletPoints() == 0) {
     alert('Please sign before continuing')
   } else {
+    console.log('llego al done')
     SetTabletState(0, tmr)
     //RETURN TOPAZ-FORMAT SIGSTRING
     SetSigCompressionMode(1)
@@ -185,17 +193,19 @@ function onDone() {
   }
 }
 
-function SigImageCallback(str) {
-  emit('onSignYes', str)
+const SigImageCallback = (str) => {
   document.FORM1.sigImageData.value = str
+
+  console.log('llefig', str)
+  emit('onSignYes', str)
 }
 
-function endDemo() {
+const endDemo = () => {
   ClearTablet()
   SetTabletState(0, tmr)
 }
 
-function close() {
+const close = () => {
   if (resetIsSupported) {
     Reset()
   } else {
@@ -244,12 +254,18 @@ function close() {
 
       <INPUT t-y-p-e="HIDDEN" n-a-m-e="bioSigData" />
       <INPUT t-y-p-e="HIDDEN" n-a-m-e="sigImgData" />
+      <INPUT type="HIDDEN" name="bioSigData" />
+      <INPUT type="HIDDEN" name="sigImgData" />
       <BR />
       <BR />
       <TEXTAREA n-a-m-e="sigStringData" r-o-w-s="20" c-o-l-s="50"
         >SigString:
       </TEXTAREA>
       <TEXTAREA n-a-m-e="sigImageData" r-o-w-s="20" c-o-l-s="50"
+        >Base64 String:
+      </TEXTAREA>
+      <TEXTAREA name="sigStringData" rows="20" cols="50">SigString: </TEXTAREA>
+      <TEXTAREA name="sigImageData" rows="20" cols="50"
         >Base64 String:
       </TEXTAREA>
     </p>

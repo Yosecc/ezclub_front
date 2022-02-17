@@ -34,11 +34,16 @@ const titles = computed(() => {
   }
 })
 
-// const emit = defineEmit(['changeStep','saveData']);
+const emit = defineEmit(['changeStep', 'saveData'])
 </script>
 
 <template>
-  <formLayaut :buttons="props.buttons" :step="props.step" :titles="titles">
+  <formLayaut
+    :buttons="props.buttons"
+    :step="props.step"
+    :titles="titles"
+    @saveData="$emit('saveData')"
+  >
     <inputsLayaut :inputs-step="inputsInformation" />
   </formLayaut>
 </template>

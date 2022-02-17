@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, defineProps } from 'vue'
+import { inputsSign } from '/@src/models/Staffs.ts'
+import { setInputModelData } from '/@src/models/Mixin.ts'
 
 const props = defineProps({
   type: {
@@ -37,7 +39,8 @@ const titles = computed(() => {
 })
 
 const onSign = (sign) => {
-  console.log(sign)
+  // console.log(sign)
+  setInputModelData(inputsSign, 'waiver', sign)
 }
 </script>
 

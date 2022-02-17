@@ -18,12 +18,9 @@ export const hasErrors = computed(() => {
 
 const validateData = (inputs, array = true) => {
   errors.value = []
-  console.log(array)
-
   if (!array) {
-    console.log('soy un objeto', inputs)
     if (inputs.model == '' || inputs.model.length == undefined) {
-      notyf.error(input.name + ' is required')
+      notyf.error(inputs.name + ' is required')
       inputs.hasError = true
       errors.value.push(true)
     } else {

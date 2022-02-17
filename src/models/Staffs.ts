@@ -30,7 +30,25 @@ export const getstaffRoles = async (id: any) => {
   return response
 }
 
+export const putStaff = async (id: any, obj: any) => {
+  const response = await Api.put(`staffs/${id}`, obj)
+  return response
+}
+
+export const storeStaff = async (obj: any) => {
+  const response = await Api.post(`staffs`, obj)
+  return response
+}
+
 export const inputsInformation = ref([
+  {
+    typeInput: 'file',
+    name: 'photo',
+    placeholder: 'Staff Picture',
+    model: '',
+    required: true,
+    class: 'is-12 d-flex justify-content-end',
+  },
   {
     typeInput: 'text',
     name: 'name',
@@ -110,14 +128,52 @@ export const inputsInformation = ref([
     class: 'is-8',
   },
   {
+    typeInput: 'number',
+    name: 'code_postal',
+    placeholder: 'Postal Code',
+    model: '',
+    class: 'is-3',
+  },
+  {
+    typeInput: 'selectData',
+    name: 'country_id',
+    placeholder: 'Country',
+    model: '',
+    values: [''],
+    class: 'is-3',
+    filterOptionText: (option) => {
+      return option.name
+    },
+  },
+  {
+    typeInput: 'selectData',
+    name: 'city_id',
+    placeholder: 'City',
+    model: '',
+    values: [''],
+    class: 'is-3',
+    filterOptionText: (option) => {
+      return option.name
+    },
+  },
+  {
+    typeInput: 'selectData',
+    name: 'state_id',
+    placeholder: 'State',
+    model: '',
+    values: [''],
+    class: 'is-3',
+    filterOptionText: (option) => {
+      return option.name
+    },
+  },
+  {
     typeInput: 'text',
     name: 'address',
     placeholder: 'Address',
     model: '',
     required: true,
     class: 'is-12',
-    categories: ['Adult', 'Prospect'],
-    typeMember: ['Individual', 'Company'],
   },
   {
     typeInput: 'email',
@@ -126,8 +182,6 @@ export const inputsInformation = ref([
     model: '',
     required: true,
     class: 'is-6',
-    categories: ['Adult', 'Prospect'],
-    typeMember: ['Individual', 'Company'],
   },
   {
     typeInput: 'number',
@@ -136,12 +190,63 @@ export const inputsInformation = ref([
     model: '',
     required: true,
     class: 'is-6',
-    categories: ['Adult', 'Prospect'],
-    typeMember: ['Individual', 'Company'],
+  },
+  {
+    typeInput: 'selectData',
+    name: 'type_trainer',
+    placeholder: 'Type',
+    values: [
+      { description: 'tipo 1', id: 1 },
+      { description: 'tipo 0', id: 0 },
+    ],
+    model: '',
+    required: true,
+    class: 'is-4',
+  },
+  {
+    typeInput: 'number',
+    name: 'working_hours',
+    placeholder: 'Working Hours',
+    model: '',
+    required: true,
+    class: 'is-4',
+  },
+  {
+    typeInput: 'number',
+    name: 'salary',
+    placeholder: 'Salary',
+    model: '',
+    required: false,
+    class: 'is-4',
+  },
+  {
+    typeInput: 'number',
+    name: 'rent_space',
+    placeholder: 'Rent Space',
+    model: '',
+    required: false,
+    class: 'is-4',
+  },
+  {
+    typeInput: 'number',
+    name: 'price_rent',
+    placeholder: 'Price Rent',
+    model: '',
+    required: false,
+    class: 'is-4',
   },
 ])
 
 export const inputsPermitions = ref([
+  {
+    typeInput: 'selectDataActionChange',
+    name: 'locations_id',
+    placeholder: 'Locations',
+    values: [],
+    model: '',
+    disabled: false,
+    class: 'is-4',
+  },
   {
     typeInput: 'selectData',
     name: 'staff_roles_id',
@@ -203,3 +308,12 @@ export const inputsPermitions = ref([
   //   ]
   // }
 ])
+
+export const inputsSign = ref({
+  typeInput: 'hidden',
+  name: 'waiver',
+  placeholder: 'First Name',
+  model: '',
+  required: false,
+  class: 'is-4',
+})
