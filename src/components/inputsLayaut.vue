@@ -1,39 +1,40 @@
-
 <script setup lang="ts">
-import { computed, defineProps, defineEmit, onMounted, watch  } from 'vue'
+import { computed, defineProps, defineEmit, onMounted, watch } from 'vue'
 
-const emit = defineEmit(['changeSelect','changeSwitch','changeCheckbox', 'changeRadio'])
+const emit = defineEmit([
+  'changeSelect',
+  'changeSwitch',
+  'changeCheckbox',
+  'changeRadio',
+])
 
 const changeData = (input, value) => {
-  props.inputsStep.map((element)=>{
-    if(element.name == input.name){
+  props.inputsStep.map((element) => {
+    if (element.name == input.name) {
       element.model = value
     }
   })
 }
 
 const props = defineProps({
-  inputsStep:{
-    type: Array
+  inputsStep: {
+    type: Array,
   },
-  title_form:{
+  title_form: {
     type: String,
-    default: ''
-  }
+    default: '',
+  },
 })
 
 const configClassCol = () => {
   let content = document.querySelectorAll('.contentInputLayaut .ciclo')
 
-  content.forEach((element)=>{
+  content.forEach((element) => {
     // console.log(element)
-    element.childNodes.forEach((e)=>{
-
-      if(e.dataset != undefined){
-
-        if(Object.values(e.dataset).length > 0){
-
-          e.dataset.class.split(' ').forEach((ele)=>{
+    element.childNodes.forEach((e) => {
+      if (e.dataset != undefined) {
+        if (Object.values(e.dataset).length > 0) {
+          e.dataset.class.split(' ').forEach((ele) => {
             element.classList.add(ele)
           })
         }
@@ -42,12 +43,10 @@ const configClassCol = () => {
   })
 }
 
-onMounted(()=>{
+onMounted(() => {
   configClassCol()
 })
-
 </script>
-
 
 <template>
   <!-- <p>{{ typeMember }}</p> -->
@@ -58,373 +57,381 @@ onMounted(()=>{
     </div>
     <div
       v-for="(input, key) in inputsStep"
-      :key="key"
-      class="column ciclo mb-3" 
+      :key="`inputs-${key}-${input.name}`"
+      class="column ciclo mb-3"
     >
       <V-Field
         v-if="input.typeInput == 'buttonGroup'"
         :data-class="input.class"
         addons
       >
-        <V-Control 
+        <V-Control
           v-for="(category, categoryIndex) in input.values"
+          :key="`input-values${categoryIndex}`"
         >
-          <V-Button 
+          <V-Button
             @click="changeData(input, category)"
-            :color="input.model == category ? 'primary':undefined"
-          > 
-          {{ category }}</V-Button>
+            :color="input.model == category ? 'primary' : undefined"
+          >
+            {{ category }}</V-Button
+          >
         </V-Control>
       </V-Field>
       <!-- switch -->
-        <V-Field 
-          v-else-if="input.typeInput == 'switch'"
-          :data-class="input.class"
-          grouped
-        >
-          <V-Control
-            :has-error="input.hasError ?? false"
-          >
-            <V-SwitchSegment
-              v-model="input.model"
-              :label-true="input.values[1]"
-              :label-false="input.values[0]"
-              color="primary"
-            />
-          </V-Control>
-        </V-Field>
+      <V-Field
+        v-else-if="input.typeInput == 'switch'"
+        :data-class="input.class"
+        grouped
+      >
+        <V-Control :has-error="input.hasError ?? false">
+          <V-SwitchSegment
+            v-model="input.model"
+            :label-true="input.values[1]"
+            :label-false="input.values[0]"
+            color="primary"
+          />
+        </V-Control>
+      </V-Field>
       <!-- switchEventChange -->
-        <V-Field 
-          v-else-if="input.typeInput == 'switchEventChange'"
-          :data-class="input.class"
-          grouped
-        >
-          <V-Control
-            :has-error="input.hasError ?? false"
-          >
-            <V-SwitchSegment
-              v-model="input.model"
-              :label-true="input.values[1]"
-              :label-false="input.values[0]"
-              color="primary"
-              @change="$emit('changeSwitch',{ input, inputsStep })"
-            />
-          </V-Control>
-        </V-Field>
+      <V-Field
+        v-else-if="input.typeInput == 'switchEventChange'"
+        :data-class="input.class"
+        grouped
+      >
+        <V-Control :has-error="input.hasError ?? false">
+          <V-SwitchSegment
+            v-model="input.model"
+            :label-true="input.values[1]"
+            :label-false="input.values[0]"
+            color="primary"
+            @change="$emit('changeSwitch', { input, inputsStep })"
+          />
+        </V-Control>
+      </V-Field>
       <!-- file -->
-        <V-Field
-          v-else-if="input.typeInput == 'file'"
-          :data-class="input.class"
-          class="px-0 field"
-          grouped
-        >
-          <V-Control
-
-            :has-error="input.hasError ?? false"
-          >
-            <div class="file">
-              <label class="file-label">
-                <input 
-                  class="file-input" 
-                  type="file" 
-                  @change="changeData(input, $event.target.files[0])" 
-                />
-                <span class="file-cta">
-                  <span class="file-icon">
-                    <i class="fas fa-cloud-upload-alt"></i>
-                  </span>
-                  <span class="file-label"> {{ input.placeholder }}</span>
+      <V-Field
+        v-else-if="input.typeInput == 'file'"
+        :data-class="input.class"
+        class="px-0 field"
+        grouped
+      >
+        <V-Control :has-error="input.hasError ?? false">
+          <div class="file">
+            <label class="file-label">
+              <input
+                class="file-input"
+                type="file"
+                @change="changeData(input, $event.target.files[0])"
+              />
+              <span class="file-cta">
+                <span class="file-icon">
+                  <i class="fas fa-cloud-upload-alt"></i>
                 </span>
-              </label>
-            </div>
-          </V-Control>
-        </V-Field>
+                <span class="file-label"> {{ input.placeholder }}</span>
+              </span>
+            </label>
+          </div>
+        </V-Control>
+      </V-Field>
       <!-- ['text','date','number','email','password'] -->
-        <V-Field 
-          class="px-0 field"
-          v-else-if="['text','date','number','email','password','hidden'].includes(input.typeInput) "
-          :data-class="input.class"
-        >
-          <V-Control
-            :has-error="input.hasError ?? false"
-          >
-            <input
-              v-model="input.model"
-              :type="input.typeInput"
-              class="input"
-              :placeholder="input.placeholder"
-              :disabled="input.disabled ?? false"
-              :maxLength="input.maxLength ?? ''"
-              @keyup="input.keyUp ? input.keyUp($event, input) : null"
-
-            />
-          </V-Control>
-        </V-Field>
+      <V-Field
+        class="px-0 field"
+        v-else-if="
+          ['text', 'date', 'number', 'email', 'password', 'hidden'].includes(
+            input.typeInput
+          )
+        "
+        :data-class="input.class"
+      >
+        <V-Control :has-error="input.hasError ?? false">
+          <input
+            v-model="input.model"
+            :type="input.typeInput"
+            class="input"
+            :placeholder="input.placeholder"
+            :disabled="input.disabled ?? false"
+            :maxLength="input.maxLength ?? ''"
+            @keyup="input.keyUp ? input.keyUp($event, input) : null"
+          />
+        </V-Control>
+      </V-Field>
       <!-- inputsGroup -->
-        <V-Field 
-          class="px-0 field"
-          v-else-if="input.typeInput == 'inputsGroup'"
-          :data-class="input.class"
-        >
-          <V-Control
-            :has-error="input.hasError ?? false"
-          >
-          <p class="mb-4"><b>{{ input.text }}</b></p>
-            <input
-              v-for="(option, key) in input.values"
-              v-model="input.model[option.id]"
-              :type="input.type"
-              class="input mb-4"
-              :placeholder="option.descriptions"
+      <V-Field
+        class="px-0 field"
+        v-else-if="input.typeInput == 'inputsGroup'"
+        :data-class="input.class"
+      >
+        <V-Control :has-error="input.hasError ?? false">
+          <p class="mb-4">
+            <b>{{ input.text }}</b>
+          </p>
+          <input
+            v-for="(option, keyA) in input.values"
+            :key="`option-input-${keyA}`"
+            v-model="input.model[option.id]"
+            :type="input.type"
+            class="input mb-4"
+            :placeholder="option.descriptions"
+            :disabled="input.disabled ?? false"
+            :maxLength="input.maxLength ?? ''"
+            @keyup="input.keyUp ? input.keyUp($event, input) : null"
+          />
+        </V-Control>
+      </V-Field>
+      <!-- select -->
+      <V-Field
+        v-else-if="input.typeInput == 'select'"
+        :data-class="input.class"
+        class="chucutu"
+      >
+        <V-Control :has-error="input.hasError ?? false">
+          <div class="select">
+            <select v-model="input.model" :disabled="input.disabled ?? false">
+              <option value="">{{ input.placeholder }}</option>
+              <option
+                v-for="(option, keyB) in input.values"
+                :key="`option-${keyB}09`"
+                :value="option"
+              >
+                {{ option }}
+              </option>
+            </select>
+          </div>
+        </V-Control>
+      </V-Field>
+      <!-- selectData -->
+      <V-Field
+        v-else-if="input.typeInput == 'selectData'"
+        :data-class="input.class"
+        class="bibibi"
+      >
+        <V-Control :has-error="input.hasError ?? false">
+          <!-- <p>{{ input.values }}</p> -->
+          <div class="select">
+            <select v-model="input.model" :disabled="input.disabled ?? false">
+              <option value="">{{ input.placeholder }}</option>
+              <option
+                v-for="(option, keyC) in input.values"
+                :key="`option-${keyC}08`"
+                :value="option.id"
+              >
+                <!-- <p>{{ option }}</p> -->
+                <span v-if="!input.filterOptionText">{{
+                  option.description
+                }}</span>
+                <span v-else> {{ input.filterOptionText(option) }} </span>
+              </option>
+            </select>
+          </div>
+        </V-Control>
+      </V-Field>
+      <!-- selectDataActionChange -->
+      <V-Field
+        v-else-if="input.typeInput == 'selectDataActionChange'"
+        :data-class="input.class"
+      >
+        <V-Control :has-error="input.hasError ?? false">
+          <div class="select">
+            <select
               :disabled="input.disabled ?? false"
-              :maxLength="input.maxLength ?? ''"
-              @keyup="input.keyUp ? input.keyUp($event, input) : null"
+              v-model="input.model"
+              @change="$emit('changeSelect', { input, inputsStep })"
+            >
+              <option value="">{{ input.placeholder }}</option>
+
+              <option
+                v-for="(option, keyD) in input.values"
+                :key="`option-${keyD}09`"
+                :value="option.id"
+              >
+                <span v-if="input.filter">{{ input.filter(option) }}</span>
+                <span v-else>{{ option.name }}</span>
+              </option>
+            </select>
+          </div>
+        </V-Control>
+      </V-Field>
+      <!-- checkbox -->
+      <V-Field
+        v-else-if="input.typeInput == 'checkbox'"
+        :data-class="input.class"
+      >
+        <V-Control id="che" :has-error="input.hasError ?? false">
+          <V-Checkbox
+            v-model="input.model"
+            :value="input.name"
+            :label="input.placeholder"
+            color="primary"
+            @change="$emit('changeCheckbox', input)"
+          />
+        </V-Control>
+      </V-Field>
+      <!-- checkboxGroup -->
+      <div
+        v-else-if="
+          input.typeInput == 'checkboxGroup' && input.values.length > 0
+        "
+        :data-class="input.class"
+        :class="input.multilinea ? 'is-12 columns is-multiline border-1' : ''"
+      >
+        <p :class="input.multilinea ? 'is-12 column' : ''" v-if="input.text">
+          {{ input.text }}
+        </p>
+        <V-Field
+          v-for="(check, keyE) in input.values"
+          :key="`check-${keyE}08`"
+          :class="input.subClass ? input.subClass : 'mt-5'"
+        >
+          <V-Control>
+            <p>
+              <b>{{ check.placeholder }}</b>
+            </p>
+            <V-Checkbox
+              v-for="(option, keyF) in check.values"
+              :key="`option-${keyF}78`"
+              v-model="option.model"
+              :value="option.name"
+              :label="option.placeholder"
+              color="primary"
             />
           </V-Control>
         </V-Field>
-      <!-- select -->
-        <V-Field
-          v-else-if="input.typeInput == 'select'"
-          :data-class="input.class"
-          class="chucutu"
-        >
+      </div>
+      <!-- checkboxGroupSimple -->
+      <V-Field
+        v-else-if="input.typeInput == 'checkboxGroupSimple'"
+        v-show="input.values.length > 0"
+        :data-class="input.class"
+      >
+        <p class="title is-6" v-if="input.text">{{ input.text }}</p>
+        <div class="d-flex flex-wrap">
           <V-Control
-            
-            :has-error="input.hasError ?? false"
-          >
-            <div class="select">
-              <select v-model="input.model" :disabled="input.disabled ?? false">
-                <option value="">{{ input.placeholder }}</option>
-                <option 
-                  v-for="option in input.values"
-                  :value="option">{{ option }}</option>
-              </select>
-            </div>
-          </V-Control>
-        </V-Field>
-      <!-- selectData -->
-        <V-Field
-          v-else-if="input.typeInput == 'selectData'"
-          :data-class="input.class"
-          class="bibibi"
-        >
-          <V-Control
-            
-            :has-error="input.hasError ?? false"
-          >
-            <div class="select">
-              <select v-model="input.model" :disabled="input.disabled ?? false">
-                <option value="">{{ input.placeholder }}</option>
-                <option 
-                  v-for="option in input.values"
-                  :value="option.id">
-                    <span v-if="!input.filterOptionText">{{ option.name }}</span>
-                    <span v-else> {{ input.filterOptionText(option) }} </span>
-                  </option>
-              </select>
-            </div>
-          </V-Control>
-        </V-Field>
-      <!-- selectDataActionChange -->
-        <V-Field
-          v-else-if="input.typeInput == 'selectDataActionChange'"
-          :data-class="input.class"
-        >
-          <V-Control
-            :has-error="input.hasError ?? false"
-          >
-            <div class="select">
-              <select 
-                :disabled="input.disabled ?? false"
-                v-model="input.model"
-                @change="$emit('changeSelect',{ input, inputsStep })"
-              >
-                <option value="">{{ input.placeholder }}</option>
-
-                <option 
-                  v-for="option in input.values"
-                  :value="option.id">
-                  <span v-if="input.filter">{{ input.filter(option) }}</span>
-                  <span v-else>{{ option.name }}</span>
-                </option>
-              </select>
-            </div>
-          </V-Control>
-        </V-Field>
-      <!-- checkbox -->
-        <V-Field
-          v-else-if="input.typeInput == 'checkbox'"
-          :data-class="input.class"
-        >
-          <V-Control
-            id="che"
-            :has-error="input.hasError ?? false"
+            v-for="(check, keyG) in input.values"
+            :key="`check-${keyG}78`"
           >
             <V-Checkbox
               v-model="input.model"
-              :value="input.name"
-              :label="input.placeholder"
+              :value="check.id"
+              :label="!input.filter ? check.name : input.filter(check)"
               color="primary"
-              @change="$emit('changeCheckbox',input )"
+              @change="$emit('changeCheckbox', input)"
             />
           </V-Control>
-        </V-Field>
-      <!-- checkboxGroup -->
-        <div
-          v-else-if="input.typeInput == 'checkboxGroup' && input.values.length > 0"
-          :data-class="input.class"
-          :class="input.multilinea ? 'is-12 columns is-multiline border-1':''"
-        >
-          <p
-            :class="input.multilinea ? 'is-12 column':''"
-            v-if="input.text">{{ input.text }}</p>
-          <V-Field 
-            v-for="check in input.values"
-            :class="input.subClass ? input.subClass:'mt-5'"
-          >
-            <V-Control>
-              <p><b>{{ check.placeholder }}</b></p>
-              <V-Checkbox
-                v-for="option in check.values"
-                v-model="option.model"
-                :value="option.name"
-                :label="option.placeholder"
-                color="primary"
-                
-              />
-            </V-Control>
-          </V-Field>
-
         </div>
-      <!-- checkboxGroupSimple -->
-        <V-Field 
-            v-else-if="input.typeInput == 'checkboxGroupSimple'"
-            v-show="input.values.length > 0"
-            :data-class="input.class"
-        >
-          <p class="title is-6" v-if="input.text">{{ input.text }}</p>
-          <div class="d-flex flex-wrap">
-            <V-Control
-              v-for="check in input.values"
-            >
-              <V-Checkbox
-                v-model="input.model"
-                :value="check.id"
-                :label="!input.filter ? check.name:input.filter(check)"
-                color="primary"
-                @change="$emit('changeCheckbox',input)"
-              />
-            </V-Control>
-          </div>
-        </V-Field>
+      </V-Field>
       <!-- checkboxGroupSimpleAvatar -->
-        <V-Field 
-            v-else-if="input.typeInput == 'checkboxGroupSimpleAvatar'"
-            :data-class="input.class"
-        >
-          <p class="title is-6" v-if="input.placeholder">{{ input.placeholder }}</p>
-          <div class="d-flex flex-wrap">
-
-            <V-Control
-              v-for="check in input.values"
-              class="d-flex align-items-center"
-            >
-              <VAvatar @click="input.model = check.id" :picture="check.image"   squared />
-              <V-Checkbox
-                v-model="input.model"
-                :value="check.id"
-                :label="check.name"
-                color="primary"
-                class="pl-1 pr-6"
-                @change="$emit('changeCheckbox',input)"
-              />
-
-            </V-Control>
-          </div>
-        </V-Field>
-      <!-- textarea -->
-        <VField
-          v-else-if="input.typeInput == 'textarea'"
-          :data-class="input.class"
-        >
-          <VControl>
-            <textarea
-              :rows="input.rows ?? 4"
+      <V-Field
+        v-else-if="input.typeInput == 'checkboxGroupSimpleAvatar'"
+        :data-class="input.class"
+      >
+        <p class="title is-6" v-if="input.placeholder">
+          {{ input.placeholder }}
+        </p>
+        <div class="d-flex flex-wrap">
+          <V-Control
+            v-for="(check, keyH) in input.values"
+            :key="`check-${keyH}79`"
+            class="d-flex align-items-center"
+          >
+            <VAvatar
+              @click="input.model = check.id"
+              :picture="check.image"
+              squared
+            />
+            <V-Checkbox
               v-model="input.model"
-              class="textarea"
-              :placeholder="input.placeholder"
-              :disabled="input.disabled ?? false"
-              :maxLength="input.maxLength ?? ''"
-              @keyup="input.keyUp ? input.keyUp($event, input) : null"
-            ></textarea>
-          </VControl>
-        </VField>
+              :value="check.id"
+              :label="check.name"
+              color="primary"
+              class="pl-1 pr-6"
+              @change="$emit('changeCheckbox', input)"
+            />
+          </V-Control>
+        </div>
+      </V-Field>
+      <!-- textarea -->
+      <VField
+        v-else-if="input.typeInput == 'textarea'"
+        :data-class="input.class"
+      >
+        <VControl>
+          <textarea
+            :rows="input.rows ?? 4"
+            v-model="input.model"
+            class="textarea"
+            :placeholder="input.placeholder"
+            :disabled="input.disabled ?? false"
+            :maxLength="input.maxLength ?? ''"
+            @keyup="input.keyUp ? input.keyUp($event, input) : null"
+          ></textarea>
+        </VControl>
+      </VField>
       <!-- radioBoxs -->
-        <form class="form-layout is-split"
-          v-else-if="input.typeInput == 'radioBoxs' && input.values.length > 0"
-          :data-class="input.class"
-        >
-          <p class="mb-3">{{ input.placeholder }}</p>
-          <div class="form-outer">
-            <div class="form-body">
-              <div class="form-section">
-
-                <V-Field>
-                  <V-Control>
-                    <div class="radio-pills flex-wrap justify-content-start">
-
-                      <div class="radio-pill mb-3"
-                        v-for="check in input.values"
-                      >
-                        <input 
-                          type="radio" 
-                          v-model="input.model"
-                          :value="check.id" 
-                          :name="input.name"
-                          @change="$emit('changeRadio', input, inputsStep)"
-                        />
-                        <div class="radio-pill-inner">
-
-                          <span v-if="input.filterName" >{{  check[input.filterName] }}
-                            <span v-if="input.otros"> ${{ check[input.otros] }} </span>
+      <form
+        class="form-layout is-split"
+        v-else-if="input.typeInput == 'radioBoxs' && input.values.length > 0"
+        :data-class="input.class"
+      >
+        <p class="mb-3">{{ input.placeholder }}</p>
+        <div class="form-outer">
+          <div class="form-body">
+            <div class="form-section">
+              <V-Field>
+                <V-Control>
+                  <div class="radio-pills flex-wrap justify-content-start">
+                    <div
+                      class="radio-pill mb-3"
+                      v-for="(check, keyJ) in input.values"
+                      :key="`check-${keyJ}38`"
+                    >
+                      <input
+                        type="radio"
+                        v-model="input.model"
+                        :value="check.id"
+                        :name="input.name"
+                        @change="$emit('changeRadio', input, inputsStep)"
+                      />
+                      <div class="radio-pill-inner">
+                        <span v-if="input.filterName"
+                          >{{ check[input.filterName] }}
+                          <span v-if="input.otros">
+                            ${{ check[input.otros] }}
                           </span>
-                          <span v-else >{{ check.name }}</span>
-                        </div>
+                        </span>
+                        <span v-else>{{ check.name }}</span>
                       </div>
-                      
                     </div>
-                  </V-Control>
-                </V-Field>
-               
-              </div>
+                  </div>
+                </V-Control>
+              </V-Field>
             </div>
           </div>
-        </form>
+        </div>
+      </form>
       <!--  -->
     </div>
   </div>
-
 </template>
 
 <style lang="scss">
-  @import '../scss/abstracts/_variables.scss';
-  @import '../scss/abstracts/_mixins.scss';
-  @import '../scss/pages/generic/_forms.scss';
-  .justify-content-start{
-    justify-content: flex-start !important;
-  }
-  .form-outer{
-    border: 0px !important;
-    .form-section{
-      padding: 0px!important;
-      .radio-pill{
-        margin-right: 15px;
-        .radio-pill-inner{
-          border-radius: 5px !important;
-          padding: 8px;
-          width: inherit !important;
-        }
+@import '../scss/abstracts/_variables.scss';
+@import '../scss/abstracts/_mixins.scss';
+@import '../scss/pages/generic/_forms.scss';
+.justify-content-start {
+  justify-content: flex-start !important;
+}
+.form-outer {
+  border: 0px !important;
+  .form-section {
+    padding: 0px !important;
+    .radio-pill {
+      margin-right: 15px;
+      .radio-pill-inner {
+        border-radius: 5px !important;
+        padding: 8px;
+        width: inherit !important;
       }
     }
   }
+}
 </style>

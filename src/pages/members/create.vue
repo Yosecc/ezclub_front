@@ -2,14 +2,16 @@
 import { useHead } from '@vueuse/head'
 import { computed, ref, onMounted, watch, onBeforeMount } from 'vue'
 
-import {  categoriesMembers, 
-          inputsInformation, 
-          inputsFamily, 
-          inputsContact, 
-          inputsMembership,
-          notasInput,
-          saveMember, 
-          idMember } from '/@src/models/Members.ts'
+import {
+  categoriesMembers,
+  inputsInformation,
+  inputsFamily,
+  inputsContact,
+  inputsMembership,
+  notasInput,
+  saveMember,
+  idMember,
+} from '/@src/models/Members.ts'
 
 import { getMeberships, memberships } from '/@src/models/Memberships.ts'
 import { getRecurrences } from '/@src/models/Recurrences.ts'
@@ -25,30 +27,34 @@ useHead({
   title: 'Members',
 })
 
-onMounted(()=>{
-  getMeberships().then((response)=>{
-    setInputValuesData(inputsMembership,'memberships_id', response.data.memberships)
+onMounted(() => {
+  getMeberships().then((response) => {
+    setInputValuesData(
+      inputsMembership,
+      'memberships_id',
+      response.data.memberships
+    )
   })
-  getDiscounts().then((response)=>{
-    setInputValuesData(inputsMembership,'discount', response.data.discounts)
+  getDiscounts().then((response) => {
+    setInputValuesData(inputsMembership, 'discount', response.data.discounts)
   })
-  getRecurrences().then((response)=>{
+  getRecurrences().then((response) => {
     // setInputValuesData(inputsMembership,'recurrences_id', response.data)
   })
-  getcities().then((response)=>{
-    setInputValuesData(inputsInformation,'city_id',response.value)
-    setInputValuesData(inputsFamily,'city_id',response.value)
+  getcities().then((response) => {
+    setInputValuesData(inputsInformation, 'city_id', response.value)
+    setInputValuesData(inputsFamily, 'city_id', response.value)
   })
-  getstates().then((response)=>{
-    setInputValuesData(inputsInformation,'state_id',response.value)
-    setInputValuesData(inputsFamily,'state_id',response.value)
+  getstates().then((response) => {
+    setInputValuesData(inputsInformation, 'state_id', response.value)
+    setInputValuesData(inputsFamily, 'state_id', response.value)
   })
-  getcontries().then((response)=>{
-    setInputValuesData(inputsInformation,'country_id',response.value)
-    setInputValuesData(inputsFamily,'country_id',response.value)
+  getcontries().then((response) => {
+    setInputValuesData(inputsInformation, 'country_id', response.value)
+    setInputValuesData(inputsFamily, 'country_id', response.value)
   })
-  getTrainers().then((response)=>{
-    setInputValuesData(inputsMembership,'staff_id',response.data)
+  getTrainers().then((response) => {
+    setInputValuesData(inputsMembership, 'staff_id', response.data)
   })
 })
 
@@ -58,73 +64,81 @@ const steps = ref([
   {
     step: 1,
     text: 'Member Information',
-    categories:['Adult','Minor']
+    categories: ['Adult', 'Minor'],
   },
   {
     step: 1,
     text: 'Prospect Information',
-    categories:['Prospect']
+    categories: ['Prospect'],
   },
   {
     step: 2,
     text: 'Add Family Member',
-    categories:['Adult']
+    categories: ['Adult'],
   },
   {
     step: 2,
     text: 'Add Payment Method',
-    categories:['Prospect']
+    categories: ['Prospect'],
   },
   {
     step: 2,
     text: 'Parent / Guardian',
-    categories:['Minor']
+    categories: ['Minor'],
   },
   {
     step: 3,
     text: 'Contact Preference',
-    categories:['Adult','Minor']
+    categories: ['Adult', 'Minor'],
   },
   {
     step: 3,
     text: 'Sing Waiver',
-    categories:['Prospect']
+    categories: ['Prospect'],
   },
   {
     step: 4,
     text: 'Select membership',
-    categories:['Adult','Minor']
+    categories: ['Adult', 'Minor'],
   },
   {
     step: 5,
     text: 'Add Payment Method',
-    categories:['Adult','Minor']
+    categories: ['Adult', 'Minor'],
   },
   {
     step: 6,
     text: 'Sing Contract & Waiver',
-    categories:['Adult','Minor']
+    categories: ['Adult', 'Minor'],
   },
 ])
 
-const inputsInputsInformationStep = computed(()=>{
-  return inputsInformation.value.filter((input)=>input.categories.includes(categoriesMembers.value.model))
+const inputsInputsInformationStep = computed(() => {
+  return inputsInformation.value.filter((input) =>
+    input.categories.includes(categoriesMembers.value.model)
+  )
 })
 
-const step = computed(()=>{
-  return steps.value.find((step)=>step.step == stepActive.value && step.categories.includes(categoriesMembers.value.model))
+const step = computed(() => {
+  return steps.value.find(
+    (step) =>
+      step.step == stepActive.value &&
+      step.categories.includes(categoriesMembers.value.model)
+  )
 })
 
-const stepsList = computed(()=>{
-  return steps.value.filter((step)=> step.categories.includes(categoriesMembers.value.model))
+const stepsList = computed(() => {
+  return steps.value.filter((step) =>
+    step.categories.includes(categoriesMembers.value.model)
+  )
 })
 
-const changeStep = (val)=>{
+const changeStep = (val) => {
   // console.log(val)
-  if(val == 6){
+  if (val == 6) {
     sendData()
-  }else{
-     stepActive.value = val
+  } else {
+    stepActive.value = val
   }
 }
 const dataInformationMember = ref(null)
@@ -139,7 +153,7 @@ const returnDataContact = (val) => {
 }
 
 const familiares = ref([])
-const returDataFamily = (data) =>{
+const returDataFamily = (data) => {
   familiares.value = data.value
 }
 
@@ -160,10 +174,9 @@ const returnDataPayment = (obj) => {
   // familiaresPayment.value = obj.dataCardFamiliares
 }
 
-const convertFormData = (fd, objeto)=>{
-
+const convertFormData = (fd, objeto) => {
   for (var i in objeto) {
-   fd.append(i,objeto[i])
+    fd.append(i, objeto[i])
   }
   // return fd
 }
@@ -188,19 +201,19 @@ const sendData = () => {
   for (var i = 0; i < dataContactFD.length; i++) {
     var item = dataContactFD[i]
     for (var prop in item) {
-      fd.append(`notifications[${i}][${prop}]`,item[prop])
+      fd.append(`notifications[${i}][${prop}]`, item[prop])
     }
   }
-  
+
   let memberMembershipFD = perpareDataInputs(memberMembership.value)
   for (var i in memberMembershipFD) {
-    if(i == 'diciplines'){
+    if (i == 'diciplines') {
       let ite = memberMembershipFD[i]
       for (var e = 0; e < ite.length; ++e) {
-        fd.append('diciplines[]',ite[e])
+        fd.append('diciplines[]', ite[e])
       }
-    }else{
-      fd.append(i,memberMembershipFD[i])
+    } else {
+      fd.append(i, memberMembershipFD[i])
     }
   }
 
@@ -209,12 +222,18 @@ const sendData = () => {
   //   fd.append(i,memberPaymentFD[i])
   // }
 
-  fd.append('total',total.value)
+  fd.append('total', total.value)
 
-  let categoriesMembersFD = perpareDataInputs(categoriesMembers.value,{array:false})
+  // console.log(categoriesMembers.value)
+  console.log('-----------------')
+  let categoriesMembersFD = perpareDataInputs(categoriesMembers.value, {
+    array: false,
+  })
+
   for (var i in categoriesMembersFD) {
-    fd.append(i,categoriesMembersFD[i])
+    fd.append(i, categoriesMembersFD[i])
   }
+  console.log('2pasa')
 
   let notasInputFD = perpareDataInputs(notasInput.value)
   for (var i in notasInputFD) {
@@ -223,46 +242,48 @@ const sendData = () => {
 
   let optionsCreditCardFD = perpareDataInputs(optionsCreditCard.value)
   for (var i in optionsCreditCardFD) {
-    fd.append(i,optionsCreditCardFD[i])
+    fd.append(i, optionsCreditCardFD[i])
   }
 
   // console.log('familyMembership',familyMembership.value)
 
-  familyMembership.value.forEach((element, index)=>{
+  familyMembership.value.forEach((element, index) => {
     // Informacion
     let familiarX = perpareDataInputs(element.family)
 
     for (var i in familiarX) {
-      if(i == 'category'){
-        if(familiarX[i]){
+      if (i == 'category') {
+        if (familiarX[i]) {
           familiarX[i] = 'Minor'
-        }else{
+        } else {
           familiarX[i] = 'Adult'
         }
       }
-      fd.append(`familiares[${index}][${i}]`,familiarX[i])
+      fd.append(`familiares[${index}][${i}]`, familiarX[i])
     }
     // contacto
     let dataContactX = dataContact.value
     for (var i = 0; i < dataContactX.length; i++) {
       var item = dataContactX[i]
       for (var prop in item) {
-        fd.append(`familiares[${index}][notifications][${i}][${prop}]`,item[prop])
+        fd.append(
+          `familiares[${index}][notifications][${i}][${prop}]`,
+          item[prop]
+        )
       }
-    } 
+    }
 
     let membresiaX = perpareDataInputs(element.inputs)
     for (var i in membresiaX) {
-      if(i == 'diciplines'){
+      if (i == 'diciplines') {
         let ite = membresiaX[i]
         for (var e = 0; e < ite.length; ++e) {
-          fd.append(`familiares[${index}][diciplines][]`,ite[e])
+          fd.append(`familiares[${index}][diciplines][]`, ite[e])
         }
-      }else{
+      } else {
         // console.log(membresiaX[i])
-        fd.append(`familiares[${index}][${i}]`,membresiaX[i])
+        fd.append(`familiares[${index}][${i}]`, membresiaX[i])
       }
-
     }
 
     fd.append(`familiares[${index}][total]`, total.value)
@@ -274,50 +295,44 @@ const sendData = () => {
 
     let optionsCreditCardFD = perpareDataInputs(optionsCreditCard.value)
     for (var i in optionsCreditCardFD) {
-      fd.append(`familiares[${index}][${i}]`,optionsCreditCardFD[i])
+      fd.append(`familiares[${index}][${i}]`, optionsCreditCardFD[i])
     }
   })
 
-
   console.log(...fd)
-  saveMember(fd).then((response)=>{
+  saveMember(fd).then((response) => {
     console.log(response.data.member.id)
     idMember.value = response.data.member.id
   })
 }
-
-
-
 </script>
-
 
 <template>
   <SidebarLayout>
     <!-- Display a payment form -->
-    
+
     <div class="columns is-multiline">
       <div class="column is-12">
-        <V-Field
-          v-if="stepActive == 1"
-          class="w-100"
-          addons
-        >
-          <V-Control 
+        <V-Field v-if="stepActive == 1" class="w-100" addons>
+          <V-Control
             v-for="(category, categoryIndex) in categoriesMembers.values"
             :key="`categoymember-${categoryIndex}`"
           >
-            <V-Button 
+            <V-Button
               @click="categoriesMembers.model = category"
-              :color="categoriesMembers.model == category ? 'primary':undefined"
+              :color="
+                categoriesMembers.model == category ? 'primary' : undefined
+              "
               rounded
-            > 
-            {{ category }}</V-Button>
+            >
+              {{ category }}</V-Button
+            >
           </V-Control>
         </V-Field>
       </div>
       <div class="column is-9">
-      <!-- memberInformation -->
-        <memberInformation 
+        <!-- memberInformation -->
+        <memberInformation
           v-show="stepActive == 1"
           type="create"
           :title="step.text"
@@ -325,25 +340,25 @@ const sendData = () => {
           @changeStep="changeStep"
           @returData="returDataInformationMember"
         />
-      <!-- familyMembers -->
-        <familyMembers 
-          v-show="stepActive == 2 && categoriesMembers.model == 'Adult' "
+        <!-- familyMembers -->
+        <familyMembers
+          v-show="stepActive == 2 && categoriesMembers.model == 'Adult'"
           type="create"
           :title="step.text"
-          :inputs="inputsFamily" 
+          :inputs="inputsFamily"
           @changeStep="changeStep"
           @returData="returDataFamily"
         />
-      <!-- contactPreference -->
+        <!-- contactPreference -->
         <contactPreference
           v-show="stepActive == 3"
           type="create"
           :title="step.text"
-          :inputs="inputsContact" 
+          :inputs="inputsContact"
           @changeStep="changeStep"
           @returnData="returnDataContact"
         />
-      <!-- selectMembership -->
+        <!-- selectMembership -->
         <selectMembership
           v-if="stepActive == 4"
           type="create"
@@ -356,7 +371,7 @@ const sendData = () => {
           @changeStep="changeStep"
           @returnData="returnDataMembership"
         />
-      <!-- paymentMethod -->
+        <!-- paymentMethod -->
         <paymentMethod
           v-if="stepActive == 5"
           type="create"
@@ -364,15 +379,15 @@ const sendData = () => {
           :member="inputsInputsInformationStep"
           :familiares="familiares"
           :inputs="inputsMembership"
-          :memberMembership="memberMembership"
-          :familyMembership="familyMembership"
+          :member-membership="memberMembership"
+          :family-membership="familyMembership"
           @changeStep="changeStep"
           @returnData="returnDataPayment"
         />
       </div>
       <div class="column is-3">
         <V-progress-check
-          v-for="(step,key) in stepsList"
+          v-for="(step, key) in stepsList"
           :key="key"
           :active="step.step <= stepActive"
           :step="step.step"

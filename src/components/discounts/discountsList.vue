@@ -14,16 +14,16 @@ const props = defineProps({
 const discounts = ref([
   {
     id: 1,
-    promo_code:'SANVALENTIN2021',
+    promo_code: 'SANVALENTIN2021',
     value: '-25%',
     maximum_uses: 80,
     start: 'Jan 15, 2022 10:00 AM',
     end: 'Feb 1, 2022 11:59 PM',
     status: true,
-  }
+  },
 ])
 
-onMounted(()=>{
+onMounted(() => {
   let data = JSON.parse(JSON.stringify(discounts.value[0]))
 
   for (var i = 0; i < 25; ++i) {
@@ -48,6 +48,7 @@ const filteredData = computed(() => {
     //   )
     // })
   }
+  return []
 })
 </script>
 
@@ -62,13 +63,16 @@ const filteredData = computed(() => {
         />
       </V-Control>
 
-      <V-Button :to="{ name:'settings-discounts-create' }" color="primary" raised>
+      <V-Button
+        :to="{ name: 'settings-discounts-create' }"
+        color="primary"
+        raised
+      >
         <span class="icon">
           <i aria-hidden="true" class="fas fa-plus"></i>
         </span>
         <span>New discounts</span>
       </V-Button>
-      
     </div>
 
     <div class="flex-list-wrapper flex-list-v2">
@@ -96,10 +100,7 @@ const filteredData = computed(() => {
       </V-PlaceholderPage>
 
       <!--Active Tab-->
-      <div
-        id="active-items-tab"
-        class="tab-content is-active"
-      >
+      <div id="active-items-tab" class="tab-content is-active">
         <div class="flex-table">
           <!--Table header-->
           <div
@@ -124,9 +125,10 @@ const filteredData = computed(() => {
                 class="flex-table-item"
               >
                 <div class="flex-table-cell is-media is-grow">
-                
                   <div>
-                    <span class="item-name dark-inverted">{{ item.promo_code }}</span>
+                    <span class="item-name dark-inverted">{{
+                      item.promo_code
+                    }}</span>
                   </div>
                 </div>
                 <div class="flex-table-cell" data-th="Customer">
@@ -144,7 +146,7 @@ const filteredData = computed(() => {
                 <div class="flex-table-cell" data-th="Status">
                   <span class="tag is-rounded">{{ item.status }}</span>
                 </div>
-                
+
                 <div class="flex-table-cell cell-end" data-th="Actions">
                   <discountsDropdown />
                 </div>
@@ -162,8 +164,6 @@ const filteredData = computed(() => {
           :max-links-displayed="7"
         />
       </div>
-
-      
     </div>
   </div>
 </template>

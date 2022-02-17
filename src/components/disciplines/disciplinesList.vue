@@ -3,101 +3,100 @@ import { computed, ref, defineProps } from 'vue'
 import { putStatus } from '/@src/models/Diciplines.ts'
 
 const props = defineProps({
-  diciplines:{
+  diciplines: {
     type: Array,
-    default: []
-  }
+    default: [],
+  },
 })
 
 const filters = ref('')
 
 const items = ref([
-    {
-      image: 'https://picsum.photos/150/152',
-      name: 'Boxing',
-      description: 'This membership allow members full access gyn facility',
-      locations:[
-        {
-          img: 'https://picsum.photos/151/152'
-        },
-        {
-          img: 'https://picsum.photos/151/151'
-        },
-      ],
-      status: true,
-    },
-    {
-      image: 'https://picsum.photos/150/152',
-      name: 'Boxing',
-      description: 'This membership allow members full access gyn facility',
-      locations:[
-        {
-          img: 'https://picsum.photos/151/152'
-        },
-        {
-          img: 'https://picsum.photos/151/151'
-        },
-      ],
-      status: true,
-    },
-    {
-      image: 'https://picsum.photos/150/152',
-      name: 'Boxing',
-      description: 'This membership allow members full access gyn facility',
-      locations:[
-        {
-          img: 'https://picsum.photos/151/152'
-        },
-        {
-          img: 'https://picsum.photos/151/151'
-        },
-      ],
-      status: true,
-    },
-    {
-      image: 'https://picsum.photos/150/152',
-      name: 'Boxing',
-      description: 'This membership allow members full access gyn facility',
-      locations:[
-        {
-          img: 'https://picsum.photos/151/152'
-        },
-        {
-          img: 'https://picsum.photos/151/151'
-        },
-      ],
-      status: true,
-    },
-    {
-      image: 'https://picsum.photos/150/152',
-      name: 'Boxing',
-      description: 'This membership allow members full access gyn facility',
-      locations:[
-        {
-          img: 'https://picsum.photos/151/152'
-        },
-        {
-          img: 'https://picsum.photos/151/151'
-        },
-      ],
-      status: true,
-    },
-    {
-      image: 'https://picsum.photos/150/152',
-      name: 'Boxing',
-      description: 'This membership allow members full access gyn facility',
-      locations:[
-        {
-          img: 'https://picsum.photos/151/152'
-        },
-        {
-          img: 'https://picsum.photos/151/151'
-        },
-      ],
-      status: true,
-    },
-
-  ])
+  {
+    image: 'https://picsum.photos/150/152',
+    name: 'Boxing',
+    description: 'This membership allow members full access gyn facility',
+    locations: [
+      {
+        img: 'https://picsum.photos/151/152',
+      },
+      {
+        img: 'https://picsum.photos/151/151',
+      },
+    ],
+    status: true,
+  },
+  {
+    image: 'https://picsum.photos/150/152',
+    name: 'Boxing',
+    description: 'This membership allow members full access gyn facility',
+    locations: [
+      {
+        img: 'https://picsum.photos/151/152',
+      },
+      {
+        img: 'https://picsum.photos/151/151',
+      },
+    ],
+    status: true,
+  },
+  {
+    image: 'https://picsum.photos/150/152',
+    name: 'Boxing',
+    description: 'This membership allow members full access gyn facility',
+    locations: [
+      {
+        img: 'https://picsum.photos/151/152',
+      },
+      {
+        img: 'https://picsum.photos/151/151',
+      },
+    ],
+    status: true,
+  },
+  {
+    image: 'https://picsum.photos/150/152',
+    name: 'Boxing',
+    description: 'This membership allow members full access gyn facility',
+    locations: [
+      {
+        img: 'https://picsum.photos/151/152',
+      },
+      {
+        img: 'https://picsum.photos/151/151',
+      },
+    ],
+    status: true,
+  },
+  {
+    image: 'https://picsum.photos/150/152',
+    name: 'Boxing',
+    description: 'This membership allow members full access gyn facility',
+    locations: [
+      {
+        img: 'https://picsum.photos/151/152',
+      },
+      {
+        img: 'https://picsum.photos/151/151',
+      },
+    ],
+    status: true,
+  },
+  {
+    image: 'https://picsum.photos/150/152',
+    name: 'Boxing',
+    description: 'This membership allow members full access gyn facility',
+    locations: [
+      {
+        img: 'https://picsum.photos/151/152',
+      },
+      {
+        img: 'https://picsum.photos/151/151',
+      },
+    ],
+    status: true,
+  },
+])
 
 const filteredData = computed(() => {
   if (!filters.value) {
@@ -110,6 +109,7 @@ const filteredData = computed(() => {
     //   )
     // })
   }
+  return []
 })
 
 const valueSingle = ref(0)
@@ -134,8 +134,11 @@ const optionsSingle = [
       </V-Control>
 
       <div class="buttons">
-        
-        <V-Button :to="{ name:'settings-disciplines-create' }" color="primary" raised>
+        <V-Button
+          :to="{ name: 'settings-disciplines-create' }"
+          color="primary"
+          raised
+        >
           <span class="icon">
             <i aria-hidden="true" class="fas fa-plus"></i>
           </span>
@@ -179,9 +182,12 @@ const optionsSingle = [
           <div class="card-grid-item">
             <!-- <p>{{ item }}</p> -->
             <div class="d-flex justify-content-between">
-
-              <label  class="h-toggle">
-                <input type="checkbox" @change="putStatus(item)" :checked="!item.status" />
+              <label class="h-toggle">
+                <input
+                  type="checkbox"
+                  @change="putStatus(item)"
+                  :checked="!item.status"
+                />
                 <span class="toggler">
                   <span class="active">
                     <i
@@ -211,25 +217,29 @@ const optionsSingle = [
             </div>
 
             <div class="d-flex">
-              <VAvatar 
+              <VAvatar
                 v-tooltip="location.location.name"
                 v-for="(location, key) in item.locations"
                 :key="`membership_location-${key}`"
-                class="mr-3" 
-                :picture="location.location.image" />
+                class="mr-3"
+                :picture="location.location.image"
+              />
             </div>
 
             <div class="d-flex justify-content-end mt-5">
               <V-Button
-                :to="{ name: 'settings-disciplines-edit', query:{id:item.id}}"
-               raised>
+                :to="{
+                  name: 'settings-disciplines-edit',
+                  query: { id: item.id },
+                }"
+                raised
+              >
                 <span class="icon">
                   <i class="fas fa-edit"></i>
                 </span>
                 <span>Edit discipline</span>
               </V-Button>
             </div>
-            
           </div>
         </div>
       </transition-group>
@@ -336,7 +346,7 @@ const optionsSingle = [
   }
 }
 
-.cardBox{
+.cardBox {
   background: white;
   height: 70px;
   width: 70px;
@@ -348,7 +358,7 @@ const optionsSingle = [
   margin-right: auto;
   text-align: center;
   font-size: 20px;
-  box-shadow: 2px 2px 10px rgba(0,0,0,.3);
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
 }
 
 @media only screen and (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {

@@ -14,27 +14,19 @@ useHead({
 })
 
 const isLoading = ref(true)
-onMounted(()=>{
+onMounted(() => {
   getCompany()
-  getTrainers().then((response)=>{
+  getTrainers().then((response) => {
     isLoading.value = false
   })
 })
-
 </script>
 
-
 <template>
-  <SidebarLayout >
+  <SidebarLayout>
     <!-- Content Wrapper -->
-    <div class="page-content-inner ">
-
-      <disciplinesForm
-        :isLoading="isLoading"
-      />
-     
-
+    <div class="page-content-inner">
+      <disciplinesForm :is-loading="isLoading" />
     </div>
-    
   </SidebarLayout>
 </template>

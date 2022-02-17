@@ -1,8 +1,12 @@
 <script setup lang="ts">
-import { computed, ref, onMounted, watch,  } from 'vue'
+import { computed, ref, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
-import { toggleMemberActive, memberActive, members } from '/@src/components/members/MembersData'
+import {
+  toggleMemberActive,
+  memberActive,
+  members,
+} from '/@src/components/members/MembersData'
 
 import { Api } from '/@src/services'
 
@@ -21,11 +25,11 @@ const filteredData = computed(() => {
     return members.value.filter((item) => {
       return (
         item.name.match(new RegExp(filters.value, 'i')) ||
-        item.last_name.match(new RegExp(filters.value,'i')) ||
-        item.second_name.match(new RegExp(filters.value,'i')) ||
+        item.last_name.match(new RegExp(filters.value, 'i')) ||
+        item.second_name.match(new RegExp(filters.value, 'i')) ||
         item.id == filters.value ||
         item.phone == filters.value ||
-        item.personal_identifications == filters.value 
+        item.personal_identifications == filters.value
       )
     })
   }
@@ -33,57 +37,52 @@ const filteredData = computed(() => {
 
 const filtersSearch = () => {
   // if(filteredData.value.length == 0 || filters.value.length == 0){
-    router.push({ query: { page: 1 } })
-    getMembers(filterDate.value, filters.value, null)
+  router.push({ query: { page: 1 } })
+  getMembers(filterDate.value, filters.value, null)
   // }
 }
 
 watch(
   () => route.query.page,
-  async newget => {
+  async (newget) => {
     await getMembers(filterDate.value, filters.value, route.query.page)
   }
 )
 
-
 const getMembers = async (filter, value = '', page = null) => {
   filterDate.value = filter
-  await Api.get('members', { params:{
+  await Api.get('members', {
+    params: {
       [filterDate.value]: true,
       filter: value,
       page: page,
-      category: 'Adult'
-    }
+      category: 'Adult',
+    },
   })
-  .then((response) => {
-    // console.log(response.data.members.data)
-    // if(response.data.members.data.length > 0){
+    .then((response) => {
+      // console.log(response.data.members.data)
+      // if(response.data.members.data.length > 0){
       paginationData.value = {
-        itemPerPage:       response.data.members.per_page,
-        totalItems:        response.data.members.total,
-        currentPage:       response.data.members.current_page,
+        itemPerPage: response.data.members.per_page,
+        totalItems: response.data.members.total,
+        currentPage: response.data.members.current_page,
         maxLinksDisplayed: 7,
       }
       members.value = response.data.members.data
-    // }
-  })
-  .catch((error) => {
-    console.log(error);
-  })
+      // }
+    })
+    .catch((error) => {
+      console.log(error)
+    })
 }
 
 const initials = (name, lastname) => {
-  return name.substr(0,1)+lastname.substr(0,1)
+  return name.substr(0, 1) + lastname.substr(0, 1)
 }
 
 onMounted(() => {
-
-  getMembers('all',filters.value,route.query.page)
-
+  getMembers('all', filters.value, route.query.page)
 })
-
-
-
 </script>
 
 <template>
@@ -91,30 +90,42 @@ onMounted(() => {
     <div class="list-flex-toolbar justify-content-between flex-list-v1">
       <V-Field addons>
         <V-Control>
-          <V-Button 
-            :color="filterDate == 'all' ? 'primary':undefined"
-            @click="getMembers('all')" 
-            rounded > All </V-Button>
-        </V-Control>
-        <V-Control>
-          <V-Button 
-            :color="filterDate == 'today' ? 'primary':undefined" 
-            @click="getMembers('today')" 
-            rounded > Today </V-Button>
-        </V-Control>
-        <V-Control>
-          <V-Button 
-            :color="filterDate == 'week' ? 'primary':undefined" 
-            @click="getMembers('week')"
-            rounded > Last Week </V-Button>
+          <V-Button
+            :color="filterDate == 'all' ? 'primary' : undefined"
+            @click="getMembers('all')"
+            rounded
+          >
+            All
+          </V-Button>
         </V-Control>
         <V-Control>
           <V-Button
-            :color="filterDate == 'month' ? 'primary':undefined"
-            @click="getMembers('month')"
-            rounded> Last Month </V-Button>
+            :color="filterDate == 'today' ? 'primary' : undefined"
+            @click="getMembers('today')"
+            rounded
+          >
+            Today
+          </V-Button>
         </V-Control>
-      </V-Field> 
+        <V-Control>
+          <V-Button
+            :color="filterDate == 'week' ? 'primary' : undefined"
+            @click="getMembers('week')"
+            rounded
+          >
+            Last Week
+          </V-Button>
+        </V-Control>
+        <V-Control>
+          <V-Button
+            :color="filterDate == 'month' ? 'primary' : undefined"
+            @click="getMembers('month')"
+            rounded
+          >
+            Last Month
+          </V-Button>
+        </V-Control>
+      </V-Field>
 
       <V-Field class="w-90 mx-6">
         <V-Control icon="feather:search">
@@ -128,15 +139,15 @@ onMounted(() => {
       </V-Field>
 
       <V-Buttons class="ml-0">
-        <V-Button 
+        <V-Button
           :to="{ name: 'members-create' }"
-          color="primary" 
-          icon="fas fa-plus" 
-          elevated>
+          color="primary"
+          icon="fas fa-plus"
+          elevated
+        >
           Add Members
         </V-Button>
       </V-Buttons>
-
     </div>
 
     <div class="page-content-inner">
@@ -179,27 +190,32 @@ onMounted(() => {
             <span class="cell-end">Actions</span>
           </div>
 
-          <div class="flex-list-inner ">
+          <div class="flex-list-inner">
             <transition-group name="list" tag="div">
               <!--Table item-->
               <div
                 v-for="item in filteredData"
                 :key="item.id"
                 class="flex-table-item cursor-pointer"
-                :class="item.status === 0 ? 'bg-danger':''"
-               
+                :class="item.status === 0 ? 'bg-danger' : ''"
               >
-                <div @click="toggleMemberActive(true,item.id)"  class="flex-table-cell is-media is-grow">
+                <div
+                  @click="toggleMemberActive(true, item.id)"
+                  class="flex-table-cell is-media is-grow"
+                >
                   <V-Avatar
                     :picture="item.photo"
                     color="primary"
-                    :initials="initials(item.name,item.last_name)"
+                    :initials="initials(item.name, item.last_name)"
                     size="medium"
                   />
                   <!-- <V-PlaceloadAvatar size="medium" /> -->
                   <div>
                     <span class="item-name dark-inverted">
-                      <h3>{{ item.name }} {{ item.second_name }} {{ item.last_name }}</h3>
+                      <h3>
+                        {{ item.name }} {{ item.second_name }}
+                        {{ item.last_name }}
+                      </h3>
                     </span>
                     <!-- <span class="item-meta">
                       <span>{{ item.position }}</span>
@@ -216,27 +232,31 @@ onMounted(() => {
                   <V-Avatar
                     :picture="item.trainer.photo"
                     color="h-green"
-                    :initials="initials(item.trainer.name,item.trainer.last_name)"
+                    :initials="
+                      initials(item.trainer.name, item.trainer.last_name)
+                    "
                     size="medium"
                   />
-                  <span class="light-text dark-inverted ml-2"> {{ item.trainer.name }} {{ item.trainer.second_name }} {{ item.trainer.last_name }}</span>
+                  <span class="light-text dark-inverted ml-2">
+                    {{ item.trainer.name }} {{ item.trainer.second_name }}
+                    {{ item.trainer.last_name }}</span
+                  >
                 </div>
-                 <div class="flex-table-cell" data-th="Phone">
+                <div class="flex-table-cell" data-th="Phone">
                   <span class="light-text">{{ item.phone }}</span>
                 </div>
                 <div class="flex-table-cell" data-th="Status">
                   <span
                     v-if="item.status === 1"
                     class="tag is-success is-rounded"
-                    >{{ item.status ? 'Active':'Payment' }}</span
+                    >{{ item.status ? 'Active' : 'Payment' }}</span
                   >
-                  
+
                   <span
                     v-if="item.status === 0"
                     class="tag is-danger is-rounded"
-                    >{{ item.status ? 'Active':'Payment' }}</span
+                    >{{ item.status ? 'Active' : 'Payment' }}</span
                   >
-                  
                 </div>
                 <!-- <div class="flex-table-cell" data-th="Relations">
                   <V-AvatarStack
@@ -247,9 +267,7 @@ onMounted(() => {
                   />
                 </div> -->
                 <div class="flex-table-cell cell-end" data-th="Actions">
-                  <FlexTableDropdown 
-                    :idMember="item.id"
-                  />
+                  <FlexTableDropdown :id-member="item.id" />
                 </div>
               </div>
             </transition-group>
@@ -266,7 +284,7 @@ onMounted(() => {
         />
       </div>
     </div>
-    <sidebar-member/>
+    <sidebar-member />
   </div>
 </template>
 

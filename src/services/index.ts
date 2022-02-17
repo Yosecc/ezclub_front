@@ -1,15 +1,30 @@
 import axios from 'axios'
-
+import { ref } from 'vue'
 import { user, onLogout } from '/@src/pages/auth/auth.ts'
 
-const url = 'https://dev-api.ushuaiacreative.com/api/'
+export const API_URL = ref('')
+export const FRONTEND_URL = ref('')
+export const API_WEB_URL = ref('')
+
+// const url = 'https://dev-api.ushuaiacreative.com/api/'
 // const url = 'https://ezclub.loc/api/'
+if (import.meta.env.MODE === 'development') {
+  API_URL.value = 'https://ezclub.loc/api/'
+  FRONTEND_URL.value = 'http://localhost:3000/'
+  API_WEB_URL.value = 'https://ezclub.loc/'
+} else {
+  API_URL.value = 'https://dev-api.ushuaiacreative.com/api/'
+  FRONTEND_URL.value = 'https://dev-frontend.ushuaiacreative.com/'
+  API_WEB_URL.value = 'https://dev-api.ushuaiacreative.com/'
+}
+// console.log(VUE_APP_ROUTE_API)
+// console.log(env)
 
 import { useCookies } from 'vue3-cookies'
 const { cookies } = useCookies()
 
 const intance = axios.create({
-  baseURL: url,
+  baseURL: API_URL.value,
   headers: {
     Accept: 'application/json',
     'Content-type': 'application/json',

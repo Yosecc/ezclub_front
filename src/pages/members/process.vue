@@ -17,7 +17,7 @@ const member = ref([])
 const paymentStatus = ref(null)
 
 const urlPdf = ref(null)
-
+const loading = ref(true)
 let familiares = ref([])
 
 onMounted(() => {
@@ -30,6 +30,7 @@ onMounted(() => {
       urlPdf.value = response.data.urlPDF
       member.value = response.data.member
       familiares.value = response.data.familiares
+      loading.value = false
     }
   })
 })
@@ -50,15 +51,17 @@ const nextFamily = (familiar) => {
   <SidebarLayout>
     <!-- Content Wrapper -->
     <div class="page-content-inner">
-      <VPlaceload v-if="paymentStatus == null" height="500px" />
-      <div v-if="paymentStatus == 'succeeded'">
+      <!-- <VPlaceload v-if="paymentStatus == null" height="500px" /> -->
+      <!-- v-if="paymentStatus == 'succeeded'" -->
+      <div>
         <VCard class="mb-4" radius="small" color="success">
           <h1 class="title is-4">Successful Payment</h1>
         </VCard>
         <h2 class="title is-3">
           Sign {{ member.name }} {{ member.second_name }} {{ member.last_name }}
         </h2>
-        <sign :member="member" />
+
+        <sign :loading="loading" :member="member" />
 
         <div v-if="familiares.length > 0" class="mt-6">
           <div v-for="(familiar, key) in familiares" :key="`familu${key}`">

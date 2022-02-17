@@ -31,7 +31,7 @@ const items = ref({ id: props.id, amount: props.amount })
 
 const elements = ref()
 
-import { Api } from '/@src/services'
+import { Api, FRONTEND_URL } from '/@src/services'
 
 const initialize = async () => {
   let response = await Api.post('stripe', {
@@ -67,9 +67,7 @@ const handleSubmit = async (e) => {
     elements: elements.value,
     confirmParams: {
       // Make sure to change this to your payment completion page
-      return_url:
-        `https://dev-frontend.ushuaiacreative.com/members/process?id=` +
-        props.id,
+      return_url: `${FRONTEND_URL}/members/process?id=` + props.id,
     },
   })
 

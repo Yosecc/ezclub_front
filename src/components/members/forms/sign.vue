@@ -1,18 +1,22 @@
 <script setup lang="ts">
 import { computed, defineProps, ref, onMounted } from 'vue'
 import VueDrawingCanvas from 'vue-drawing-canvas'
-import { Api } from '/@src/services'
+import { Api, API_WEB_URL } from '/@src/services'
 
 onMounted(() => {
-  var canvasElm = document.querySelector('canvas')
-  console.log(canvasElm)
-  canvasElm.setAttribute('tabindex', '0')
-  canvasElm.focus()
+  // var canvasElm = document.querySelector('canvas')
+  // console.log(canvasElm)
+  // canvasElm.setAttribute('tabindex', '0')
+  // canvasElm.focus()
 })
 const props = defineProps({
   member: {
     type: Object,
     required: true,
+  },
+  loading: {
+    type: Boolean,
+    default: false,
   },
 })
 const load = ref(false)
@@ -20,11 +24,10 @@ const firmado = ref(false)
 
 const firma = ref(null)
 const VueCanvasDrawing = ref()
-const viewFirma = async () => {
-  let base64 = VueCanvasDrawing.value.save()
+const viewFirma = async (base64) => {
+  // let base64 = VueCanvasDrawing.value.save()
   firma.value = base64
   load.value = true
-
   let response = Api.post(`sign/${props.member.membership_members.id}`, {
     sign: base64,
   }).then((response) => {
@@ -43,11 +46,14 @@ const viewFirma = async () => {
 
   <V-Card radius="small">
     <div class="columns is-multiline">
-      <div class="d-flex justify-content-center column is-12 mb-4">
+      <div
+        v-if="!loading"
+        class="d-flex justify-content-center column is-12 mb-4"
+      >
         <div class="text-center mr-6">
           <a
             target="_blank"
-            :href="`https://dev-api.ushuaiacreative.com/generateContract/${member.id}`"
+            :href="`${API_WEB_URL}generateContract/${member.id}`"
           >
             <img src="/public/images/pdf_icon.png" width="40" alt="" />
             <p>
@@ -64,7 +70,7 @@ const viewFirma = async () => {
         <div class="text-center ml-6">
           <a
             target="_blank"
-            :href="`https://dev-api.ushuaiacreative.com/generateWeiver/${member.id}`"
+            :href="`${API_WEB_URL}generateWeiver/${member.id}`"
           >
             <img src="/public/images/pdf_icon.png" width="40" alt="" />
             <p>
@@ -87,21 +93,23 @@ const viewFirma = async () => {
         class="mx-auto"
       />
 
-      <VueDrawingCanvas
+      <!-- <VueDrawingCanvas
         v-if="!firmado && !load"
         class="column is-6 mx-auto"
         ref="VueCanvasDrawing"
         save-as="jpeg"
         width="600"
         height="200"
-      />
+      /> -->
+
+      <drawingCanvasCustom @onSignYes="viewFirma" />
 
       <div v-if="firmado" class="text-center mb-4 mt-5 mx-auto">
         <p class="mb-4 title is-5">Saved signature</p>
         <img :src="firma" width="400" height="135" alt="" />
       </div>
 
-      <div
+      <!-- <div
         v-if="!firmado"
         class="column is-12 mx-auto d-flex justify-content-center"
       >
@@ -115,7 +123,7 @@ const viewFirma = async () => {
         >
           Reset
         </V-Button>
-      </div>
+      </div> -->
     </div>
   </V-Card>
 </template>
