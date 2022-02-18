@@ -6,6 +6,7 @@ import {
   setInputValuesData,
   setInputModelData,
   getInput,
+  cleanUpModelInputs,
 } from '/@src/models/Mixin.ts'
 import { getRecurrences, recurrences } from '/@src/models/Recurrences.ts'
 import { inputs, getMembership } from '/@src/models/Memberships.ts'
@@ -16,6 +17,7 @@ const route = useRoute()
 const isLoading = ref(true)
 
 onMounted(() => {
+  cleanUpModelInputs(inputs.value)
   getTaxes().then(() => {
     setInputValuesData(inputs, 'taxes_id', taxes)
   })
@@ -42,6 +44,7 @@ onMounted(() => {
           })
         } else if (i == 'locations') {
           response.data[i].forEach((element) => {
+            getInput(inputs.value, 'locations').model = []
             getInput(inputs.value, 'locations').model.push(
               element.companies_locations_id
             )
@@ -49,7 +52,7 @@ onMounted(() => {
         } else if (i == 'membership_diciplines') {
           response.data[i].forEach((element) => {
             getInput(inputs.value, 'diciplines').model.push(
-              element.diciplines.id
+              element.diciplines_id
             )
           })
         } else if (i == 'status') {

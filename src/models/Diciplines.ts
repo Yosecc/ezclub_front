@@ -56,6 +56,16 @@ export const saveDicipline = async (dicipline) => {
   return response
 }
 
+export const putDicipline = async (id, data) => {
+  const response = await Api.put(`diciplines/${id}`, data)
+  if (response.data && response.data.status) {
+    notyf.success('Record update')
+  } else {
+    notyf.error('error')
+  }
+  return response
+}
+
 export const inputs = ref([
   {
     typeInput: 'checkbox',

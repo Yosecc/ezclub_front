@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import { computed, ref, defineProps, defineEmit, onMounted, watch } from 'vue'
-import { useRouter } from 'vue-router'
 
+import { useRoute, useRouter } from 'vue-router'
+const route = useRoute()
 import {
   setInputValuesData,
   perpareDataInputs,
   cleanUpModelInputs,
 } from '/@src/models/Mixin.ts'
 
-import { inputs, saveDicipline } from '/@src/models/Diciplines.ts'
+import { inputs, saveDicipline, putDicipline } from '/@src/models/Diciplines.ts'
 import { company } from '/@src/models/Companies.ts'
 import { trainers } from '/@src/models/Staffs.ts'
 
@@ -58,10 +59,18 @@ onMounted(() => {
 
 const saveData = () => {
   const data = perpareDataInputs(inputs.value)
-  saveDicipline(data).then((response) => {
-    cleanUpModelInputs(inputs.value)
-    router.back()
-  })
+  console.log(data)
+  if (props.type == 'create') {
+    saveDicipline(data).then((response) => {
+      cleanUpModelInputs(inputs.value)
+      router.back()
+    })
+  } else {
+    putDicipline(route.query.id, data).then((response) => {
+      // cleanUpModelInputs(inputs.value)
+      // router.back()
+    })
+  }
 }
 </script>
 
