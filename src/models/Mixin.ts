@@ -104,7 +104,13 @@ export const viewInput = (inputs, name) => {
   return inputs.find((element) => element.name == name).model
 }
 
-export const getValueInput = (inputs, name) => {
+export const getInput = (inputs: any, name: any) => {
+  return inputs.find((e) => e.name == name)
+}
+
+export const getValueInput = (inputs: any, name: any) => {
+  console.log(inputs)
+  console.log(name)
   return inputs
     .find((e) => e.name == name)
     .values.find((i) => i.id == viewInput(inputs, name))
@@ -114,17 +120,19 @@ export const setInputValuesData = (inputs, name, data) => {
   if (inputs.value == undefined) {
     return (inputs.find((element) => element.name == name).values = data)
   }
+
   return (inputs.value.find((element) => element.name == name).values = data)
 }
 
 const setModel = (input, value) => {
   const camposArray = ['checkbox']
-
   if (camposArray.includes(input.typeInput)) {
     input.model = []
-    return input.model.push(value)
+    input.model.push(value)
+    return input
   } else {
-    return (input.model = value)
+    input.model = value
+    return input
   }
 }
 

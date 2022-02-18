@@ -205,6 +205,7 @@ onMounted(() => {
         :data-class="input.class"
         class="bibibi"
       >
+        <!-- <p>{{ input.values }}</p> -->
         <V-Control :has-error="input.hasError ?? false">
           <!-- <p>{{ input.values }}</p> -->
           <div class="select">

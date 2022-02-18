@@ -145,6 +145,9 @@ export const inputsInformation = ref([
     class: 'is-3',
     categories: ['Adult', 'Prospect', 'Minor'],
     typeMember: ['Individual', 'Company'],
+    filterOptionText: function (option) {
+      return option.name
+    },
   },
   {
     typeInput: 'selectData',
@@ -155,6 +158,9 @@ export const inputsInformation = ref([
     class: 'is-3',
     categories: ['Adult', 'Prospect', 'Minor'],
     typeMember: ['Individual', 'Company'],
+    filterOptionText: function (option) {
+      return option.name
+    },
   },
   {
     typeInput: 'selectData',
@@ -165,6 +171,9 @@ export const inputsInformation = ref([
     class: 'is-3',
     categories: ['Adult', 'Prospect', 'Minor'],
     typeMember: ['Individual', 'Company'],
+    filterOptionText: function (option) {
+      return option.name
+    },
   },
   {
     typeInput: 'text',

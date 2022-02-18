@@ -17,7 +17,14 @@ import { getMeberships, memberships } from '/@src/models/Memberships.ts'
 import { getRecurrences } from '/@src/models/Recurrences.ts'
 import { getDiscounts } from '/@src/models/Discounts.ts'
 import { setInputValuesData, perpareDataInputs } from '/@src/models/Mixin.ts'
-import { getcities, getstates, getcontries } from '/@src/services/config.ts'
+
+import {
+  cities,
+  states,
+  contries,
+  getAllConfig,
+} from '/@src/services/config.ts'
+
 import { getTrainers } from '/@src/models/Staffs.ts'
 import { optionsCreditCard } from '/@src/models/PaymentMethodsData.ts'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
@@ -41,18 +48,15 @@ onMounted(() => {
   getRecurrences().then((response) => {
     // setInputValuesData(inputsMembership,'recurrences_id', response.data)
   })
-  getcities().then((response) => {
-    setInputValuesData(inputsInformation, 'city_id', response.value)
-    setInputValuesData(inputsFamily, 'city_id', response.value)
+  getAllConfig().then((response) => {
+    setInputValuesData(inputsInformation, 'city_id', cities.value)
+    setInputValuesData(inputsFamily, 'city_id', cities.value)
+    setInputValuesData(inputsInformation, 'state_id', states.value)
+    setInputValuesData(inputsFamily, 'state_id', states.value)
+    setInputValuesData(inputsInformation, 'country_id', contries.value)
+    setInputValuesData(inputsFamily, 'country_id', contries.value)
   })
-  getstates().then((response) => {
-    setInputValuesData(inputsInformation, 'state_id', response.value)
-    setInputValuesData(inputsFamily, 'state_id', response.value)
-  })
-  getcontries().then((response) => {
-    setInputValuesData(inputsInformation, 'country_id', response.value)
-    setInputValuesData(inputsFamily, 'country_id', response.value)
-  })
+
   getTrainers().then((response) => {
     setInputValuesData(inputsMembership, 'staff_id', response.data)
   })

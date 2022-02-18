@@ -26,7 +26,7 @@ onMounted(() => {
   <SidebarLayout>
     <!-- Content Wrapper -->
     <div class="page-content-inner">
-      <disciplinesForm :is-loading="isLoading" />
+      <disciplinesForm type="create" :is-loading="isLoading" />
     </div>
   </SidebarLayout>
 </template>

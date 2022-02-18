@@ -1,7 +1,13 @@
 <script setup lang="ts">
 import { computed, ref, defineProps, onMounted, watch } from 'vue'
-import { useRouter } from 'vue-router'
-import { inputs, saveMembership } from '/@src/models/Memberships.ts'
+import { useRoute, useRouter } from 'vue-router'
+
+const route = useRoute()
+import {
+  inputs,
+  saveMembership,
+  putMembership,
+} from '/@src/models/Memberships.ts'
 import { getLocationsDiciplines } from '/@src/models/Diciplines.ts'
 import {
   setInputValuesData,
@@ -58,23 +64,26 @@ const changeLocation = (data) => {
   if (data.model.length > 0) {
     data.model.forEach((element) => {
       let location = data.values.find((e) => e.id == element)
-      dat.push({
-        name: 'locationsSaleOrAccess',
-        value: location.id,
-        placeholder: location.name,
-        values: [
-          {
-            placeholder: 'Access',
-            name: 'access',
-            model: ['access'],
-          },
-          {
-            placeholder: 'Sale',
-            name: 'sale',
-            model: ['sale'],
-          },
-        ],
-      })
+
+      if (props.type == 'create') {
+        dat.push({
+          name: 'locationsSaleOrAccess',
+          value: location.id,
+          placeholder: location.name,
+          values: [
+            {
+              placeholder: 'Access',
+              name: 'access',
+              model: ['access'],
+            },
+            {
+              placeholder: 'Sale',
+              name: 'sale',
+              model: ['sale'],
+            },
+          ],
+        })
+      }
     })
     setInputValuesData(inputs, 'locations_options', dat)
   }
@@ -99,24 +108,27 @@ watch(diciplines.value, (to) => {
 const saveData = () => {
   let data = perpareDataInputs(inputs.value)
   let locationsData = []
-  if (data.locations.length > 0) {
-    data.locations.forEach((element) => {
-      let option = locations_options.value.values.find(
-        (e) => e.value == element
-      )
-      locationsData.push({
-        id: element,
-        access: option.values.find((access) => access.name == 'access').model
-          .length
-          ? 1
-          : 0,
-        sale: option.values.find((access) => access.name == 'sale').model.length
-          ? 1
-          : 0,
+  if (props.type == 'create') {
+    if (data.locations.length > 0) {
+      data.locations.forEach((element) => {
+        let option = locations_options.value.values.find(
+          (e) => e.value == element
+        )
+        locationsData.push({
+          id: element,
+          access: option.values.find((access) => access.name == 'access').model
+            .length
+            ? 1
+            : 0,
+          sale: option.values.find((access) => access.name == 'sale').model
+            .length
+            ? 1
+            : 0,
+        })
       })
-    })
-    data.locations = locationsData
-    delete data.locations_options
+      data.locations = locationsData
+      delete data.locations_options
+    }
   }
 
   let amountsData = []
@@ -128,19 +140,35 @@ const saveData = () => {
     })
   }
   data.amounts = amountsData
-  console.log(data)
-  saveMembership(data)
-    .then((response) => {
-      cleanUpModelInputs(inputs.value)
-      router.back()
+
+  if (props.type == 'create') {
+    saveMembership(data)
+      .then((response) => {
+        cleanUpModelInputs(inputs.value)
+        router.back()
+      })
+      .catch((error) => {
+        for (var i in error.response.data.rerrores) {
+          error.response.data.rerrores[i].forEach((e) => {
+            notyf.error(e)
+          })
+        }
+      })
+  } else {
+    console.log('este es')
+    console.log(data)
+    putMembership(route.query.id, data).then((response) => {
+      notyf.success('Success')
     })
-    .catch((error) => {
-      for (var i in error.response.data.rerrores) {
-        error.response.data.rerrores[i].forEach((e) => {
-          notyf.error(e)
-        })
-      }
-    })
+
+    // .catch((error) => {
+    //   for (var i in error.response.data.rerrores) {
+    //     error.response.data.rerrores[i].forEach((e) => {
+    //       notyf.error(e)
+    //     })
+    //   }
+    // })
+  }
 }
 </script>
 

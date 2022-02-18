@@ -37,6 +37,7 @@ const inputsSteps = computed(() => {
   if (isCompany.value) {
     return props.inputs.filter((input) => input.typeMember.includes('Company'))
   }
+
   return props.inputs.filter((input) => input.typeMember.includes('Individual'))
 })
 

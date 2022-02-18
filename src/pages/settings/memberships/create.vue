@@ -2,13 +2,18 @@
 import { onMounted, ref } from 'vue'
 import { getCompany, locations } from '/@src/models/Companies.ts'
 import { getTaxes, taxes } from '/@src/services/config.ts'
-import { setInputValuesData, setInputModelData } from '/@src/models/Mixin.ts'
+import {
+  setInputValuesData,
+  setInputModelData,
+  cleanUpModelInputs,
+} from '/@src/models/Mixin.ts'
 import { getRecurrences, recurrences } from '/@src/models/Recurrences.ts'
 import { inputs } from '/@src/models/Memberships.ts'
 
 const isLoading = ref(true)
 
 onMounted(() => {
+  cleanUpModelInputs(inputs.value)
   getTaxes().then(() => {
     setInputValuesData(inputs, 'taxes_id', taxes)
   })

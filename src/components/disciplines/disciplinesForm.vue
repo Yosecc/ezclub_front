@@ -7,6 +7,7 @@ import {
   perpareDataInputs,
   cleanUpModelInputs,
 } from '/@src/models/Mixin.ts'
+
 import { inputs, saveDicipline } from '/@src/models/Diciplines.ts'
 import { company } from '/@src/models/Companies.ts'
 import { trainers } from '/@src/models/Staffs.ts'
