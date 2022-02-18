@@ -117,14 +117,35 @@ export const setInputValuesData = (inputs, name, data) => {
   return (inputs.value.find((element) => element.name == name).values = data)
 }
 
+const setModel = (input, value) => {
+  const camposArray = ['checkbox']
+
+  if (camposArray.includes(input.typeInput)) {
+    input.model = []
+    return input.model.push(value)
+  } else {
+    return (input.model = value)
+  }
+}
+
 export const setInputModelData = (inputs: any, name, data) => {
   if (inputs.value == undefined) {
     if (inputs.find((element) => element.name == name) != undefined) {
-      return (inputs.find((element) => element.name == name).model = data)
+      return setModel(
+        inputs.find((element) => element.name == name),
+        data
+      )
+    } else {
+      console.warn(`no se agrego el valor de ${name}`)
     }
   }
   if (inputs.value.find((element) => element.name == name) != undefined) {
-    return (inputs.value.find((element) => element.name == name).model = data)
+    return setModel(
+      inputs.value.find((element) => element.name == name),
+      data
+    )
+  } else {
+    console.warn(`no se agrego el valor de ${name}`)
   }
 }
 

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, defineProps, defineEmit } from 'vue'
 import { useRouter } from 'vue-router'
+import { locations } from '/@src/models/Companies.ts'
 
 const router = useRouter()
 
@@ -26,24 +27,24 @@ const titles = computed(() => {
   }
 })
 
-const locations = ref([
-  {
-    img: 'https://picsum.photos/150/153',
-    name: 'Location Name',
-    address: '5555 NW 13 St Miami Fl 33145',
-    id: '09876543',
-    url: 'https://goo.gl/maps/p3QNRiQ5LbwER47J7',
-    status: true,
-  },
-  {
-    img: 'https://picsum.photos/151/153',
-    name: 'Location Name',
-    address: '5555 NW 13 St Miami Fl 33145',
-    id: '09876543',
-    url: 'https://goo.gl/maps/p3QNRiQ5LbwER47J7',
-    status: false,
-  },
-])
+// const locations = ref([
+//   {
+//     img: 'https://picsum.photos/150/153',
+//     name: 'Location Name',
+//     address: '5555 NW 13 St Miami Fl 33145',
+//     id: '09876543',
+//     url: 'https://goo.gl/maps/p3QNRiQ5LbwER47J7',
+//     status: true,
+//   },
+//   {
+//     img: 'https://picsum.photos/151/153',
+//     name: 'Location Name',
+//     address: '5555 NW 13 St Miami Fl 33145',
+//     id: '09876543',
+//     url: 'https://goo.gl/maps/p3QNRiQ5LbwER47J7',
+//     status: false,
+//   },
+// ])
 
 // const emit = defineEmit(['changeStep','saveData']);
 </script>
@@ -66,21 +67,27 @@ const locations = ref([
             class="mb-4"
           />
           <div class="d-flex mb-3">
-            <VAvatar squared class="mr-3" :picture="location.img" size="xl" />
+            <VAvatar squared class="mr-3" :picture="location.image" size="xl" />
             <div>
               <p>
-                <small>{{ location.id }}</small>
+                <small># {{ location.id }}</small>
               </p>
               <h2 class="title is-5 mb-1">{{ location.name }}</h2>
-              <p>{{ location.address }}</p>
-              <a target="_blank" :href="location.url">
+              <p>Address: {{ location.address }}</p>
+              <p>Phone: {{ location.phone }}</p>
+              <!-- <a target="_blank" :href="location.map">
                 <i class="fas fa-map-marker-alt"></i>
                 View map
-              </a>
+              </a> -->
             </div>
           </div>
           <div class="d-flex justify-content-end align-items-center">
-            <VButton :to="{ name: 'settings-clubinformation-locations-edit' }">
+            <VButton
+              :to="{
+                name: 'settings-clubinformation-locations-edit',
+                query: { id: location.id },
+              }"
+            >
               Edit
             </VButton>
           </div>

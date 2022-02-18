@@ -15,15 +15,35 @@ export const company_name = computed(() => {
 
 export const locationsData = ref(null)
 
+export const location = ref({})
+
 export const locations = computed(() => {
   if (company.value) return company.value.locations
   return []
 })
 
+export const getLocation = async (id: any) => {
+  const response = await Api.get(`get_location/${id}`)
+  location.value = response.data
+  return response
+}
+
 export const getCompany = async () => {
-  const companyData = await Api.get('company/get')
-  company.value = companyData.data
-  return companyData
+  const response = await Api.get('company/get')
+  company.value = response.data
+  return response
+}
+
+export const putLocation = async (id: any, data: any) => {
+  const response = await Api.put(`companies/updatelocation/${id}`, data)
+  company.value = response.data
+  return response
+}
+
+export const storeLocation = async (data: any) => {
+  const response = await Api.put(`companies/storeLocation`, data)
+  company.value = response.data
+  return response
 }
 
 export const companyInputs = ref([
@@ -334,4 +354,112 @@ export const inputsContacto = ref([
   //   required: true,
   //   class: 'is-12',
   // },
+])
+
+export const inputsLocation = ref([
+  {
+    typeInput: 'checkbox',
+    name: 'pincipal_address',
+    placeholder: 'Principal Address',
+    model: [''],
+    required: true,
+    class: 'is-4',
+  },
+  {
+    typeInput: 'checkbox',
+    name: 'status',
+    placeholder: 'status',
+    model: [''],
+    required: true,
+    class: 'is-4',
+  },
+  {
+    typeInput: 'file',
+    name: 'image',
+    placeholder: 'Location image',
+    model: '',
+    required: true,
+    class: 'is-4 d-flex justify-content-end',
+  },
+  {
+    typeInput: 'text',
+    name: 'name',
+    placeholder: 'Location Name',
+    model: '',
+    required: true,
+    class: 'is-12',
+  },
+  {
+    typeInput: 'number',
+    name: 'postal_code',
+    placeholder: 'Postal Code',
+    model: '',
+    class: 'is-3',
+  },
+  {
+    typeInput: 'selectData',
+    name: 'country_id',
+    placeholder: 'Country',
+    model: '',
+    values: [''],
+    class: 'is-3',
+    filterOptionText: (option) => {
+      return option.name
+    },
+  },
+  {
+    typeInput: 'selectData',
+    name: 'city_id',
+    placeholder: 'City',
+    model: '',
+    values: [''],
+    class: 'is-3',
+    filterOptionText: (option) => {
+      return option.name
+    },
+  },
+  {
+    typeInput: 'selectData',
+    name: 'state_id',
+    placeholder: 'State',
+    model: '',
+    values: [''],
+    class: 'is-3',
+    filterOptionText: (option) => {
+      return option.name
+    },
+  },
+  {
+    typeInput: 'text',
+    name: 'address',
+    placeholder: 'Address',
+    model: '',
+    required: true,
+    class: 'is-12',
+  },
+  {
+    typeInput: 'number',
+    name: 'phone',
+    placeholder: 'Phone Number',
+    model: '',
+    required: true,
+    class: 'is-6',
+  },
+
+  {
+    typeInput: 'text',
+    name: 'map',
+    placeholder: 'Location map (URL)',
+    model: '',
+    required: true,
+    class: 'is-6',
+  },
+  {
+    typeInput: 'number',
+    name: 'initations_fee',
+    placeholder: 'Initations Fee',
+    model: '',
+    required: true,
+    class: 'is-12',
+  },
 ])

@@ -25,15 +25,13 @@ import {
   contries,
 } from '/@src/services/config.ts'
 
-// import { useRoute, useRouter } from 'vue-router'
-// import { Api } from '/@src/services'
-
 pageTitle.value = 'Club Profile'
 useHead({
   title: 'Club',
 })
 
 const loading = ref(true)
+
 onMounted(() => {
   getcities().then((response) => {
     setInputValuesData(inputsInformation, 'company_city_id', cities.value)

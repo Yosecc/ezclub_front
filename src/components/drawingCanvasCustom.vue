@@ -20,16 +20,12 @@ onMounted(() => {
     var sigWebVer = ''
     try {
       sigWebVer = GetSigWebVersion()
-    } catch (err) {
-      console.log('Unable to get SigWeb Version: ' + err.message)
-    }
+    } catch (err) {}
 
     if (sigWebVer != '') {
       try {
         SigWeb_1_7_0_0_IsInstalled = isSigWeb_1_7_0_0_Installed(sigWebVer)
-      } catch (err) {
-        console.log(err.message)
-      }
+      } catch (err) {}
       //if SigWeb 1.7.0.0 is installed, then enable corresponding functionality
       if (SigWeb_1_7_0_0_IsInstalled) {
         resetIsSupported = true
@@ -37,18 +33,14 @@ onMounted(() => {
           var daysUntilCertExpires = GetDaysUntilCertificateExpires()
           document.getElementById('daysUntilExpElement').innerHTML =
             'SigWeb Certificate expires in ' + daysUntilCertExpires + ' days.'
-        } catch (err) {
-          console.log(err.message)
-        }
+        } catch (err) {}
         var note = document.getElementById('sigWebVrsnNote')
         note.innerHTML = 'SigWeb 1.7.0 installed'
       } else {
         try {
           SigWeb_1_6_4_0_IsInstalled = isSigWeb_1_6_4_0_Installed(sigWebVer)
           //if SigWeb 1.6.4.0 is installed, then enable corresponding functionality
-        } catch (err) {
-          console.log(err.message)
-        }
+        } catch (err) {}
         if (SigWeb_1_6_4_0_IsInstalled) {
           resetIsSupported = true
           var sigweb_link = document.createElement('a')
@@ -103,7 +95,6 @@ const isSigWeb_1_6_4_0_Installed = (sigWebVer) => {
   var minSigWebVersionResetSupport = '1.6.4.0'
 
   if (isOlderSigWebVersionInstalled(minSigWebVersionResetSupport, sigWebVer)) {
-    console.log('SigWeb version 1.6.4.0 or higher not installed.')
     return false
   }
   return true
@@ -118,7 +109,6 @@ const isSigWeb_1_7_0_0_Installed = (sigWebVer) => {
       sigWebVer
     )
   ) {
-    console.log('SigWeb version 1.7.0.0 or higher not installed.')
     return false
   }
   return true
@@ -144,23 +134,21 @@ const onSign = () => {
   if (IsSigWebInstalled()) {
     var ctx = document.getElementById('cnv').getContext('2d')
     SetDisplayXSize(500)
-    console.log('1')
+
     SetDisplayYSize(100)
-    console.log('2')
+
     SetTabletState(0, tmr)
-    console.log('3')
+
     SetJustifyMode(0)
-    console.log('4')
+
     ClearTablet()
-    console.log('5')
+
     if (tmr == null) {
       tmr = SetTabletState(1, ctx, 50)
-      console.log('1', tmr)
     } else {
       SetTabletState(0, tmr)
       tmr = null
       tmr = SetTabletState(1, ctx, 50)
-      console.log('2', tmr)
     }
   } else {
     alert(
@@ -177,7 +165,6 @@ const onDone = () => {
   if (NumberOfTabletPoints() == 0) {
     alert('Please sign before continuing')
   } else {
-    console.log('llego al done')
     SetTabletState(0, tmr)
     //RETURN TOPAZ-FORMAT SIGSTRING
     SetSigCompressionMode(1)
@@ -195,8 +182,6 @@ const onDone = () => {
 
 const SigImageCallback = (str) => {
   document.FORM1.sigImageData.value = str
-
-  console.log('llefig', str)
   emit('onSignYes', str)
 }
 

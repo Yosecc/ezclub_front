@@ -50,3 +50,17 @@ export const getTaxes = async () => {
   })
   return taxes
 }
+
+export const getAllConfig = async () => {
+  await getcities()
+  await getstates()
+  await getcontries()
+  await getTaxes()
+
+  return {
+    cities: cities.value,
+    states: states.value,
+    contries: contries.value,
+    taxes: taxes.value,
+  }
+}
