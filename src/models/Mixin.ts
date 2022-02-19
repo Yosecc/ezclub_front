@@ -18,6 +18,7 @@ export const hasErrors = computed(() => {
 
 const validateData = (inputs, array = true) => {
   errors.value = []
+  console.log(inputs)
   if (!array) {
     if (inputs.model == '' || inputs.model.length == undefined) {
       notyf.error(inputs.name + ' is required')
@@ -49,7 +50,7 @@ export const perpareDataInputs = (
   options = { anidados: false, array: true }
 ) => {
   const proccessDefault = (data) => {
-    validateData(data, options.array)
+    // validateData(data, options.array)
     const obj = {}
     if (data != null) {
       if (options.array) {

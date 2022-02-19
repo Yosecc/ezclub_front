@@ -32,7 +32,7 @@ const getMembers = async (
     params: {
       [filterDate.value]: true,
       filter: value,
-      page: page,
+      // page: page,
       category: category,
     },
   })
@@ -151,6 +151,7 @@ const reloadForm = () => {
         :selected="defalA"
         :tabs="[
           { label: 'Adult', value: 'Adult' },
+          { label: 'Minor', value: 'Minor' },
           { label: 'Prospects', value: 'Prospect' },
         ]"
         @changeTab="change"
@@ -167,6 +168,14 @@ const reloadForm = () => {
 
           <MembersListV2
             v-else-if="activeValue === 'Prospect'"
+            name="Prospect"
+            :members="members"
+            :filters="filters"
+            :filter-change="filterChange"
+          />
+
+          <MembersListV2
+            v-else-if="activeValue === 'Minor'"
             name="Prospect"
             :members="members"
             :filters="filters"

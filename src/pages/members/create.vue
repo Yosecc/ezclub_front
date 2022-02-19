@@ -5,6 +5,7 @@ import { computed, ref, onMounted, watch, onBeforeMount } from 'vue'
 import {
   categoriesMembers,
   inputsInformation,
+  parentInsputs,
   inputsFamily,
   inputsContact,
   inputsMembership,
@@ -68,52 +69,49 @@ const steps = ref([
   {
     step: 1,
     text: 'Member Information',
-    categories: ['Adult', 'Minor'],
+    categories: ['Adult', 'Minor', 'Prospect'],
   },
-  {
-    step: 1,
-    text: 'Prospect Information',
-    categories: ['Prospect'],
-  },
+  // {
+  //   step: 1,
+  //   text: 'Prospect Information',
+  //   categories: ['Prospect'],
+  // },
   {
     step: 2,
     text: 'Add Family Member',
-    categories: ['Adult'],
+    categories: ['Adult', 'Prospect'],
   },
-  {
-    step: 2,
-    text: 'Add Payment Method',
-    categories: ['Prospect'],
-  },
+  // {
+  //   step: 2,
+  //   text: 'Add Payment Method',
+  //   categories: ['Prospect'],
+  // },
   {
     step: 2,
     text: 'Parent / Guardian',
     categories: ['Minor'],
   },
+
   {
     step: 3,
     text: 'Contact Preference',
-    categories: ['Adult', 'Minor'],
+    categories: ['Adult', 'Minor', 'Prospect'],
   },
-  {
-    step: 3,
-    text: 'Sing Waiver',
-    categories: ['Prospect'],
-  },
+
   {
     step: 4,
     text: 'Select membership',
-    categories: ['Adult', 'Minor'],
+    categories: ['Adult', 'Minor', 'Prospect'],
   },
   {
     step: 5,
     text: 'Add Payment Method',
-    categories: ['Adult', 'Minor'],
+    categories: ['Adult', 'Minor', 'Prospect'],
   },
   {
     step: 6,
     text: 'Sing Contract & Waiver',
-    categories: ['Adult', 'Minor'],
+    categories: ['Adult', 'Minor', 'Prospect'],
   },
 ])
 
@@ -137,8 +135,24 @@ const stepsList = computed(() => {
   )
 })
 
+const memberGuardianComputed = computed(() => {
+  return perpareDataInputs(parentInsputs.value)
+})
+
 const changeStep = (val) => {
-  // console.log(val)
+  console.log(val)
+  if (categoriesMembers.value.model == 'Prospect') {
+    // if(val == 2){
+    //   val = 3
+    // }
+    // if(val == 2){
+    //   val = 4
+    // }
+    // if(val == 3){
+    //   val = 1
+    // }
+  }
+
   if (val == 6) {
     sendData()
   } else {
@@ -202,12 +216,14 @@ const sendData = () => {
 
   // Contacto
   let dataContactFD = dataContact.value
+  // if(dataContactFD != null){
   for (var i = 0; i < dataContactFD.length; i++) {
     var item = dataContactFD[i]
     for (var prop in item) {
       fd.append(`notifications[${i}][${prop}]`, item[prop])
     }
   }
+  // }
 
   let memberMembershipFD = perpareDataInputs(memberMembership.value)
   for (var i in memberMembershipFD) {
@@ -229,7 +245,7 @@ const sendData = () => {
   fd.append('total', total.value)
 
   // console.log(categoriesMembers.value)
-  console.log('-----------------')
+
   let categoriesMembersFD = perpareDataInputs(categoriesMembers.value, {
     array: false,
   })
@@ -237,7 +253,7 @@ const sendData = () => {
   for (var i in categoriesMembersFD) {
     fd.append(i, categoriesMembersFD[i])
   }
-  console.log('2pasa')
+  // console.log('2pasa')
 
   let notasInputFD = perpareDataInputs(notasInput.value)
   for (var i in notasInputFD) {
@@ -303,7 +319,12 @@ const sendData = () => {
     }
   })
 
-  console.log(...fd)
+  // Guardian
+  for (var i in memberGuardianComputed.value) {
+    fd.append(i, memberGuardianComputed.value[i])
+  }
+
+  // console.log(...fd)
   saveMember(fd).then((response) => {
     console.log(response.data.member.id)
     idMember.value = response.data.member.id
@@ -344,9 +365,15 @@ const sendData = () => {
           @changeStep="changeStep"
           @returData="returDataInformationMember"
         />
+        <!-- parentGuardian -->
+        <parentGuardian
+          v-show="stepActive == 2 && categoriesMembers.model == 'Minor'"
+          :title="step.text"
+          @changeStep="changeStep"
+        />
         <!-- familyMembers -->
         <familyMembers
-          v-show="stepActive == 2 && categoriesMembers.model == 'Adult'"
+          v-show="stepActive == 2"
           type="create"
           :title="step.text"
           :inputs="inputsFamily"

@@ -260,7 +260,7 @@ const emit = defineEmit(['changeStep', 'returnData'])
           {{ viewInput(member, 'last_name') }}</b
         >
       </p>
-      <p>{{ viewInput(inputsSteps, 'diciplines') }}</p>
+      <!-- <p>{{ viewInput(inputsSteps, 'diciplines') }}</p> -->
       <inputsLayaut
         :inputs-step="inputsSteps"
         @changeSelect="changeMembership"

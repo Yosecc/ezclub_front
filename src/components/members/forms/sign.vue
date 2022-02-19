@@ -36,6 +36,13 @@ const viewFirma = async (base64) => {
   })
   return response
 }
+
+import { imgdefault } from '/@src/data/image_default.ts'
+
+const sinFirmar = () => {
+  let base64 = imgdefault
+  viewFirma(base64)
+}
 </script>
 
 <template>
@@ -85,13 +92,13 @@ const viewFirma = async (base64) => {
         </div>
       </div>
 
-      <VPlaceload
+      <!-- <VPlaceload
         v-if="load && !firmado"
         width="400px"
         height="135px"
         style="margin-top: 10px"
         class="mx-auto"
-      />
+      /> -->
 
       <!-- <VueDrawingCanvas
         v-if="!firmado && !load"
@@ -102,7 +109,7 @@ const viewFirma = async (base64) => {
         height="200"
       /> -->
 
-      <drawingCanvasCustom @onSignYes="viewFirma" />
+      <drawingCanvasCustom @sinFirmar="sinFirmar" @onSignYes="viewFirma" />
 
       <div v-if="firmado" class="text-center mb-4 mt-5 mx-auto">
         <p class="mb-4 title is-5">Saved signature</p>

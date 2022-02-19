@@ -631,6 +631,99 @@ export const notasInput = ref([
   },
 ])
 
+export const parentInsputs = ref([
+  {
+    typeInput: 'file',
+    name: 'parent_photo',
+    placeholder: 'Parent/Guardian Picture',
+    model: '',
+    class: 'is-12 d-flex justify-content-end',
+    required: false,
+  },
+  {
+    typeInput: 'select',
+    name: 'parent_relationships',
+    placeholder: 'Parent Relationships',
+    values: [
+      'Sand',
+      'Dother',
+      'Wife',
+      'Girlfriend',
+      'Boyfriend',
+      'Father',
+      'Mother',
+    ],
+    model: '',
+    class: 'is-4',
+    required: false,
+  },
+  {
+    typeInput: 'text',
+    name: 'parent_name',
+    placeholder: 'First Name',
+    model: '',
+    class: 'is-4',
+    required: false,
+  },
+  {
+    typeInput: 'text',
+    name: 'parent_second_name',
+    placeholder: 'Middle Name',
+    model: '',
+    class: 'is-4',
+    required: false,
+  },
+  {
+    typeInput: 'text',
+    name: 'parent_last_name',
+    placeholder: 'Last Name',
+    model: '',
+    class: 'is-4',
+    required: false,
+  },
+  {
+    typeInput: 'select',
+    name: 'parent_goverment_id',
+    placeholder: 'Goverment ID Type',
+    values: ['Card ID', 'Identification ID', 'Passport'],
+    model: '',
+    class: 'is-4',
+    required: false,
+  },
+  {
+    typeInput: 'number',
+    name: 'parent_personal_identifications',
+    placeholder: 'ID #',
+    model: '',
+    class: 'is-4',
+    required: false,
+  },
+  {
+    typeInput: 'text',
+    name: 'parent_address',
+    placeholder: 'Address',
+    model: '',
+    class: 'is-4',
+    required: false,
+  },
+  {
+    typeInput: 'email',
+    name: 'parent_email',
+    placeholder: 'Email',
+    model: '',
+    class: 'is-4',
+    required: false,
+  },
+  {
+    typeInput: 'number',
+    name: 'parent_phone',
+    placeholder: 'Phone Number',
+    model: '',
+    class: 'is-4',
+    required: false,
+  },
+])
+
 export const inputsMembership = ref(membershipsData)
 
 export const saveMember = async (member) => {

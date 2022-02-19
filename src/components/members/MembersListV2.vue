@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, onMounted, watch, defineProps, defineEmit } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-// import {  } from '/@src/'
+import { API_WEB_URL } from '/@src/services'
 
 const emit = defineEmit(['filterChange'])
 
@@ -183,7 +183,7 @@ const props = defineProps({
                   class="flex-table-cell is-media is-grow"
                 >
                   <V-Avatar
-                    :picture="item.photo"
+                    :picture="`${API_WEB_URL}storage/${item.photo}`"
                     color="primary"
                     :initials="initials(item.name, item.last_name)"
                     size="medium"

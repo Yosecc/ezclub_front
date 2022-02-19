@@ -4,7 +4,7 @@ import { onMounted, watch, ref, computed, defineEmit } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { Api } from '/@src/services'
 
-const emit = defineEmit(['onSignYes'])
+const emit = defineEmit(['onSignYes', 'sinFirmar'])
 
 var tmr
 
@@ -91,6 +91,7 @@ onMounted(() => {
     evt.preventDefault() //For Firefox, needed for browser closure
   }
 })
+
 const isSigWeb_1_6_4_0_Installed = (sigWebVer) => {
   var minSigWebVersionResetSupport = '1.6.4.0'
 
@@ -200,7 +201,12 @@ const close = () => {
 </script>
 
 <template>
-  <table border="1" cellpadding="0" width="500">
+  <table
+    style="width: 60%; margin: 0 auto"
+    border="1"
+    cellpadding="0"
+    width="500"
+  >
     <tr>
       <td height="100" width="500">
         <canvas id="cnv" name="cnv" width="500" height="100"></canvas>
@@ -208,57 +214,70 @@ const close = () => {
     </tr>
   </table>
 
-  <BR />
-  <canvas name="SigImg" id="SigImg" width="500" height="100"></canvas>
-  <p id="sigWebVrsnNote" style="font-family: Arial"></p>
+  <div class="w-100 mb-4">
+    <canvas name="SigImg" id="SigImg" width="500" height="100"></canvas>
+    <p id="sigWebVrsnNote" style="font-family: Arial"></p>
+  </div>
 
-  <form action="#" name="FORM1">
-    <p>
-      <input
-        id="SignBtn"
-        name="SignBtn"
-        type="button"
-        value="Sign"
-        @click="onSign()"
-      />&nbsp;&nbsp;&nbsp;&nbsp;
-      <input
-        id="button1"
-        name="ClearBtn"
-        type="button"
-        value="Clear"
-        @@click="onClear()"
-      />&nbsp;&nbsp;&nbsp;&nbsp;
+  <div class="column is-12 mx-auto mb-4">
+    <form action="#" name="FORM1">
+      <div class="d-flex column is-6 mx-auto w-100 justify-content-center">
+        <input
+          id="SignBtn"
+          name="SignBtn"
+          type="button"
+          class="button v-button is-info text-center mx-auto"
+          value="Sign"
+          @click="onSign()"
+        />
+        <input
+          id="button1"
+          name="ClearBtn"
+          type="button"
+          value="Clear"
+          class="button v-button is-warning text-center mx-auto"
+          @@click="onClear()"
+        />
+        <input
+          id="button2"
+          name="DoneBtn"
+          type="button"
+          value="Done"
+          class="button v-button is-success text-center mx-auto"
+          @click="onDone()"
+        />
 
-      <input
-        id="button2"
-        name="DoneBtn"
-        type="button"
-        value="Done"
-        @click="onDone()"
-      />&nbsp;&nbsp;&nbsp;&nbsp;
+        <input
+          id="sinFirmar"
+          name="sinFirmar"
+          type="button"
+          value="No Sign"
+          class="button v-button"
+          @click="$emit('sinFirmar')"
+        />
+      </div>
+      <input type="hidden" name="bioSigData" />
+      <input type="hidden" name="sigImgData" />
 
-      <INPUT t-y-p-e="HIDDEN" n-a-m-e="bioSigData" />
-      <INPUT t-y-p-e="HIDDEN" n-a-m-e="sigImgData" />
-      <INPUT type="HIDDEN" name="bioSigData" />
-      <INPUT type="HIDDEN" name="sigImgData" />
-      <BR />
-      <BR />
-      <TEXTAREA n-a-m-e="sigStringData" r-o-w-s="20" c-o-l-s="50"
-        >SigString:
-      </TEXTAREA>
-      <TEXTAREA n-a-m-e="sigImageData" r-o-w-s="20" c-o-l-s="50"
-        >Base64 String:
-      </TEXTAREA>
-      <TEXTAREA name="sigStringData" rows="20" cols="50">SigString: </TEXTAREA>
-      <TEXTAREA name="sigImageData" rows="20" cols="50"
-        >Base64 String:
-      </TEXTAREA>
-    </p>
-  </form>
+      <textarea
+        style="display: none"
+        name="sigStringData"
+        id=""
+        cols="20"
+        rows="50"
+      ></textarea>
+      <textarea
+        style="display: none"
+        name="sigImageData"
+        id=""
+        cols="20"
+        rows="50"
+      ></textarea>
+    </form>
+  </div>
 
-  <br /><br />
-  <p id="daysUntilExpElement"></p>
-  <p id="SigWebVersion"></p>
-  <p id="SigWebTabletJSVersion"></p>
-  <p id="CertificateExpirationDate"></p>
+  <p style="display: none" id="daysUntilExpElement"></p>
+  <p style="display: none" id="SigWebVersion"></p>
+  <p style="display: none" id="SigWebTabletJSVersion"></p>
+  <p style="display: none" id="CertificateExpirationDate"></p>
 </template>
