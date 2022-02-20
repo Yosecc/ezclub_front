@@ -14,7 +14,7 @@ const filterDate = ref('all')
 const paginationData = ref({})
 
 const filteredData = computed(() => {
-  // console.log(props.filters)
+  // console.log(props.members)
   if (!props.filters) {
     return props.members
   } else {
@@ -34,8 +34,8 @@ const filteredData = computed(() => {
 const memberCard = ref({ status: false, member: null })
 
 const openMemberCard = (status, member) => {
-  memberCard.value.status = status
-  memberCard.value.member = member
+  // memberCard.value.status = status
+  // memberCard.value.member = member
 }
 
 const closeMemberCard = () => {
@@ -76,6 +76,19 @@ const props = defineProps({
     type: String,
   },
 })
+const colorCard = (member) => {
+  if (member.membership_members == null) {
+    return ''
+  }
+  if (
+    member.membership_members != null &&
+    !member.membership_members.payments[0].status
+  ) {
+    return 'bg-danger'
+  } else {
+    return ''
+  }
+}
 </script>
 
 <template>
@@ -174,9 +187,7 @@ const props = defineProps({
                 v-for="item in filteredData"
                 :key="`${props.name}-${item.id}`"
                 class="flex-table-item cursor-pointer"
-                :class="
-                  item.membership_members.payments[0].status ? '' : 'bg-danger'
-                "
+                :class="colorCard(item)"
               >
                 <div
                   @click="openMemberCard(true, item)"
@@ -211,7 +222,7 @@ const props = defineProps({
                 <div class="flex-table-cell is-media is-grow" data-th="Trainer">
                   <V-Avatar
                     v-if="item.trainer != null"
-                    :picture="item.trainer.photo"
+                    :picture="`${API_WEB_URL}storage/${item.trainer.photo}`"
                     color="h-green"
                     :initials="
                       initials(item.trainer.name, item.trainer.last_name)
@@ -231,16 +242,18 @@ const props = defineProps({
                 </div>
                 <div class="flex-table-cell" data-th="Status">
                   <span
-                    v-if="item.status === 1"
-                    class="tag is-success is-rounded"
-                    >{{ item.status ? 'Active' : 'Payment' }}</span
+                    class="tag is-rounded"
+                    :class="item.membership_members != null ? 'is-success' : ''"
+                    >{{
+                      item.membership_members != null ? 'Active' : 'Inactive'
+                    }}</span
                   >
 
-                  <span
+                  <!--  <span
                     v-if="item.status === 0"
                     class="tag is-danger is-rounded"
                     >{{ item.status ? 'Active' : 'Payment' }}</span
-                  >
+                  > -->
                 </div>
                 <!-- <div class="flex-table-cell" data-th="Relations">
                   <V-AvatarStack
@@ -251,9 +264,7 @@ const props = defineProps({
                   />
                 </div> -->
                 <div class="flex-table-cell cell-end" data-th="Actions">
-                  <!-- <FlexTableDropdown 
-                    :idMember="item.id"
-                  /> -->
+                  <FlexTableDropdown :id-member="item.id" :member="item" />
                 </div>
               </div>
             </transition-group>

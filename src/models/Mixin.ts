@@ -10,6 +10,13 @@ export const notyf = new Notyf({
   },
 })
 
+// const reload = () => {
+//   isLoading.value = true
+//   setTimeout(() => {
+//     isLoading.value = false
+//   }, 500)
+// }
+
 const errors = ref([])
 
 export const hasErrors = computed(() => {
@@ -18,7 +25,6 @@ export const hasErrors = computed(() => {
 
 const validateData = (inputs, array = true) => {
   errors.value = []
-  console.log(inputs)
   if (!array) {
     if (inputs.model == '' || inputs.model.length == undefined) {
       notyf.error(inputs.name + ' is required')
@@ -110,8 +116,6 @@ export const getInput = (inputs: any, name: any) => {
 }
 
 export const getValueInput = (inputs: any, name: any) => {
-  console.log(inputs)
-  console.log(name)
   return inputs
     .find((e) => e.name == name)
     .values.find((i) => i.id == viewInput(inputs, name))

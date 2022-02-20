@@ -1,134 +1,174 @@
 <script setup lang="ts">
-
 import { ref } from 'vue'
+import moment from 'moment'
+import {
+  memberMermship,
+  inputsMembership,
+  member,
+  memberMembershipsHistory,
+  putMembership,
+  cancelMembershipMembers,
+} from '/@src/models/Members.ts'
+import { getLocationsDiciplines } from '/@src/models/Diciplines.ts'
+import {
+  setInputValuesData,
+  perpareDataInputs,
+  setInputModelData,
+  notyf,
+} from '/@src/models/Mixin.ts'
+import { Api, API_WEB_URL } from '/@src/services'
+import { recurrences } from '/@src/models/Recurrences.ts'
 
-const inpust = ref([
-  {
-    typeInput: 'text',
-    name:'agreement_date',
-    placeholder: 'Agreement Date',
-    model: '',
-    class: 'is-3',
-  },
-  {
-    typeInput: 'text',
-    name:'sold_by',
-    placeholder: 'Sold By',
-    model: '',
-    class: 'is-3',
-  },
-  {
-    typeInput: 'text',
-    name:'membership_type',
-    placeholder: 'Membership Type',
-    model: '',
-    class: 'is-3',
-  },
-  {
-    typeInput: 'text',
-    name:'deciplines',
-    placeholder: 'Deciplines',
-    model: '',
-    class: 'is-3',
-  },
-  {
-    typeInput: 'date',
-    name:'start_date',
-    placeholder: 'Start Date',
-    model: '',
-    class: 'is-3',
-  },
-  {
-    typeInput: 'date',
-    name:'end_type',
-    placeholder: 'End Date',
-    model: '',
-    class: 'is-3',
-  },
-  {
-    typeInput: 'text',
-    name:'auto_renew',
-    placeholder: 'Auto Renew',
-    model: '',
-    class: 'is-3',
-  },
-  {
-    typeInput: 'text',
-    name:'discount_type',
-    placeholder: 'Discount Type',
-    model: '',
-    class: 'is-3',
-  },
-])
+const changeSelect = (obj) => {
+  console.log(obj.input)
+  if (obj.input.name == 'memberships_id') {
+    let membershipSelected = obj.input.values.find(
+      (element) => element.id == obj.input.model
+    )
+    console.log('membershipSelected', membershipSelected)
+    setInputModelData(
+      obj.inputsStep,
+      'initiation_fee',
+      membershipSelected.initiation_fee
+    )
+    let locations = []
+    membershipSelected.locations.forEach((element) => {
+      if (element.sale == 1) {
+        locations.push(element.company_locations)
+      }
+    })
+    setInputValuesData(obj.inputsStep, 'locations_id', locations)
 
-const historyContract = ref([
-  {
-    contract:         'URL',
-    agreement_date:   '01/01/2021',
-    sold_by:          'Diego Valera',
-    membership_type:  '1 Martial Art',
-    deciplines:       'Boxing',
-    start_date:       '01/01/2021',
-    end_type:         '01/01/2021',
-    auto_renew:       'YES',
-    discount_type:    '10%'
-  },
-  {
-    contract:         'URL',
-    agreement_date:   '01/01/2021',
-    sold_by:          'Diego Valera',
-    membership_type:  '1 Martial Art',
-    deciplines:       'Boxing',
-    start_date:       '01/01/2021',
-    end_type:         '01/01/2021',
-    auto_renew:       'YES',
-    discount_type:    '10%'
-  },
-  {
-    contract:         'URL',
-    agreement_date:   '01/01/2021',
-    sold_by:          'Diego Valera',
-    membership_type:  '1 Martial Art',
-    deciplines:       'Boxing',
-    start_date:       '01/01/2021',
-    end_type:         '01/01/2021',
-    auto_renew:       'YES',
-    discount_type:    '10%'
-  },
-])
+    console.log('locations', locations)
+    let recurrencesData = []
+    membershipSelected.amounts.forEach((element) => {
+      let recurrencesD = recurrences.value.find(
+        (e) => e.id == element.recurrences_id
+      )
+      recurrencesD.amount = element.amount
+      recurrencesData.push(recurrencesD)
+    })
+    console.log(obj.inputsStep)
+    // setInputValuesData(obj.inputsStep, 'recurrences_id', recurrencesData)
+    // reloadForm()
+  }
+
+  if (obj.input.name == 'locations_id') {
+    getLocationsDiciplines([obj.input.model]).then((response) => {
+      setInputValuesData(obj.inputsStep, 'diciplines', response.data)
+    })
+  }
+}
+
+const changeRadio = (input, inputs) => {
+  if (input.name == 'recurrences_id') {
+    setInputModelData(
+      inputs,
+      'amount',
+      input.values.find((e) => e.id == input.model).amount
+    )
+  }
+}
+
+const onSave = () => {
+  const data = perpareDataInputs(inputsMembership.value)
+
+  putMembership(data).then((response) => {
+    notyf.success('Success')
+  })
+}
+
+const onCancel = () => {
+  cancelMembershipMembers().then((response) => {
+    console.log(response)
+  })
+}
+
+const onNew = () => {
+  const data = perpareDataInputs(inputsMembership.value)
+  console.log(data)
+}
 </script>
-
 
 <template>
   <VCardAdvanced>
     <template #header-left>
       <div>
-        <h1 class="title is-4 mb-0">
-       Membership / Contract
-      </h1>
-      <p>Edit member's membership and contract information</p>
+        <h1 class="title is-4 mb-0">Membership / Contract</h1>
+        <p>Edit member's membership and contract information</p>
       </div>
     </template>
     <template #header-right>
-      <VButton color="primary"> Save Changes </VButton>
+      <VButton v-if="memberMermship" @click="onCancel" color="" class="mr-4">
+        Cancel Membership
+      </VButton>
+      <VButton v-if="memberMermship" @click="onSave" color="primary">
+        Save Changes
+      </VButton>
+
+      <VButton v-if="!memberMermship" @click="onNew" color="primary">
+        New Membership
+      </VButton>
     </template>
     <template #content>
       <VCard class="mb-4">
         <h1 class="title is-6">Active Contract Information</h1>
         <div class="columns is-multiline">
-           <div class="column is-2 text-center">
-             <img src="/public/images/pdf_icon.png" width="40" alt=""><br>
-             <a href="#">Contract</a>
-           </div>
-           <div class="column is-10">
-             <inputsLayaut
-                :inputs-step="inpust"
-              />
-           </div>
+          <div class="column is-12">
+            <inputsLayaut
+              :inputs-step="inputsMembership"
+              @changeSelect="changeSelect"
+              @changeRadio="changeRadio"
+            />
+          </div>
+          <div
+            v-if="member && memberMermship"
+            class="columns is-multiline column mt-4 is-12"
+          >
+            <div>
+              <p>
+                <b>Contract Date:</b>
+                {{
+                  moment(member.membership_members.created_at).format(
+                    'ddd - DD MMM yyyy'
+                  )
+                }}
+              </p>
+
+              <p>
+                <b>Cancelation date: </b>
+                <span v-if="member.membership_members.cacelation_date">{{
+                  moment(member.membership_members.cacelation_date).format(
+                    'ddd - DD MMM yyyy'
+                  )
+                }}</span
+                ><span v-else> N/A </span>
+              </p>
+            </div>
+
+            <div class="column is-12">
+              <div class="text-center">
+                <a
+                  target="_blank"
+                  :href="`${API_WEB_URL}generateContract/${member.id}`"
+                >
+                  <img src="/public/images/pdf_icon.png" width="40" alt="" />
+                  <p>
+                    contract_{{ member.id }}_{{
+                      member.membership_members.id
+                    }}_{{ member.personal_identifications }}.pdf
+                  </p>
+                  <V-Button color="success" outlined class="mt-4 py-1">
+                    View PDF
+                  </V-Button>
+                </a>
+              </div>
+            </div>
+          </div>
         </div>
       </VCard>
 
-      <VCard class="mb-4">
+      <VCard class="mb-4" v-if="member">
         <h1 class="title is-6">Inactive Contract Information</h1>
         <table class="table is-hoverable is-fullwidth">
           <thead>
@@ -146,39 +186,75 @@ const historyContract = ref([
           </thead>
           <tbody>
             <tr
-              v-for="(item, key) in historyContract"
+              v-for="(item, key) in memberMembershipsHistory"
               :key="`item-${key}`"
             >
-              <td><a :href="item.contract"><img src="/public/images/pdf_icon.png" width="40" alt=""></a></td>
-              <td>{{ item.agreement_date }}</td>
-              <td>{{ item.sold_by }}</td>
-              <td>{{ item.membership_type }}</td>
-              <td>{{ item.deciplines }}</td>
-              <td>{{ item.start_date }}</td>
-              <td>{{ item.end_type }}</td>
-              <td>{{ item.auto_renew }}</td>
-              <td>{{ item.discount_type }}</td>
+              <td>
+                <a :href="item.contract"
+                  ><img src="/public/images/pdf_icon.png" width="40" alt=""
+                /></a>
+              </td>
+              <td>{{ moment(item.created_at).format('dd - DD MMM YYYY') }}</td>
+              <td>{{ item.user.name }}</td>
+              <td>{{ item.membership.name }}</td>
+
+              <td>
+                <span
+                  v-if="
+                    item.diciplines != '' ||
+                    item.diciplines != null ||
+                    item.diciplines != undefined
+                  "
+                >
+                  <span
+                    v-for="(dicipline, ke) in item.diciplines"
+                    :key="`dicipline-${ke}`"
+                  >
+                    <span> {{ dicipline.dicipline.name }} </span>
+                  </span>
+                </span>
+
+                <span v-else>N/A</span>
+              </td>
+              <td>{{ moment(item.created_at).format('dd - DD MMM YYYY') }}</td>
+              <td>
+                {{ moment(item.cacelation_date).format('dd - DD MMM YYYY') }}
+              </td>
+              <td>
+                <span>
+                  {{ item.is_recurrence ? 'Recurrence' : 'Not Recurrence' }}
+                </span>
+                <span v-if="item.is_recurrence">{{
+                  item.recurrence.recurrence
+                }}</span>
+              </td>
+              <td>N/A</td>
             </tr>
           </tbody>
         </table>
       </VCard>
 
-      <VCard class="mb-4">
+      <VCard class="mb-4" v-if="member && memberMermship">
         <h1 class="title is-6">Active Waiver Information</h1>
-        <div class="text-center column is-4">
-          <a href="">
-          <img src="/public/images/pdf_icon.png" width="40" alt="">
-          <p>Waiver_1234567.pdf</p>
-        </a>
+        <div class="text-center">
+          <a
+            target="_blank"
+            :href="`${API_WEB_URL}generateWeiver/${member.id}`"
+          >
+            <img src="/public/images/pdf_icon.png" width="40" alt="" />
+            <p>
+              weiver_{{ member.id }}_{{ member.membership_members.id }}_{{
+                member.personal_identifications
+              }}.pdf
+            </p>
+            <V-Button color="success" outlined class="mt-4 py-1">
+              View PDF
+            </V-Button>
+          </a>
         </div>
       </VCard>
-        
-
     </template>
-    
   </VCardAdvanced>
 </template>
 
-<style lang="scss" scope>
-  
-</style>
+<style lang="scss" scope></style>

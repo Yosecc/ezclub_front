@@ -724,12 +724,139 @@ export const parentInsputs = ref([
   },
 ])
 
+export const emergencyInputs = ref([
+  {
+    typeInput: 'text',
+    name: 'first_name',
+    placeholder: 'First Name',
+    model: '',
+    class: 'is-4',
+  },
+  {
+    typeInput: 'text',
+    name: 'middle_name',
+    placeholder: 'Last Name',
+    model: '',
+    class: 'is-4',
+  },
+  {
+    typeInput: 'text',
+    name: 'last_name',
+    placeholder: 'Last Name',
+    model: '',
+    class: 'is-4',
+  },
+  {
+    typeInput: 'email',
+    name: 'email',
+    placeholder: 'Email',
+    model: '',
+    class: 'is-8',
+  },
+  {
+    typeInput: 'number',
+    name: 'phone_number',
+    placeholder: 'Phone',
+    model: '',
+    class: 'is-4',
+  },
+
+  {
+    typeInput: 'text',
+    name: 'address',
+    placeholder: 'Address',
+    model: '',
+    class: 'is-8',
+  },
+  {
+    typeInput: 'select',
+    name: 'relationship',
+    placeholder: 'Relationship',
+    values: [
+      'Sand',
+      'Sister',
+      'Dother',
+      'Wife',
+      'Girlfriend',
+      'Boyfriend',
+      'Father',
+      'Mother',
+    ],
+    model: '',
+    class: 'is-4',
+    required: false,
+  },
+])
+
 export const inputsMembership = ref(membershipsData)
 
-export const saveMember = async (member) => {
-  // Api.defaults.headers.common['content-type'] = 'multipart/form-data';
+export const saveMember = async (member: any) => {
   const response = await Api.post('members', member)
-
   return response
-  // console.log(response)
 }
+
+export const getMember = async (id: any) => {
+  const response = await Api.get(`members/${id}/edit`)
+  member.value = response.data
+  return response
+}
+
+export const putInformation = async (data: any) => {
+  const response = await Api.post(
+    `members/updatePersonalInformation/${member.value.id}`,
+    data
+  )
+  return response
+}
+
+export const putMembership = async (data: any) => {
+  const response = await Api.post(
+    `members/updateMembershipMember/${memberMermship.value.id}`,
+    data
+  )
+  return response
+}
+
+export const cancelMembershipMembers = async () => {
+  const response = await Api.post(
+    `members/cancelMembershipMember/${memberMermship.value.id}`
+  )
+  return response
+}
+
+export const storeContactEmergency = async (data: any) => {
+  const response = await Api.post(
+    `members/contactEmergencystore/${member.value.id}`,
+    data
+  )
+  return response
+}
+
+export const member = ref()
+
+export const memberMermship = computed(() => {
+  return member.value.membership_members
+})
+
+export const memberMembershipsHistory = computed(() => {
+  return member.value.membership_members_history
+})
+
+export const memberFamilies = computed(() => {
+  return member.value.families_children
+})
+
+export const memberParent = computed(() => {
+  if (member.value.family_parent) {
+    return member.value.family_parent.pincipal_family
+  }
+  return null
+})
+
+export const contactEmergency = computed(() => {
+  return member.value.emergency
+})
+
+export const accessDay = computed(() => {
+  return member.value.access_day
+})

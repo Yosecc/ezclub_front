@@ -38,15 +38,6 @@ const getMembers = async (
   })
     .then((response) => {
       members.value = response.data.members
-      // if(Object.keys(response.data.members.data).length > 0){
-      //   paginationData.value = {
-      //     itemPerPage:       response.data.members.per_page,
-      //     totalItems:        response.data.members.total,
-      //     currentPage:       response.data.members.current_page,
-      //     maxLinksDisplayed: 7,
-      //   }
-      //   members.value = response.data.members.data
-      // }
       if (reload) {
         reloadForm()
       }

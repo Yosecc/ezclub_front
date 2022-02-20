@@ -38,6 +38,20 @@ const props = defineProps({
 })
 
 const emit = defineEmit(['closeMemberCard'])
+
+const colorCard = computed(() => {
+  if (props.member.membership_members == null) {
+    return ''
+  }
+  if (
+    props.member.membership_members != null &&
+    !props.member.membership_members.payments[0].status
+  ) {
+    return 'danger'
+  } else {
+    return 'info'
+  }
+})
 </script>
 
 <template>
@@ -45,7 +59,7 @@ const emit = defineEmit(['closeMemberCard'])
     <V-Card
       id="sidebarMember"
       v-if="status"
-      :color="!member.membership_members.payments[0].status ? 'danger' : 'info'"
+      :color="colorCard"
       class="column is-6"
     >
       <div v-if="member">
@@ -81,7 +95,10 @@ const emit = defineEmit(['closeMemberCard'])
 
         <div
           class="text-center mb-4"
-          v-if="!member.membership_members.payments[0].status"
+          v-if="
+            member.membership_members != null &&
+            !member.membership_members.payments[0].status
+          "
         >
           <V-Tag color="white" label="PAYMENT" class="mb-3" />
           <p>last payment attempt</p>
@@ -99,7 +116,7 @@ const emit = defineEmit(['closeMemberCard'])
           <V-Button
             :to="{
               name: 'members-profile',
-              query: { id: member.id, category: member.category },
+              query: { id: member.id },
             }"
             color="primary"
             class="m-3 button-custom"
