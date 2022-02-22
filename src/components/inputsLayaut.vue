@@ -334,11 +334,11 @@ onMounted(() => {
             :key="`check-${keyH}79`"
             class="d-flex align-items-center"
           >
-            <VAvatar
+            <!-- <VAvatar
               @click="input.model = check.id"
               :picture="check.image"
               squared
-            />
+            /> -->
             <V-Checkbox
               v-model="input.model"
               :value="check.id"

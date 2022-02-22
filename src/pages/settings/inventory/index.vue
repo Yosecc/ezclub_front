@@ -1,199 +1,297 @@
 <script setup lang="ts">
 import { useHead } from '@vueuse/head'
-import { onMounted, watch, ref,computed } from 'vue'
+import { onMounted, watch, ref, computed } from 'vue'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
-import { useRoute, useRouter } from 'vue-router'
-// import { Api } from '/@src/services'
+import { useRouter } from 'vue-router'
+import {
+  getInventories,
+  inventories,
+  storeInventory,
+  closeAndApplyInentory,
+} from '/@src/models/Inventory.ts'
 import { getCompany, company } from '/@src/models/Companies.ts'
+import { notyf } from '/@src/models/Mixin.ts'
+import moment from 'moment'
+import { users } from '/@src/data/layouts/flex-list-v1'
+
+const filters = ref('')
+
+const filteredData = computed(() => {
+  if (!filters.value) {
+    return inventories.value
+  } else {
+    return users.filter((item) => {
+      return (
+        item.username.match(new RegExp(filters.value, 'i')) ||
+        item.position.match(new RegExp(filters.value, 'i')) ||
+        item.industry.match(new RegExp(filters.value, 'i')) ||
+        item.status.match(new RegExp(filters.value, 'i')) ||
+        item.location.match(new RegExp(filters.value, 'i'))
+      )
+    })
+  }
+})
+
 pageTitle.value = 'Inventory'
 useHead({
   title: 'Inventory',
 })
 
-const route = useRoute()
 const router = useRouter()
-
-const renderPicture = (data: any, cell: any, row: any) => {
-  return `<img class="" height="10px" src="${data}" alt="">`
-}
-
-const moneda = (value: any, cell: any, row: any) => {
-  value += '';
-  var x = value.split('.');
-  var x1 = x[0];
-  var x2 = x.length > 1 ? '.' + x[1] : '';
-  var rgx = /(\d+)(\d{3})/;
-  while (rgx.test(x1)) {
-    x1 = x1.replace(rgx, '$1' + '.' + '$2');
-  }
-  return '$'+ x1 + x2;
-}
-
-function renderButton(data: any, cell: any, row: any) {
-
-  if (row.classList.contains('bg-success')){
-    return `<div class="d-flex justify-content-end"><div class="has-text-right mr-3"><a href="#" disabled class="button v-button is-dark-outlined closeInventory" data-id="${data}" data-row="${row.dataIndex}">Close and Apply</a></div>
-
-    <div class="has-text-right"><a href="/settings/products/edit?id=${data}" class="button v-button is-dark-outlined"  data-row="${row.dataIndex}">Edit</a></div></div>`
-  }
-  return `<div class="has-text-right"><a href="/settings/products/edit?id=${data}" class="button v-button is-dark-outlined" data-row="${row.dataIndex}">View</a></div>`
-  
-}
-
-const renderStatus = (data: any, cell: any, row: any) => {
-  if(data == 1){
-    row.classList.add('bg-success')
-    row.classList.add('color-white')
-  }
-  return data == 1 ? 'Open':'Close'
-}
-
+const modalNewInventory = ref(false)
 const centeredActionsOpen = ref(false)
 const text = ref('')
-const closeInventory = () => {
-  centeredActionsOpen.value = false
-  // API
+const idInventory = ref(null)
+const isLoaded = ref(true)
 
-  isLoaded.value = true
-  text.value = 'Processing Inventory... Please do not close the browser window until the process is complete'
-  setTimeout(()=>{
+onMounted(() => {
+  getInventories().then((response) => {
+    console.log(response.data)
     isLoaded.value = false
-    text.value = ''
-  }, 3000)
+  })
+})
+
+const closeInventory = () => {
+  console.log(idInventory.value)
+  centeredActionsOpen.value = false
+  isLoaded.value = true
+  text.value =
+    'Processing Inventory... Please do not close the browser window until the process is complete'
+
+  closeAndApplyInentory(idInventory.value)
+    .then((response) => {
+      notyf.success('Success')
+      isLoaded.value = false
+      text.value = ''
+      getInventories()
+    })
+    .catch((error) => {
+      notyf.error(error.response.data)
+      isLoaded.value = false
+      text.value = ''
+    })
 }
 
-
-const modalNewInventory = ref(false)
 const newInventory = () => {
   modalNewInventory.value = false
   isLoaded.value = true
   text.value = 'wait a moment, you will be redirected'
-  //API
-   router.push({
-      name: 'settings-inventory-create',
+
+  storeInventory()
+    .then((response) => {
+      router.push({
+        name: 'settings-inventory-create',
+        query: { id: response.data.inventory },
+      })
+    })
+    .catch((error) => {
+      notyf.error(error.response.data.message)
+      isLoaded.value = false
+      text.value = error.response.data.message
     })
 }
 
-
-const datatableV1 = ref({
-  perPageSelect: [5, 10, 20, 25, 50, 100],
-  perPage: 10,
-  columns: [
-    { select: 0, hidden: true },
-    { select: 1, render: renderStatus, sortable: true },
-    // { select: 2, render: renderName },
-    // { select: 3, render: renderPosition },
-    // { select: 4, render: moneda },
-    { select: 5, render: renderButton, sortable: false },
-  ],
-  data: {
-    headings: ['ID','status', 'Date Open', 'Date Close', 'Products Total','Actions'],
-    data: [
-      [
-        0,
-        1,
-        '2022-02-14 23:43:21',
-        '2022-02-14 23:47:21',
-        100,
-        1
-      ],
-    ],
-  },
+const data = computed(() => {
+  let datos = []
+  inventories.value.forEach((element) => {
+    datos.push([
+      element.id,
+      element.status,
+      element.created_at,
+      element.updated_at,
+      100,
+      1,
+    ])
+  })
+  return datos
 })
 
-const datatableshow = ref(false)
-const isLoaded = ref(true)
+watch(data, (to) => {
+  isLoaded.value = true
 
-const idInventory = ref(null)
-onMounted(()=>{
-  // getCompany()
-  let data = JSON.parse(JSON.stringify(datatableV1.value.data.data[0]))
-  for (var i = 0; i < 25; ++i) {
-    data[0] = i
-    data[1] = 0;
-    data[5] = i
-    datatableV1.value.data.data.push(data)
-  }
-
-  setTimeout(()=>{
-    datatableshow.value = true
+  setTimeout(() => {
     isLoaded.value = false
-     setTimeout(()=>{
-      document.querySelector('.closeInventory').addEventListener('click',(event)=>{
-        idInventory.value = event.target.dataset.id
-        centeredActionsOpen.value = true
-      })
-      document.querySelector('.closeInventory').removeAttribute("disabled")
-     },1000)
-  }, 2000);
-  
+  }, 500)
 })
-
-
-
 </script>
 
-
 <template>
-  <SidebarLayout >
+  <SidebarLayout>
     <!-- Content Wrapper -->
-    <div class="page-content-inner ">
+    <div class="page-content-inner">
+      <V-Modal
+        :open="centeredActionsOpen"
+        actions="center"
+        @close="centeredActionsOpen = false"
+      >
+        <template #content>
+          <V-PlaceholderSection
+            title=" Are you sure you want to close inventory?"
+            subtitle="This action will modify the stock of all products for sale and cannot be undone"
+          />
+        </template>
+        <template #action>
+          <V-Button color="primary" @click="closeInventory" raised
+            >Confirm</V-Button
+          >
+        </template>
+      </V-Modal>
 
-        <V-Modal
-          :open="centeredActionsOpen"
-          actions="center"
-          @close="centeredActionsOpen = false"
-        >
-          <template #content>
-            <V-PlaceholderSection
-              title=" Are you sure you want to close inventory?"
-              subtitle="This action will modify the stock of all products for sale and cannot be undone"
-            />
-
-          </template>
-          <template #action>
-            <V-Button color="primary" @click="closeInventory" raised>Confirm</V-Button>
-          </template>
-        </V-Modal>
-
-        <V-Modal
-          :open="modalNewInventory"
-          actions="center"
-          @close="modalNewInventory = false"
-        >
-          <template #content>
-            <V-PlaceholderSection
-              title=" Are you sure to create a new inventory?"
-              subtitle="This action blocks all movements related to sales, creation and editing of products in the system until the inventory is closed."
-            />
-
-          </template>
-          <template #action>
-            <V-Button color="primary" @click="newInventory" raised>Confirm</V-Button>
-          </template>
-        </V-Modal>
-
+      <V-Modal
+        :open="modalNewInventory"
+        actions="center"
+        @close="modalNewInventory = false"
+      >
+        <template #content>
+          <V-PlaceholderSection
+            title=" Are you sure to create a new inventory?"
+            subtitle="This action blocks all movements related to sales, creation and editing of products in the system until the inventory is closed."
+          />
+        </template>
+        <template #action>
+          <V-Button color="primary" @click="newInventory" raised
+            >Confirm</V-Button
+          >
+        </template>
+      </V-Modal>
 
       <h1 v-if="isLoaded" class="title is-4">{{ text }}</h1>
 
-      <V-Button v-if="!isLoaded" color="primary" @click="modalNewInventory = true" raised>New Inventory</V-Button>
+      <div class="d-flex justify-content-end mb-6">
+        <V-Button
+          v-if="!isLoaded"
+          color="primary"
+          @click="modalNewInventory = true"
+          raised
+          class="mb-4"
+          >New Inventory</V-Button
+        >
+      </div>
+
       <VLoader size="large" :active="isLoaded">
-        
-        <div style="min-height: 300px;">
-          <V-SimpleDatatables v-if="datatableshow" :options="datatableV1" />
+        <div class="flex-list-wrapper flex-list-v1">
+          <!--List Empty Search Placeholder -->
+          <V-PlaceholderPage
+            :class="[filteredData.length !== 0 && 'is-hidden']"
+            title="We couldn't find any matching results."
+            subtitle="Too bad. Looks like we couldn't find any matching results for the
+            search terms you've entered. Please try different search terms or
+            criteria."
+            larger
+          >
+            <template #image>
+              <img
+                class="light-image"
+                src="/@src/assets/illustrations/placeholders/search-4.svg"
+                alt=""
+              />
+              <img
+                class="dark-image"
+                src="/@src/assets/illustrations/placeholders/search-4-dark.svg"
+                alt=""
+              />
+            </template>
+          </V-PlaceholderPage>
+
+          <div class="flex-table">
+            <!--Table header-->
+            <div
+              class="flex-table-header"
+              :class="[filteredData.length === 0 && 'is-hidden']"
+            >
+              <span class="">ID</span>
+              <span>Status</span>
+              <span>Date Open</span>
+              <span>Date Close</span>
+              <span>Products Total</span>
+              <span class="">Actions</span>
+            </div>
+
+            <div class="flex-list-inner">
+              <transition-group name="list" tag="div">
+                <!--Table item-->
+                <div
+                  v-for="item in filteredData"
+                  :key="item.id"
+                  class="flex-table-item"
+                >
+                  <div data-th="ID" class="flex-table-cell">
+                    <div>
+                      <span class="item-name dark-inverted">{{ item.id }}</span>
+                    </div>
+                  </div>
+
+                  <div class="flex-table-cell" data-th="Status">
+                    <span
+                      v-if="item.status === 1"
+                      class="tag is-success is-rounded"
+                      >Active</span
+                    >
+                    <span v-if="item.status === 0" class="tag is-rounded"
+                      >Close</span
+                    >
+                    <span
+                      v-if="item.status === 2"
+                      class="tag is-info is-rounded"
+                      >Process</span
+                    >
+                  </div>
+
+                  <div class="flex-table-cell" data-th="Date Open">
+                    <span class="light-text">{{
+                      moment(item.created_at).format('dd - DD/MM/YYYY')
+                    }}</span>
+                  </div>
+                  <div class="flex-table-cell" data-th="Date Close">
+                    <span class="light-text">{{
+                      moment(item.updated_at).format('dd - DD/MM/YYYY')
+                    }}</span>
+                  </div>
+                  <div class="flex-table-cell" data-th="Products Total">
+                    <span class="light-text">{{ item.products.length }}</span>
+                  </div>
+                  <div class="flex-table-cell" data-th="Actions">
+                    <V-Button
+                      color="success"
+                      @click="
+                        ;(centeredActionsOpen = true), (idInventory = item.id)
+                      "
+                      raised
+                      v-if="item.status == 1"
+                      class="mr-4"
+                      >Close Inventory</V-Button
+                    >
+
+                    <V-Button
+                      :to="{
+                        name: 'settings-inventory-create',
+                        query: { id: item.id },
+                      }"
+                      >View</V-Button
+                    >
+                  </div>
+                </div>
+              </transition-group>
+            </div>
+          </div>
+
+          <!--Table Pagination-->
+          <V-FlexPagination
+            v-if="filteredData.length > 5"
+            :item-per-page="10"
+            :total-items="873"
+            :current-page="42"
+            :max-links-displayed="7"
+          />
         </div>
       </VLoader>
-
-      
-       
     </div>
-    
   </SidebarLayout>
 </template>
 
 <style lang="scss">
-  .content-card .icon{
-    font-size: 30px;
-    // color: white;
-  }
+.content-card .icon {
+  font-size: 30px;
+  // color: white;
+}
 </style>
