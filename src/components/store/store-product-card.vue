@@ -29,6 +29,10 @@ onMounted(() => {})
       <h3 class="dark-inverted text-center">
         <h2 class="title is-6">{{ product.name }}</h2>
         <h2 class="title is-3">{{ moneda(product.price) }}</h2>
+        <p v-if="product.stock" class="is-7 title">
+          Stock: {{ product.stock.current_stock }}
+        </p>
+        <p v-else class="is-7 title">Stock: 0</p>
       </h3>
     </div>
     <div class="card-grid-item-footer">

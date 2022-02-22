@@ -24,7 +24,7 @@ onMounted(() => {})
 <template>
   <VCard
     class="d-flex flex-column justify-content-between"
-    style="min-height: 400px"
+    style="min-height: 500px"
   >
     <div>
       <slot></slot>
@@ -54,7 +54,7 @@ onMounted(() => {})
                 />
               </div>
             </td>
-            <td>{{ moneda(i.price * i.count) }}</td>
+            <td>{{ moneda(i.products_amount * i.count) }}</td>
           </tr>
         </tbody>
       </table>

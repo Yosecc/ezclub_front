@@ -3,6 +3,8 @@ import { useHead } from '@vueuse/head'
 import { onMounted, watch, ref, computed } from 'vue'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
 import { useRoute, useRouter } from 'vue-router'
+import { getInventories, inventories } from '/@src/models/Inventory.ts'
+import { inventoryStatus } from '/@src/models/Store.ts'
 import { Api } from '/@src/services'
 import {
   products,
@@ -19,6 +21,15 @@ useHead({
 const route = useRoute()
 
 onMounted(() => {
+  getInventories().then((response) => {
+    if (inventories.value.length > 0) {
+      if (inventories.value[0].status == 1) {
+        inventoryStatus.value = true
+      } else {
+        inventoryStatus.value = false
+      }
+    }
+  })
   getProducts().then((response) => {
     console.log(response.data)
   })
@@ -62,7 +73,10 @@ const optionsSingle = [
   <SidebarLayout>
     <!-- <p>{{ filters }}</p> -->
     <!-- Content Wrapper -->
-    <div class="page-content-inner columns is-multiline">
+    <div
+      v-if="!inventoryStatus"
+      class="page-content-inner columns is-multiline"
+    >
       <div class="column is-8">
         <div class="card-grid-toolbar">
           <div class="columns is-multiline w-100" v-if="categories">
@@ -156,6 +170,12 @@ const optionsSingle = [
       <div class="column is-4 card_counte">
         <store-cart />
       </div>
+    </div>
+    <div v-else>
+      <VCard radius="large" color="danger">
+        <h3 class="title is-5 mb-2">Sorry</h3>
+        <p>Sale not available: an inventory is open</p>
+      </VCard>
     </div>
   </SidebarLayout>
 </template>

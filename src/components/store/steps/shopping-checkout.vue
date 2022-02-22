@@ -4,7 +4,17 @@ import { useRoute, useRouter } from 'vue-router'
 import { Api } from '/@src/services'
 import { API_WEB_URL } from '/@src/services/index.ts'
 import { moneda } from '/@src/models/Mixin.ts'
-import { cart, total } from '/@src/models/Store.ts'
+import {
+  cart,
+  total,
+  payment,
+  client,
+  cash,
+  changeBack,
+  addCash,
+  typePayment,
+  openModalCash,
+} from '/@src/models/Store.ts'
 
 const route = useRoute()
 
@@ -13,14 +23,12 @@ const props = defineProps({})
 const emit = defineEmit(['proccessCheckout'])
 
 onMounted(() => {})
-
-const openModalCash = ref(false)
 </script>
 
 <template>
   <VCard
     class="d-flex flex-column justify-content-between"
-    style="min-height: 400px"
+    style="min-height: 500px"
   >
     <div>
       <slot></slot>
@@ -47,7 +55,32 @@ const openModalCash = ref(false)
 
       <VField>
         <VControl>
-          <input type="text" class="input" placeholder="phone/id/barcode" />
+          <input
+            type="text"
+            v-model="client.email"
+            class="input"
+            placeholder="Email"
+          />
+        </VControl>
+      </VField>
+      <VField>
+        <VControl>
+          <input
+            type="text"
+            v-model="client.phone"
+            class="input"
+            placeholder="Phone"
+          />
+        </VControl>
+      </VField>
+      <VField>
+        <VControl>
+          <input
+            type="text"
+            v-model="client.barcode"
+            class="input"
+            placeholder="Barcode"
+          />
         </VControl>
       </VField>
     </div>
@@ -55,6 +88,7 @@ const openModalCash = ref(false)
       <VButton
         color="success"
         :disabled="cart.length == 0"
+        @click=";(openModalCash = true), (typePayment = 2)"
         class="w-100 justify-content-center mb-4"
       >
         Card
@@ -62,7 +96,7 @@ const openModalCash = ref(false)
       <VButton
         color="warning"
         :disabled="cart.length == 0"
-        @click="openModalCash = true"
+        @click=";(openModalCash = true), (typePayment = 1)"
         class="w-100 justify-content-center mb-4"
       >
         Cash
@@ -73,21 +107,90 @@ const openModalCash = ref(false)
           class="w-100 justify-content-center"> Swipe Card </VButton> -->
     </div>
 
-    <VButton bold @click="openModalCash = true"> Open Modal </VButton>
-
     <VModal
       :open="openModalCash"
       actions="center"
       @close="openModalCash = false"
     >
       <template #content>
-        <VPlaceholderSection
+        <!-- <VPlaceholderSection
           title="Go Premium"
           subtitle="Unlock more features and business tools by going premium"
-        />
+        /> -->
+        <div class="d-flex mb-4 justify-content-between">
+          <p class="title is-5">
+            Total: <b>{{ moneda(total) }}</b>
+          </p>
+
+          <p class="title is-5">
+            Cash Total: <b>{{ moneda(cash) }}</b>
+          </p>
+        </div>
+
+        <div
+          class="
+            d-flex
+            justify-content-center
+            align-items-center
+            flex-column
+            mb-4
+          "
+        >
+          <p class="title is-5 mb-4">Change Back:</p>
+          <p class="title is-3 mb-0">
+            <b>{{ moneda(changeBack) }}</b>
+          </p>
+        </div>
+        <div class="d-flex justify-content-center flex-wrap mb-4">
+          <VButton
+            bold
+            class="m-3"
+            style="font-size: 14px"
+            @click="cash = total"
+          >
+            Full Payment {{ moneda(total) }}</VButton
+          >
+          <div class="w-100"></div>
+          <VButton
+            v-for="(i, key) in [5, 10, 20, 50, 100]"
+            :key="`calculato-${key}`"
+            bold
+            class="m-3"
+            style="font-size: 14px"
+            @click="addCash(i)"
+          >
+            ${{ i }}
+          </VButton>
+        </div>
+        <div class="d-flex justify-content-center">
+          <VField>
+            <VControl>
+              <input
+                v-model="cash"
+                type="text"
+                class="input text-center"
+                placeholder="Cash"
+              />
+            </VControl>
+          </VField>
+        </div>
       </template>
       <template #action>
-        <VButton color="primary" raised>Confirm</VButton>
+        <VButton
+          color=""
+          @click="cash = 0"
+          class="d-flex justify-content-center"
+          raised
+          >Reset</VButton
+        >
+        <VButton
+          color="success"
+          @click="payment"
+          :disabled="total > cash"
+          class="d-flex justify-content-center"
+          raised
+          >Confirm</VButton
+        >
       </template>
     </VModal>
   </VCard>

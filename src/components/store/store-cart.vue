@@ -4,15 +4,13 @@ import { useRoute, useRouter } from 'vue-router'
 import { Api } from '/@src/services'
 import { API_WEB_URL } from '/@src/services/index.ts'
 import { moneda } from '/@src/models/Mixin.ts'
-import { cart } from '/@src/models/Store.ts'
+import { cart, stepActive } from '/@src/models/Store.ts'
 
 const route = useRoute()
 
 const props = defineProps({})
 
 onMounted(() => {})
-
-const stepActive = ref(1)
 
 const steps = ref([
   {
