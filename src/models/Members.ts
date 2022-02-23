@@ -895,21 +895,24 @@ export const isSolvente = computed(() => {
 
 export const memberIsSolvente = (member: any) => {
   // console.log()
-  const fechaVencimiento = moment(member.membership_members.created_at).add(
-    member.membership_members.recurrence,
-    'd'
-  )
-  const fechaUltimoPago = moment(
-    member.membership_members.payments[0].created_at
-  )
-  if (fechaUltimoPago < fechaVencimiento) {
-    return false
-  }
-  if (fechaUltimoPago >= fechaVencimiento) {
-    if (member.membership_members.payments[0].status == 1) {
-      return true // Esta solvente
-    } else {
+  if (member) {
+    const fechaVencimiento = moment(member.membership_members.created_at).add(
+      member.membership_members.recurrence,
+      'd'
+    )
+    const fechaUltimoPago = moment(
+      member.membership_members.payments[0].created_at
+    )
+    if (fechaUltimoPago < fechaVencimiento) {
       return false
     }
+    if (fechaUltimoPago >= fechaVencimiento) {
+      if (member.membership_members.payments[0].status == 1) {
+        return true // Esta solvente
+      } else {
+        return false
+      }
+    }
   }
+  return false
 }
