@@ -176,7 +176,7 @@ const payment = () => {
           <th scope="col">Sub Total</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody v-if="member.membership_members != null">
         <tr>
           <td>
             <p>

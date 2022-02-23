@@ -872,30 +872,36 @@ export const memberMembershipPayments = computed(() => {
 })
 
 export const DueDate = computed(() => {
-  return moment(memberMermship.value.created_at).add(
-    memberMermship.value.recurrence.recurrence,
-    'd'
-  )
+  if (member.value.membership_members != null) {
+    return moment(memberMermship.value.created_at).add(
+      memberMermship.value.recurrence.recurrence,
+      'd'
+    )
+  }
+  return 0
 })
 
 export const isSolvente = computed(() => {
-  const fechaUltimoPago = moment(memberMermship.value.payments[0].created_at)
-  if (fechaUltimoPago < DueDate.value) {
-    return false
-  }
-  if (fechaUltimoPago >= DueDate.value) {
-    if (memberMermship.value.payments[0].status == 1) {
-      return true // Esta solvente
-    } else {
+  if (member.value.membership_members != null) {
+    const fechaUltimoPago = moment(memberMermship.value.payments[0].created_at)
+    if (fechaUltimoPago < DueDate.value) {
       return false
     }
+    if (fechaUltimoPago >= DueDate.value) {
+      if (memberMermship.value.payments[0].status == 1) {
+        return true // Esta solvente
+      } else {
+        return false
+      }
+    }
+    return false
   }
   return false
 })
 
 export const memberIsSolvente = (member: any) => {
   // console.log()
-  if (member) {
+  if (member.membership_members != null) {
     const fechaVencimiento = moment(member.membership_members.created_at).add(
       member.membership_members.recurrence,
       'd'

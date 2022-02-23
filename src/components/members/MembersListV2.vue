@@ -172,6 +172,7 @@ const colorCard = (member) => {
           <div
             class="flex-table-header"
             :class="[filteredData.length === 0 && 'is-hidden']"
+            v-if="filteredData.length !== 0"
           >
             <span class="is-grow">Member</span>
             <span>Member ID</span>
