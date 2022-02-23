@@ -23,7 +23,7 @@ const paymentsMemberchipsHistory = computed(() => {
 })
 
 onMounted(() => {
-  console.log()
+  // console.log()
 })
 </script>
 
@@ -50,20 +50,19 @@ onMounted(() => {
                 <th scope="col">STATUS</th>
               </tr>
             </thead>
-            <!--  <tbody v-if="memberMermship">
-
-            <tr 
-              v-for="(payment, key) in paymentsMemberchipMember"
-              :key="`payment-${key}`">
-              <td>{{ moment(payment.created_at).format('DD/MM/YYYY') }}</td>
-              <td>{{ moment(payment.created_at).format('HH:mm:ss') }}</td>
-              <td>{{ moneda(payment.amount) }}</td>
-              <td>{{ payment.payment_type.name }}</td>
-              <td>{{ memberMermship.membership.name }}</td>
-              <td>{{ payment.status ? 'succedded':'error' }}</td>
-            </tr>
-
-          </tbody> -->
+            <tbody v-if="memberMermship">
+              <tr
+                v-for="(payment, key) in paymentsMemberchipMember"
+                :key="`payment-${key}`"
+              >
+                <td>{{ moment(payment.created_at).format('DD/MM/YYYY') }}</td>
+                <td>{{ moment(payment.created_at).format('HH:mm:ss') }}</td>
+                <td>{{ moneda(payment.amount) }}</td>
+                <td>{{ payment.payment_type.name }}</td>
+                <td>{{ memberMermship.membership.name }}</td>
+                <td>{{ payment.status ? 'succedded' : 'error' }}</td>
+              </tr>
+            </tbody>
             <tbody
               v-for="(payment, key) in paymentsMemberchipsHistory"
               :key="`paymentHistory-${key}`"

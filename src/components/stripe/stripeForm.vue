@@ -14,12 +14,19 @@ const props = defineProps({
     type: Number,
     required: true,
   },
+  url: {
+    type: String,
+    default: 'stripe',
+  },
+  memberMermship: {
+    type: Number,
+    default: 0,
+  },
 })
 
 watch(
   () => props.id,
   (to) => {
-    console.log('to', to)
     isLoading.value = true
     initialize()
   }
@@ -33,11 +40,22 @@ const elements = ref()
 
 import { Api, FRONTEND_URL } from '/@src/services'
 
-const initialize = async () => {
-  let response = await Api.post('stripe', {
+const data = computed(() => {
+  if (props.url != 'stripe') {
+    return {
+      payment_type_id: 3,
+      amount: props.amount,
+    }
+  }
+
+  return {
     id: props.id,
     amount: props.amount,
-  })
+  }
+})
+
+const initialize = async () => {
+  let response = await Api.post(props.url, data.value)
     .then((response) => {
       elements.value = stripe.elements({
         clientSecret: response.data.clientSecret,

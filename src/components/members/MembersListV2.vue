@@ -2,6 +2,7 @@
 import { computed, ref, onMounted, watch, defineProps, defineEmit } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { API_WEB_URL } from '/@src/services'
+import { memberIsSolvente } from '/@src/models/Members.ts'
 
 const emit = defineEmit(['filterChange'])
 
@@ -187,7 +188,7 @@ const colorCard = (member) => {
                 v-for="item in filteredData"
                 :key="`${props.name}-${item.id}`"
                 class="flex-table-item cursor-pointer"
-                :class="colorCard(item)"
+                :class="memberIsSolvente(item) ? '' : 'bg-danger'"
               >
                 <div
                   @click="openMemberCard(true, item)"

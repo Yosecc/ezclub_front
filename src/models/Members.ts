@@ -1,6 +1,7 @@
 import { ref, computed, onBeforeMount } from 'vue'
 import { Api } from '/@src/services'
 import { notyf } from '/@src/models/Mixin.ts'
+import moment from 'moment'
 
 export const idMember = ref(null)
 
@@ -817,6 +818,11 @@ export const putMembership = async (data: any) => {
   return response
 }
 
+export const getMemberAccess = async (barcode: any) => {
+  const response = Api.get(`searchmember/${barcode}`)
+  return response
+}
+
 export const cancelMembershipMembers = async () => {
   const response = await Api.post(
     `members/cancelMembershipMember/${memberMermship.value.id}`
@@ -860,3 +866,50 @@ export const contactEmergency = computed(() => {
 export const accessDay = computed(() => {
   return member.value.access_day
 })
+
+export const memberMembershipPayments = computed(() => {
+  return memberMermship.value.payments
+})
+
+export const DueDate = computed(() => {
+  return moment(memberMermship.value.created_at).add(
+    memberMermship.value.recurrence.recurrence,
+    'd'
+  )
+})
+
+export const isSolvente = computed(() => {
+  const fechaUltimoPago = moment(memberMermship.value.payments[0].created_at)
+  if (fechaUltimoPago < DueDate.value) {
+    return false
+  }
+  if (fechaUltimoPago >= DueDate.value) {
+    if (memberMermship.value.payments[0].status == 1) {
+      return true // Esta solvente
+    } else {
+      return false
+    }
+  }
+  return false
+})
+
+export const memberIsSolvente = (member: any) => {
+  // console.log()
+  const fechaVencimiento = moment(member.membership_members.created_at).add(
+    member.membership_members.recurrence,
+    'd'
+  )
+  const fechaUltimoPago = moment(
+    member.membership_members.payments[0].created_at
+  )
+  if (fechaUltimoPago < fechaVencimiento) {
+    return false
+  }
+  if (fechaUltimoPago >= fechaVencimiento) {
+    if (member.membership_members.payments[0].status == 1) {
+      return true // Esta solvente
+    } else {
+      return false
+    }
+  }
+}

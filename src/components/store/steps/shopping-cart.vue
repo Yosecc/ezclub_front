@@ -59,8 +59,9 @@ onMounted(() => {})
         </tbody>
       </table>
     </div>
-    <hr />
+
     <div class="">
+      <hr />
       <table class="table is-striped is-fullwidth">
         <tbody>
           <tr>

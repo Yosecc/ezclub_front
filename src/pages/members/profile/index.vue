@@ -23,6 +23,8 @@ import {
   // saveMember,
   getMember,
   memberMermship,
+  member,
+  isSolvente,
 } from '/@src/models/Members.ts'
 
 import { getDiscounts } from '/@src/models/Discounts.ts'
@@ -194,6 +196,22 @@ const mountMember = async () => {
         />
       </div>
       <div class="column is-9">
+        <VCard
+          v-if="!isSolvente"
+          class="mb-4 d-flex justify-content-between align-items-center"
+          color="danger"
+        >
+          <h3 class="title is-5 mb-0">Expired Membership</h3>
+          <div>
+            <VButton class="mr-4" color=""> Cancel membership </VButton>
+            <VButton color="success"> Renew membership </VButton>
+          </div>
+        </VCard>
+        <memberPayment
+          :member="member"
+          :familiares="member.families_children"
+          :member-membership="member.membership_members"
+        />
         <personalInformation
           :category="route.query.category"
           v-show="Component == 'personalInformation'"
@@ -202,7 +220,6 @@ const mountMember = async () => {
            v-show="Component == 'memberCreditCard'"
         /> -->
         <memberMembership v-show="Component == 'memberMembership'" />
-
         <memberFamily v-show="Component == 'memberFamily'" />
         <memberEmergency v-show="Component == 'memberEmergency'" />
         <memberCheckins v-show="Component == 'memberCheckins'" />

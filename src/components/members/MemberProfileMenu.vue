@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import { computed, ref, watch, defineEmit, defineProps, onMounted } from 'vue'
-import { member } from '/@src/models/Members.ts'
+import {
+  member,
+  memberMermship,
+  DueDate,
+  isSolvente,
+} from '/@src/models/Members.ts'
 import moment from 'moment'
 import { API_WEB_URL } from '/@src/services'
 import { useRoute } from 'vue-router'
@@ -102,8 +107,8 @@ const change = (key) => {
 </script>
 
 <template>
-  <VCard>
-    <div class="d-flex" v-if="member">
+  <VCard :color="isSolvente ? '' : 'danger'" v-if="member">
+    <div class="d-flex mb-4">
       <VAvatar
         :picture="`${API_WEB_URL}storage/${member.photo}`"
         size="large"
@@ -114,14 +119,28 @@ const change = (key) => {
         <h2 class="title is-5 is-narrow">
           {{ member.name }} {{ member.second_name }} {{ member.last_name }}
         </h2>
-        <p>#{{ member.id }}</p>
-        <p>
-          <small
-            >Member since.
-            {{ moment(member.created_at).format('ddd - DD MMM YYYY') }}
-          </small>
-        </p>
       </div>
+    </div>
+    <div>
+      <p>
+        <b>Member #{{ member.id }}</b>
+      </p>
+      <p>
+        <small
+          ><b>Member since.</b>
+          {{ moment(member.created_at).format('ddd - DD MMM YYYY') }}
+        </small>
+      </p>
+      <p><b>Membership Active:</b> {{ memberMermship.membership.name }}</p>
+      <p><b>Due Date: </b> {{ DueDate.format('ddd - DD MMM YYYY') }}</p>
+      <p>
+        <b>Last payment attempt: </b
+        >{{
+          moment(memberMermship.payments[0].created_at).format(
+            'ddd - DD MMM YYYY'
+          )
+        }}
+      </p>
     </div>
     <div class="w-100 mt-5">
       <ul>

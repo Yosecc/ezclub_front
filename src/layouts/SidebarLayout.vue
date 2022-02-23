@@ -94,12 +94,12 @@ watch(
       <template #brand>
         <RouterLink :to="{ name: 'index' }" class="navbar-item is-brand">
           <!-- <AnimatedLogo width="38px" height="38px" /> -->
-          <img src="/@src/assets/iso_positive.svg" alt="">
+          <img src="/@src/assets/iso_positive.svg" alt="" />
         </RouterLink>
 
         <div class="brand-end">
           <NotificationsMobileDropdown />
-          <UserProfileDropdown  />
+          <UserProfileDropdown />
         </div>
       </template>
     </MobileNavbar>
@@ -206,16 +206,16 @@ watch(
       <template #links>
         <!-- Dashboards -->
         <li>
-          <router-link 
-          :class="[activeMobileSubsidebar === 'dashboard' && 'is-active']"
-          :to="{ name: 'index' }">
-          <i
+          <router-link
+            :class="[activeMobileSubsidebar === 'dashboard' && 'is-active']"
+            :to="{ name: 'index' }"
+          >
+            <i
               aria-hidden="true"
               class="iconify sidebar-svg"
               data-icon="feather:home"
             ></i>
           </router-link>
-          
         </li>
         <li>
           <a
@@ -223,9 +223,7 @@ watch(
             @click="switchSidebar('members')"
             data-content="Members"
           >
-            <i 
-              aria-hidden="true" 
-              class="fas fa-users fa-lg sidebar-svg"></i>
+            <i aria-hidden="true" class="fas fa-users fa-lg sidebar-svg"></i>
           </a>
         </li>
         <li>
@@ -235,9 +233,23 @@ watch(
             data-content="store"
             title="Store"
           >
-            <i 
-              aria-hidden="true" 
-              class="fa-lg fas fa-cash-register sidebar-svg"></i>
+            <i
+              aria-hidden="true"
+              class="fa-lg fas fa-cash-register sidebar-svg"
+            ></i>
+          </RouterLink>
+        </li>
+        <li>
+          <RouterLink
+            id="members-access"
+            :to="{ name: 'members-access' }"
+            data-content="members-access"
+            title="Access Members"
+          >
+            <i
+              class="fas fa-lg fa-door-open sidevar-svg"
+              aria-hidden="true"
+            ></i>
           </RouterLink>
         </li>
         <!-- Layouts -->
@@ -349,7 +361,6 @@ watch(
 
     <!-- MENU -->
     <transition name="slide-x">
-
       <ComponentsSubsidebar
         v-if="isDesktopSidebarOpen && activeMobileSubsidebar === 'components'"
         @close="isDesktopSidebarOpen = false"
