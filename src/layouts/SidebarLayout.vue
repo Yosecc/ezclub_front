@@ -388,7 +388,7 @@ watch(
         </template>
         <div v-else class="page-content is-relative">
           <div class="page-title has-text-centered">
-            <!-- Sidebar Trigger -->
+            <!-- Sidebar Trigger
             <div
               class="vuero-hamburger nav-trigger push-resize"
               @click="isDesktopSidebarOpen = !isDesktopSidebarOpen"
@@ -405,7 +405,7 @@ watch(
                   </span>
                 </span>
               </span>
-            </div>
+            </div> -->
 
             <div class="title-wrap">
               <h1 class="title is-4">{{ pageTitle }}</h1>
