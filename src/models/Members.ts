@@ -4,6 +4,7 @@ import { notyf } from '/@src/models/Mixin.ts'
 import moment from 'moment'
 
 export const idMember = ref(null)
+export const idMemberMembership = ref(null)
 
 export const categoriesMembers = ref({
   name: 'category',
@@ -791,8 +792,11 @@ export const emergencyInputs = ref([
 
 export const inputsMembership = ref(membershipsData)
 
+export const member = ref()
+
 export const saveMember = async (member: any) => {
   const response = await Api.post('members', member)
+  member.value = response.data.member
   return response
 }
 
@@ -838,8 +842,6 @@ export const storeContactEmergency = async (data: any) => {
   return response
 }
 
-export const member = ref()
-
 export const memberMermship = computed(() => {
   return member.value.membership_members
 })
@@ -879,37 +881,5 @@ export const DueDate = computed(() => {
 })
 
 export const isSolvente = computed(() => {
-  const fechaUltimoPago = moment(memberMermship.value.payments[0].created_at)
-  if (fechaUltimoPago < DueDate.value) {
-    return false
-  }
-  if (fechaUltimoPago >= DueDate.value) {
-    if (memberMermship.value.payments[0].status == 1) {
-      return true // Esta solvente
-    } else {
-      return false
-    }
-  }
-  return false
+  return member.value.isSolvente
 })
-
-export const memberIsSolvente = (member: any) => {
-  // console.log()
-  const fechaVencimiento = moment(member.membership_members.created_at).add(
-    member.membership_members.recurrence,
-    'd'
-  )
-  const fechaUltimoPago = moment(
-    member.membership_members.payments[0].created_at
-  )
-  if (fechaUltimoPago < fechaVencimiento) {
-    return false
-  }
-  if (fechaUltimoPago >= fechaVencimiento) {
-    if (member.membership_members.payments[0].status == 1) {
-      return true // Esta solvente
-    } else {
-      return false
-    }
-  }
-}

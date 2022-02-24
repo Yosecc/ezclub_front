@@ -16,7 +16,7 @@ import moment from 'moment'
 // )
 
 onMounted(() => {
-  console.log(props.member)
+  // console.log(props.member)
 })
 
 const diasPasados = computed(() => {

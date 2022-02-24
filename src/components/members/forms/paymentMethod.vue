@@ -15,7 +15,7 @@ import {
 import { calcularMeses, getValueInput } from '/@src/models/Mixin.ts'
 import moment from 'moment'
 
-import { idMember } from '/@src/models/Members.ts'
+import { idMember, idMemberMembership } from '/@src/models/Members.ts'
 
 const props = defineProps({
   type: {
@@ -340,8 +340,13 @@ watch(
       <VButton color="success" @click="change(6)"> Card Payment </VButton>
       <VButton color="warning"> Cash Payment </VButton>
     </div>
-
-    <stripeForm v-if="idMember" :amount="total" :id="idMember" />
+    <!-- <p>{{ idMemberMembership }}</p> -->
+    <stripeForm
+      v-if="idMember && idMemberMembership"
+      :amount="total"
+      :id="idMember"
+      :member_membership="idMemberMembership"
+    />
   </formLayaut>
 </template>
 

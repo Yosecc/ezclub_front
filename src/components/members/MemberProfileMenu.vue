@@ -121,7 +121,7 @@ const change = (key) => {
         </h2>
       </div>
     </div>
-    <div>
+    <div v-if="member.membership_members != null">
       <p>
         <b>Member #{{ member.id }}</b>
       </p>

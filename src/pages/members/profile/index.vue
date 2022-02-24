@@ -46,6 +46,7 @@ useHead({
   title: 'Members',
 })
 
+const renewMembership = ref(false)
 const Component = ref('personalInformation')
 
 const changeMenu = (val) => {
@@ -55,7 +56,7 @@ const changeMenu = (val) => {
 watch(
   () => route.query,
   (to, o) => {
-    console.log(route)
+    // console.log(route)
     if (Object.keys(to).length > 0) {
       mountMember()
       reloadPage()
@@ -80,7 +81,7 @@ const reloadPage = () => {
 }
 
 onMounted(() => {
-  console.log(route.hash)
+  // console.log(route.hash)
   if (route.hash != '') {
     Component.value = route.hash.slice(1)
   }
@@ -150,6 +151,11 @@ const mountMember = async () => {
 
             getInput(inputsMembership.value, 'recurrences_id').model =
               response.data[i].recurrences_id
+            getInput(inputsMembership.value, 'amount').model =
+              recurrencesData.find(
+                (e) => e.id == response.data[i].recurrences_id
+              ).amount
+            console.log()
           } else if (e == 'diciplines') {
             getInput(inputsMembership.value, 'diciplines').model = []
             response.data[i][e].forEach((element) => {
@@ -179,22 +185,23 @@ const mountMember = async () => {
         setInputModelData(inputsInformation, i, response.data[i])
       }
     }
-    console.log('inputsInformation', inputsInformation.value)
+    isLoading.value = false
+    // console.log('inputsMembership', inputsMembership.value)
   })
-  isLoading.value = false
 }
 </script>
 
 <template>
   <SidebarLayout>
     <VPlaceload v-if="isLoading" height="500px" />
-    <div v-if="!isLoading" class="columns is-multiline">
+    <div v-if="!isLoading && member" class="columns is-multiline">
       <div class="column is-3">
         <MemberProfileMenu
           :category="route.query.category"
           @changeMenu="changeMenu"
         />
       </div>
+      <!-- <p>{{ isSolvente }}</p> -->
       <div class="column is-9">
         <VCard
           v-if="!isSolvente"
@@ -204,13 +211,17 @@ const mountMember = async () => {
           <h3 class="title is-5 mb-0">Expired Membership</h3>
           <div>
             <VButton class="mr-4" color=""> Cancel membership </VButton>
-            <VButton color="success"> Renew membership </VButton>
+            <VButton color="success" @click="renewMembership = true">
+              Renew membership
+            </VButton>
           </div>
         </VCard>
         <memberPayment
+          v-if="renewMembership"
           :member="member"
           :familiares="member.families_children"
           :member-membership="member.membership_members"
+          class="mb-4"
         />
         <personalInformation
           :category="route.query.category"

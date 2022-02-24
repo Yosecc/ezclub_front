@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, defineProps, watch } from 'vue'
+import { ref, onMounted, defineProps, watch, computed } from 'vue'
 
 const stripe = Stripe(
   'pk_test_51JFMxBFllRtR3x1gBilPZnRFAmn5t6vpZSYDOLR2A14zgdDZUiVvLorUwZiq1ummftz3ZKmWRb4X9DtoBkju4w3g00z410NK5H'
@@ -18,7 +18,7 @@ const props = defineProps({
     type: String,
     default: 'stripe',
   },
-  memberMermship: {
+  member_membership: {
     type: Number,
     default: 0,
   },
@@ -27,10 +27,18 @@ const props = defineProps({
 watch(
   () => props.id,
   (to) => {
+    console.log('cambio')
     isLoading.value = true
     initialize()
   }
 )
+// watch(
+//   () => idMemberMembership.id,
+//   (to) => {
+//     isLoading.value = true
+//     initialize()
+//   }
+// )
 
 const isLoading = ref(true)
 
@@ -47,14 +55,17 @@ const data = computed(() => {
       amount: props.amount,
     }
   }
-
   return {
     id: props.id,
+    member_mermship_id: props.member_membership,
     amount: props.amount,
+    payment_type_id: 1,
   }
 })
 
 const initialize = async () => {
+  console.log('props.url', props.url)
+  console.log('data.value', data.value)
   let response = await Api.post(props.url, data.value)
     .then((response) => {
       elements.value = stripe.elements({
@@ -111,6 +122,7 @@ onMounted(() => {
 <template>
   <VPlaceload v-if="isLoading" height="500px" />
   <V-Card v-show="!isLoading" class="mt-6">
+    <p>{{ memberMermship }}</p>
     <form @submit.prevent="handleSubmit" id="payment-form">
       <div id="payment-element">
         <!--Stripe.js injects the Payment Element-->

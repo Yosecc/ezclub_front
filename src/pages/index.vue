@@ -4,6 +4,12 @@ import { onMounted, watch, ref, computed } from 'vue'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
 import { useRoute, useRouter } from 'vue-router'
 import { Api } from '/@src/services'
+import {
+  memberAccess,
+  codebar,
+  searchCodebar,
+  inputSearchCodebar,
+} from '/@src/models/Access.ts'
 pageTitle.value = 'Members'
 useHead({
   title: 'List Members',
@@ -67,13 +73,27 @@ const reloadForm = () => {
     isLoading.value = false
   }, 500)
 }
+const membersData = ref([])
 const computedMembers = computed(() => {
-  let membersData = []
   members.value.forEach((element) => {
-    membersData.push(element.member)
+    membersData.value.push(element.member)
   })
-  return membersData
+  return membersData.value
 })
+
+watch(
+  () => memberAccess.value,
+  (to) => {
+    membersData.value.unshift(memberAccess.value)
+  }
+)
+
+watch(
+  () => codebar.value,
+  (to) => {
+    searchCodebar()
+  }
+)
 </script>
 
 <template>
@@ -119,7 +139,7 @@ const computedMembers = computed(() => {
             </V-Button>
           </V-Control>
         </V-Field>
-        <V-Field class="w-90 mx-6">
+        <V-Field class="is-5 column mt-0 pt-0">
           <V-Control icon="feather:search">
             <input
               v-model="filters"
@@ -129,7 +149,30 @@ const computedMembers = computed(() => {
             />
           </V-Control>
         </V-Field>
-        <V-Buttons class="ml-0">
+        <V-Field class="">
+          <V-Control icon="feather:search">
+            <audio style="display: none" id="audioFail" controls>
+              <source
+                type="audio/mpeg"
+                src="/public/sonidos/error_fail2_2.mp3"
+              />
+            </audio>
+            <audio style="display: none" id="audioSuccess" controls>
+              <source type="audio/mpeg" src="/public/sonidos/success.mp3" />
+            </audio>
+            <input
+              id="inputSearchCodebar"
+              ref="inputSearchCodebar"
+              v-model="codebar"
+              v-focus
+              type="text"
+              class="input custom-text-filter"
+              placeholder="Barcode"
+              @keyup.enter="searchCodebar"
+            />
+          </V-Control>
+        </V-Field>
+        <!-- <V-Buttons class="ml-0">
           <V-Button
             :to="{ name: 'members-create' }"
             color="primary"
@@ -138,7 +181,7 @@ const computedMembers = computed(() => {
           >
             Add Members
           </V-Button>
-        </V-Buttons>
+        </V-Buttons> -->
       </div>
 
       <VPlaceload v-if="isLoading" height="500px" />
