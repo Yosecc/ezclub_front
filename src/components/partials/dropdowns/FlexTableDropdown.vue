@@ -1,19 +1,29 @@
 <script setup lang="ts">
 import { computed, defineProps } from 'vue'
-
-import { useRoute, useRouter } from 'vue-router' 
-
+import { useRoute, useRouter } from 'vue-router'
+import { FRONTEND_URL } from '/@src/services/index.ts'
+import moment from 'moment'
 const router = useRouter()
 
-const editMember = () => {
-  router.push({ name: 'members-profile', query: { member: props.idMember }  })
-}
-// import { inputsStepData } from '/@src/components/members/MembersData'
-
 const props = defineProps({
-  idMember:{
-    type: Number
+  idMember: {
+    type: Number,
+  },
+  member: {
+    type: Object,
+  },
+})
+
+const diasPasados = computed(() => {
+  if (props.member.membership_members != null && props.member) {
+    let fechaPayment = moment(
+      props.member.membership_members.payments[0].created_at
+    )
+    let hoy = moment()
+
+    return moment.duration(hoy.diff(fechaPayment))._days
   }
+  return ''
 })
 </script>
 
@@ -25,7 +35,35 @@ const props = defineProps({
     right
   >
     <template #content>
-      <a @click.prevent="editMember" role="menuitem" href="#" class="dropdown-item is-media">
+      <div v-if="member">
+        <div
+          class="text-center mb-4"
+          v-if="
+            member.membership_members != null &&
+            !member.membership_members.payments[0].status
+          "
+        >
+          <V-Tag color="danger" label="PAYMENT" class="" />
+          <p class="mt-3">Last payment attempt</p>
+          <p v-if="diasPasados > 0">{{ diasPasados }} days past due</p>
+          <p v-else>
+            {{
+              moment(
+                props.member.membership_members.payments[0].created_at
+              ).format('yy/mm/d hh:mm:ss')
+            }}
+          </p>
+        </div>
+      </div>
+
+      <router-link
+        :to="{
+          name: 'members-profile',
+          query: { id: idMember },
+        }"
+        role="menuitem"
+        class="dropdown-item is-media"
+      >
         <div class="icon">
           <i aria-hidden="true" class="lnil lnil-eye"></i>
         </div>
@@ -33,7 +71,24 @@ const props = defineProps({
           <span>View/Edit</span>
           <span>View member details</span>
         </div>
-      </a>
+      </router-link>
+      <router-link
+        :to="{
+          name: 'members-profile',
+          query: { id: idMember },
+          hash: '#memberCheckins',
+        }"
+        role="menuitem"
+        class="dropdown-item is-media"
+      >
+        <div class="icon">
+          <i class="lnir lnir-list-alt-1" aria-hidden="true"></i>
+        </div>
+        <div class="meta">
+          <span>Ckeck-in</span>
+          <span>Ckeck-in details</span>
+        </div>
+      </router-link>
 
       <!-- <a role="menuitem" href="#" class="dropdown-item is-media">
         <div class="icon">
@@ -45,7 +100,7 @@ const props = defineProps({
         </div>
       </a> -->
 
-     <!--  <a role="menuitem" href="#" class="dropdown-item is-media">
+      <!--  <a role="menuitem" href="#" class="dropdown-item is-media">
         <div class="icon">
           <i aria-hidden="true" class="lnil lnil-calendar"></i>
         </div>

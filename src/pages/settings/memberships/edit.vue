@@ -1,132 +1,81 @@
 <script setup lang="ts">
-import { onMounted, watch, ref } from 'vue'
-import { locations } from '/@src/models/Companies.ts'
+import { onMounted, ref } from 'vue'
+import { getCompany, locations } from '/@src/models/Companies.ts'
 import { getTaxes, taxes } from '/@src/services/config.ts'
-import { perpareDataInputs, hasErrors, notyf } from '/@src/models/Mixin.ts'
-import { inputs, membership, memberships, getMeberships, updateMembership } from '/@src/models/Memberships.ts'
+import {
+  setInputValuesData,
+  setInputModelData,
+  getInput,
+  cleanUpModelInputs,
+} from '/@src/models/Mixin.ts'
+import { getRecurrences, recurrences } from '/@src/models/Recurrences.ts'
+import { inputs, getMembership } from '/@src/models/Memberships.ts'
 import { useRoute, useRouter } from 'vue-router'
 
 const route = useRoute()
 
-const router = useRouter()
+const isLoading = ref(true)
 
-const idMembership = ref(null)
-
-const isLoading = ref(false)
-
-watch(memberships,()=>{
-  // console.log(route.query.id)
-  idMembership.value = route.query.id
-  membership.value =  memberships.value.find((element)=>element.id == idMembership.value)
-})
-
-onMounted(()=>{
-  isLoading.value = true
-  getTaxes()
-  getMeberships().then(()=>{
-    inputs.value.map((element)=>{
-      element.model = membership.value[element.name]
-      // if(membership.value.locations.length > 0){
-        if(element.name == 'locations_to_sale'){
-          let locations_to_sale = []
-          element.values = JSON.parse(JSON.stringify(locations.value))
-          element.model = []
-          membership.value.locations.forEach((e)=>{
-            if(e.sale == 1){
-              element.model.push(e.companies_locations_id)
-            }
-          })
-        }
-        if(element.name == 'locations_to_access'){
-          let locations_to_access = []
-          element.values = JSON.parse(JSON.stringify(locations.value))
-          element.model = []
-          membership.value.locations.forEach((e)=>{
-            if(e.access == 1){
-              element.model.push(e.companies_locations_id)
-            }
-          })
-        }
-      // }
-
-      if(element.name == 'taxes_id'){
-        element.values = taxes.value
-      }
+onMounted(() => {
+  cleanUpModelInputs(inputs.value)
+  getTaxes().then(() => {
+    setInputValuesData(inputs, 'taxes_id', taxes)
+  })
+  getCompany().then(() => {
+    setInputValuesData(inputs, 'locations', locations)
+  })
+  getRecurrences().then(() => {
+    setInputValuesData(inputs, 'amounts', recurrences)
+    let model = {}
+    recurrences.value.forEach((element) => {
+      model[element.id] = ''
     })
-
+    setInputModelData(inputs, 'amounts', model)
     isLoading.value = false
-  })
-})
 
-const processData = (inputs) =>{
-  inputs = perpareDataInputs(inputs)
-  inputs.locations = []
-  inputs.locations_to_sale.forEach((element)=>{
-    if(element != ''){
-      inputs.locations.push({
-        id: element,
-        sale: 1
-      })
-    }
-  })
-  inputs.locations_to_access.forEach((element)=>{
-    if(element != ''){
-      inputs.locations.map((e)=>{
-        if(element == e.id){
-          e.access = 1
-        }else{
-          inputs.locations.push({
-            id: element,
-            access: 1
+    // console.log(inputs)
+    getMembership(route.query.id).then((response) => {
+      console.log('response', response.data)
+      for (var i in response.data) {
+        if (i == 'amounts') {
+          response.data[i].forEach((element) => {
+            getInput(inputs.value, 'amounts').model[element.recurrences_id] =
+              element.amount
           })
+        } else if (i == 'locations') {
+          response.data[i].forEach((element) => {
+            getInput(inputs.value, 'locations').model = []
+            getInput(inputs.value, 'locations').model.push(
+              element.companies_locations_id
+            )
+          })
+        } else if (i == 'membership_diciplines') {
+          response.data[i].forEach((element) => {
+            getInput(inputs.value, 'diciplines').model.push(
+              element.diciplines_id
+            )
+          })
+        } else if (i == 'status') {
+          if (response.data[i] == 1 || response.data[i] == '1') {
+            getInput(inputs.value, 'status').model = []
+            getInput(inputs.value, 'status').model.push('status')
+          } else {
+            getInput(inputs.value, 'status').model = []
+          }
+        } else {
+          setInputModelData(inputs, i, response.data[i])
         }
-      })
-    }
-  })
-  delete inputs.locations_to_access
-  delete inputs.locations_to_sale
-  return inputs
-}
-  
-const onSave = (inputs)=>{
-  inputs = processData(inputs)
-
-  if(!hasErrors.value){
-    updateMembership(inputs).then((response)=>{
-      if(response.data.status){
-        membership.value = response.data.membership
-        notyf.success('Record Update')
-        router.back()
-      }
-    }).catch((error)=>{
-      if (error.response == undefined) {
-        return
-      }
-      notyf.error(error.response.data.mensaje)
-      for (var i in error.response.data.errores) {
-        error.response.data.errores[i].forEach((element)=>{
-          notyf.error(element)
-        })
       }
     })
-  }
-  console.log('inputs',inputs)
-}
+  })
+})
 </script>
 
-
 <template>
-  <settingLayaout
-    title="New Memberships"
-  >
-
-      <membershipForm
-        v-if="!isLoading"
-        type="edit"
-        :membership="membership"
-        :inputs="inputs"
-        @onSave="onSave"
-      />
-       
-  </settingLayaout>
+  <SidebarLayout>
+    <!-- Content Wrapper -->
+    <div class="page-content-inner">
+      <membershipForm :is-loading="isLoading" type="edit" />
+    </div>
+  </SidebarLayout>
 </template>

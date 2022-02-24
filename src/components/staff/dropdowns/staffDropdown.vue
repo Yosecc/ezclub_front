@@ -6,7 +6,7 @@
     right
   >
     <template #content>
-     <!--  <a role="menuitem" href="#" class="dropdown-item is-media">
+      <a role="menuitem" href="#" class="dropdown-item is-media">
         <div class="icon">
           <i aria-hidden="true" class="lnil lnil-briefcase"></i>
         </div>
@@ -14,9 +14,14 @@
           <span>View</span>
           <span>View project details</span>
         </div>
-      </a> -->
+      </a>
 
-      <router-link :to="{ name: 'settings-staff-edit' }" role="menuitem" href="#"  class="dropdown-item is-media">
+      <router-link
+        :to="{ name: 'settings-staff-edit' }"
+        role="menuitem"
+        href="#"
+        class="dropdown-item is-media"
+      >
         <div class="icon">
           <i aria-hidden="true" class="lnil lnil-pencil"></i>
         </div>

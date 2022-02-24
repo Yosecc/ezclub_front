@@ -1,84 +1,91 @@
 <script setup lang="ts">
 import { computed, ref, defineProps, defineEmit, onMounted, watch } from 'vue'
-import { useRouter } from 'vue-router'
 
-import { setInputValuesData, perpareDataInputs, cleanUpModelInputs } from '/@src/models/Mixin.ts'
-import { inputs, saveDicipline } from '/@src/models/Diciplines.ts'
+import { useRoute, useRouter } from 'vue-router'
+const route = useRoute()
+import {
+  setInputValuesData,
+  perpareDataInputs,
+  cleanUpModelInputs,
+} from '/@src/models/Mixin.ts'
+
+import { inputs, saveDicipline, putDicipline } from '/@src/models/Diciplines.ts'
 import { company } from '/@src/models/Companies.ts'
 import { trainers } from '/@src/models/Staffs.ts'
 
 const router = useRouter()
 
 const props = defineProps({
-  type:{
+  type: {
     type: String,
-    default: 'create'
+    default: 'create',
   },
-  buttons:{
+  buttons: {
     type: Array,
-    default: ['save', 'back']
+    default: ['save', 'back'],
   },
-  step:{
+  step: {
     type: Number,
-    default: 1
+    default: 1,
   },
-  isLoading:{
+  isLoading: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 })
 
-const titles = computed(()=>{
-  if(props.type == 'create'){
+const titles = computed(() => {
+  if (props.type == 'create') {
     return {
       title: 'Add a new discipline',
-      subtitle: 'Add information for a new discipline'
+      subtitle: 'Add information for a new discipline',
     }
   }
   return {
     title: 'Edit discipline',
-    subtitle: 'Edit information for a discipline'
+    subtitle: 'Edit information for a discipline',
   }
 })
 
-watch( company, ()=>{
-  setInputValuesData(inputs,'locations',company.value.locations)
+watch(company, () => {
+  setInputValuesData(inputs, 'locations', company.value.locations)
 })
-watch(trainers,()=>{
-  setInputValuesData(inputs,'trainers',trainers.value)
+watch(trainers, () => {
+  setInputValuesData(inputs, 'trainers', trainers.value)
 })
-onMounted(()=>{
+onMounted(() => {
   // console.log(company.value.locations)
 })
 
 const saveData = () => {
   const data = perpareDataInputs(inputs.value)
-  saveDicipline(data).then((response)=>{
-    cleanUpModelInputs(inputs.value)
-    router.back()
-  })  
+  console.log(data)
+  if (props.type == 'create') {
+    saveDicipline(data).then((response) => {
+      cleanUpModelInputs(inputs.value)
+      router.back()
+    })
+  } else {
+    putDicipline(route.query.id, data).then((response) => {
+      // cleanUpModelInputs(inputs.value)
+      // router.back()
+    })
+  }
 }
-
 </script>
 
 <template>
   <formLayaut
     :buttons="props.buttons"
     :titles="titles"
-    :isLoading="isLoading"
+    :is-loading="isLoading"
     @saveData="saveData"
   >
-    <inputsLayaut
-      :inputs-step="inputs"
-    />
+    <inputsLayaut :inputs-step="inputs" />
   </formLayaut>
-    
-
 </template>
 
 <style lang="scss">
 @import '../../scss/abstracts/_variables.scss';
 @import '../../scss/abstracts/_mixins.scss';
-
-
 </style>

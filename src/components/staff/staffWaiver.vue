@@ -1,53 +1,53 @@
 <script setup lang="ts">
-
 import { ref, computed, defineProps } from 'vue'
+import { inputsSign } from '/@src/models/Staffs.ts'
+import { setInputModelData } from '/@src/models/Mixin.ts'
 
 const props = defineProps({
-  type:{
+  type: {
     type: String,
-    default: 'create'
+    default: 'create',
   },
-  buttons:{
+  buttons: {
     type: Array,
-    default: ['save', 'back']
+    default: ['save', 'back'],
   },
-  step:{
+  step: {
     type: Number,
-    default: 1
+    default: 1,
   },
 })
 
 const waivers = ref([
   {
     name: 'Waiver_010221.pdf',
-    url: ''
+    url: '',
   },
-  
 ])
 
-const titles = computed(()=>{
-  if(props.type == 'create'){
+const titles = computed(() => {
+  if (props.type == 'create') {
     return {
       title: 'Add a new staff',
-      subtitle: 'Add information for a new staff'
+      subtitle: 'Add Waiver',
     }
   }
   return {
-    title: 'Edit staff',
-    subtitle: 'Edit information for a staff'
+    title: 'Edit staff waiver',
+    subtitle: 'Edit Waiver',
   }
 })
 
+const onSign = (sign) => {
+  // console.log(sign)
+  setInputModelData(inputsSign, 'waiver', sign)
+}
 </script>
 
-
 <template>
- <formLayaut
-    :buttons="props.buttons"
-    :step="props.step"
-    :titles="titles"
-  >
-    <div class="columns is-multiline">
+  <formLayaut :buttons="props.buttons" :step="props.step" :titles="titles">
+    <signComponent @onSign="onSign" />
+    <!-- <div class="columns is-multiline">
       <div class="columns is-multiline column is-10">
         <div class="column is-3 mb-4"
           v-for="(item, key) in waivers"
@@ -68,11 +68,8 @@ const titles = computed(()=>{
         <VButton class="mb-3 " color="success"> Sing </VButton>
         <VButton color="info"> Print </VButton>
       </div>
-    </div>
+    </div> -->
   </formLayaut>
-  
 </template>
 
-<style lang="scss" scope>
-
-</style>
+<style lang="scss" scope></style>

@@ -1,11 +1,19 @@
-
 <script setup lang="ts">
 import { useHead } from '@vueuse/head'
-import { onMounted, watch, ref,computed } from 'vue'
+import { onMounted, watch, ref, computed } from 'vue'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
 import { useRoute, useRouter } from 'vue-router'
+import { getInventories, inventories } from '/@src/models/Inventory.ts'
+import { inventoryStatus } from '/@src/models/Store.ts'
 import { Api } from '/@src/services'
+import {
+  products,
+  getProducts,
+  geCategories,
+  categories,
+} from '/@src/models/Products.ts'
 pageTitle.value = 'Store'
+import { API_WEB_URL } from '/@src/services/index.ts'
 useHead({
   title: 'Store',
 })
@@ -13,21 +21,40 @@ useHead({
 const route = useRoute()
 
 onMounted(() => {
-
+  getInventories().then((response) => {
+    if (inventories.value.length > 0) {
+      if (inventories.value[0].status == 1) {
+        inventoryStatus.value = true
+      } else {
+        inventoryStatus.value = false
+      }
+    }
+  })
+  getProducts().then((response) => {
+    console.log(response.data)
+  })
+  geCategories().then((response) => {
+    console.log(response.data)
+  })
 })
 
 import { posts } from '/@src/data/layouts/card-grid-v4'
 
 const filters = ref('')
 
+const filterCategorie = ref(null)
+
 const filteredData = computed(() => {
   if (!filters.value) {
-    return posts
+    return products.value
   } else {
-    return posts.filter((item) => {
+    return products.value.filter((item) => {
       return (
-        item.title.match(new RegExp(filters.value, 'i')) ||
-        item.author.name.match(new RegExp(filters.value, 'i'))
+        item.name.match(new RegExp(filters.value, 'i')) ||
+        item.category.name.match(new RegExp(filters.value, 'i')) ||
+        item.product_categories_id == filters.value ||
+        item.vard_code == filters.value
+        // item.vard_code.match(new RegExp(filters.value, 'i'))
       )
     })
   }
@@ -43,26 +70,57 @@ const optionsSingle = [
 </script>
 
 <template>
-  <SidebarLayout >
+  <SidebarLayout>
+    <!-- <p>{{ filters }}</p> -->
     <!-- Content Wrapper -->
-    <div class="page-content-inner columns is-multiline">
+    <div
+      v-if="!inventoryStatus"
+      class="page-content-inner columns is-multiline"
+    >
       <div class="column is-8">
-
         <div class="card-grid-toolbar">
-          
-          <div class="columns is-multiline w-100">
-            <VCard 
-              v-for="(i, key) in 5"
-              radius="small" 
-              class="column is-2 d-flex flex-column align-items-center justify-content-center text-center cursor-pointer">
-               <VAvatar
+          <div class="columns is-multiline w-100" v-if="categories">
+            <VCard
+              @click="filters = ''"
+              class="
+                column
+                is-2
+                d-flex
+                flex-column
+                align-items-center
+                justify-content-center
+                text-center
+                cursor-pointer
+              "
+            >
+              <!-- <VAvatar
                   size="medium"
-                  :picture="`https://picsum.photos/20${i}/300`"
-                />
-                <p>Category Name</p>
+                  :picture="`${API_WEB_URL}storage/${i.image}`"
+                /> -->
+              <p>View All</p>
+            </VCard>
+            <VCard
+              @click="filters = i.id"
+              v-for="(i, key) in categories"
+              :key="`categorie-${key}`"
+              class="
+                column
+                is-2
+                d-flex
+                flex-column
+                align-items-center
+                justify-content-center
+                text-center
+                cursor-pointer
+              "
+            >
+              <VAvatar
+                size="medium"
+                :picture="`${API_WEB_URL}storage/${i.image}`"
+              />
+              <p>{{ i.name }}</p>
             </VCard>
           </div>
-       
 
           <V-Control icon="feather:search">
             <input
@@ -71,7 +129,6 @@ const optionsSingle = [
               placeholder="Search..."
             />
           </V-Control>
-          
         </div>
 
         <div class="card-grid card-grid-v4">
@@ -100,47 +157,25 @@ const optionsSingle = [
 
           <transition-group name="list" tag="div" class="columns is-multiline">
             <!--Grid item-->
-            <div v-for="item in filteredData" :key="item.id" class="column is-3">
-              <a href="#" class="card-grid-item">
-                <img
-                  :src="item.image"
-                  alt=""
-                  @error.once="
-                    $event.target.src = 'https://via.placeholder.com/400x300'
-                  "
-                />
-                <div class="card-grid-item-content">
-                  <h3 class="dark-inverted">
-                    {{ item.title }}
-                  </h3>
-                </div>
-                <div class="card-grid-item-footer">
-                  <V-Avatar :picture="item.author.avatar" size="small" />
-                  <div class="meta">
-                    <span class="dark-inverted">{{ item.author.name }}</span>
-                    <span>{{ item.published }}</span>
-                  </div>
-                </div>
-              </a>
+            <div
+              v-for="item in filteredData"
+              :key="item.id"
+              class="column is-3"
+            >
+              <store-product-card :product="item" />
             </div>
           </transition-group>
         </div>
       </div>
       <div class="column is-4 card_counte">
-        <div>
-          <VCard class="mb-4" radius="small">
-            <p>Pasos</p>
-          </VCard>
-         <VCard radius="small">
-            <h3 class="title is-5 mb-2">Iam an S-Card</h3>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quibusnam praeteritis? At
-              multis se probavit. Quoniam, si dis placet, ab Epicuro loqui discimus. Et ille
-              ridens.
-            </p>
-          </VCard>
-        </div>  
+        <store-cart />
       </div>
+    </div>
+    <div v-else>
+      <VCard radius="large" color="danger">
+        <h3 class="title is-5 mb-2">Sorry</h3>
+        <p>Sale not available: an inventory is open</p>
+      </VCard>
     </div>
   </SidebarLayout>
 </template>
@@ -247,10 +282,10 @@ const optionsSingle = [
     }
   }
 }
-.card_counte{
-  & >div{
+.card_counte {
+  & > div {
     position: sticky;
-  top: 10px;
+    top: 10px;
   }
 }
 </style>

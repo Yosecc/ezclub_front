@@ -6,6 +6,8 @@ import { pageTitle } from '/@src/state/sidebarLayoutState'
 // import { Api } from '/@src/services'
 import { getCompany } from '/@src/models/Companies.ts'
 import { getTrainers } from '/@src/models/Staffs.ts'
+import { inputs } from '/@src/models/Diciplines.ts'
+import { cleanUpModelInputs } from '/@src/models/Mixin.ts'
 
 pageTitle.value = 'New Discipline'
 
@@ -14,27 +16,20 @@ useHead({
 })
 
 const isLoading = ref(true)
-onMounted(()=>{
+onMounted(() => {
+  cleanUpModelInputs(inputs.value)
   getCompany()
-  getTrainers().then((response)=>{
+  getTrainers().then((response) => {
     isLoading.value = false
   })
 })
-
 </script>
 
-
 <template>
-  <SidebarLayout >
+  <SidebarLayout>
     <!-- Content Wrapper -->
-    <div class="page-content-inner ">
-
-      <disciplinesForm
-        :isLoading="isLoading"
-      />
-     
-
+    <div class="page-content-inner">
+      <disciplinesForm type="create" :is-loading="isLoading" />
     </div>
-    
   </SidebarLayout>
 </template>

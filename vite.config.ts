@@ -18,6 +18,9 @@ import { VitePWA } from 'vite-plugin-pwa'
  * @see https://vitejs.dev/config
  */
 export default defineConfig({
+  define: {
+    // 'process.env' : path.resolve(__dirname, './.env'),
+  },
   // Project root directory (where index.html is located).
   root: process.cwd(),
   // Base public path when served in development or production.
