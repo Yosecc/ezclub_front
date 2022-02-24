@@ -91,7 +91,9 @@ watch(
 watch(
   () => codebar.value,
   (to) => {
-    searchCodebar()
+    if (conscodebar.value.length >= 9) {
+      searchCodebar()
+    }
   }
 )
 </script>

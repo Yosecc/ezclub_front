@@ -1,5 +1,6 @@
 import { ref, computed, reactive } from 'vue'
 import { Api } from '/@src/services'
+import { notyf } from '/@src/models/Mixin.ts'
 
 export const cart = ref([])
 
@@ -83,17 +84,22 @@ export const payment = () => {
     change_back: changeBack.value,
     products: cart.value,
   }
-  storeOrders(data).then((response) => {
-    console.log(response.data)
-    typePayment.value = null
-    client.value.email = null
-    client.value.phone = null
-    client.value.barcode = null
-    cash.value = 0
-    cart.value = []
-    stepActive.value = 1
-    openModalCash.value = false
-  })
+  storeOrders(data)
+    .then((response: any) => {
+      console.log(response.data)
+      typePayment.value = null
+      client.value.email = null
+      client.value.phone = null
+      client.value.barcode = null
+      cash.value = 0
+      cart.value = []
+      stepActive.value = 1
+      openModalCash.value = false
+      notyf.success('Success')
+    })
+    .catch((error: any) => {
+      notyf.error(error.response.data.message)
+    })
 }
 export const openModalCash = ref(false)
 export const stepActive = ref(1)
