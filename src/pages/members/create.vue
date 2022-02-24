@@ -12,6 +12,7 @@ import {
   notasInput,
   saveMember,
   idMember,
+  idMemberMembership,
 } from '/@src/models/Members.ts'
 
 import { getMeberships, memberships } from '/@src/models/Memberships.ts'
@@ -326,8 +327,9 @@ const sendData = () => {
 
   // console.log(...fd)
   saveMember(fd).then((response) => {
-    console.log(response.data.member.id)
     idMember.value = response.data.member.id
+    console.log('este', response.data.member.membership_members.id)
+    idMemberMembership.value = response.data.member.membership_members.id
   })
 }
 </script>

@@ -161,132 +161,137 @@ const payment = () => {
 </script>
 
 <template>
-  <VCard class="mb-4">
-    <table class="table is-hoverable is-striped is-fullwidth">
-      <thead>
-        <tr>
-          <th scope="col">Members</th>
-          <th scope="col">Membership Name</th>
-          <th scope="col">Recurrence</th>
-          <th scope="col">Prorated</th>
-          <th scope="col">Membership Cost</th>
+  <transition-group name="list" tag="div">
+    <VCard class="">
+      <table class="table is-hoverable is-striped is-fullwidth">
+        <thead>
+          <tr>
+            <th scope="col">Members</th>
+            <th scope="col">Membership Name</th>
+            <th scope="col">Recurrence</th>
+            <th scope="col">Prorated</th>
+            <th scope="col">Membership Cost</th>
 
-          <!-- <th scope="col">Discount</th> -->
-          <th scope="col">Taxes</th>
-          <th scope="col">Sub Total</th>
-        </tr>
-      </thead>
-      <tbody v-if="member.membership_members != null">
-        <tr>
-          <td>
-            <p>
-              <b>
-                {{ member.name }}
-                {{ member.second_name }}
-                {{ member.last_name }}
-              </b>
-            </p>
-          </td>
-          <td>
-            <p>{{ memberMermship.membership.name }}</p>
-          </td>
-          <td>
-            <p>{{ memberMermship.recurrence.descriptions }}</p>
-          </td>
+            <!-- <th scope="col">Discount</th> -->
+            <th scope="col">Taxes</th>
+            <th scope="col">Sub Total</th>
+          </tr>
+        </thead>
+        <tbody v-if="member.membership_members != null">
+          <tr>
+            <td>
+              <p>
+                <b>
+                  {{ member.name }}
+                  {{ member.second_name }}
+                  {{ member.last_name }}
+                </b>
+              </p>
+            </td>
+            <td>
+              <p>{{ memberMermship.membership.name }}</p>
+            </td>
+            <td>
+              <p>{{ memberMermship.recurrence.descriptions }}</p>
+            </td>
 
-          <td v-if="memberMermship.is_recurrence">
-            <span v-if="memberMermship.recurrence.recurrence >= 30">
-              {{ prorated.days }} days : <br />
-              - {{ moneda(prorated.amount) }}
-            </span>
-            <span v-else>-</span>
-          </td>
-          <td>{{ moneda(membershipCost) }}</td>
+            <td v-if="memberMermship.is_recurrence">
+              <span v-if="memberMermship.recurrence.recurrence >= 30">
+                {{ prorated.days }} days : <br />
+                - {{ moneda(prorated.amount) }}
+              </span>
+              <span v-else>-</span>
+            </td>
+            <td>{{ moneda(membershipCost) }}</td>
 
-          <td>{{ tax.text }}</td>
-          <td>{{ moneda(subtotalMemberMembership) }}</td>
-        </tr>
-        <!-- <tr
-          v-for="(familiar, keyj) in props.familyMembership"
-          :key="`familiar${keyj}`"
-        >
-          <td>{{ viewInput(familiar.family, 'name') }}</td>
-          <td>{{ getValueInput(familiar.inputs, 'memberships_id').name }}</td>
-          <td>
-            {{ getValueInput(familiar.inputs, 'recurrences_id').descriptions }}
-          </td>
-          <td>
-            <span
-              v-if="getValueInput(familiar.inputs, 'recurrences_id').days >= 30"
-            >
-              {{
-                proratedMethod(getValueInput(familiar.inputs, 'recurrences_id'))
-                  .days
-              }}
-              days : <br />
-              -
+            <td>{{ tax.text }}</td>
+            <td>{{ moneda(subtotalMemberMembership) }}</td>
+          </tr>
+          <!-- <tr
+            v-for="(familiar, keyj) in props.familyMembership"
+            :key="`familiar${keyj}`"
+          >
+            <td>{{ viewInput(familiar.family, 'name') }}</td>
+            <td>{{ getValueInput(familiar.inputs, 'memberships_id').name }}</td>
+            <td>
+              {{ getValueInput(familiar.inputs, 'recurrences_id').descriptions }}
+            </td>
+            <td>
+              <span
+                v-if="getValueInput(familiar.inputs, 'recurrences_id').days >= 30"
+              >
+                {{
+                  proratedMethod(getValueInput(familiar.inputs, 'recurrences_id'))
+                    .days
+                }}
+                days : <br />
+                -
+                {{
+                  moneda(
+                    proratedMethod(
+                      getValueInput(familiar.inputs, 'recurrences_id')
+                    ).amount
+                  )
+                }}
+              </span>
+              <span v-else>-</span>
+            </td>
+            <td>
               {{
                 moneda(
-                  proratedMethod(
-                    getValueInput(familiar.inputs, 'recurrences_id')
-                  ).amount
+                  membershipCost(getValueInput(familiar.inputs, 'recurrences_id'))
                 )
               }}
-            </span>
-            <span v-else>-</span>
-          </td>
-          <td>
-            {{
-              moneda(
-                membershipCost(getValueInput(familiar.inputs, 'recurrences_id'))
-              )
-            }}
-          </td>
-          <td>{{ moneda(viewInput(familiar.inputs, 'initiation_fee')) }}</td>
-          <td>
-            {{ objTax(getValueInput(familiar.inputs, 'memberships_id')).text }}
-          </td>
+            </td>
+            <td>{{ moneda(viewInput(familiar.inputs, 'initiation_fee')) }}</td>
+            <td>
+              {{ objTax(getValueInput(familiar.inputs, 'memberships_id')).text }}
+            </td>
 
-          <td>
-            {{
-              moneda(
-                subtotalFamily({
-                  membershipCost: membershipCost(
-                    getValueInput(familiar.inputs, 'recurrences_id')
-                  ),
-                  initiation_fee: viewInput(familiar.inputs, 'initiation_fee'),
-                  objTax: objTax(
-                    getValueInput(familiar.inputs, 'memberships_id')
-                  ),
-                  prorated: proratedMethod(
-                    getValueInput(familiar.inputs, 'recurrences_id')
-                  ).amount,
-                })
-              )
-            }}
-          </td>
-        </tr> -->
-        <tr>
-          <td style="text-align: right" colspan="6">Total</td>
+            <td>
+              {{
+                moneda(
+                  subtotalFamily({
+                    membershipCost: membershipCost(
+                      getValueInput(familiar.inputs, 'recurrences_id')
+                    ),
+                    initiation_fee: viewInput(familiar.inputs, 'initiation_fee'),
+                    objTax: objTax(
+                      getValueInput(familiar.inputs, 'memberships_id')
+                    ),
+                    prorated: proratedMethod(
+                      getValueInput(familiar.inputs, 'recurrences_id')
+                    ).amount,
+                  })
+                )
+              }}
+            </td>
+          </tr> -->
+          <tr>
+            <td style="text-align: right" colspan="6">Total</td>
 
-          <td class="is-end">
-            {{ moneda(total) }}
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <div class="d-flex justify-content-between">
-      <VButton color="success" @click="payment"> Card Payment </VButton>
-      <VButton color="warning"> Cash Payment </VButton>
-    </div>
-  </VCard>
-  <stripeForm
-    v-if="stripeStatus"
-    :url="`new_payment/${memberMermship.id}`"
-    :amount="total"
-    :id="member.id"
-    :member-mermship="memberMermship.id"
-  />
+            <td class="is-end">
+              {{ moneda(total) }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="d-flex justify-content-between">
+        <VButton color="success" @click="stripeStatus = true">
+          Card Payment
+        </VButton>
+        <VButton color="warning"> Cash Payment </VButton>
+      </div>
+    </VCard>
+    <stripeForm
+      class=""
+      v-if="stripeStatus"
+      :url="`new_payment/${memberMermship.id}`"
+      :amount="total"
+      :id="member.id"
+      :member-mermship="memberMermship.id"
+    />
+  </transition-group>
 </template>
 
 <style lang="scss"></style>

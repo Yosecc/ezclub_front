@@ -239,19 +239,7 @@ watch(
             ></i>
           </RouterLink>
         </li>
-        <li>
-          <RouterLink
-            id="members-access"
-            :to="{ name: 'members-access' }"
-            data-content="members-access"
-            title="Access Members"
-          >
-            <i
-              class="fas fa-lg fa-door-open sidevar-svg"
-              aria-hidden="true"
-            ></i>
-          </RouterLink>
-        </li>
+
         <!-- Layouts -->
         <!-- <li>
           <a
