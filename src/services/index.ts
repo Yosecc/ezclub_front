@@ -9,9 +9,9 @@ export const API_WEB_URL = ref('')
 // const url = 'https://dev-api.ushuaiacreative.com/api/'
 // const url = 'https://ezclub.loc/api/'
 if (import.meta.env.MODE === 'development') {
-  API_URL.value = 'https://ezclub.loc/api/'
+  API_URL.value = 'http://127.0.0.1:8000/api/'
   FRONTEND_URL.value = 'http://localhost:3000/'
-  API_WEB_URL.value = 'https://ezclub.loc/'
+  API_WEB_URL.value = 'http://127.0.0.1:8000/'
 } else {
   API_URL.value = 'https://dev-api.ushuaiacreative.com/api/'
   FRONTEND_URL.value = 'https://dev-frontend.ushuaiacreative.com/'
