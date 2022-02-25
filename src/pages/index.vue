@@ -141,7 +141,7 @@ watch(
             </V-Button>
           </V-Control>
         </V-Field>
-        <V-Field class="is-5 column mt-0 pt-0">
+        <V-Field class="is-6 column mt-0 pt-0">
           <V-Control icon="feather:search">
             <input
               v-model="filters"

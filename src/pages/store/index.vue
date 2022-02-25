@@ -4,8 +4,9 @@ import { onMounted, watch, ref, computed } from 'vue'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
 import { useRoute, useRouter } from 'vue-router'
 import { getInventories, inventories } from '/@src/models/Inventory.ts'
-import { inventoryStatus } from '/@src/models/Store.ts'
+import { inventoryStatus, activateOrders } from '/@src/models/Store.ts'
 import { Api } from '/@src/services'
+import { notyf } from '/@src/models/Mixin.ts'
 import {
   products,
   getProducts,
@@ -19,8 +20,19 @@ useHead({
 })
 
 const route = useRoute()
-
+const router = useRouter()
 onMounted(() => {
+  if (route.query.payment_intent_client_secret != undefined) {
+    if (route.query.redirect_status == 'succeeded') {
+      activateOrders(route.query.payment_intent_client_secret).then(
+        (response) => {
+          notyf.success('Payment')
+          router.replace({ query: {} })
+        }
+      )
+    }
+  }
+
   getInventories().then((response) => {
     if (inventories.value.length > 0) {
       if (inventories.value[0].status == 1) {

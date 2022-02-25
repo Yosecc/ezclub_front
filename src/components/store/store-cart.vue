@@ -71,6 +71,8 @@ const steps = ref([
         />
       </div>
     </shopping-checkout>
+
+    <sendFactura v-if="stepActive == 3" />
   </div>
 </template>
 

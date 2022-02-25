@@ -155,6 +155,9 @@ const inventoryProducts = computed(() => {
       </div>
       <div v-else>
         <div class="d-flex justify-content-end mb-4 w-100">
+          <V-Button color="" raised @click="router.back()" class="mr-3"
+            >Back</V-Button
+          >
           <V-Button
             color="success"
             v-if="inventory.status"

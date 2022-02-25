@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { onMounted, watch, ref, computed, defineProps, defineEmit } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { Api } from '/@src/services'
-import { API_WEB_URL } from '/@src/services/index.ts'
+import { Api, API_WEB_URL } from '/@src/services'
 import { moneda } from '/@src/models/Mixin.ts'
 import {
   cart,
@@ -14,6 +13,8 @@ import {
   addCash,
   typePayment,
   openModalCash,
+  openModalCard,
+  order,
 } from '/@src/models/Store.ts'
 
 const route = useRoute()
@@ -23,6 +24,19 @@ const props = defineProps({})
 const emit = defineEmit(['proccessCheckout'])
 
 onMounted(() => {})
+
+const paymentCardStripe = () => {
+  openModalCard.value = true
+  typePayment.value = 3
+  payment()
+}
+
+watch(
+  () => order.value,
+  (to) => {
+    console.log('acambio')
+  }
+)
 </script>
 
 <template>
@@ -88,7 +102,7 @@ onMounted(() => {})
       <VButton
         color="success"
         :disabled="cart.length == 0"
-        @click=";(openModalCash = true), (typePayment = 2)"
+        @click="paymentCardStripe"
         class="w-100 justify-content-center mb-4"
       >
         Card
@@ -96,7 +110,7 @@ onMounted(() => {})
       <VButton
         color="warning"
         :disabled="cart.length == 0"
-        @click=";(openModalCash = true), (typePayment = 1)"
+        @click=";(typePayment = 1), (openModalCash = true), payment"
         class="w-100 justify-content-center mb-4"
       >
         Cash
@@ -191,6 +205,26 @@ onMounted(() => {})
           raised
           >Confirm</VButton
         >
+      </template>
+    </VModal>
+
+    <VModal
+      :open="openModalCard"
+      actions="center"
+      @close="openModalCard = false"
+    >
+      <template #content>
+        <stripeFormProduct v-if="order" :amount="total" :order_id="order" />
+      </template>
+      <template #action>
+        <!-- <VButton
+          color="success"
+          @click="payment"
+          :disabled="total > cash"
+          class="d-flex justify-content-center"
+          raised
+          >Confirm</VButton
+        > -->
       </template>
     </VModal>
   </VCard>

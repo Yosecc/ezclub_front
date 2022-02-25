@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { ref, onMounted, defineProps, watch, computed } from 'vue'
-import { PUBLIC_KEY_STRIPE } from '/@src/services'
+import { Api, FRONTEND_URL, PUBLIC_KEY_STRIPE } from '/@src/services/index.ts'
+
+import { order } from '/@src/models/Store.ts'
+
 const stripe = Stripe(PUBLIC_KEY_STRIPE.value)
 
 const props = defineProps({
@@ -8,17 +11,9 @@ const props = defineProps({
     type: Number,
     required: true,
   },
-  id: {
+  order_id: {
     type: Number,
     required: true,
-  },
-  url: {
-    type: String,
-    default: 'stripe',
-  },
-  member_membership: {
-    type: Number,
-    default: 0,
   },
 })
 
@@ -30,13 +25,6 @@ watch(
     initialize()
   }
 )
-// watch(
-//   () => idMemberMembership.id,
-//   (to) => {
-//     isLoading.value = true
-//     initialize()
-//   }
-// )
 
 const isLoading = ref(true)
 
@@ -44,27 +32,21 @@ const items = ref({ id: props.id, amount: props.amount })
 
 const elements = ref()
 
-import { Api, FRONTEND_URL } from '/@src/services'
-
 const data = computed(() => {
-  if (props.url != 'stripe') {
-    return {
-      payment_type_id: 3,
-      amount: props.amount,
-    }
-  }
+  console.log(props.order_id)
   return {
-    id: props.id,
-    member_mermship_id: props.member_membership,
+    id: props.order_id,
     amount: props.amount,
     payment_type_id: 1,
   }
 })
 
 const initialize = async () => {
-  console.log('props.url', props.url)
-  console.log('data.value', data.value)
-  let response = await Api.post(props.url, data.value)
+  // console.log('data.value', data.value)
+  let response = await Api.post(
+    `orders/paymentStripeProduct/${props.order_id}`,
+    data.value
+  )
     .then((response) => {
       elements.value = stripe.elements({
         clientSecret: response.data.clientSecret,
@@ -94,7 +76,7 @@ const handleSubmit = async (e) => {
     elements: elements.value,
     confirmParams: {
       // Make sure to change this to your payment completion page
-      return_url: `${FRONTEND_URL.value}members/process?id=` + props.id,
+      return_url: `${FRONTEND_URL.value}store?id=` + props.order_id,
     },
   })
 
@@ -120,7 +102,6 @@ onMounted(() => {
 <template>
   <VPlaceload v-if="isLoading" height="500px" />
   <V-Card v-show="!isLoading" class="mt-6">
-    <!-- <p>{{ memberMermship }}</p> -->
     <form @submit.prevent="handleSubmit" id="payment-form">
       <div id="payment-element">
         <!--Stripe.js injects the Payment Element-->

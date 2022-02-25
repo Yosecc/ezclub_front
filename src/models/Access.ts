@@ -3,7 +3,7 @@ import { onMounted, watch, ref, computed } from 'vue'
 import { notyf } from '/@src/models/Mixin.ts'
 
 export const memberAccess = ref(null)
-export const codebar = ref(424242424242)
+export const codebar = ref(null)
 export const inputSearchCodebar = ref()
 
 export const searchCodebar = async (event) => {
