@@ -227,12 +227,12 @@ const changeMembership = (obj) => {
       recurrencesData.push(recurrencesD)
     })
     setInputValuesData(obj.inputsStep, 'recurrences_id', recurrencesData)
-    // reloadForm()
+    reloadForm()
   }
   if (obj.input.name == 'locations_id') {
     getLocationsDiciplines([obj.input.model]).then((response) => {
       setInputValuesData(obj.inputsStep, 'diciplines', response.data)
-      // reloadForm()
+      reloadForm()
     })
   }
 }

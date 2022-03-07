@@ -1,153 +1,61 @@
 <script setup lang="ts">
 import { computed, ref, defineProps, defineEmit } from 'vue'
 import { useRouter } from 'vue-router'
+import { inputs, storeDiscount } from '/@src/models/Discounts'
+import {
+  notyf,
+  perpareDataInputs,
+  cleanUpModelInputs,
+} from '/@src/models/Mixin.ts'
 
 const router = useRouter()
 
 const props = defineProps({
-  type:{
+  type: {
     type: String,
-    default: 'create'
+    default: 'create',
   },
-  buttons:{
+  buttons: {
     type: Array,
-    default: ['save', 'back']
+    default: ['save', 'back'],
   },
-  step:{
+  step: {
     type: Number,
-    default: 1
+    default: 1,
   },
 })
 
-const titles = computed(()=>{
-  if(props.type == 'create'){
+const titles = computed(() => {
+  if (props.type == 'create') {
     return {
       title: 'Add a new discount',
-      subtitle: 'Add information for a new discount'
+      subtitle: 'Add information for a new discount',
     }
   }
   return {
     title: 'Edit discount',
-    subtitle: 'Edit information for a discount'
+    subtitle: 'Edit information for a discount',
   }
 })
 
-const inputs = ref([
-  {
-    typeInput: 'text',
-    name:'discount_code',
-    placeholder: 'Discount Code / Name',
-    model: '',
-    required: true,
-    class: 'is-12',
-  },
-  {
-    typeInput: 'select',
-    name:'discount_type',
-    placeholder: 'Discount Type',
-    values: ['Dollar Amount','Percentage Amount'],
-    model: '',
-    required: true,
-    class: 'is-6'
-  },
-  {
-    typeInput: 'text',
-    name:'discount_value',
-    placeholder: 'Discount Value',
-    model: '',
-    required: true,
-    class: 'is-6',
-  },
-  {
-    typeInput: 'select',
-    name:'applies_to',
-    placeholder: 'Applies to',
-    values: ['Entire Order','Selected Collection','Select Product'],
-    model: '',
-    required: true,
-    class: 'is-6'
-  },
-  {
-    typeInput: 'text',
-    name:'Select',
-    placeholder: 'Select',
-    model: '',
-    required: true,
-    class: 'is-6',
-  },
-  {
-    typeInput: 'select',
-    name:'CustomerEligibilite',
-    placeholder: 'Customer Eligibilite',
-    values: ['Everyone','Selected Group of Customers','Selected Customer'],
-    model: '',
-    required: true,
-    class: 'is-6'
-  },
-  {
-    typeInput: 'text',
-    name:'Select',
-    placeholder: 'Select',
-    model: '',
-    required: true,
-    class: 'is-6',
-  },
-  {
-    typeInput: 'select',
-    name:'recurrence',
-    placeholder: 'Recurrence',
-    values: ['One time only','Monthly','Yearly','Specific time frame'],
-    model: '',
-    required: true,
-    class: 'is-6'
-  },
-  {
-    typeInput: 'text',
-    name:'Select',
-    placeholder: 'Select',
-    model: '',
-    required: true,
-    class: 'is-6',
-  },
-  {
-    typeInput: 'select',
-    name:'UsageLimits',
-    placeholder: 'Usage Limits',
-    values: ['Limit the amount of times this can be use','Unlimited','One use per customer'],
-    model: '',
-    required: true,
-    class: 'is-6'
-  },
-  {
-    typeInput: 'text',
-    name:'Select',
-    placeholder: 'Select',
-    model: '',
-    required: true,
-    class: 'is-6',
-  },
-  {
-    typeInput: 'date',
-    name:'start',
-    placeholder: 'Start Date & Time',
-    model: '',
-    required: true,
-    class: 'is-6'
-  },
-  {
-    typeInput: 'date',
-    name:'end',
-    placeholder: 'End Date & Time',
-    model: '',
-    required: true,
-    class: 'is-6'
-  },
-
-
-])
-
-// const emit = defineEmit(['changeStep','saveData']);
-
+const saveData = () => {
+  const data = perpareDataInputs(inputs.value)
+  if (props.type == 'create') {
+    storeDiscount(data).then((response) => {
+      if (response.data.status) {
+        nofyf.success('Success')
+        cleanUpModelInputs(inputs.value)
+      } else {
+        notyf.error(response.data.mensaje)
+        for (var i in response.data.errores) {
+          response.data.errores[i].forEach((e) => {
+            notyf.error(`${i} : ${e}`)
+          })
+        }
+      }
+    })
+  }
+}
 </script>
 
 <template>
@@ -155,18 +63,13 @@ const inputs = ref([
     :buttons="props.buttons"
     :step="props.step"
     :titles="titles"
+    @saveData="saveData"
   >
-    <inputsLayaut
-      :inputs-step="inputs"
-    />
+    <inputsLayaut :inputs-step="inputs" />
   </formLayaut>
-    
-
 </template>
 
 <style lang="scss">
 @import '../../scss/abstracts/_variables.scss';
 @import '../../scss/abstracts/_mixins.scss';
-
-
 </style>
