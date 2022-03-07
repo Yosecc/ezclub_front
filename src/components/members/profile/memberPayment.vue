@@ -156,7 +156,7 @@ watch(
 // PAGO
 
 const payment = () => {
-  stripeStatus = true
+  stripeStatus.value = true
 }
 </script>
 
