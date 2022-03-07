@@ -5,6 +5,8 @@ import {
   setInputValuesData,
   setInputModelData,
   moneda,
+  calcularMeses,
+  getValueInput,
 } from '/@src/models/Mixin.ts'
 import { getLocationsDiciplines } from '/@src/models/Diciplines.ts'
 import {
@@ -12,7 +14,7 @@ import {
   flipped,
   optionsCreditCard,
 } from '/@src/models/PaymentMethodsData.ts'
-import { calcularMeses, getValueInput } from '/@src/models/Mixin.ts'
+
 import moment from 'moment'
 
 import { idMember, idMemberMembership } from '/@src/models/Members.ts'
@@ -52,7 +54,7 @@ const isLoading = ref(false)
 
 const emit = defineEmit(['changeStep', 'returnData'])
 
-const change = (val) => {
+const change = (val, payment = 3) => {
   let obj = {
     // paymentData,
     // dataCardFamiliares: {},
@@ -60,7 +62,10 @@ const change = (val) => {
   }
   // console.log(obj)
   emit('returnData', obj)
-  emit('changeStep', val)
+  emit('changeStep', val, payment, {
+    cash: cash.value,
+    changeBack: changeBack.value,
+  })
 }
 
 //  MEMBER //////////////////
@@ -193,31 +198,32 @@ watch(
   }
 )
 
-// watch(
-//   () => props.inputs,
-//   (data, prevData) => {
-//     reloadForm()
-//   }
-// )
+const openModalCash = ref(false)
 
-// const reloadForm = () =>{
-//   isLoading.value= true
-//   setTimeout(()=>{
-//     isLoading.value= false
-//   }, 500);
-// }
+const cash = ref(0)
 
-// const isDiferentCard = ref(false)
+const changeBack = computed(() => {
+  const calculo = cash.value - total.value
 
-// const changeSwitch = (obj) => {
-//   isDiferentCard.value = !obj.input.model
-// }
+  if (calculo > 0) {
+    return calculo
+  }
 
-// const inputspaymentData = JSON.parse(JSON.stringify(paymentData.value))
+  return 0
+})
 
-// const changeCheckbox = (input) => {
-//   console.log(input)
-// }
+const typePago = ref(3)
+
+const isStripe = computed(() => {
+  if (
+    idMember.value != null &&
+    idMemberMembership.value != null &&
+    typePago.value == 3
+  ) {
+    return true
+  }
+  return false
+})
 </script>
 
 <template>
@@ -337,16 +343,102 @@ watch(
       </tbody>
     </table>
     <div class="d-flex justify-content-between">
-      <VButton color="success" @click="change(6)"> Card Payment </VButton>
-      <VButton color="warning"> Cash Payment </VButton>
+      <VButton color="success" @click="change(6, 3), (typePago = 3)">
+        Card Payment
+      </VButton>
+      <VButton color="warning" @click="openModalCash = true">
+        Cash Payment
+      </VButton>
     </div>
     <!-- <p>{{ idMemberMembership }}</p> -->
     <stripeForm
-      v-if="idMember && idMemberMembership"
+      v-if="isStripe"
       :amount="total"
       :id="idMember"
       :member_membership="idMemberMembership"
     />
+    <VModal
+      :open="openModalCash"
+      actions="center"
+      @close="openModalCash = false"
+    >
+      <template #content>
+        <div class="d-flex mb-4 justify-content-between">
+          <p class="title is-5">
+            Total: <b>{{ moneda(total) }}</b>
+          </p>
+
+          <p class="title is-5">
+            Cash Total: <b>{{ moneda(cash) }}</b>
+          </p>
+        </div>
+
+        <div
+          class="
+            d-flex
+            justify-content-center
+            align-items-center
+            flex-column
+            mb-4
+          "
+        >
+          <p class="title is-5 mb-4">Change Back:</p>
+          <p class="title is-3 mb-0">
+            <b>{{ moneda(changeBack) }}</b>
+          </p>
+        </div>
+        <div class="d-flex justify-content-center flex-wrap mb-4">
+          <VButton
+            bold
+            class="m-3"
+            style="font-size: 14px"
+            @click="cash = total"
+          >
+            Full Payment {{ moneda(total) }}
+          </VButton>
+          <div class="w-100"></div>
+          <VButton
+            v-for="(i, key) in [5, 10, 20, 50, 100]"
+            :key="`calculato-${key}`"
+            bold
+            class="m-3"
+            style="font-size: 14px"
+            @click="cash += i"
+          >
+            ${{ i }}
+          </VButton>
+        </div>
+        <div class="d-flex justify-content-center">
+          <VField>
+            <VControl>
+              <input
+                v-model="cash"
+                type="text"
+                class="input text-center"
+                placeholder="Cash"
+              />
+            </VControl>
+          </VField>
+        </div>
+      </template>
+      <template #action>
+        <VButton
+          color=""
+          @click="cash = 0"
+          class="d-flex justify-content-center"
+          raised
+          >Reset</VButton
+        >
+        <VButton
+          color="success"
+          @click="change(6, 1), (typePago = 1)"
+          :disabled="total > cash"
+          class="d-flex justify-content-center"
+          raised
+          >Confirm</VButton
+        >
+      </template>
+    </VModal>
   </formLayaut>
 </template>
 

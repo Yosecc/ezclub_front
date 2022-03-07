@@ -32,7 +32,7 @@ const reloadForm = () => {
   }, 500)
 }
 
-const families = ref([JSON.parse(JSON.stringify(props.inputs))])
+const families = ref([])
 
 const inputsSteps = computed(() => {
   reloadForm()
@@ -49,10 +49,6 @@ const inputsSteps = computed(() => {
   return families.value
 })
 
-const addFamily = () => {
-  families.value.push(JSON.parse(JSON.stringify(props.inputs)))
-}
-
 const emit = defineEmit(['changeStep', 'returData'])
 
 const change = (val) => {
@@ -63,15 +59,20 @@ const change = (val) => {
 const minorsKeys = ref([])
 
 const changeSwitchKey = (key) => {
-  console.log('es este')
-  console.log(key)
-  console.log(inputsSteps.value)
   let index = minorsKeys.value.findIndex((element) => element == key)
-  // if(index == '-1' || index == -1){
-  //   minorsKeys.value.push(key)
-  // }else{
-  //   minorsKeys.value.splice(index, 1)
-  // }
+}
+
+const mostrar = ref(false)
+
+const cantidadFamiliares = ref(0)
+
+const addFamily = () => {
+  if (cantidadFamiliares.value > 0) {
+    for (var i = 0; i < cantidadFamiliares.value; ++i) {
+      families.value.push(props.inputs)
+    }
+    mostrar.value = true
+  }
 }
 </script>
 
@@ -83,28 +84,42 @@ const changeSwitchKey = (key) => {
     :step="2"
     @changeStep="change"
   >
-    <!-- <p>{{ minorsKeys }}</p> -->
-    <V-Card v-for="(family, ke) in inputsSteps" :key="ke" class="mb-4">
-      <inputsLayaut :inputs-step="family" @changeSwitch="changeSwitchKey(ke)" />
-      <V-Button
-        v-if="ke > 0"
-        @click="families.splice(ke, 1)"
-        color="danger"
-        class="mx-auto"
-        icon="fas fa-times"
-      >
-        Remove Family Member
-      </V-Button>
-    </V-Card>
-    <div class="column d-flex justify-content-center is-12">
+    <div v-if="mostrar">
+      <V-Card v-for="(family, ke) in inputsSteps" :key="ke" class="mb-4">
+        <inputsLayaut
+          :inputs-step="family"
+          @changeSwitch="changeSwitchKey(ke)"
+        />
+        <V-Button
+          v-if="ke > 0"
+          @click="families.splice(ke, 1)"
+          color="danger"
+          class="mx-auto"
+          icon="fas fa-times"
+        >
+          Remove Family Member
+        </V-Button>
+      </V-Card>
+    </div>
+
+    <div
+      v-if="!mostrar"
+      class="column d-flex justify-content-center flex-column is-4 mx-auto"
+    >
+      <VField class="mb-4">
+        <VControl>
+          <input
+            type="number"
+            v-model="cantidadFamiliares"
+            class="input text-center"
+            placeholder="Family quantity"
+          />
+        </VControl>
+      </VField>
+
       <V-Button @click="addFamily" color="info" icon="fas fa-check" raised>
         Add Another Family Member
       </V-Button>
     </div>
   </formLayaut>
 </template>
-
-<style lang="scss">
-// @import '../../scss/abstracts/_variables.scss';
-// @import '../../scss/abstracts/_mixins.scss';
-</style>

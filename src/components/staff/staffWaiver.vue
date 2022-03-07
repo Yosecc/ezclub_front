@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { ref, computed, defineProps } from 'vue'
-import { inputsSign } from '/@src/models/Staffs.ts'
-import { setInputModelData } from '/@src/models/Mixin.ts'
+import { ref, computed, defineProps, watch } from 'vue'
+import { inputsSign, staff, storeWaiverStaff } from '/@src/models/Staffs.ts'
+
+import { setInputModelData, notyf } from '/@src/models/Mixin.ts'
 
 const props = defineProps({
   type: {
@@ -38,37 +39,35 @@ const titles = computed(() => {
   }
 })
 
-const onSign = (sign) => {
-  // console.log(sign)
-  setInputModelData(inputsSign, 'waiver', sign)
+const onSign = (base64) => {
+  storeWaiverStaff(base64, staff.value.id)
+    .then((response) => {
+      if (response.data.status) {
+        notyf.success('Sign Success')
+      } else {
+        notyf.error(response.data.mensaje)
+        for (var i in response.data.errores) {
+          response.data.errores[i].forEach((e) => {
+            notyf.error(`${i} : ${e}`)
+          })
+        }
+      }
+    })
+    .catch((error) => {
+      // error.response.data
+    })
 }
 </script>
 
 <template>
   <formLayaut :buttons="props.buttons" :step="props.step" :titles="titles">
-    <signComponent @onSign="onSign" />
-    <!-- <div class="columns is-multiline">
-      <div class="columns is-multiline column is-10">
-        <div class="column is-3 mb-4"
-          v-for="(item, key) in waivers"
-            :key="`family-${key}`"
-        >
-          <div class="border-1 document_box p-4 d-flex justify-content-center radius-small">
-              <a href="234" class="text-center">
-                <img 
-                  style="width: 70px;"
-                  src="/public/images/pdf_icon.png"
-                  alt="">
-                <p>{{ item.name }}</p>
-              </a>
-          </div>
-        </div>
-      </div>
-      <div class="firmas text-right column is-2">
-        <VButton class="mb-3 " color="success"> Sing </VButton>
-        <VButton color="info"> Print </VButton>
-      </div>
-    </div> -->
+    <signComponent
+      v-if="staff"
+      @onSign="onSign"
+      :is-sign="props.type == 'create' ? true : false"
+      :waiver="`waiver_${staff.id}.pdf`"
+      :url-waiver="`staffs/generateWeiver/${staff.id}`"
+    />
   </formLayaut>
 </template>
 

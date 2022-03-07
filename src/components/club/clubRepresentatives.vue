@@ -2,8 +2,12 @@
 import { computed, ref, defineProps, defineEmit } from 'vue'
 import { useRouter } from 'vue-router'
 
-import { inputsContacto } from '/@src/models/Companies.ts'
-
+import {
+  company,
+  inputsContacto,
+  putCompanyContact,
+} from '/@src/models/Companies.ts'
+import { perpareDataInputs, hasErrors, notyf } from '/@src/models/Mixin.ts'
 const router = useRouter()
 
 const props = defineProps({
@@ -28,11 +32,40 @@ const titles = computed(() => {
   }
 })
 
-// const emit = defineEmit(['changeStep','saveData']);
+const saveData = () => {
+  const obj = {
+    ...perpareDataInputs(inputsContacto.value),
+  }
+
+  const fd = new FormData()
+  for (var i in obj) {
+    fd.append(i, obj[i])
+  }
+  if (!hasErrors.value) {
+    putCompanyContact(fd).then((response) => {
+      if (response.data.status) {
+        notyf.success('Succeeded')
+        company.value = response.data.company
+      } else {
+        notyf.error(response.data.mensaje)
+        for (var i in response.data.errores) {
+          response.data.errores[i].forEach((e) => {
+            notyf.error(`${i} : ${e}`)
+          })
+        }
+      }
+    })
+  }
+}
 </script>
 
 <template>
-  <formLayaut :buttons="props.buttons" :step="props.step" :titles="titles">
+  <formLayaut
+    :buttons="props.buttons"
+    :step="props.step"
+    :titles="titles"
+    @saveData="saveData"
+  >
     <inputsLayaut :inputs-step="inputsContacto" />
   </formLayaut>
 </template>

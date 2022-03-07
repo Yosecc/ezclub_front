@@ -60,6 +60,7 @@ onMounted(() => {
       :key="`inputs-${key}-${input.name}`"
       class="column ciclo mb-3"
     >
+      <!-- buttonGroup -->
       <V-Field
         v-if="input.typeInput == 'buttonGroup'"
         :data-class="input.class"
@@ -115,7 +116,7 @@ onMounted(() => {
         class="px-0 field"
         grouped
       >
-        <V-Control :has-error="input.hasError ?? false">
+        <V-Control class="input-file" :has-error="input.hasError ?? false">
           <div class="file">
             <label class="file-label">
               <input
@@ -184,7 +185,7 @@ onMounted(() => {
         :data-class="input.class"
         class="chucutu"
       >
-        <V-Control :has-error="input.hasError ?? false">
+        <V-Control class="input-select" :has-error="input.hasError ?? false">
           <div class="select">
             <select v-model="input.model" :disabled="input.disabled ?? false">
               <option value="">{{ input.placeholder }}</option>
@@ -206,7 +207,7 @@ onMounted(() => {
         class="bibibi"
       >
         <!-- <p>{{ input.values }}</p> -->
-        <V-Control :has-error="input.hasError ?? false">
+        <V-Control class="input-select" :has-error="input.hasError ?? false">
           <!-- <p>{{ input.values }}</p> -->
           <div class="select">
             <select v-model="input.model" :disabled="input.disabled ?? false">
@@ -216,10 +217,14 @@ onMounted(() => {
                 :key="`option-${keyC}08`"
                 :value="option.id"
               >
-                <!-- <p>{{ option }}</p> -->
-                <span v-if="!input.filterOptionText">{{
-                  option.description
-                }}</span>
+                <span v-if="!input.filterOptionText">
+                  <span v-if="option.description">
+                    {{ option.description }}
+                  </span>
+                  <span v-else>
+                    {{ option.name }}
+                  </span>
+                </span>
                 <span v-else> {{ input.filterOptionText(option) }} </span>
               </option>
             </select>
@@ -231,7 +236,7 @@ onMounted(() => {
         v-else-if="input.typeInput == 'selectDataActionChange'"
         :data-class="input.class"
       >
-        <V-Control :has-error="input.hasError ?? false">
+        <V-Control class="input-select" :has-error="input.hasError ?? false">
           <div class="select">
             <select
               :disabled="input.disabled ?? false"
@@ -257,7 +262,11 @@ onMounted(() => {
         v-else-if="input.typeInput == 'checkbox'"
         :data-class="input.class"
       >
-        <V-Control id="che" :has-error="input.hasError ?? false">
+        <V-Control
+          id="che"
+          class="input-checkbox-simple"
+          :has-error="input.hasError ?? false"
+        >
           <V-Checkbox
             v-model="input.model"
             :value="input.name"
@@ -283,7 +292,10 @@ onMounted(() => {
           :key="`check-${keyE}08`"
           :class="input.subClass ? input.subClass : 'mt-5'"
         >
-          <V-Control>
+          <V-Control
+            class="input-checkbox-checkboxGroup"
+            :has-error="input.hasError ?? false"
+          >
             <p>
               <b>{{ check.placeholder }}</b>
             </p>
@@ -305,7 +317,10 @@ onMounted(() => {
         :data-class="input.class"
       >
         <p class="title is-6" v-if="input.text">{{ input.text }}</p>
-        <div class="d-flex flex-wrap">
+        <div
+          class="d-flex flex-wrap input-checkbox-checkboxGroupSimple"
+          :class="input.hasError ? 'has-error' : ''"
+        >
           <V-Control
             v-for="(check, keyG) in input.values"
             :key="`check-${keyG}78`"
@@ -335,10 +350,10 @@ onMounted(() => {
             class="d-flex align-items-center"
           >
             <!-- <VAvatar
-              @click="input.model = check.id"
-              :picture="check.image"
-              squared
-            /> -->
+                @click="input.model = check.id"
+                :picture="check.image"
+                squared
+              /> -->
             <V-Checkbox
               v-model="input.model"
               :value="check.id"
@@ -378,7 +393,10 @@ onMounted(() => {
           <div class="form-body">
             <div class="form-section">
               <V-Field>
-                <V-Control>
+                <V-Control
+                  class="input-radio-pills"
+                  :has-error="input.hasError ?? false"
+                >
                   <div class="radio-pills flex-wrap justify-content-start">
                     <div
                       class="radio-pill mb-3"

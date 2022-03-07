@@ -3,7 +3,7 @@ import { useHead } from '@vueuse/head'
 import { onMounted, watch, ref, computed } from 'vue'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
 import { useRoute, useRouter } from 'vue-router'
-// import { Api } from '/@src/services'
+const router = useRouter()
 import {
   location,
   inputsLocation,
@@ -22,6 +22,9 @@ import {
   setInputValuesData,
   setInputModelData,
   perpareDataInputs,
+  hasErrors,
+  notyf,
+  cleanUpModelInputs,
 } from '/@src/models/Mixin.ts'
 
 pageTitle.value = 'Edit Locations'
@@ -43,7 +46,15 @@ onMounted(() => {
     getLocation(route.query.id).then((response) => {
       console.log(response.data)
       for (var i in response.data) {
-        setInputModelData(inputsLocation, i, response.data[i])
+        if (i == 'status') {
+          setInputModelData(
+            inputsLocation,
+            i,
+            response.data[i] == 1 ? 'status' : []
+          )
+        } else {
+          setInputModelData(inputsLocation, i, response.data[i])
+        }
       }
     })
   }
@@ -51,15 +62,27 @@ onMounted(() => {
 
 const saveData = () => {
   const data = perpareDataInputs(inputsLocation.value)
-  console.log(data)
+
   const fd = new FormData()
   for (var i in data) {
     fd.append(i, data[i])
   }
-  // console.log(...fd)
-  putLocation(route.query.id, fd).then((response) => {
-    console.log(response.data)
-  })
+  if (!hasErrors.value) {
+    putLocation(route.query.id, fd).then((response) => {
+      if (response.data.status) {
+        notyf.success('Succeeded')
+        cleanUpModelInputs(inputsLocation.value)
+        router.back()
+      } else {
+        notyf.error(response.data.mensaje)
+        for (var i in response.data.errores) {
+          response.data.errores[i].forEach((e) => {
+            notyf.error(`${i} : ${e}`)
+          })
+        }
+      }
+    })
+  }
 }
 </script>
 

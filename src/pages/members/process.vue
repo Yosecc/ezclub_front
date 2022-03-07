@@ -3,7 +3,7 @@ import { useHead } from '@vueuse/head'
 import { onMounted, watch, ref, computed } from 'vue'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
 import { useRoute, useRouter } from 'vue-router'
-import { Api } from '/@src/services'
+import { Api, FRONTEND_URL } from '/@src/services'
 
 pageTitle.value = 'Add New members'
 useHead({
@@ -24,6 +24,7 @@ onMounted(() => {
   Api.post(`payment/${route.query.id}`, {
     payment_intent_client_secret: route.query.payment_intent_client_secret,
     redirect_status: route.query.redirect_status,
+    payment_type: route.query.payment_type,
   }).then((response) => {
     if (response.data.status) {
       paymentStatus.value = route.query.redirect_status
@@ -36,14 +37,7 @@ onMounted(() => {
 })
 
 const nextFamily = (familiar) => {
-  window.location.href = `https://dev-frontend.ushuaiacreative.com/members/process?id=${familiar.id}&payment_intent=${route.query.payment_intent}&payment_intent_client_secret=${route.query.payment_intent_client_secret}&redirect_status=${route.query.redirect_status}`
-  // router.push({name: 'members-process', query: {
-  //     id: familiar.id,
-  //     payment_intent: route.query.payment_intent,
-  //     payment_intent_client_secret: route.query.payment_intent_client_secret,
-  //     redirect_status:route.query.redirect_status
-  //   }
-  // })
+  window.location.href = `${FRONTEND_URL.value}members/process?id=${familiar.id}&payment_intent=${route.query.payment_intent}&payment_intent_client_secret=${route.query.payment_intent_client_secret}&redirect_status=${route.query.redirect_status}&payment_type=${route.query.payment_type}`
 }
 </script>
 

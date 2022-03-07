@@ -69,7 +69,6 @@ const changeRadio = (input, inputs) => {
 
 const onSave = () => {
   const data = perpareDataInputs(inputsMembership.value)
-  console.log(data)
   putMembership(data).then((response) => {
     notyf.success('Success')
   })

@@ -4,7 +4,10 @@ import {
   viewInput,
   setInputValuesData,
   setInputModelData,
+  perpareDataInputs,
+  hasErrors,
 } from '/@src/models/Mixin.ts'
+
 import { getLocationsDiciplines } from '/@src/models/Diciplines.ts'
 import { recurrences } from '/@src/models/Recurrences.ts'
 // import { membershipsData  } from '/@src/models/Members.ts'
@@ -79,6 +82,7 @@ const membershipsInputs = [
     values: [],
     model: '',
     disabled: false,
+    required: true,
     class: 'is-12',
   },
   {
@@ -90,6 +94,7 @@ const membershipsInputs = [
     disabled: false,
     class: 'is-12',
     filterName: 'descriptions',
+    required: true,
     otros: 'amount',
   },
   {
@@ -98,6 +103,7 @@ const membershipsInputs = [
     placeholder: 'Amount',
     model: '',
     disabled: false,
+    required: true,
     class: 'is-12',
   },
   {
@@ -107,12 +113,14 @@ const membershipsInputs = [
     values: [],
     model: '',
     disabled: false,
+    required: true,
     class: 'is-4',
   },
   {
     typeInput: 'checkboxGroupSimple',
     name: 'diciplines',
     text: 'Diciplines',
+    required: true,
     model: [],
     values: [],
     disabled: false,
@@ -124,6 +132,7 @@ const membershipsInputs = [
     placeholder: 'Initiation fee',
     model: [],
     disabled: true,
+    required: true,
     class: 'is-4',
   },
   {
@@ -182,11 +191,14 @@ const inputsFamilies = computed(() => {
 })
 
 const change = (val) => {
-  emit('returnData', {
-    memberMembership: inputsSteps,
-    familyMembership: inputsFamilies,
-  })
-  emit('changeStep', val)
+  let datos = perpareDataInputs(inputsSteps.value)
+  if (!hasErrors.value) {
+    emit('returnData', {
+      memberMembership: inputsSteps,
+      familyMembership: inputsFamilies,
+    })
+    emit('changeStep', val)
+  }
 }
 
 const changeMembership = (obj) => {
@@ -215,12 +227,12 @@ const changeMembership = (obj) => {
       recurrencesData.push(recurrencesD)
     })
     setInputValuesData(obj.inputsStep, 'recurrences_id', recurrencesData)
-    reloadForm()
+    // reloadForm()
   }
   if (obj.input.name == 'locations_id') {
     getLocationsDiciplines([obj.input.model]).then((response) => {
       setInputValuesData(obj.inputsStep, 'diciplines', response.data)
-      reloadForm()
+      // reloadForm()
     })
   }
 }

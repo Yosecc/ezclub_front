@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useHead } from '@vueuse/head'
 import { computed, ref, onMounted, watch, onBeforeMount } from 'vue'
-
+import { FRONTEND_URL } from '/@src/services'
 import {
   categoriesMembers,
   inputsInformation,
@@ -140,8 +140,7 @@ const memberGuardianComputed = computed(() => {
   return perpareDataInputs(parentInsputs.value)
 })
 
-const changeStep = (val) => {
-  console.log(val)
+const changeStep = (val, payment = 3, cashObj = {}) => {
   if (categoriesMembers.value.model == 'Prospect') {
     // if(val == 2){
     //   val = 3
@@ -155,7 +154,7 @@ const changeStep = (val) => {
   }
 
   if (val == 6) {
-    sendData()
+    sendData(payment, cashObj)
   } else {
     stepActive.value = val
   }
@@ -200,16 +199,7 @@ const convertFormData = (fd, objeto) => {
   // return fd
 }
 
-const sendData = () => {
-  // console.log('dataInformationMember.value',dataInformationMember.value)
-  // console.log('familiares.value',perpareDataInputs(familiares.value))
-  // console.log('memberMembership.value',perpareDataInputs(memberMembership.value))
-  // console.log('memberPayment.value',perpareDataInputs(memberPayment.value))
-  // console.log('familiaresPayment.value',familiaresPayment.value)
-  // console.log('categoriesMembers',perpareDataInputs(categoriesMembers.value,{array:false}))
-  // console.log('notasInput',perpareDataInputs(notasInput.value))
-  // console.log('optionsCreditCard', perpareDataInputs(optionsCreditCard.value))
-
+const sendData = (payment, cashObj) => {
   const fd = new FormData()
 
   // Informacion
@@ -244,6 +234,12 @@ const sendData = () => {
   // }
 
   fd.append('total', total.value)
+  fd.append('payment_type_id', payment)
+
+  if (payment == 1) {
+    fd.append('cash', cashObj.cash)
+    fd.append('cash_back', cashObj.changeBack)
+  }
 
   // console.log(categoriesMembers.value)
 
@@ -328,8 +324,10 @@ const sendData = () => {
   // console.log(...fd)
   saveMember(fd).then((response) => {
     idMember.value = response.data.member.id
-    console.log('este', response.data.member.membership_members.id)
     idMemberMembership.value = response.data.member.membership_members.id
+    if (payment == 1) {
+      window.location.href = `${FRONTEND_URL.value}members/process?payment_type=1&id=${idMember.value}&redirect_status=succeeded`
+    }
   })
 }
 </script>

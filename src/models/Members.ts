@@ -86,6 +86,21 @@ export const inputsInformation = ref([
     class: 'is-6',
     categories: ['Adult', 'Minor'],
     typeMember: ['Individual', 'Company'],
+    hasError: false,
+    keyUp: async (event, input) => {
+      await Api.get(`searchmember/${input.model}`)
+        .then((response) => {
+          if (response.data.status) {
+            input.hasError = true
+            notyf.error('Barcode already exists')
+          } else {
+            input.hasError = false
+          }
+        })
+        .catch((error) => {
+          input.hasError = false
+        })
+    },
   },
   {
     typeInput: 'date',
@@ -96,6 +111,18 @@ export const inputsInformation = ref([
     class: categorieActive.value == 'Prospect' ? 'is-6' : 'is-3',
     categories: ['Adult', 'Minor', 'Prospect'],
     typeMember: ['Individual', 'Company'],
+    maxLength: 10,
+    keyUp: (event, input) => {
+      const formatos = ['YYYY-MM-DD', 'YYYY/MM/DD']
+      if (input.model.length >= 10) {
+        if (!moment(input.model, formatos, true).isValid()) {
+          notyf.error('Date invalid')
+          input.hasError = true
+        } else {
+          input.hasError = false
+        }
+      }
+    },
   },
   {
     typeInput: 'select',
@@ -133,6 +160,7 @@ export const inputsInformation = ref([
     typeInput: 'number',
     name: 'postal_code',
     placeholder: 'Postal Code',
+    required: true,
     model: '',
     class: 'is-3',
     categories: ['Adult', 'Prospect', 'Minor'],
@@ -143,6 +171,7 @@ export const inputsInformation = ref([
     name: 'country_id',
     placeholder: 'Country',
     model: '',
+    required: true,
     values: [''],
     class: 'is-3',
     categories: ['Adult', 'Prospect', 'Minor'],
@@ -156,6 +185,7 @@ export const inputsInformation = ref([
     name: 'city_id',
     placeholder: 'City',
     model: '',
+    required: true,
     values: [''],
     class: 'is-3',
     categories: ['Adult', 'Prospect', 'Minor'],
@@ -169,6 +199,7 @@ export const inputsInformation = ref([
     name: 'state_id',
     placeholder: 'State',
     model: '',
+    required: true,
     values: [''],
     class: 'is-3',
     categories: ['Adult', 'Prospect', 'Minor'],
@@ -544,6 +575,7 @@ export const membershipsData = [
     values: [],
     model: '',
     disabled: false,
+    required: true,
     class: 'is-12',
   },
   {
@@ -553,6 +585,7 @@ export const membershipsData = [
     values: [],
     model: '',
     disabled: false,
+    required: true,
     class: 'is-12',
     filterName: 'descriptions',
     otros: 'amount',
@@ -561,6 +594,7 @@ export const membershipsData = [
     typeInput: 'hidden',
     name: 'amount',
     placeholder: 'Amount',
+    required: true,
     model: '',
     disabled: false,
     class: 'is-12',
@@ -569,6 +603,7 @@ export const membershipsData = [
     typeInput: 'selectDataActionChange',
     name: 'locations_id',
     placeholder: 'Locations Sale',
+    required: true,
     values: [],
     model: '',
     disabled: false,
@@ -578,6 +613,7 @@ export const membershipsData = [
     typeInput: 'checkboxGroupSimple',
     name: 'diciplines',
     text: 'Diciplines',
+    required: true,
     model: [],
     values: [],
     disabled: false,
@@ -586,6 +622,7 @@ export const membershipsData = [
   {
     typeInput: 'number',
     name: 'initiation_fee',
+    required: true,
     placeholder: 'Initiation fee',
     model: [],
     disabled: true,
@@ -615,6 +652,7 @@ export const membershipsData = [
     values: [],
     model: '',
     disabled: false,
+    required: false,
     class: 'is-6',
     filterOptionText: function (option) {
       return `${option.name} ${option.second_name} ${option.last_name}`

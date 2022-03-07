@@ -95,6 +95,35 @@ $porcentajes: (
     margin-bottom: auto;
   }
 }
+
+.has-error.input-file {
+  .file-cta {
+    border-color: $danger !important;
+    padding-right: 35px;
+  }
+}
+
+.has-error.input-select {
+  select {
+    border-color: $danger !important;
+  }
+}
+
+.has-error.input-radio-pills {
+  .validation-icon.is-error {
+    display: none;
+  }
+
+  .radio-pill-inner {
+    border-color: $danger !important;
+  }
+}
+.has-error.input-checkbox-checkboxGroupSimple {
+  input + span {
+    border-color: $danger !important;
+  }
+}
+
 .bb-1 {
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }

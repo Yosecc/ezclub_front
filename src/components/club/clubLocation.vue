@@ -2,7 +2,7 @@
 import { computed, ref, defineProps, defineEmit } from 'vue'
 import { useRouter } from 'vue-router'
 import { locations } from '/@src/models/Companies.ts'
-
+import { API_WEB_URL } from '/@src/services'
 const router = useRouter()
 
 const props = defineProps({
@@ -58,7 +58,7 @@ const titles = computed(() => {
       title: 'New Location',
     }"
   >
-    <div class="columns is-multilinea">
+    <div class="columns is-multiline">
       <div v-for="(location, key) in locations" :key="key" class="column is-6">
         <VCard>
           <VTag
@@ -67,7 +67,12 @@ const titles = computed(() => {
             class="mb-4"
           />
           <div class="d-flex mb-3">
-            <VAvatar squared class="mr-3" :picture="location.image" size="xl" />
+            <VAvatar
+              squared
+              class="mr-3"
+              :picture="`${API_WEB_URL}storage/${location.image}`"
+              size="xl"
+            />
             <div>
               <p>
                 <small># {{ location.id }}</small>

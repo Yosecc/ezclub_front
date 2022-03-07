@@ -5,17 +5,21 @@ import { pageTitle } from '/@src/state/sidebarLayoutState'
 import {
   getStaff,
   staff,
+  putStaff,
   inputsInformation,
   inputsPermitions,
   inputsSign,
   getstaffRoles,
-  putStaff,
+  storeStaff,
 } from '/@src/models/Staffs'
 import { useRoute, useRouter } from 'vue-router'
+const router = useRouter()
 import {
   setInputModelData,
   setInputValuesData,
   perpareDataInputs,
+  notyf,
+  hasErrors,
 } from '/@src/models/Mixin.ts'
 
 import { getCompany } from '/@src/models/Companies.ts'
@@ -33,13 +37,19 @@ import {
 
 const route = useRoute()
 
-pageTitle.value = 'New Staff'
+pageTitle.value = 'Edit Staff'
 
 useHead({
   title: 'Staffs',
 })
 
 onMounted(() => {
+  getStaff(route.query.id).then((response) => {
+    for (var i in response.data) {
+      setInputModelData(inputsInformation, i, response.data[i])
+      setInputModelData(inputsPermitions, i, response.data[i])
+    }
+  })
   getCompany().then((response) => {
     setInputValuesData(
       inputsPermitions,
@@ -63,55 +73,38 @@ onMounted(() => {
       response.data.staff_roles
     )
   })
-  // LLena los modelos de los inputs
-  getStaff(route.query.id).then((response) => {
-    for (var i in response.data) {
-      setInputModelData(inputsInformation, i, response.data[i])
-      setInputModelData(inputsPermitions, i, response.data[i])
-    }
-  })
 })
-
-const stepActive = ref(1)
-
-const steps = ref([
-  {
-    step: 1,
-    text: 'Staff Information',
-    categories: [],
-  },
-  {
-    step: 2,
-    text: 'System Permissions',
-    categories: [],
-  },
-  {
-    step: 3,
-    text: 'Sign Waiver',
-    categories: [],
-  },
-])
-
-const changeStep = (val) => {
-  stepActive.value = val
-}
 
 const saveData = () => {
   let obj = {
     ...perpareDataInputs(inputsInformation.value),
     ...perpareDataInputs(inputsPermitions.value),
-    ...perpareDataInputs(inputsSign.value, { array: false }),
+    // ...perpareDataInputs(inputsSign.value, { array: false }),
   }
-
   const fd = new FormData()
 
   for (var i in obj) {
     fd.append(i, obj[i])
   }
-
-  putStaff(route.query.id, obj).then((response) => {
-    console.log(response)
-  })
+  if (!hasErrors.value) {
+    putStaff(route.query.id, fd)
+      .then((response) => {
+        if (response.data.status) {
+          notyf.success('Succeeded')
+          router.back()
+        } else {
+          notyf.error(response.data.mensaje)
+          for (var i in response.data.errores) {
+            response.data.errores[i].forEach((e) => {
+              notyf.error(`${i} : ${e}`)
+            })
+          }
+        }
+      })
+      .catch((error) => {
+        console.log(error.response.data)
+      })
+  }
 }
 </script>
 
@@ -122,6 +115,7 @@ const saveData = () => {
       <div class="columns is-multiline">
         <div class="column is-12">
           <!-- <transition name="fade" mode="out-in" appear> -->
+
           <staffInformation
             type="edit"
             :buttons="['back', 'save']"

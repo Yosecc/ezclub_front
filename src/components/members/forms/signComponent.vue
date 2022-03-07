@@ -1,60 +1,59 @@
 <script setup lang="ts">
-import { computed, defineProps, ref, onMounted, defineEmit } from 'vue'
-import VueDrawingCanvas from 'vue-drawing-canvas'
-import { Api } from '/@src/services'
-
-onMounted(() => {
-  // var canvasElm = document.querySelector('canvas')
-  // canvasElm.setAttribute('tabindex', '0')
-  // canvasElm.focus()
-})
+import { computed, defineProps, defineEmit, ref, onMounted } from 'vue'
+import { Api, API_WEB_URL } from '/@src/services'
 
 const emit = defineEmit(['onSign'])
 
 const props = defineProps({
-  // input: {
-  //   type: Object,
-  //   required: false,
-  // },
+  waiver: {
+    type: String,
+    default: null,
+  },
+  urlWaiver: {
+    type: String,
+    default: null,
+  },
+  contract: {
+    type: String,
+    default: null,
+  },
+  urlContract: {
+    type: String,
+    default: null,
+  },
+  isSign: {
+    type: Boolean,
+    default: true,
+  },
 })
 
 const firmado = ref(false)
 
 const firma = ref(null)
-const VueCanvasDrawing = ref()
 
-const viewFirma = async () => {
-  let base64 = VueCanvasDrawing.value.save()
+const viewFirma = async (base64) => {
   firma.value = base64
-  // load.value = true
-
-  emit('onSign', base64)
-
   firmado.value = true
+  emit('onSign', base64)
+}
 
-  return
+import { imgdefault } from '/@src/data/image_default.ts'
+
+const sinFirmar = () => {
+  let base64 = imgdefault
+  viewFirma(base64)
 }
 </script>
 
 <template>
-  <!-- <p>{{ inputsStep }}</p> -->
-  <!--  <inputsLayaut
-    :inputsStep="inputsStep"
-  /> -->
-
   <V-Card radius="small">
     <div class="columns is-multiline">
       <div class="d-flex justify-content-center column is-12 mb-4">
-        <div class="text-center mr-6">
-          <a
-            target="_blank"
-            :href="`https://dev-api.ushuaiacreative.com/generateContract/`"
-          >
+        <div v-if="contract" class="text-center mr-6">
+          <a target="_blank" :href="`${API_WEB_URL}${urlContract}`">
             <img src="/public/images/pdf_icon.png" width="40" alt="" />
             <p>
-              <!-- contract_{{ member.id }}_{{ member.membership_members.id }}_{{
-                member.personal_identifications
-              }}.pdf -->
+              {{ contract }}
             </p>
             <V-Button color="success" outlined class="mt-4 py-1">
               View PDF
@@ -62,16 +61,11 @@ const viewFirma = async () => {
           </a>
         </div>
 
-        <div class="text-center ml-6">
-          <a
-            target="_blank"
-            :href="`https://dev-api.ushuaiacreative.com/generateWeiver/`"
-          >
+        <div v-if="waiver" class="text-center ml-6">
+          <a target="_blank" :href="`${API_WEB_URL}${urlWaiver}`">
             <img src="/public/images/pdf_icon.png" width="40" alt="" />
             <p>
-              <!-- weiver_{{ member.id }}_{{ member.membership_members.id }}_{{
-                member.personal_identifications
-              }}.pdf -->
+              {{ waiver }}
             </p>
             <V-Button color="success" outlined class="mt-4 py-1">
               View PDF
@@ -80,30 +74,15 @@ const viewFirma = async () => {
         </div>
       </div>
 
-      <VPlaceload
-        v-if="props.load && !firmado"
-        width="400px"
-        height="135px"
-        style="margin-top: 10px"
-        class="mx-auto"
+      <drawingCanvasCustom
+        v-if="isSign"
+        @sinFirmar="sinFirmar"
+        @onSignYes="viewFirma"
       />
 
-      <div v-if="props.firmado" class="text-center mb-4 mt-5 mx-auto">
+      <div v-if="firmado" class="text-center mb-4 mt-5 mx-auto">
         <p class="mb-4 title is-5">Saved signature</p>
         <img :src="firma" width="400" height="135" alt="" />
-      </div>
-
-      <div class="column is-12 mx-auto d-flex justify-content-center">
-        <V-Button color="info" class="text-center mx-auto" @click="viewFirma">
-          Sign and save
-        </V-Button>
-        <V-Button
-          color="danger"
-          class="text-center mx-auto"
-          @click="VueCanvasDrawing.reset()"
-        >
-          Reset
-        </V-Button>
       </div>
     </div>
   </V-Card>

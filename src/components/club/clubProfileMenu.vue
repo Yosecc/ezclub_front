@@ -3,7 +3,7 @@ import { useHead } from '@vueuse/head'
 import { computed, ref, defineEmit, defineProps } from 'vue'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
 import { company } from '/@src/models/Companies.ts'
-
+import { API_WEB_URL } from '/@src/services'
 const props = defineProps({
   category: {
     type: String,
@@ -59,7 +59,10 @@ const change = (key) => {
   <VCard>
     <!-- <p>{{ company }}</p> -->
     <div class="d-flex">
-      <VAvatar picture="https://picsum.photos/150/151" size="large" />
+      <VAvatar
+        :picture="`${API_WEB_URL}storage/${company.logo}`"
+        size="large"
+      />
       <div class="ml-3">
         <h2 class="title is-4 is-narrow">{{ company.company_name }}</h2>
         <p>Club ID# {{ company.id }}</p>

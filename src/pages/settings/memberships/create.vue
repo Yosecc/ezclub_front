@@ -18,7 +18,11 @@ onMounted(() => {
     setInputValuesData(inputs, 'taxes_id', taxes)
   })
   getCompany().then(() => {
-    setInputValuesData(inputs, 'locations', locations)
+    setInputValuesData(
+      inputs,
+      'locations',
+      locations.value.filter((e) => e.status == 1)
+    )
   })
   getRecurrences().then(() => {
     setInputValuesData(inputs, 'amounts', recurrences)

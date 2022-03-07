@@ -155,19 +155,9 @@ const saveData = () => {
         }
       })
   } else {
-    console.log('este es')
-    console.log(data)
     putMembership(route.query.id, data).then((response) => {
       notyf.success('Success')
     })
-
-    // .catch((error) => {
-    //   for (var i in error.response.data.rerrores) {
-    //     error.response.data.rerrores[i].forEach((e) => {
-    //       notyf.error(e)
-    //     })
-    //   }
-    // })
   }
 }
 </script>

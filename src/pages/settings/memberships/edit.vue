@@ -35,7 +35,6 @@ onMounted(() => {
 
     // console.log(inputs)
     getMembership(route.query.id).then((response) => {
-      console.log('response', response.data)
       for (var i in response.data) {
         if (i == 'amounts') {
           response.data[i].forEach((element) => {
@@ -43,8 +42,8 @@ onMounted(() => {
               element.amount
           })
         } else if (i == 'locations') {
+          getInput(inputs.value, 'locations').model = []
           response.data[i].forEach((element) => {
-            getInput(inputs.value, 'locations').model = []
             getInput(inputs.value, 'locations').model.push(
               element.companies_locations_id
             )

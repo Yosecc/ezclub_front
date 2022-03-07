@@ -5,7 +5,7 @@ import { pageTitle } from '/@src/state/sidebarLayoutState'
 import { useRoute, useRouter } from 'vue-router'
 // import { Api } from '/@src/services'
 import { inputsLocation, storeLocation } from '/@src/models/Companies.ts'
-
+const router = useRouter()
 import {
   cities,
   states,
@@ -17,9 +17,12 @@ import {
   setInputValuesData,
   setInputModelData,
   perpareDataInputs,
+  hasErrors,
+  notyf,
+  cleanUpModelInputs,
 } from '/@src/models/Mixin.ts'
 
-pageTitle.value = 'Edit Locations'
+pageTitle.value = 'Create Locations'
 
 useHead({
   title: 'Locations',
@@ -28,26 +31,38 @@ useHead({
 const route = useRoute()
 
 onMounted(() => {
-  if (route.query.id != undefined) {
-    getAllConfig().then((response) => {
-      setInputValuesData(inputsLocation, 'city_id', cities.value)
-      setInputValuesData(inputsLocation, 'state_id', states.value)
-      setInputValuesData(inputsLocation, 'country_id', contries.value)
-    })
-  }
+  // if (route.query.id != undefined) {
+  getAllConfig().then((response) => {
+    setInputValuesData(inputsLocation, 'city_id', cities.value)
+    setInputValuesData(inputsLocation, 'state_id', states.value)
+    setInputValuesData(inputsLocation, 'country_id', contries.value)
+  })
+  // }
 })
 
 const saveData = () => {
   const data = perpareDataInputs(inputsLocation.value)
-  console.log(data)
+
   const fd = new FormData()
   for (var i in data) {
     fd.append(i, data[i])
   }
-  // console.log(...fd)
-  storeLocation(fd).then((response) => {
-    console.log(response.data)
-  })
+  if (!hasErrors.value) {
+    storeLocation(fd).then((response) => {
+      if (response.data.status) {
+        notyf.success('Succeeded')
+        cleanUpModelInputs(inputsLocation.value)
+        router.back()
+      } else {
+        notyf.error(response.data.mensaje)
+        for (var i in response.data.errores) {
+          response.data.errores[i].forEach((e) => {
+            notyf.error(`${i} : ${e}`)
+          })
+        }
+      }
+    })
+  }
 }
 </script>
 
@@ -55,7 +70,7 @@ const saveData = () => {
   <SidebarLayout>
     <!-- Content Wrapper -->
     <div class="page-content-inner">
-      <locationsForm type="edit" @saveData="saveData" />
+      <locationsForm type="create" @saveData="saveData" />
     </div>
   </SidebarLayout>
 </template>

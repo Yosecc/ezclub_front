@@ -2,7 +2,7 @@
 import type { PropType } from 'vue'
 import { defineProps, computed, ref, onMounted } from 'vue'
 import { staffs } from '/@src/models/Staffs'
-import { API_URL } from '/@src/services'
+import { API_URL, API_WEB_URL } from '/@src/services'
 
 import { projects } from '/@src/data/layouts/flex-list-v2'
 
@@ -118,7 +118,7 @@ const filteredData = computed(() => {
                 class="flex-table-item"
               >
                 <div class="flex-table-cell is-media is-grow">
-                  <V-Avatar :picture="item.photo" />
+                  <V-Avatar :picture="`${API_WEB_URL}storage/${item.photo}`" />
                   <!-- <p>{{ API_URL+item.photo }}</p> -->
                   <div>
                     <span class="item-name dark-inverted"
@@ -164,13 +164,13 @@ const filteredData = computed(() => {
         </div>
 
         <!--Table Pagination-->
-        <V-FlexPagination
+        <!--  <V-FlexPagination
           v-if="filteredData.length > 5"
           :item-per-page="10"
           :total-items="873"
           :current-page="42"
           :max-links-displayed="7"
-        />
+        /> -->
       </div>
     </div>
   </div>

@@ -16,6 +16,8 @@ import {
   setInputModelData,
   setInputValuesData,
   perpareDataInputs,
+  notyf,
+  hasErrors,
 } from '/@src/models/Mixin.ts'
 
 import { getCompany } from '/@src/models/Companies.ts'
@@ -93,18 +95,33 @@ const saveData = () => {
   let obj = {
     ...perpareDataInputs(inputsInformation.value),
     ...perpareDataInputs(inputsPermitions.value),
-    ...perpareDataInputs(inputsSign.value, { array: false }),
+    // ...perpareDataInputs(inputsSign.value, { array: false }),
   }
-
   const fd = new FormData()
 
   for (var i in obj) {
     fd.append(i, obj[i])
   }
-
-  storeStaff(obj).then((response) => {
-    console.log(response)
-  })
+  if (!hasErrors.value) {
+    storeStaff(fd)
+      .then((response) => {
+        if (response.data.status) {
+          notyf.success('Succeeded')
+          stepActive.value = 3
+          staff.value = response.data.staff
+        } else {
+          notyf.error(response.data.mensaje)
+          for (var i in response.data.errores) {
+            response.data.errores[i].forEach((e) => {
+              notyf.error(`${i} : ${e}`)
+            })
+          }
+        }
+      })
+      .catch((error) => {
+        console.log(error.response.data)
+      })
+  }
 }
 </script>
 
@@ -115,22 +132,28 @@ const saveData = () => {
       <div class="columns is-multiline">
         <div class="column is-12">
           <!-- <transition name="fade" mode="out-in" appear> -->
-          <staffInformation
-            type="create"
-            :buttons="['back', 'save']"
-            :step="1"
-            class="mb-3"
-            @saveData="saveData"
-          />
+          <div v-if="stepActive == 1 || stepActive == 2">
+            <staffInformation
+              type="create"
+              :buttons="['back', 'save']"
+              :step="1"
+              class="mb-3"
+              @saveData="saveData"
+            />
 
-          <staffSystemPermitions
+            <staffSystemPermitions
+              type="create"
+              :buttons="[]"
+              :step="2"
+              class="mb-3"
+            />
+          </div>
+          <staffWaiver
             type="create"
-            :buttons="[]"
-            :step="2"
-            class="mb-3"
+            :buttons="['back']"
+            v-if="stepActive == 3"
+            :step="3"
           />
-
-          <staffWaiver type="create" :buttons="[]" :step="3" />
           <!-- </transition> -->
         </div>
       </div>

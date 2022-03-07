@@ -34,15 +34,30 @@ export const getCompany = async () => {
   return response
 }
 
+export const putCompanyInformation = async (data: any) => {
+  const response = await Api.post(
+    `companies/updatecompany/${company.value.id}`,
+    data
+  )
+  return response
+}
+export const putCompanyContact = async (data: any) => {
+  const response = await Api.post(
+    `companies/updateCompanyContact/${company.value.id}`,
+    data
+  )
+  return response
+}
+
 export const putLocation = async (id: any, data: any) => {
-  const response = await Api.put(`companies/updatelocation/${id}`, data)
-  company.value = response.data
+  const response = await Api.post(`companies/updatelocation/${id}`, data)
+
   return response
 }
 
 export const storeLocation = async (data: any) => {
-  const response = await Api.put(`companies/storeLocation`, data)
-  company.value = response.data
+  const response = await Api.post(`companies/storeLocation`, data)
+
   return response
 }
 
@@ -140,7 +155,15 @@ export const inputsInformation = ref([
     placeholder: 'Club Name',
     model: '',
     required: true,
-    class: 'is-12',
+    class: 'is-6',
+  },
+  {
+    typeInput: 'number',
+    name: 'EIN',
+    placeholder: 'EIN',
+    model: '',
+    required: true,
+    class: 'is-6',
   },
   {
     typeInput: 'number',
@@ -184,7 +207,7 @@ export const inputsInformation = ref([
   },
   {
     typeInput: 'text',
-    name: 'company_address',
+    name: 'company_principal_address',
     placeholder: 'Club Address',
     model: '',
     required: true,
@@ -227,7 +250,7 @@ export const inputsContacto = ref([
   },
   {
     typeInput: 'text',
-    name: 'contact_midle_name',
+    name: 'contact_middle_name',
     placeholder: 'Represetative Middle Name',
     model: '',
     required: true,
@@ -249,14 +272,7 @@ export const inputsContacto = ref([
     required: true,
     class: 'is-4',
   },
-  {
-    typeInput: 'number',
-    name: 'EIN',
-    placeholder: '# EIN',
-    model: '',
-    required: true,
-    class: 'is-4',
-  },
+
   {
     typeInput: 'number',
     name: 'contact_phone',
@@ -267,9 +283,10 @@ export const inputsContacto = ref([
   },
   {
     typeInput: 'number',
-    name: 'company_postal_code',
+    name: 'contact_postal_code',
     placeholder: 'Postal Code',
     model: '',
+    required: true,
     class: 'is-3',
   },
   {
@@ -362,15 +379,15 @@ export const inputsLocation = ref([
     name: 'pincipal_address',
     placeholder: 'Principal Address',
     model: [''],
-    required: true,
+    required: false,
     class: 'is-4',
   },
   {
     typeInput: 'checkbox',
     name: 'status',
     placeholder: 'status',
-    model: [''],
-    required: true,
+    model: [],
+    required: false,
     class: 'is-4',
   },
   {
@@ -451,15 +468,15 @@ export const inputsLocation = ref([
     name: 'map',
     placeholder: 'Location map (URL)',
     model: '',
-    required: true,
+    required: false,
     class: 'is-6',
   },
-  {
-    typeInput: 'number',
-    name: 'initations_fee',
-    placeholder: 'Initations Fee',
-    model: '',
-    required: true,
-    class: 'is-12',
-  },
+  // {
+  //   typeInput: 'number',
+  //   name: 'initations_fee',
+  //   placeholder: 'Initations Fee',
+  //   model: '',
+  //   required: true,
+  //   class: 'is-12',
+  // },
 ])

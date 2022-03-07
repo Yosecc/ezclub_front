@@ -1,11 +1,16 @@
 <script setup lang="ts">
 import { computed, ref, defineProps, defineEmit, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { API_WEB_URL } from '/@src/services'
+
 import {
   company,
   input_image,
   inputsInformation,
+  putCompanyInformation,
 } from '/@src/models/Companies.ts'
+
+import { perpareDataInputs, hasErrors, notyf } from '/@src/models/Mixin.ts'
 
 const router = useRouter()
 
@@ -31,8 +36,6 @@ const titles = computed(() => {
   }
 })
 
-onMounted(() => {})
-
 const slogan = ref([
   {
     typeInput: 'text',
@@ -44,18 +47,48 @@ const slogan = ref([
   },
 ])
 
-// const emit = defineEmit(['changeStep','saveData']);
+const saveData = () => {
+  const obj = {
+    ...perpareDataInputs(inputsInformation.value),
+    ...perpareDataInputs(input_image.value),
+  }
+
+  const fd = new FormData()
+  for (var i in obj) {
+    fd.append(i, obj[i])
+  }
+  if (!hasErrors.value) {
+    putCompanyInformation(fd).then((response) => {
+      if (response.data.status) {
+        notyf.success('Succeeded')
+        company.value = response.data.company
+      } else {
+        notyf.error(response.data.mensaje)
+        for (var i in response.data.errores) {
+          response.data.errores[i].forEach((e) => {
+            notyf.error(`${i} : ${e}`)
+          })
+        }
+      }
+    })
+  }
+}
 </script>
 
 <template>
-  <formLayaut :buttons="props.buttons" :step="props.step" :titles="titles">
+  <formLayaut
+    :buttons="props.buttons"
+    :step="props.step"
+    :titles="titles"
+    @saveData="saveData"
+  >
     <div class="mb-4">
       <h1 class="title is-5 mb-0">Club Logo</h1>
       <p>This in how club is recognize</p>
       <div class="d-flex justify-content-center">
         <div class="text-center">
           <VAvatar
-            picture="https://picsum.photos/150/151"
+            :picture="`${API_WEB_URL}storage/${company.logo}`"
             class="mb-4"
             size="xl"
           />

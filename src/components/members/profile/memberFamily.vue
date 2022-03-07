@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 
 import { memberFamilies, member, memberParent } from '/@src/models/Members.ts'
-
+import { API_WEB_URL } from '/@src/services'
 const families = ref([
   {
     id: 1,
@@ -41,7 +41,7 @@ const families = ref([
             <template #icon>
               <VAvatar
                 size="medium"
-                :picture="memberParent.photo"
+                :picture="`${API_WEB_URL}storage/${memberParent.photo}`"
                 :subtitle="'Principal Family'"
               />
             </template>
@@ -62,7 +62,10 @@ const families = ref([
             class="border-1 p-4 radius-small"
           >
             <template #icon>
-              <VAvatar size="medium" :picture="item.photo" />
+              <VAvatar
+                size="medium"
+                :picture="`${API_WEB_URL}storage/${item.member.photo}`"
+              />
             </template>
             <template #action>
               <FlexTableDropdown :id-member="item.members_id" />

@@ -46,7 +46,6 @@ onMounted(() => {
     setInputValuesData(inputsContacto, 'contact_country_id', contries.value)
   })
   getCompany().then((response) => {
-    console.log(response.data)
     setInputModelData(input_image, 'logo', response.data.logo)
     for (var i in response.data) {
       setInputModelData(inputsInformation, i, response.data[i])

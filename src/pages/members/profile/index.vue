@@ -70,6 +70,12 @@ watch(
     Component.value = route.hash.slice(1)
   }
 )
+watch(
+  () => route.query.id,
+  (to) => {
+    Component.value = 'personalInformation'
+  }
+)
 
 const isLoading = ref(true)
 
@@ -82,6 +88,7 @@ const reloadPage = () => {
 
 onMounted(() => {
   // console.log(route.hash)
+
   if (route.hash != '') {
     Component.value = route.hash.slice(1)
   }
