@@ -682,7 +682,7 @@ export const parentInsputs = ref([
     placeholder: 'Parent/Guardian Picture',
     model: '',
     class: 'is-12 d-flex justify-content-end',
-    required: false,
+    required: true,
   },
   {
     typeInput: 'select',
@@ -699,7 +699,7 @@ export const parentInsputs = ref([
     ],
     model: '',
     class: 'is-4',
-    required: false,
+    required: true,
   },
   {
     typeInput: 'text',
@@ -707,7 +707,7 @@ export const parentInsputs = ref([
     placeholder: 'First Name',
     model: '',
     class: 'is-4',
-    required: false,
+    required: true,
   },
   {
     typeInput: 'text',
@@ -715,7 +715,7 @@ export const parentInsputs = ref([
     placeholder: 'Middle Name',
     model: '',
     class: 'is-4',
-    required: false,
+    required: true,
   },
   {
     typeInput: 'text',
@@ -723,7 +723,7 @@ export const parentInsputs = ref([
     placeholder: 'Last Name',
     model: '',
     class: 'is-4',
-    required: false,
+    required: true,
   },
   {
     typeInput: 'select',
@@ -732,7 +732,7 @@ export const parentInsputs = ref([
     values: ['Card ID', 'Identification ID', 'Passport'],
     model: '',
     class: 'is-4',
-    required: false,
+    required: true,
   },
   {
     typeInput: 'number',
@@ -740,7 +740,7 @@ export const parentInsputs = ref([
     placeholder: 'ID #',
     model: '',
     class: 'is-4',
-    required: false,
+    required: true,
   },
   {
     typeInput: 'text',
@@ -748,7 +748,7 @@ export const parentInsputs = ref([
     placeholder: 'Address',
     model: '',
     class: 'is-4',
-    required: false,
+    required: true,
   },
   {
     typeInput: 'email',
@@ -756,7 +756,7 @@ export const parentInsputs = ref([
     placeholder: 'Email',
     model: '',
     class: 'is-4',
-    required: false,
+    required: true,
   },
   {
     typeInput: 'number',
@@ -764,7 +764,7 @@ export const parentInsputs = ref([
     placeholder: 'Phone Number',
     model: '',
     class: 'is-4',
-    required: false,
+    required: true,
   },
 ])
 
