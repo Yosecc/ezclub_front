@@ -884,6 +884,11 @@ export const storeContactEmergency = async (data: any) => {
   return response
 }
 
+export const putMemberGuardian = async (data: any) => {
+  const response = await Api.put(`members/guardian/${member.value.id}`, data)
+  return response
+}
+
 export const memberMermship = computed(() => {
   return member.value.membership_members
 })

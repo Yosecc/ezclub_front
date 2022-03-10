@@ -120,7 +120,7 @@ export const inputs = ref([
     model: [],
     values: [],
     class: 'is-12',
-    required: true,
+    required: false,
   },
 
   {

@@ -229,6 +229,17 @@ const changeMembership = (obj) => {
       recurrencesData.push(recurrencesD)
     })
     setInputValuesData(obj.inputsStep, 'recurrences_id', recurrencesData)
+
+    const numeroDiciplinas = obj.input.values.find(
+      (e) => e.id == obj.input.model
+    ).diciplines_number
+
+    if (numeroDiciplinas == 0) {
+      getInput(obj.inputsStep, 'diciplines').required = false
+    } else {
+      getInput(obj.inputsStep, 'diciplines').required = true
+    }
+
     reloadForm()
   }
   if (obj.input.name == 'locations_id') {

@@ -18,7 +18,11 @@ import {
 import { getMeberships, memberships } from '/@src/models/Memberships.ts'
 import { getRecurrences } from '/@src/models/Recurrences.ts'
 import { getDiscounts } from '/@src/models/Discounts.ts'
-import { setInputValuesData, perpareDataInputs } from '/@src/models/Mixin.ts'
+import {
+  setInputValuesData,
+  perpareDataInputs,
+  cleanUpModelInputs,
+} from '/@src/models/Mixin.ts'
 
 import {
   cities,
@@ -72,27 +76,16 @@ const steps = ref([
     text: 'Member Information',
     categories: ['Adult', 'Minor', 'Prospect'],
   },
-  // {
-  //   step: 1,
-  //   text: 'Prospect Information',
-  //   categories: ['Prospect'],
-  // },
   {
     step: 2,
     text: 'Add Family Member',
     categories: ['Adult', 'Prospect'],
   },
-  // {
-  //   step: 2,
-  //   text: 'Add Payment Method',
-  //   categories: ['Prospect'],
-  // },
   {
     step: 2,
     text: 'Parent / Guardian',
     categories: ['Minor'],
   },
-
   {
     step: 3,
     text: 'Contact Preference',
@@ -373,7 +366,11 @@ const sendData = (payment, cashObj) => {
         />
         <!-- familyMembers -->
         <familyMembers
-          v-show="stepActive == 2"
+          v-show="
+            stepActive == 2 &&
+            (categoriesMembers.model == 'Adult' ||
+              categoriesMembers.model == 'Prospect')
+          "
           type="create"
           :title="step.text"
           :inputs="inputsFamily"

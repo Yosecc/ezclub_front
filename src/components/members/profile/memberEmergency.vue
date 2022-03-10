@@ -30,7 +30,7 @@ const onSave = () => {
       <VButton @click="onSave" color="primary"> Save Changes </VButton>
     </template>
     <template #content>
-      <div class="p-6">
+      <div class="">
         <h1 class="title is-5">Emergency Contact Information</h1>
 
         <inputsLayaut :inputs-step="emergencyInputs" />

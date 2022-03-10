@@ -10,21 +10,18 @@ import {
 } from 'vue'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
 import { useRoute } from 'vue-router'
-
+import moment from 'moment'
 import {
-  // categoriesMembers,
   inputsInformation,
-  // parentInsputs,
+  parentInsputs,
   inputsFamily,
   emergencyInputs,
-  // inputsContact,
   inputsMembership,
-  // notasInput,
-  // saveMember,
   getMember,
   memberMermship,
   member,
   isSolvente,
+  DueDate,
 } from '/@src/models/Members.ts'
 
 import { getDiscounts } from '/@src/models/Discounts.ts'
@@ -187,6 +184,10 @@ const mountMember = async () => {
         for (e in response.data[i]) {
           setInputModelData(emergencyInputs, e, response.data[i][e])
         }
+      } else if (i == 'guardian') {
+        for (e in response.data[i]) {
+          setInputModelData(parentInsputs, e, response.data[i][e])
+        }
       } else {
         // console.error(i)
         setInputModelData(inputsInformation, i, response.data[i])
@@ -230,6 +231,31 @@ const mountMember = async () => {
           :member-membership="member.membership_members"
           class="mb-4"
         />
+        <VCard class="mb-4" v-if="member.membership_members != null">
+          <div>
+            <p>
+              <b>Member #{{ member.id }}</b>
+            </p>
+            <p>
+              <small
+                ><b>Member since.</b>
+                {{ moment(member.created_at).format('ddd - DD MMM YYYY') }}
+              </small>
+            </p>
+            <p>
+              <b>Membership Active:</b> {{ memberMermship.membership.name }}
+            </p>
+            <p><b>Due Date: </b> {{ DueDate.format('ddd - DD MMM YYYY') }}</p>
+            <p>
+              <b>Last payment attempt: </b
+              >{{
+                moment(memberMermship.payments[0].created_at).format(
+                  'ddd - DD MMM YYYY'
+                )
+              }}
+            </p>
+          </div>
+        </VCard>
         <personalInformation
           :category="route.query.category"
           v-show="Component == 'personalInformation'"

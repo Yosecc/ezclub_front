@@ -49,7 +49,6 @@ const itemsMenuAdult = [
     name: 'Membership/Contract',
     component: 'memberMembership',
   },
-
   {
     name: 'Family Members',
     component: 'memberFamily',
@@ -121,27 +120,7 @@ const change = (key) => {
         </h2>
       </div>
     </div>
-    <div v-if="member.membership_members != null">
-      <p>
-        <b>Member #{{ member.id }}</b>
-      </p>
-      <p>
-        <small
-          ><b>Member since.</b>
-          {{ moment(member.created_at).format('ddd - DD MMM YYYY') }}
-        </small>
-      </p>
-      <p><b>Membership Active:</b> {{ memberMermship.membership.name }}</p>
-      <p><b>Due Date: </b> {{ DueDate.format('ddd - DD MMM YYYY') }}</p>
-      <p>
-        <b>Last payment attempt: </b
-        >{{
-          moment(memberMermship.payments[0].created_at).format(
-            'ddd - DD MMM YYYY'
-          )
-        }}
-      </p>
-    </div>
+
     <div class="w-100 mt-5">
       <ul>
         <li v-for="(item, key) in menuMemberProfile" :key="`item-${key}`">
