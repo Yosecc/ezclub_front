@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { computed, ref, defineProps, defineEmit } from 'vue'
-import { useRouter } from 'vue-router'
-import { inputs, storeDiscount } from '/@src/models/Discounts'
+import { computed, ref, defineProps, defineEmit, onMounted } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
+import { inputs, storeDiscount, putDiscount } from '/@src/models/Discounts'
 import {
   notyf,
   perpareDataInputs,
@@ -9,6 +9,11 @@ import {
 } from '/@src/models/Mixin.ts'
 
 const router = useRouter()
+const route = useRoute()
+
+onMounted(() => {
+  cleanUpModelInputs(inputs.value)
+})
 
 const props = defineProps({
   type: {
@@ -43,8 +48,24 @@ const saveData = () => {
   if (props.type == 'create') {
     storeDiscount(data).then((response) => {
       if (response.data.status) {
-        nofyf.success('Success')
+        notyf.success('Success')
         cleanUpModelInputs(inputs.value)
+        router.back()
+      } else {
+        notyf.error(response.data.mensaje)
+        for (var i in response.data.errores) {
+          response.data.errores[i].forEach((e) => {
+            notyf.error(`${i} : ${e}`)
+          })
+        }
+      }
+    })
+  } else if (props.type == 'edit') {
+    putDiscount(route.query.id, data).then((response) => {
+      if (response.data.status) {
+        notyf.success('Success')
+        cleanUpModelInputs(inputs.value)
+        router.back()
       } else {
         notyf.error(response.data.mensaje)
         for (var i in response.data.errores) {

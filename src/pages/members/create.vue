@@ -44,7 +44,7 @@ onMounted(() => {
       response.data.memberships
     )
   })
-  getDiscounts().then((response) => {
+  getDiscounts(1).then((response) => {
     setInputValuesData(inputsMembership, 'discount', response.data.discounts)
   })
   getRecurrences().then((response) => {

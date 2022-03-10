@@ -5,6 +5,7 @@ import moment from 'moment'
 
 export const idMember = ref(null)
 export const idMemberMembership = ref(null)
+export const cupon = ref(null)
 
 export const categoriesMembers = ref({
   name: 'category',
@@ -637,13 +638,16 @@ export const membershipsData = [
     class: 'is-4',
   },
   {
-    typeInput: 'selectData',
+    typeInput: 'selectDataActionChange',
     name: 'discount',
     placeholder: 'Discount',
     values: [],
     model: '',
     disabled: false,
     class: 'is-6',
+    filter: function (option) {
+      return `${option.code} `
+    },
   },
   {
     typeInput: 'selectData',

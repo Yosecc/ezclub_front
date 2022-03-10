@@ -6,13 +6,15 @@ import {
   setInputModelData,
   perpareDataInputs,
   hasErrors,
+  getInput,
+  notyf,
 } from '/@src/models/Mixin.ts'
 
 import { getLocationsDiciplines } from '/@src/models/Diciplines.ts'
 import { recurrences } from '/@src/models/Recurrences.ts'
-// import { membershipsData  } from '/@src/models/Members.ts'
+import { cupon } from '/@src/models/Members.ts'
 import { memberships } from '/@src/models/Memberships.ts'
-import { discountsData } from '/@src/models/Discounts.ts'
+import { discounts, validateCupon } from '/@src/models/Discounts.ts'
 import { trainers } from '/@src/models/Staffs.ts'
 
 const props = defineProps({
@@ -234,6 +236,21 @@ const changeMembership = (obj) => {
       setInputValuesData(obj.inputsStep, 'diciplines', response.data)
       reloadForm()
     })
+  }
+  if (obj.input.name == 'discount') {
+    if (obj.input.model != '') {
+      const cuponSelect = obj.input.values.find((e) => e.id == obj.input.model)
+      validateCupon(cuponSelect.code, 'membership')
+        .then((response) => {
+          cupon.value = response.data
+          notyf.success('Discuoun Apply')
+        })
+        .catch((error) => {
+          notyf.error(error.response.data)
+        })
+    } else {
+      cupon.value = null
+    }
   }
 }
 

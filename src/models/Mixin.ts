@@ -123,10 +123,11 @@ export const getValueInput = (inputs: any, name: any) => {
 
 export const setInputValuesData = (inputs, name, data) => {
   if (inputs.value == undefined) {
-    return (inputs.find((element) => element.name == name).values = data)
+    return (inputs.find((element: any) => element.name == name).values = data)
   }
 
-  return (inputs.value.find((element) => element.name == name).values = data)
+  return (inputs.value.find((element: any) => element.name == name).values =
+    data)
 }
 
 const setModel = (input, value) => {

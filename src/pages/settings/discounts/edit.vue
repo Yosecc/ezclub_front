@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { useHead } from '@vueuse/head'
-import { onMounted, watch, ref,computed } from 'vue'
+import { onMounted, watch, ref, computed } from 'vue'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
-// import { useRoute, useRouter } from 'vue-router'
-// import { Api } from '/@src/services'
-import { getCompany, company } from '/@src/pages/companies/companies.ts'
+import { useRoute, useRouter } from 'vue-router'
+import { getDiscount, inputs } from '/@src/models/Discounts.ts'
+import { setInputModelData } from '/@src/models/Mixin.ts'
+
+const route = useRoute()
 
 pageTitle.value = 'New Discount'
 
@@ -12,26 +14,30 @@ useHead({
   title: 'Discounts',
 })
 
-onMounted(()=>{
-  // getCompany()
+onMounted(() => {
+  getDiscount(route.query.id).then((response) => {
+    for (var i in response.data) {
+      if (i == 'status') {
+        setInputModelData(inputs, i, response.data[i] == 1 ? 'status' : [])
+      } else if (i == 'is_recurrence') {
+        setInputModelData(
+          inputs,
+          i,
+          response.data[i] == 1 ? 'is_recurrence' : []
+        )
+      } else {
+        setInputModelData(inputs, i, response.data[i])
+      }
+    }
+  })
 })
-
-
-
 </script>
 
-
 <template>
-  <SidebarLayout >
+  <SidebarLayout>
     <!-- Content Wrapper -->
-    <div class="page-content-inner ">
-
-      <discountForm
-        type="edit"
-      />
-     
-
+    <div class="page-content-inner">
+      <discountForm type="edit" />
     </div>
-    
   </SidebarLayout>
 </template>

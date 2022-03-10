@@ -1,36 +1,20 @@
 <script setup lang="ts">
 import type { PropType } from 'vue'
 import { defineProps, computed, ref, onMounted } from 'vue'
+import { discounts } from '/@src/models/Discounts.ts'
+import moment from 'moment'
 
-import { projects } from '/@src/data/layouts/flex-list-v2'
-
-const props = defineProps({
-  activeTab: {
-    type: String as PropType<'active' | 'active'>,
-    default: 'active',
-  },
-})
-
-const discounts = ref([
-  {
-    id: 1,
-    promo_code: 'SANVALENTIN2021',
-    value: '-25%',
-    maximum_uses: 80,
-    start: 'Jan 15, 2022 10:00 AM',
-    end: 'Feb 1, 2022 11:59 PM',
-    status: true,
-  },
-])
-
-onMounted(() => {
-  let data = JSON.parse(JSON.stringify(discounts.value[0]))
-
-  for (var i = 0; i < 25; ++i) {
-    data.id = i
-    discounts.value.push(data)
-  }
-})
+// const discounts = ref([
+//   {
+//     id: 1,
+//     promo_code: 'SANVALENTIN2021',
+//     value: '-25%',
+//     maximum_uses: 80,
+//     start: 'Jan 15, 2022 10:00 AM',
+//     end: 'Feb 1, 2022 11:59 PM',
+//     status: true,
+//   },
+// ])
 
 const filters = ref('')
 
@@ -107,11 +91,13 @@ const filteredData = computed(() => {
             class="flex-table-header"
             :class="[filteredData.length === 0 && 'is-hidden']"
           >
-            <span class="is-grow">Promo Code</span>
-            <span>Value</span>
-            <span>Maximum uses</span>
-            <span>Start Date & Time</span>
-            <span>End date & time</span>
+            <span class="">Promo Code</span>
+            <span>Description</span>
+            <span>Start Date</span>
+            <span>End Date</span>
+            <span>Recurrence</span>
+            <span>Type Discount</span>
+            <span>Usage Limit</span>
             <span>Status</span>
             <span class="cell-end">Actions</span>
           </div>
@@ -124,31 +110,59 @@ const filteredData = computed(() => {
                 :key="item.id"
                 class="flex-table-item"
               >
-                <div class="flex-table-cell is-media is-grow">
-                  <div>
-                    <span class="item-name dark-inverted">{{
-                      item.promo_code
-                    }}</span>
-                  </div>
+                <div class="flex-table-cell is-media" data-th="Promo Code">
+                  <span class="item-name dark-inverted">{{ item.code }}</span>
                 </div>
-                <div class="flex-table-cell" data-th="Customer">
-                  <span class="light-text">{{ item.value }}</span>
+                <div class="flex-table-cell" data-th="Description">
+                  <span class="light-text">{{ item.name }}</span>
                 </div>
-                <div class="flex-table-cell" data-th="Industry">
-                  <span class="light-text">{{ item.maximum_uses }}</span>
+                <div class="flex-table-cell" data-th="Start Date">
+                  <span
+                    v-if="moment(item.date_start).isValid()"
+                    class="light-text"
+                    >{{ moment(item.date_start).format('DD-MM-YYYY') }}</span
+                  >
+                  <spa v-else>-</spa>
                 </div>
-                <div class="flex-table-cell" data-th="Industry">
-                  <span class="light-text">{{ item.start }}</span>
+                <div class="flex-table-cell" data-th="End Date">
+                  <span
+                    v-if="moment(item.date_expired).isValid()"
+                    class="light-text"
+                    >{{ moment(item.date_expired).format('DD-MM-YYYY') }}</span
+                  >
+                  <spa v-else>-</spa>
                 </div>
-                <div class="flex-table-cell" data-th="Industry">
-                  <span class="light-text">{{ item.end }}</span>
+                <div class="flex-table-cell" data-th="Recurrence">
+                  <span v-if="item.is_recurrence" class="light-text">{{
+                    item.recurrence
+                  }}</span>
+                  <span v-else>-</span>
                 </div>
+                <div class="flex-table-cell" data-th="Type Discount">
+                  <span class="light-text">{{ item.type }}</span>
+                </div>
+                <div class="flex-table-cell" data-th="Usage Limit">
+                  <span class="light-text">{{ item.usage }} </span>
+                  <span v-if="item.usage == 'limit_num'" class="light-text">
+                    {{ item.usage_limit_num }}</span
+                  >
+                </div>
+
                 <div class="flex-table-cell" data-th="Status">
-                  <span class="tag is-rounded">{{ item.status }}</span>
+                  <span class="tag is-rounded">{{
+                    item.status ? 'Active' : 'Inactive'
+                  }}</span>
                 </div>
 
                 <div class="flex-table-cell cell-end" data-th="Actions">
-                  <discountsDropdown />
+                  <V-button
+                    :to="{
+                      name: 'settings-discounts-edit',
+                      query: { id: item.id },
+                    }"
+                    color="warning"
+                    ><i class="fas fa-edit" aria-hidden="true"></i
+                  ></V-button>
                 </div>
               </div>
             </transition-group>
@@ -156,13 +170,13 @@ const filteredData = computed(() => {
         </div>
 
         <!--Table Pagination-->
-        <V-FlexPagination
+        <!-- <V-FlexPagination
           v-if="filteredData.length > 5"
           :item-per-page="10"
           :total-items="873"
           :current-page="42"
           :max-links-displayed="7"
-        />
+        /> -->
       </div>
     </div>
   </div>

@@ -17,17 +17,13 @@ import {
 
 import moment from 'moment'
 
-import { idMember, idMemberMembership } from '/@src/models/Members.ts'
+import { idMember, idMemberMembership, cupon } from '/@src/models/Members.ts'
 
 const props = defineProps({
   type: {
     type: String,
     default: 'create',
   },
-  // inputs:{
-  //   type: Array,
-  //   default: []
-  // },
   title: {
     type: String,
     default: '',
@@ -150,6 +146,14 @@ const subtotalMemberMembership = computed(() => {
   suma -= prorated.value.amount
   suma = (suma / 100) * tax.value.value + suma
 
+  if (cupon.value) {
+    if (cupon.value.type == 'dolar') {
+      suma -= cupon.value.value
+    } else if (cupon.value.type == 'percentaje') {
+      suma -= (suma / 100) * cupon.value.value
+    }
+  }
+
   return suma
 })
 
@@ -243,7 +247,7 @@ const isStripe = computed(() => {
           <th scope="col">Prorated</th>
           <th scope="col">Membership Cost</th>
           <th scope="col">Initiation Fee</th>
-          <!-- <th scope="col">Discount</th> -->
+          <th scope="col">Discount</th>
           <th scope="col">Taxes</th>
           <th scope="col">Sub Total</th>
         </tr>
@@ -270,6 +274,16 @@ const isStripe = computed(() => {
           </td>
           <td>{{ moneda(membershipCost(recurrence)) }}</td>
           <td>{{ moneda(initiationFeeMember) }}</td>
+          <td>
+            <span v-if="cupon">
+              <span v-if="cupon.type == 'dolar'">
+                - {{ moneda(cupon.value) }}</span
+              >
+              <span v-if="cupon.type == 'percentaje'"> {{ cupon.value }}%</span>
+            </span>
+            <span v-else>-</span>
+          </td>
+
           <td>{{ tax.text }}</td>
           <td>{{ moneda(subtotalMemberMembership) }}</td>
         </tr>
@@ -310,6 +324,7 @@ const isStripe = computed(() => {
             }}
           </td>
           <td>{{ moneda(viewInput(familiar.inputs, 'initiation_fee')) }}</td>
+          <!-- <td><p>Discount</p></td> -->
           <td>
             {{ objTax(getValueInput(familiar.inputs, 'memberships_id')).text }}
           </td>
@@ -334,7 +349,7 @@ const isStripe = computed(() => {
           </td>
         </tr>
         <tr>
-          <td style="text-align: right" colspan="7">Total</td>
+          <td style="text-align: right" colspan="8">Total</td>
 
           <td class="is-end">
             {{ moneda(total) }}
