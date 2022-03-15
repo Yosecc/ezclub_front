@@ -61,12 +61,14 @@ export const putStatus = async (membership) => {
   return response
 }
 
+import { getInput } from '/@src/models/Mixin.ts'
+
 export const inputs = ref([
   {
     typeInput: 'checkbox',
     name: 'status',
     placeholder: 'Status',
-    model: [''],
+    model: [],
     class: 'is-12',
     required: false,
   },
@@ -107,20 +109,38 @@ export const inputs = ref([
     typeInput: 'checkboxGroup',
     name: 'locations_options',
     text: 'Locations Sale and Access',
-    values: [''],
+    values: [],
     class: 'is-12',
     required: false,
     multilinea: true,
     subClass: 'column is-3 mt-0',
   },
   {
-    typeInput: 'checkboxGroupSimple',
+    typeInput: 'checkboxGroupSimpleEventInput',
     name: 'diciplines',
     text: 'Diciplines',
     model: [],
     values: [],
     class: 'is-12',
     required: false,
+    change: function (event: any, inputsStep: any) {
+      event.returnValue = false
+      // let checkbox = event.target.parentNode
+      // console.log(checkbox)
+      // console.log(checkbox.)
+      // console.log(event)
+      // console.log('change',this.model)
+    },
+    click: function (event: any, inputsStep: any) {
+      // console.log('click event',event.target._value)
+      const number = getInput(inputsStep, 'diciplines_number').model
+      if (number != '') {
+        // if(number <= this.model.length){
+        //   console.log('click model',this.model)
+        //   event.returnValue = false
+        // }
+      }
+    },
   },
 
   {
@@ -129,7 +149,7 @@ export const inputs = ref([
     text: 'Amounts',
     type: 'number',
     model: {},
-    values: [''],
+    values: [],
     class: 'is-12 d-flex',
     required: true,
   },

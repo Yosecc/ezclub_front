@@ -13,6 +13,7 @@ import {
   saveMember,
   idMember,
   idMemberMembership,
+  membershipsData,
 } from '/@src/models/Members.ts'
 
 import { getMeberships, memberships } from '/@src/models/Memberships.ts'
@@ -41,18 +42,19 @@ useHead({
 })
 
 onMounted(() => {
+  limpiarCampos()
   getMeberships().then((response) => {
     setInputValuesData(
-      inputsMembership,
+      membershipsData,
       'memberships_id',
       response.data.memberships
     )
   })
   getDiscounts(1).then((response) => {
-    setInputValuesData(inputsMembership, 'discount', response.data.discounts)
+    setInputValuesData(membershipsData, 'discount', response.data.discounts)
   })
   getRecurrences().then((response) => {
-    // setInputValuesData(inputsMembership,'recurrences_id', response.data)
+    // setInputValuesData(inputsMembership[0],'recurrences_id', response.data)
   })
   getAllConfig().then((response) => {
     setInputValuesData(inputsInformation, 'city_id', cities.value)
@@ -64,7 +66,7 @@ onMounted(() => {
   })
 
   getTrainers().then((response) => {
-    setInputValuesData(inputsMembership, 'staff_id', response.data)
+    setInputValuesData(membershipsData, 'staff_id', response.data)
   })
 })
 
@@ -135,15 +137,6 @@ const memberGuardianComputed = computed(() => {
 
 const changeStep = (val, payment = 3, cashObj = {}) => {
   if (categoriesMembers.value.model == 'Prospect') {
-    // if(val == 2){
-    //   val = 3
-    // }
-    // if(val == 2){
-    //   val = 4
-    // }
-    // if(val == 3){
-    //   val = 1
-    // }
   }
 
   if (val == 6) {
@@ -172,42 +165,37 @@ const memberMembership = ref([])
 const familyMembership = ref([])
 const returnDataMembership = (obj) => {
   familyMembership.value = obj.familyMembership.value
-  memberMembership.value = obj.memberMembership.value
+  memberMembership.value = obj.memberMembership
 }
 
 const memberPayment = ref(null)
 const familiaresPayment = ref(null)
 const total = ref(null)
 const returnDataPayment = (obj) => {
-  // console.log(obj.total.value)
   total.value = obj.total.value
-  // memberPayment.value = obj.paymentData.value
-  // familiaresPayment.value = obj.dataCardFamiliares
 }
 
 const convertFormData = (fd, objeto) => {
   for (var i in objeto) {
     fd.append(i, objeto[i])
   }
-  // return fd
 }
 
 const sendData = (payment, cashObj) => {
   const fd = new FormData()
 
-  // Informacion
+  // // Informacion
   convertFormData(fd, dataInformationMember.value)
 
   // Contacto
   let dataContactFD = dataContact.value
-  // if(dataContactFD != null){
+
   for (var i = 0; i < dataContactFD.length; i++) {
     var item = dataContactFD[i]
     for (var prop in item) {
       fd.append(`notifications[${i}][${prop}]`, item[prop])
     }
   }
-  // }
 
   let memberMembershipFD = perpareDataInputs(memberMembership.value)
   for (var i in memberMembershipFD) {
@@ -221,11 +209,6 @@ const sendData = (payment, cashObj) => {
     }
   }
 
-  // let memberPaymentFD = perpareDataInputs(memberPayment.value)
-  // for (var i in memberPaymentFD) {
-  //   fd.append(i,memberPaymentFD[i])
-  // }
-
   fd.append('total', total.value)
   fd.append('payment_type_id', payment)
 
@@ -234,8 +217,6 @@ const sendData = (payment, cashObj) => {
     fd.append('cash_back', cashObj.changeBack)
   }
 
-  // console.log(categoriesMembers.value)
-
   let categoriesMembersFD = perpareDataInputs(categoriesMembers.value, {
     array: false,
   })
@@ -243,7 +224,6 @@ const sendData = (payment, cashObj) => {
   for (var i in categoriesMembersFD) {
     fd.append(i, categoriesMembersFD[i])
   }
-  // console.log('2pasa')
 
   let notasInputFD = perpareDataInputs(notasInput.value)
   for (var i in notasInputFD) {
@@ -255,12 +235,9 @@ const sendData = (payment, cashObj) => {
     fd.append(i, optionsCreditCardFD[i])
   }
 
-  // console.log('familyMembership',familyMembership.value)
-
   familyMembership.value.forEach((element, index) => {
     // Informacion
-    let familiarX = perpareDataInputs(element.family)
-
+    let familiarX = perpareDataInputs(element.member)
     for (var i in familiarX) {
       if (i == 'category') {
         if (familiarX[i]) {
@@ -315,13 +292,29 @@ const sendData = (payment, cashObj) => {
   }
 
   // console.log(...fd)
-  saveMember(fd).then((response) => {
-    idMember.value = response.data.member.id
-    idMemberMembership.value = response.data.member.membership_members.id
-    if (payment == 1) {
-      window.location.href = `${FRONTEND_URL.value}members/process?payment_type=1&id=${idMember.value}&redirect_status=succeeded`
-    }
-  })
+  saveMember(fd)
+    .then((response) => {
+      idMember.value = response.data.member.id
+      idMemberMembership.value = response.data.member.membership_members.id
+      limpiarCampos()
+      if (payment == 1) {
+        window.location.href = `${FRONTEND_URL.value}members/process?payment_type=1&id=${idMember.value}&redirect_status=succeeded`
+      }
+    })
+    .catch((error) => {
+      for (var i in error.response.data.errores) {
+        error.response.data.errores[i].forEach((e) => {
+          notyf.error(`${i}: ${e}`)
+        })
+      }
+    })
+}
+
+const limpiarCampos = () => {
+  cleanUpModelInputs(inputsInformation.value)
+  cleanUpModelInputs(membershipsData.value)
+  cleanUpModelInputs(notasInput.value)
+  cleanUpModelInputs(parentInsputs.value)
 }
 </script>
 
@@ -388,7 +381,7 @@ const sendData = (payment, cashObj) => {
         />
         <!-- selectMembership -->
         <selectMembership
-          v-if="stepActive == 4"
+          v-show="stepActive == 4"
           type="create"
           :member="inputsInputsInformationStep"
           :familiares="familiares"
@@ -401,7 +394,7 @@ const sendData = (payment, cashObj) => {
         />
         <!-- paymentMethod -->
         <paymentMethod
-          v-if="stepActive == 5"
+          v-show="stepActive == 5"
           type="create"
           :title="step.text"
           :member="inputsInputsInformationStep"

@@ -257,6 +257,32 @@ onMounted(() => {
           </div>
         </V-Control>
       </V-Field>
+      <!-- selectDataActionChangeInput -->
+      <V-Field
+        v-else-if="input.typeInput == 'selectDataActionChangeInput'"
+        :data-class="input.class"
+      >
+        <V-Control class="input-select" :has-error="input.hasError ?? false">
+          <div class="select">
+            <select
+              :disabled="input.disabled ?? false"
+              v-model="input.model"
+              @change="input.change(inputsStep)"
+            >
+              <option value="">{{ input.placeholder }}</option>
+
+              <option
+                v-for="(option, keyD) in input.values"
+                :key="`option-${keyD}09`"
+                :value="option.id"
+              >
+                <span v-if="input.filter">{{ input.filter(option) }}</span>
+                <span v-else>{{ option.name }}</span>
+              </option>
+            </select>
+          </div>
+        </V-Control>
+      </V-Field>
       <!-- checkbox -->
       <V-Field
         v-else-if="input.typeInput == 'checkbox'"
@@ -271,6 +297,7 @@ onMounted(() => {
             v-model="input.model"
             :value="input.name"
             :label="input.placeholder"
+            :disabled="input.disabled"
             color="primary"
             @change="$emit('changeCheckbox', input)"
           />
@@ -335,6 +362,32 @@ onMounted(() => {
           </V-Control>
         </div>
       </V-Field>
+      <!-- checkboxGroupSimpleEventInput -->
+      <V-Field
+        v-else-if="input.typeInput == 'checkboxGroupSimpleEventInput'"
+        v-show="input.values.length > 0"
+        :data-class="input.class"
+      >
+        <p class="title is-6" v-if="input.text">{{ input.text }}</p>
+        <div
+          class="d-flex flex-wrap input-checkbox-checkboxGroupSimple"
+          :class="input.hasError ? 'has-error' : ''"
+        >
+          <V-Control
+            v-for="(check, keyG) in input.values"
+            :key="`check-${keyG}78`"
+          >
+            <V-Checkbox
+              v-model="input.model"
+              :value="check.id"
+              :label="!input.filter ? check.name : input.filter(check)"
+              color="primary"
+              @click="input.click($event, inputsStep)"
+              @change="input.change($event, inputsStep)"
+            />
+          </V-Control>
+        </div>
+      </V-Field>
       <!-- checkboxGroupSimpleAvatar -->
       <V-Field
         v-else-if="input.typeInput == 'checkboxGroupSimpleAvatar'"
@@ -369,6 +422,7 @@ onMounted(() => {
       <VField
         v-else-if="input.typeInput == 'textarea'"
         :data-class="input.class"
+        :class="input.hasError ? 'has-error' : ''"
       >
         <VControl>
           <textarea
@@ -409,6 +463,54 @@ onMounted(() => {
                         :value="check.id"
                         :name="input.name"
                         @change="$emit('changeRadio', input, inputsStep)"
+                      />
+                      <div class="radio-pill-inner">
+                        <span v-if="input.filterName"
+                          >{{ check[input.filterName] }}
+                          <span v-if="input.otros">
+                            ${{ check[input.otros] }}
+                          </span>
+                        </span>
+                        <span v-else>{{ check.name }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </V-Control>
+              </V-Field>
+            </div>
+          </div>
+        </div>
+      </form>
+      <!-- radioBoxsInput -->
+      <form
+        class="form-layout is-split"
+        v-else-if="
+          input.typeInput == 'radioBoxsInput' && input.values.length > 0
+        "
+        :data-class="input.class"
+      >
+        <p class="mb-3">{{ input.placeholder }}</p>
+        <div class="form-outer">
+          <div class="form-body">
+            <div class="form-section">
+              <V-Field>
+                <V-Control
+                  class="input-radio-pills"
+                  :has-error="input.hasError ?? false"
+                >
+                  <div class="radio-pills flex-wrap justify-content-start">
+                    <div
+                      class="radio-pill mb-3"
+                      v-for="(check, keyJ) in input.values"
+                      :key="`check-${keyJ}38`"
+                    >
+                      <input
+                        type="radio"
+                        v-model="input.model"
+                        :disabled="input.disabled"
+                        :value="check.id"
+                        :name="input.name"
+                        @change="input.change(inputsStep)"
                       />
                       <div class="radio-pill-inner">
                         <span v-if="input.filterName"

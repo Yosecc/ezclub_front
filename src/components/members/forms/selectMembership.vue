@@ -1,5 +1,16 @@
 <script setup lang="ts">
-import { computed, ref, reactive, defineProps, defineEmit, watch } from 'vue'
+import {
+  computed,
+  ref,
+  reactive,
+  toRaw,
+  shallowRef,
+  shallowReactive,
+  defineProps,
+  defineEmit,
+  watch,
+  onMounted,
+} from 'vue'
 import {
   viewInput,
   setInputValuesData,
@@ -12,7 +23,13 @@ import {
 
 import { getLocationsDiciplines } from '/@src/models/Diciplines.ts'
 import { recurrences } from '/@src/models/Recurrences.ts'
-import { cupon } from '/@src/models/Members.ts'
+
+import {
+  membershipsData,
+  inputsMembership,
+  setInputsEvents,
+} from '/@src/models/Members.ts'
+
 import { memberships } from '/@src/models/Memberships.ts'
 import { discounts, validateCupon } from '/@src/models/Discounts.ts'
 import { trainers } from '/@src/models/Staffs.ts'
@@ -49,6 +66,7 @@ const props = defineProps({
 })
 
 const isLoading = ref(false)
+const inputsFamilies = ref([])
 
 watch(
   () => props.inputs,
@@ -64,222 +82,52 @@ const reloadForm = () => {
   }, 500)
 }
 
-const inputsSteps = computed(() => {
-  return props.inputs
-})
-
-const membershipsInputs = [
-  {
-    typeInput: 'checkbox',
-    name: 'recurrence',
-    placeholder: 'Recurrence',
-    model: ['recurrence'],
-    disabled: false,
-    class: 'is-12',
-  },
-  {
-    typeInput: 'selectDataActionChange',
-    name: 'memberships_id',
-    placeholder: 'Membership Type',
-    values: [],
-    model: '',
-    disabled: false,
-    required: true,
-    class: 'is-12',
-  },
-  {
-    typeInput: 'radioBoxs',
-    name: 'recurrences_id',
-    placeholder: 'Recurrence & Amount',
-    values: [],
-    model: '',
-    disabled: false,
-    class: 'is-12',
-    filterName: 'descriptions',
-    required: true,
-    otros: 'amount',
-  },
-  {
-    typeInput: 'hidden',
-    name: 'amount',
-    placeholder: 'Amount',
-    model: '',
-    disabled: false,
-    required: true,
-    class: 'is-12',
-  },
-  {
-    typeInput: 'selectDataActionChange',
-    name: 'locations_id',
-    placeholder: 'Locations Sale',
-    values: [],
-    model: '',
-    disabled: false,
-    required: true,
-    class: 'is-4',
-  },
-  {
-    typeInput: 'checkboxGroupSimple',
-    name: 'diciplines',
-    text: 'Diciplines',
-    required: true,
-    model: [],
-    values: [],
-    disabled: false,
-    class: 'is-12',
-  },
-  {
-    typeInput: 'number',
-    name: 'initiation_fee',
-    placeholder: 'Initiation fee',
-    model: [],
-    disabled: true,
-    required: true,
-    class: 'is-4',
-  },
-  {
-    typeInput: 'checkbox',
-    name: 'is_initiation_fee',
-    placeholder: 'No initiation fee',
-    model: [],
-    disabled: false,
-    class: 'is-4',
-  },
-  {
-    typeInput: 'selectData',
-    name: 'discount',
-    placeholder: 'Discount',
-    values: [],
-    model: '',
-    disabled: false,
-    class: 'is-6',
-  },
-  {
-    typeInput: 'selectData',
-    name: 'staff_id',
-    placeholder: 'Trainer',
-    values: [],
-    model: '',
-    disabled: false,
-    class: 'is-6',
-    filterOptionText: function (option) {
-      return `${option.name} ${option.second_name} ${option.last_name}`
-    },
-  },
-]
-
-const copiamembershipsInputs = computed(() => {
-  return JSON.parse(JSON.stringify(membershipsInputs))
-})
-
-const inputsFamilies = computed(() => {
-  let data = []
-  props.familiares.forEach((element) => {
-    if (element.find((e) => e.name == 'name').model != '') {
-      // console.log(membershipsInputs)
-      let membershipDataFor = JSON.parse(JSON.stringify(membershipsInputs))
-      setInputValuesData(membershipDataFor, 'memberships_id', memberships.value)
-      setInputValuesData(membershipDataFor, 'discount', discountsData.value)
-      setInputValuesData(membershipDataFor, 'staff_id', trainers.value)
-
-      data.push({
-        family: element,
-        inputs: membershipDataFor,
-      })
+const change = (val) => {
+  let inputsMember = null
+  inputsMembership.value.forEach((element, index) => {
+    if (index == 0) {
+      inputsMember = element.inputs
+    } else {
+      inputsFamilies.value.push(element)
     }
   })
-  // console.log('inputsFamilies',data)
-  return data
-})
 
-const change = (val) => {
-  let datos = perpareDataInputs(inputsSteps.value)
   if (!hasErrors.value) {
     emit('returnData', {
-      memberMembership: inputsSteps,
+      memberMembership: inputsMember,
       familyMembership: inputsFamilies,
     })
     emit('changeStep', val)
   }
 }
 
-const changeMembership = (obj) => {
-  if (obj.input.name == 'memberships_id') {
-    let membershipSelected = obj.input.values.find(
-      (element) => element.id == obj.input.model
+const inputsMembershipInputs = computed(() => {
+  inputsMembership.value = []
+
+  const inputsMember = ref(JSON.parse(JSON.stringify(membershipsData.value)))
+
+  setInputsEvents(inputsMember.value)
+
+  inputsMembership.value.push({
+    member: props.member,
+    inputs: inputsMember.value,
+  })
+
+  for (var i = 0; i < props.familiares.length; ++i) {
+    const inputsMemberFamily = ref(
+      JSON.parse(JSON.stringify(membershipsData.value))
     )
-    setInputModelData(
-      obj.inputsStep,
-      'initiation_fee',
-      membershipSelected.initiation_fee
-    )
-    let locations = []
-    membershipSelected.locations.forEach((element) => {
-      if (element.sale == 1) {
-        locations.push(element.company_locations)
-      }
-    })
-    setInputValuesData(obj.inputsStep, 'locations_id', locations)
-    let recurrencesData = []
-    membershipSelected.amounts.forEach((element) => {
-      let recurrencesD = recurrences.value.find(
-        (e) => e.id == element.recurrences_id
-      )
-      recurrencesD.amount = element.amount
-      recurrencesData.push(recurrencesD)
-    })
-    setInputValuesData(obj.inputsStep, 'recurrences_id', recurrencesData)
 
-    const numeroDiciplinas = obj.input.values.find(
-      (e) => e.id == obj.input.model
-    ).diciplines_number
+    setInputsEvents(inputsMemberFamily.value)
 
-    if (numeroDiciplinas == 0) {
-      getInput(obj.inputsStep, 'diciplines').required = false
-    } else {
-      getInput(obj.inputsStep, 'diciplines').required = true
-    }
-
-    reloadForm()
-  }
-  if (obj.input.name == 'locations_id') {
-    getLocationsDiciplines([obj.input.model]).then((response) => {
-      setInputValuesData(obj.inputsStep, 'diciplines', response.data)
-      reloadForm()
+    inputsMembership.value.push({
+      member: props.familiares[i],
+      inputs: inputsMemberFamily.value,
     })
   }
-  if (obj.input.name == 'discount') {
-    if (obj.input.model != '') {
-      const cuponSelect = obj.input.values.find((e) => e.id == obj.input.model)
-      validateCupon(cuponSelect.code, 'membership')
-        .then((response) => {
-          cupon.value = response.data
-          notyf.success('Discuoun Apply')
-        })
-        .catch((error) => {
-          notyf.error(error.response.data)
-        })
-    } else {
-      cupon.value = null
-    }
-  }
-}
 
-const changeRecurrence = (input, inputs) => {
-  setInputModelData(
-    inputsSteps,
-    'amount',
-    input.values.find((e) => e.id == input.model).amount
-  )
-}
-
-const changeRecurrenceFamily = (input, inputs) => {
-  setInputModelData(
-    inputs,
-    'amount',
-    input.values.find((e) => e.id == input.model).amount
-  )
-}
+  return inputsMembership.value
+})
 
 const emit = defineEmit(['changeStep', 'returnData'])
 </script>
@@ -287,46 +135,24 @@ const emit = defineEmit(['changeStep', 'returnData'])
 <template>
   <formLayaut
     :titles="{ title: title }"
-    :is-loading="isLoading"
+    :isloading="isLoading"
     :buttons="['next', 'prev']"
     :step="4"
     @changeStep="change"
   >
-    <V-Card class="mb-4">
+    <V-Card
+      v-for="(i, k) in inputsMembershipInputs"
+      :key="`ss${k}`"
+      class="mb-4"
+    >
       <p class="">
         <b>
-          {{ viewInput(member, 'name') }}
-          {{ viewInput(member, 'second_name') }}
-          {{ viewInput(member, 'last_name') }}</b
+          {{ viewInput(i.member, 'name') }}
+          {{ viewInput(i.member, 'second_name') }}
+          {{ viewInput(i.member, 'last_name') }}</b
         >
       </p>
-      <!-- <p>{{ viewInput(inputsSteps, 'diciplines') }}</p> -->
-      <inputsLayaut
-        :inputs-step="inputsSteps"
-        @changeSelect="changeMembership"
-        @changeRadio="changeRecurrence"
-      />
-    </V-Card>
-
-    <V-Card
-      class="mb-4"
-      v-for="(data, key) in inputsFamilies"
-      :key="`da${key}`"
-    >
-      <p class="mb-5">
-        <b>
-          {{ viewInput(data.family, 'name') }}
-          {{ viewInput(data.family, 'second_name') }}
-          {{ viewInput(data.family, 'last_name') }}</b
-        >
-      </p>
-      <!-- <p>{{ viewInput(data.inputs,'diciplines') }}</p> -->
-      <inputsLayaut
-        :inputs-step="data.inputs"
-        @changeSelect="changeMembership"
-        @changeRadio="changeRecurrenceFamily"
-        @changeCheckbox="reloadForm"
-      />
+      <inputsLayaut :inputs-step="i.inputs" />
     </V-Card>
 
     <V-Card class="mb-4">

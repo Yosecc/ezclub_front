@@ -106,7 +106,7 @@ const change = (key) => {
 </script>
 
 <template>
-  <VCard :color="isSolvente ? '' : 'danger'" v-if="member">
+  <VCard :color="isSolvente ? undefined : 'danger'" v-if="member">
     <div class="d-flex mb-4">
       <VAvatar
         :picture="`${API_WEB_URL}storage/${member.photo}`"

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, defineProps } from 'vue'
 import { putStatus } from '/@src/models/Diciplines.ts'
-
+import { API_WEB_URL } from '/@src/services'
 const props = defineProps({
   diciplines: {
     type: Array,
@@ -10,93 +10,6 @@ const props = defineProps({
 })
 
 const filters = ref('')
-
-const items = ref([
-  {
-    image: 'https://picsum.photos/150/152',
-    name: 'Boxing',
-    description: 'This membership allow members full access gyn facility',
-    locations: [
-      {
-        img: 'https://picsum.photos/151/152',
-      },
-      {
-        img: 'https://picsum.photos/151/151',
-      },
-    ],
-    status: true,
-  },
-  {
-    image: 'https://picsum.photos/150/152',
-    name: 'Boxing',
-    description: 'This membership allow members full access gyn facility',
-    locations: [
-      {
-        img: 'https://picsum.photos/151/152',
-      },
-      {
-        img: 'https://picsum.photos/151/151',
-      },
-    ],
-    status: true,
-  },
-  {
-    image: 'https://picsum.photos/150/152',
-    name: 'Boxing',
-    description: 'This membership allow members full access gyn facility',
-    locations: [
-      {
-        img: 'https://picsum.photos/151/152',
-      },
-      {
-        img: 'https://picsum.photos/151/151',
-      },
-    ],
-    status: true,
-  },
-  {
-    image: 'https://picsum.photos/150/152',
-    name: 'Boxing',
-    description: 'This membership allow members full access gyn facility',
-    locations: [
-      {
-        img: 'https://picsum.photos/151/152',
-      },
-      {
-        img: 'https://picsum.photos/151/151',
-      },
-    ],
-    status: true,
-  },
-  {
-    image: 'https://picsum.photos/150/152',
-    name: 'Boxing',
-    description: 'This membership allow members full access gyn facility',
-    locations: [
-      {
-        img: 'https://picsum.photos/151/152',
-      },
-      {
-        img: 'https://picsum.photos/151/151',
-      },
-    ],
-    status: true,
-  },
-  {
-    image: 'https://picsum.photos/150/152',
-    name: 'Boxing',
-    description: 'This membership allow members full access gyn facility',
-    locations: [
-      {
-        img: 'https://picsum.photos/151/152',
-      },
-      {
-        img: 'https://picsum.photos/151/151',
-      },
-    ],
-    status: true,
-  },
-])
 
 const filteredData = computed(() => {
   if (!filters.value) {
@@ -222,7 +135,7 @@ const optionsSingle = [
                 v-for="(location, key) in item.locations"
                 :key="`membership_location-${key}`"
                 class="mr-3"
-                :picture="location.location.image"
+                :picture="`${API_WEB_URL}storage/${location.location.image}`"
               />
             </div>
 

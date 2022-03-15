@@ -62,7 +62,12 @@ const changeSwitchKey = (key) => {
   let index = minorsKeys.value.findIndex((element) => element == key)
 }
 
-const mostrar = ref(false)
+const mostrar = computed(() => {
+  if (families.value.length > 0) {
+    return true
+  }
+  return false
+})
 
 const cantidadFamiliares = ref(0)
 
@@ -71,7 +76,7 @@ const addFamily = () => {
     for (var i = 0; i < cantidadFamiliares.value; ++i) {
       families.value.push(props.inputs)
     }
-    mostrar.value = true
+    // mostrar.value = true
   }
 }
 </script>
@@ -91,7 +96,6 @@ const addFamily = () => {
           @changeSwitch="changeSwitchKey(ke)"
         />
         <V-Button
-          v-if="ke > 0"
           @click="families.splice(ke, 1)"
           color="danger"
           class="mx-auto"

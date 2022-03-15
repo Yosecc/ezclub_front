@@ -7,6 +7,7 @@ import {
   moneda,
   calcularMeses,
   getValueInput,
+  getInput,
 } from '/@src/models/Mixin.ts'
 import { getLocationsDiciplines } from '/@src/models/Diciplines.ts'
 import {
@@ -17,7 +18,11 @@ import {
 
 import moment from 'moment'
 
-import { idMember, idMemberMembership, cupon } from '/@src/models/Members.ts'
+import {
+  idMember,
+  idMemberMembership,
+  inputsMembership,
+} from '/@src/models/Members.ts'
 
 const props = defineProps({
   type: {
@@ -66,18 +71,27 @@ const change = (val, payment = 3) => {
 
 //  MEMBER //////////////////
 
+const membershipMember = computed(() => {
+  return inputsMembership.value[0]
+})
+
 const infoMembership = computed(() => {
-  let data = getValueInput(props.memberMembership, 'memberships_id')
+  let data = getValueInput(membershipMember.value.inputs, 'memberships_id')
   return data != undefined ? data : []
 })
 
 const recurrence = computed(() => {
-  let data = getValueInput(props.memberMembership, 'recurrences_id')
+  let data = getValueInput(membershipMember.value.inputs, 'recurrences_id')
   return data != undefined ? data : []
 })
 
 const initiationFeeMember = computed(() => {
-  let data = viewInput(props.memberMembership, 'initiation_fee')
+  let data = viewInput(membershipMember.value.inputs, 'initiation_fee')
+  return data != undefined ? data : []
+})
+
+const cuponMember = computed(() => {
+  let data = getInput(membershipMember.value.inputs, 'discount')
   return data != undefined ? data : []
 })
 
@@ -87,7 +101,7 @@ const prorated = computed(() => {
   let diferencia = 0
   if (recurrence.value.days >= 30) {
     diferencia = hoyDay - recurrence.value.payday
-    calculo = (recurrence.value.amount / 30) * diferencia
+    calculo = (recurrence.value.amount / recurrence.value.days) * diferencia
   }
   return {
     days: diferencia,
@@ -96,13 +110,12 @@ const prorated = computed(() => {
 })
 
 const proratedMethod = (recurrence) => {
-  // console.log(recurrence)
   let hoyDay = parseFloat(moment().format('DD'))
   let calculo = 0
   let diferencia = 0
   if (recurrence.days >= 30) {
     diferencia = hoyDay - recurrence.payday
-    calculo = (recurrence.amount / 30) * diferencia
+    calculo = (recurrence.amount / recurrence.days) * diferencia
   }
   return {
     days: diferencia,
@@ -111,21 +124,23 @@ const proratedMethod = (recurrence) => {
 }
 
 const objTax = (membership) => {
-  if (!membership.value) {
-    membership = membership
-  } else {
-    membership = membership.value
-  }
-  if (membership.tax.type == 'percentaje') {
-    return {
-      text: `${membership.tax.value}%`,
-      value: membership.tax.value,
-      type: 'procentaje',
+  if (viewInput(membershipMember.value.inputs, 'memberships_id') != '') {
+    if (!membership.value) {
+      membership = membership
+    } else {
+      membership = membership.value
     }
-  }
-  return {
-    text: moneda(membership.tax.value),
-    value: membership.tax.value,
+    if (membership.tax.type == 'percentaje') {
+      return {
+        text: `${membership.tax.value}%`,
+        value: membership.tax.value,
+        type: 'procentaje',
+      }
+    }
+    return {
+      text: moneda(membership.tax.value),
+      value: membership.tax.value,
+    }
   }
 }
 
@@ -134,25 +149,27 @@ const tax = computed(() => {
 })
 
 const membershipCost = (recurrenceData) => {
-  if (calcularMeses(recurrenceData.days) > 0) {
-    return recurrenceData.amount * calcularMeses(recurrenceData.days)
-  }
   return recurrenceData.amount
 }
+
 const subtotalMemberMembership = computed(() => {
   let suma = 0
-  suma += recurrence.value.amount * calcularMeses(recurrence.value.days)
-  suma += initiationFeeMember.value
-  suma -= prorated.value.amount
-  suma = (suma / 100) * tax.value.value + suma
+  suma += recurrence.value.amount
+  if (!viewInput(membershipMember.value.inputs, 'is_initiation_fee').length) {
+    suma += initiationFeeMember.value
+  }
 
-  if (cupon.value) {
-    if (cupon.value.type == 'dolar') {
-      suma -= cupon.value.value
-    } else if (cupon.value.type == 'percentaje') {
-      suma -= (suma / 100) * cupon.value.value
+  suma -= prorated.value.amount
+
+  if (cuponMember.value.data) {
+    if (cuponMember.value.data.type == 'dolar') {
+      suma -= cuponMember.value.data.value
+    } else if (cuponMember.value.data.type == 'percentaje') {
+      suma -= (suma / 100) * cuponMember.value.data.value
     }
   }
+
+  suma += (suma / 100) * tax.value.value
 
   return suma
 })
@@ -166,28 +183,63 @@ const total = computed(() => {
 
 // FAMILY ///////////////////
 
+const membershipsFamilies = computed(() => {
+  let data = []
+  console.log('familiares', inputsMembership.value)
+
+  inputsMembership.value.forEach((e, index) => {
+    if (index > 0) {
+      console.log(e)
+      data.push(e)
+    }
+  })
+
+  return data
+})
+
 const subtotalFamily = (data) => {
   let suma = 0
   suma += data.membershipCost
-  suma += data.initiation_fee
+  if (!data.is_initiation_fee.length) {
+    suma += data.initiation_fee
+  }
+
   suma -= data.prorated
-  suma = (suma / 100) * data.objTax.value + suma
+
+  if (data.discount != null) {
+    if (data.discount.type == 'dolar') {
+      suma -= data.discount.value
+    } else if (data.discount.type == 'percentaje') {
+      suma -= (suma / 100) * data.discount.value
+    }
+  }
+
+  suma += (suma / 100) * data.objTax.value
+
   return suma
 }
 
 const totalesFamilies = computed(() => {
   let suma = 0
-  props.familyMembership.forEach((familiar) => {
-    let subtotal = subtotalFamily({
-      membershipCost: membershipCost(
-        getValueInput(familiar.inputs, 'recurrences_id')
-      ),
-      initiation_fee: viewInput(familiar.inputs, 'initiation_fee'),
-      objTax: objTax(getValueInput(familiar.inputs, 'memberships_id')),
-      prorated: proratedMethod(getValueInput(familiar.inputs, 'recurrences_id'))
-        .amount,
-    })
-    suma += subtotal
+  membershipsFamilies.value.forEach((familiar) => {
+    if (
+      viewInput(familiar.inputs, 'memberships_id') != '' &&
+      viewInput(familiar.inputs, 'recurrences_id') != ''
+    ) {
+      let subtotal = subtotalFamily({
+        membershipCost: membershipCost(
+          getValueInput(familiar.inputs, 'recurrences_id')
+        ),
+        is_initiation_fee: viewInput(familiar.inputs, 'is_initiation_fee'),
+        initiation_fee: viewInput(familiar.inputs, 'initiation_fee'),
+        objTax: objTax(getValueInput(familiar.inputs, 'memberships_id')),
+        prorated: proratedMethod(
+          getValueInput(familiar.inputs, 'recurrences_id')
+        ).amount,
+        discount: getInput(familiar.inputs, 'discount').data,
+      })
+      suma += subtotal
+    }
   })
 
   return suma
@@ -237,6 +289,7 @@ const isStripe = computed(() => {
     :buttons="['prev']"
     :step="5"
     @changeStep="change"
+    v-if="viewInput(membershipMember.inputs, 'memberships_id') != ''"
   >
     <table class="table is-hoverable is-striped is-fullwidth">
       <thead>
@@ -257,9 +310,9 @@ const isStripe = computed(() => {
           <td>
             <p>
               <b
-                >{{ viewInput(member, 'name') }}
-                {{ viewInput(member, 'second_name') }}
-                {{ viewInput(member, 'last_name') }}</b
+                >{{ viewInput(membershipMember.member, 'name') }}
+                {{ viewInput(membershipMember.member, 'second_name') }}
+                {{ viewInput(membershipMember.member, 'last_name') }}</b
               >
             </p>
           </td>
@@ -273,13 +326,24 @@ const isStripe = computed(() => {
             <span v-else>-</span>
           </td>
           <td>{{ moneda(membershipCost(recurrence)) }}</td>
-          <td>{{ moneda(initiationFeeMember) }}</td>
           <td>
-            <span v-if="cupon">
-              <span v-if="cupon.type == 'dolar'">
-                - {{ moneda(cupon.value) }}</span
+            <span
+              v-if="
+                !viewInput(membershipMember.inputs, 'is_initiation_fee').length
+              "
+            >
+              {{ moneda(initiationFeeMember) }}
+            </span>
+            <span v-else>{{ moneda(0) }}</span>
+          </td>
+          <td>
+            <span v-if="cuponMember.data != null">
+              <span v-if="cuponMember.data.type == 'dolar'">
+                - {{ moneda(cuponMember.data.value) }}</span
               >
-              <span v-if="cupon.type == 'percentaje'"> {{ cupon.value }}%</span>
+              <span v-if="cuponMember.data.type == 'percentaje'">
+                {{ cuponMember.data.value }}%</span
+              >
             </span>
             <span v-else>-</span>
           </td>
@@ -287,11 +351,26 @@ const isStripe = computed(() => {
           <td>{{ tax.text }}</td>
           <td>{{ moneda(subtotalMemberMembership) }}</td>
         </tr>
+      </tbody>
+      <tbody
+        v-for="(familiar, keyj) in membershipsFamilies"
+        :key="`familiar${keyj}`"
+      >
         <tr
-          v-for="(familiar, keyj) in props.familyMembership"
-          :key="`familiar${keyj}`"
+          v-if="
+            viewInput(familiar.inputs, 'memberships_id') != '' &&
+            viewInput(familiar.inputs, 'recurrences_id') != ''
+          "
         >
-          <td>{{ viewInput(familiar.family, 'name') }}</td>
+          <td>
+            <p>
+              <b>
+                {{ viewInput(familiar.member, 'name') }}
+                {{ viewInput(familiar.member, 'second_name') }}
+                {{ viewInput(familiar.member, 'last_name') }}
+              </b>
+            </p>
+          </td>
           <td>{{ getValueInput(familiar.inputs, 'memberships_id').name }}</td>
           <td>
             {{ getValueInput(familiar.inputs, 'recurrences_id').descriptions }}
@@ -323,8 +402,37 @@ const isStripe = computed(() => {
               )
             }}
           </td>
-          <td>{{ moneda(viewInput(familiar.inputs, 'initiation_fee')) }}</td>
-          <!-- <td><p>Discount</p></td> -->
+          <td>
+            <span
+              v-if="!viewInput(familiar.inputs, 'is_initiation_fee').length"
+            >
+              {{ moneda(viewInput(familiar.inputs, 'initiation_fee')) }}
+            </span>
+            <span v-else>{{ moneda(0) }}</span>
+          </td>
+          <td>
+            <span v-if="getInput(familiar.inputs, 'discount').data != null">
+              <span
+                v-if="
+                  getInput(familiar.inputs, 'discount').data.type == 'dolar'
+                "
+              >
+                -
+                {{
+                  moneda(getInput(familiar.inputs, 'discount').data.value)
+                }}</span
+              >
+              <span
+                v-if="
+                  getInput(familiar.inputs, 'discount').data.type ==
+                  'percentaje'
+                "
+              >
+                {{ getInput(familiar.inputs, 'discount').data.value }}%</span
+              >
+            </span>
+            <span v-else>-</span>
+          </td>
           <td>
             {{ objTax(getValueInput(familiar.inputs, 'memberships_id')).text }}
           </td>
@@ -336,6 +444,10 @@ const isStripe = computed(() => {
                   membershipCost: membershipCost(
                     getValueInput(familiar.inputs, 'recurrences_id')
                   ),
+                  is_initiation_fee: viewInput(
+                    familiar.inputs,
+                    'is_initiation_fee'
+                  ),
                   initiation_fee: viewInput(familiar.inputs, 'initiation_fee'),
                   objTax: objTax(
                     getValueInput(familiar.inputs, 'memberships_id')
@@ -343,11 +455,14 @@ const isStripe = computed(() => {
                   prorated: proratedMethod(
                     getValueInput(familiar.inputs, 'recurrences_id')
                   ).amount,
+                  discount: getInput(familiar.inputs, 'discount').data,
                 })
               )
             }}
           </td>
         </tr>
+      </tbody>
+      <tbody>
         <tr>
           <td style="text-align: right" colspan="8">Total</td>
 

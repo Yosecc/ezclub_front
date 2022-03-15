@@ -95,7 +95,9 @@ const handleSubmit = async (e) => {
     confirmParams: {
       // Make sure to change this to your payment completion page
       return_url:
-        `${FRONTEND_URL.value}members/process?payment_type=3&id=` + props.id,
+        `${FRONTEND_URL.value}members/process?payment_type=3&id=` +
+        props.id +
+        `&membership=${props.member_membership}`,
     },
   })
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, reactive, defineProps, defineEmit, watch } from 'vue'
+import { computed, ref, reactive, defineEmit, watch } from 'vue'
 import {
   viewInput,
   setInputValuesData,
@@ -12,7 +12,12 @@ import {
   flipped,
   optionsCreditCard,
 } from '/@src/models/PaymentMethodsData.ts'
-import { calcularMeses, getValueInput } from '/@src/models/Mixin.ts'
+import {
+  calcularMeses,
+  getValueInput,
+  getInput,
+  notyf,
+} from '/@src/models/Mixin.ts'
 import moment from 'moment'
 
 import {
@@ -20,9 +25,9 @@ import {
   member,
   memberMermship,
   memberMembershipPayments,
+  membershipsData,
+  storePaymentCash,
 } from '/@src/models/Members.ts'
-
-// const props = defineProps({})
 
 const isLoading = ref(false)
 
@@ -30,20 +35,35 @@ const stripeStatus = ref(false)
 
 //  MEMBER //////////////////
 
-const recurrenceAmount = computed(() => {
-  return memberMermship.value.membership.amounts.find(
-    (e) => e.recurrences_id == memberMermship.value.recurrences_id
-  )
+const infoMembership = computed(() => {
+  console.log('membresia', memberMermship.value)
+  console.log('inputs', membershipsData.value)
+  let data = getValueInput(membershipsData.value, 'memberships_id')
+  return data != undefined ? data : []
+})
+
+const recurrence = computed(() => {
+  let data = getValueInput(membershipsData.value, 'recurrences_id')
+  return data != undefined ? data : []
+})
+
+const initiationFeeMember = computed(() => {
+  let data = viewInput(membershipsData.value, 'initiation_fee')
+  return data != undefined ? data : []
+})
+
+const cuponMember = computed(() => {
+  let data = getInput(membershipsData.value, 'discount')
+  return data != undefined ? data : []
 })
 
 const prorated = computed(() => {
   let hoyDay = parseFloat(moment().format('DD'))
   let calculo = 0
   let diferencia = 0
-  if (memberMermship.value.recurrence.recurrence >= 30) {
-    diferencia =
-      hoyDay - moment(memberMembershipPayments.value[0].created_at).format('DD')
-    calculo = (recurrenceAmount.value.amount / 30) * diferencia
+  if (recurrence.value.days >= 30) {
+    diferencia = hoyDay - recurrence.value.payday
+    calculo = (recurrence.value.amount / recurrence.value.days) * diferencia
   }
   return {
     days: diferencia,
@@ -52,13 +72,12 @@ const prorated = computed(() => {
 })
 
 const proratedMethod = (recurrence) => {
-  // console.log(recurrence)
   let hoyDay = parseFloat(moment().format('DD'))
   let calculo = 0
   let diferencia = 0
   if (recurrence.days >= 30) {
     diferencia = hoyDay - recurrence.payday
-    calculo = (recurrence.amount / 30) * diferencia
+    calculo = (recurrence.amount / recurrence.days) * diferencia
   }
   return {
     days: diferencia,
@@ -67,43 +86,52 @@ const proratedMethod = (recurrence) => {
 }
 
 const objTax = (membership) => {
-  if (!membership.value) {
-    membership = membership
-  } else {
-    membership = membership.value
-  }
-  if (membership.tax.type == 'percentaje') {
-    return {
-      text: `${membership.tax.value}%`,
-      value: membership.tax.value,
-      type: 'procentaje',
+  if (viewInput(membershipsData.value, 'memberships_id') != '') {
+    if (!membership.value) {
+      membership = membership
+    } else {
+      membership = membership.value
     }
-  }
-  return {
-    text: moneda(membership.tax.value),
-    value: membership.tax.value,
+    if (membership.tax.type == 'percentaje') {
+      return {
+        text: `${membership.tax.value}%`,
+        value: membership.tax.value,
+        type: 'procentaje',
+      }
+    }
+    return {
+      text: moneda(membership.tax.value),
+      value: membership.tax.value,
+    }
   }
 }
 
 const tax = computed(() => {
-  return objTax(memberMermship.value.membership)
+  return objTax(infoMembership)
 })
 
-const membershipCost = computed(() => {
-  if (calcularMeses(memberMermship.value.recurrence.recurrence) > 0) {
-    return (
-      recurrenceAmount.value.amount *
-      calcularMeses(memberMermship.value.recurrence.recurrence)
-    )
-  }
-  return recurrenceAmount.value.amount
-})
+const membershipCost = (recurrenceData) => {
+  return recurrenceData.amount
+}
 
 const subtotalMemberMembership = computed(() => {
   let suma = 0
-  suma += membershipCost.value
+  suma += recurrence.value.amount
+  if (!viewInput(membershipsData.value, 'is_initiation_fee').length) {
+    suma += initiationFeeMember.value
+  }
+
   suma -= prorated.value.amount
-  suma = (suma / 100) * tax.value.value + suma
+
+  if (cuponMember.value.data) {
+    if (cuponMember.value.data.type == 'dolar') {
+      suma -= cuponMember.value.data.value
+    } else if (cuponMember.value.data.type == 'percentaje') {
+      suma -= (suma / 100) * cuponMember.value.data.value
+    }
+  }
+
+  suma += (suma / 100) * tax.value.value
 
   return suma
 })
@@ -111,57 +139,47 @@ const subtotalMemberMembership = computed(() => {
 const total = computed(() => {
   let suma = 0
   suma += subtotalMemberMembership.value
-  // suma += totalesFamilies.value
   return suma
 })
-
-// FAMILY ///////////////////
-
-const subtotalFamily = (data) => {
-  let suma = 0
-  suma += data.membershipCost
-  suma += data.initiation_fee
-  suma -= data.prorated
-  suma = (suma / 100) * data.objTax.value + suma
-  return suma
-}
-
-const totalesFamilies = computed(() => {
-  let suma = 0
-  props.familyMembership.forEach((familiar) => {
-    let subtotal = subtotalFamily({
-      membershipCost: membershipCost(
-        getValueInput(familiar.inputs, 'recurrences_id')
-      ),
-      initiation_fee: viewInput(familiar.inputs, 'initiation_fee'),
-      objTax: objTax(getValueInput(familiar.inputs, 'memberships_id')),
-      prorated: proratedMethod(getValueInput(familiar.inputs, 'recurrences_id'))
-        .amount,
-    })
-    suma += subtotal
-  })
-
-  return suma
-})
-
-const cardPayment = ref(false)
-
-watch(
-  () => idMember,
-  (data, prevData) => {
-    cardPayment.value = true
-  }
-)
 
 // PAGO
 
 const payment = () => {
   stripeStatus.value = true
 }
+const openModalCash = ref(false)
+
+const cash = ref(0)
+
+const changeBack = computed(() => {
+  const calculo = cash.value - total.value
+
+  if (calculo > 0) {
+    return calculo
+  }
+
+  return 0
+})
+
+const typePago = ref(1)
+
+const paymentCash = async () => {
+  await storePaymentCash(memberMermship.value.id, {
+    total: total.value,
+    payment_type_id: 1,
+    cash: cash.value,
+    cash_back: changeBack.value,
+  })
+    .then((response) => {
+      notyf.success('Payment Success')
+      window.location.reload()
+    })
+    .catch((error) => {})
+}
 </script>
 
 <template>
-  <transition-group name="list" tag="div">
+  <div>
     <VCard class="">
       <table class="table is-hoverable is-striped is-fullwidth">
         <thead>
@@ -171,13 +189,13 @@ const payment = () => {
             <th scope="col">Recurrence</th>
             <th scope="col">Prorated</th>
             <th scope="col">Membership Cost</th>
-
-            <!-- <th scope="col">Discount</th> -->
+            <th scope="col">Initiation Fee</th>
+            <th scope="col">Discount</th>
             <th scope="col">Taxes</th>
             <th scope="col">Sub Total</th>
           </tr>
         </thead>
-        <tbody v-if="member.membership_members != null">
+        <tbody v-if="infoMembership.length != 0">
           <tr>
             <td>
               <p>
@@ -188,87 +206,41 @@ const payment = () => {
                 </b>
               </p>
             </td>
-            <td>
-              <p>{{ memberMermship.membership.name }}</p>
-            </td>
-            <td>
-              <p>{{ memberMermship.recurrence.descriptions }}</p>
-            </td>
-
-            <td v-if="memberMermship.is_recurrence">
-              <span v-if="memberMermship.recurrence.recurrence >= 30">
+            <td v-if="infoMembership.legnth != 0">{{ infoMembership.name }}</td>
+            <td v-if="recurrence.length != 0">{{ recurrence.descriptions }}</td>
+            <td v-if="recurrence.length != 0">
+              <span v-if="recurrence.days >= 30">
                 {{ prorated.days }} days : <br />
                 - {{ moneda(prorated.amount) }}
               </span>
               <span v-else>-</span>
             </td>
-            <td>{{ moneda(membershipCost) }}</td>
+            <td>{{ moneda(membershipCost(recurrence)) }}</td>
+            <td>
+              <span
+                v-if="!viewInput(membershipsData, 'is_initiation_fee').length"
+              >
+                {{ moneda(initiationFeeMember) }}
+              </span>
+              <span v-else>{{ moneda(0) }}</span>
+            </td>
+            <td>
+              <span v-if="cuponMember.data != null">
+                <span v-if="cuponMember.data.type == 'dolar'">
+                  - {{ moneda(cuponMember.data.value) }}</span
+                >
+                <span v-if="cuponMember.data.type == 'percentaje'">
+                  {{ cuponMember.data.value }}%</span
+                >
+              </span>
+              <span v-else>-</span>
+            </td>
 
             <td>{{ tax.text }}</td>
             <td>{{ moneda(subtotalMemberMembership) }}</td>
           </tr>
-          <!-- <tr
-            v-for="(familiar, keyj) in props.familyMembership"
-            :key="`familiar${keyj}`"
-          >
-            <td>{{ viewInput(familiar.family, 'name') }}</td>
-            <td>{{ getValueInput(familiar.inputs, 'memberships_id').name }}</td>
-            <td>
-              {{ getValueInput(familiar.inputs, 'recurrences_id').descriptions }}
-            </td>
-            <td>
-              <span
-                v-if="getValueInput(familiar.inputs, 'recurrences_id').days >= 30"
-              >
-                {{
-                  proratedMethod(getValueInput(familiar.inputs, 'recurrences_id'))
-                    .days
-                }}
-                days : <br />
-                -
-                {{
-                  moneda(
-                    proratedMethod(
-                      getValueInput(familiar.inputs, 'recurrences_id')
-                    ).amount
-                  )
-                }}
-              </span>
-              <span v-else>-</span>
-            </td>
-            <td>
-              {{
-                moneda(
-                  membershipCost(getValueInput(familiar.inputs, 'recurrences_id'))
-                )
-              }}
-            </td>
-            <td>{{ moneda(viewInput(familiar.inputs, 'initiation_fee')) }}</td>
-            <td>
-              {{ objTax(getValueInput(familiar.inputs, 'memberships_id')).text }}
-            </td>
-
-            <td>
-              {{
-                moneda(
-                  subtotalFamily({
-                    membershipCost: membershipCost(
-                      getValueInput(familiar.inputs, 'recurrences_id')
-                    ),
-                    initiation_fee: viewInput(familiar.inputs, 'initiation_fee'),
-                    objTax: objTax(
-                      getValueInput(familiar.inputs, 'memberships_id')
-                    ),
-                    prorated: proratedMethod(
-                      getValueInput(familiar.inputs, 'recurrences_id')
-                    ).amount,
-                  })
-                )
-              }}
-            </td>
-          </tr> -->
           <tr>
-            <td style="text-align: right" colspan="6">Total</td>
+            <td style="text-align: right" colspan="8">Total</td>
 
             <td class="is-end">
               {{ moneda(total) }}
@@ -277,10 +249,20 @@ const payment = () => {
         </tbody>
       </table>
       <div class="d-flex justify-content-between">
-        <VButton color="success" @click="stripeStatus = true">
+        <VButton
+          color="success"
+          :disabled="infoMembership.length == 0 || isNaN(total)"
+          @click="stripeStatus = true"
+        >
           Card Payment
         </VButton>
-        <VButton color="warning"> Cash Payment </VButton>
+        <VButton
+          :disabled="infoMembership.length == 0 || isNaN(total)"
+          color="warning"
+          @click="openModalCash = true"
+        >
+          Cash Payment
+        </VButton>
       </div>
     </VCard>
     <stripeForm
@@ -289,9 +271,91 @@ const payment = () => {
       :url="`new_payment/${memberMermship.id}`"
       :amount="total"
       :id="member.id"
-      :member-mermship="memberMermship.id"
+      :member_membership="memberMermship.id"
     />
-  </transition-group>
+    <VModal
+      :open="openModalCash"
+      actions="center"
+      @close="openModalCash = false"
+    >
+      <template #content>
+        <div class="d-flex mb-4 justify-content-between">
+          <p class="title is-5">
+            Total: <b>{{ moneda(total) }}</b>
+          </p>
+
+          <p class="title is-5">
+            Cash Total: <b>{{ moneda(cash) }}</b>
+          </p>
+        </div>
+
+        <div
+          class="
+            d-flex
+            justify-content-center
+            align-items-center
+            flex-column
+            mb-4
+          "
+        >
+          <p class="title is-5 mb-4">Change Back:</p>
+          <p class="title is-3 mb-0">
+            <b>{{ moneda(changeBack) }}</b>
+          </p>
+        </div>
+        <div class="d-flex justify-content-center flex-wrap mb-4">
+          <VButton
+            bold
+            class="m-3"
+            style="font-size: 14px"
+            @click="cash = total"
+          >
+            Full Payment {{ moneda(total) }}
+          </VButton>
+          <div class="w-100"></div>
+          <VButton
+            v-for="(i, key) in [5, 10, 20, 50, 100]"
+            :key="`calculato-${key}`"
+            bold
+            class="m-3"
+            style="font-size: 14px"
+            @click="cash += i"
+          >
+            ${{ i }}
+          </VButton>
+        </div>
+        <div class="d-flex justify-content-center">
+          <VField>
+            <VControl>
+              <input
+                v-model="cash"
+                type="text"
+                class="input text-center"
+                placeholder="Cash"
+              />
+            </VControl>
+          </VField>
+        </div>
+      </template>
+      <template #action>
+        <VButton
+          color=""
+          @click="cash = 0"
+          class="d-flex justify-content-center"
+          raised
+          >Reset</VButton
+        >
+        <VButton
+          color="success"
+          @click="paymentCash"
+          :disabled="total > cash"
+          class="d-flex justify-content-center"
+          raised
+          >Confirm</VButton
+        >
+      </template>
+    </VModal>
+  </div>
 </template>
 
 <style lang="scss"></style>

@@ -1,6 +1,18 @@
-import { ref, computed, onBeforeMount } from 'vue'
+import { ref, computed, onBeforeMount, reactive } from 'vue'
 import { Api } from '/@src/services'
-import { notyf } from '/@src/models/Mixin.ts'
+import { recurrences } from '/@src/models/Recurrences.ts'
+import { getLocationsDiciplines } from '/@src/models/Diciplines.ts'
+import { validateCupon } from '/@src/models/Discounts.ts'
+import {
+  // viewInput,
+  setInputValuesData,
+  setInputModelData,
+  // perpareDataInputs,
+  // hasErrors,
+  getInput,
+  notyf,
+} from '/@src/models/Mixin.ts'
+
 import moment from 'moment'
 
 export const idMember = ref(null)
@@ -89,18 +101,20 @@ export const inputsInformation = ref([
     typeMember: ['Individual', 'Company'],
     hasError: false,
     keyUp: async (event, input) => {
-      await Api.get(`searchmember/${input.model}`)
-        .then((response) => {
-          if (response.data.status) {
-            input.hasError = true
-            notyf.error('Barcode already exists')
-          } else {
+      if (input.model.length >= 9) {
+        await Api.get(`searchmember/${input.model}`)
+          .then((response) => {
+            if (response.data.status) {
+              input.hasError = true
+              notyf.error('Barcode already exists')
+            } else {
+              input.hasError = false
+            }
+          })
+          .catch((error) => {
             input.hasError = false
-          }
-        })
-        .catch((error) => {
-          input.hasError = false
-        })
+          })
+      }
     },
   },
   {
@@ -250,7 +264,7 @@ export const inputsInformation = ref([
     typeMember: ['Individual'],
   },
   {
-    typeInput: 'text',
+    typeInput: 'number',
     name: 'id_leo_vet_fr',
     placeholder: 'LEO / VET / FR ID#',
     model: '',
@@ -262,7 +276,7 @@ export const inputsInformation = ref([
   {
     typeInput: 'hidden',
     name: 'is_family',
-    placeholder: 'LEO / VET / FR ID#',
+    placeholder: '',
     model: 0,
     class: 'is-6',
     categories: ['Adult', 'Minor', 'Prospect'],
@@ -466,7 +480,7 @@ const familyData = ref([
     typeMember: ['Individual'],
   },
   {
-    typeInput: 'text',
+    typeInput: 'number',
     name: 'id_leo_vet_fr',
     placeholder: 'LEO / VET / FR ID#',
     model: '',
@@ -478,7 +492,7 @@ const familyData = ref([
   {
     typeInput: 'hidden',
     name: 'is_family',
-    placeholder: 'LEO / VET / FR ID#',
+    placeholder: '',
     model: 1,
     class: 'is-6',
     categories: ['Adult', 'Minor', 'Prospect'],
@@ -487,7 +501,7 @@ const familyData = ref([
   {
     typeInput: 'hidden',
     name: 'principal_family',
-    placeholder: 'LEO / VET / FR ID#',
+    placeholder: '',
     model: 0,
     class: 'is-6',
     categories: ['Adult', 'Minor', 'Prospect'],
@@ -560,7 +574,7 @@ export const inputsContact = ref([
   },
 ])
 
-export const membershipsData = [
+export const membershipsData = ref([
   {
     typeInput: 'checkbox',
     name: 'recurrence',
@@ -570,7 +584,7 @@ export const membershipsData = [
     class: 'is-12',
   },
   {
-    typeInput: 'selectDataActionChange',
+    typeInput: 'selectDataActionChangeInput',
     name: 'memberships_id',
     placeholder: 'Membership Type',
     values: [],
@@ -580,7 +594,7 @@ export const membershipsData = [
     class: 'is-12',
   },
   {
-    typeInput: 'radioBoxs',
+    typeInput: 'radioBoxsInput',
     name: 'recurrences_id',
     placeholder: 'Recurrence & Amount',
     values: [],
@@ -601,7 +615,7 @@ export const membershipsData = [
     class: 'is-12',
   },
   {
-    typeInput: 'selectDataActionChange',
+    typeInput: 'selectDataActionChangeInput',
     name: 'locations_id',
     placeholder: 'Locations Sale',
     required: true,
@@ -638,16 +652,14 @@ export const membershipsData = [
     class: 'is-4',
   },
   {
-    typeInput: 'selectDataActionChange',
+    typeInput: 'selectDataActionChangeInput',
     name: 'discount',
     placeholder: 'Discount',
     values: [],
+    data: null,
     model: '',
     disabled: false,
     class: 'is-6',
-    filter: function (option) {
-      return `${option.code} `
-    },
   },
   {
     typeInput: 'selectData',
@@ -658,11 +670,8 @@ export const membershipsData = [
     disabled: false,
     required: false,
     class: 'is-6',
-    filterOptionText: function (option) {
-      return `${option.name} ${option.second_name} ${option.last_name}`
-    },
   },
-]
+])
 
 export const notasInput = ref([
   {
@@ -832,7 +841,7 @@ export const emergencyInputs = ref([
   },
 ])
 
-export const inputsMembership = ref(membershipsData)
+export const inputsMembership = ref([])
 
 export const member = ref()
 
@@ -884,8 +893,25 @@ export const storeContactEmergency = async (data: any) => {
   return response
 }
 
+export const storePaymentCash = async (id: number, data: object) => {
+  const response = await Api.post(`paymentCash/${id}`, data)
+  return response
+}
+
 export const putMemberGuardian = async (data: any) => {
   const response = await Api.put(`members/guardian/${member.value.id}`, data)
+  return response
+}
+
+export const storeNewMembership = async (data: any) => {
+  const response = await Api.post(`newMembershipMember`, data)
+  return response
+}
+
+export const storeFirma = async (base64: any, id: any) => {
+  const response = await Api.post(`sign/${id}`, {
+    sign: base64,
+  })
   return response
 }
 
@@ -930,3 +956,97 @@ export const DueDate = computed(() => {
 export const isSolvente = computed(() => {
   return member.value.isSolvente
 })
+export const sinMembresia = computed(() => {
+  return member.value.sinMembresia
+})
+
+const change_memberships_id = function (inputsStep: any) {
+  const membershipSelected = this.values.find(
+    (element: any) => element.id == this.model
+  )
+
+  setInputModelData(
+    inputsStep,
+    'initiation_fee',
+    membershipSelected.initiation_fee
+  )
+
+  const locations = []
+  membershipSelected.locations.forEach((element: any) => {
+    if (element.sale == 1) {
+      locations.push(element.company_locations)
+    }
+  })
+  setInputValuesData(inputsStep, 'locations_id', locations)
+
+  const recurrencesData = []
+  membershipSelected.amounts.forEach((element: any) => {
+    const recurrencesD = recurrences.value.find(
+      (e: any) => e.id == element.recurrences_id
+    )
+    recurrencesD.amount = element.amount
+    recurrencesData.push(recurrencesD)
+  })
+
+  setInputValuesData(inputsStep, 'recurrences_id', recurrencesData)
+
+  const numeroDiciplinas = this.values.find(
+    (e: any) => e.id == this.model
+  ).diciplines_number
+
+  if (numeroDiciplinas == 0) {
+    getInput(inputsStep, 'diciplines').required = false
+  } else {
+    getInput(inputsStep, 'diciplines').required = true
+  }
+}
+
+const change_recurrences_id = function (inputsStep: any) {
+  setInputModelData(
+    inputsStep,
+    'amount',
+    this.values.find((e) => e.id == this.model).amount
+  )
+}
+
+const change_locations_id = function (inputsStep: any) {
+  getLocationsDiciplines([this.model]).then((response: any) => {
+    setInputValuesData(inputsStep, 'diciplines', response.data)
+  })
+}
+
+const change_discount = function (inputsStep: any) {
+  if (this.model != '') {
+    validateCupon(
+      this.values.find((e: any) => e.id == this.model).code,
+      'membership'
+    )
+      .then((response: any) => {
+        this.data = response.data
+        notyf.success('Discuount Apply')
+      })
+      .catch((error: any) => {
+        notyf.error(error.response.data)
+        this.model = ''
+      })
+  } else {
+    this.data = null
+  }
+}
+
+const filter_discount = function (option) {
+  return `${option.code}`
+}
+
+export const filterOptionText_staff_id = function (option) {
+  return `${option.name} ${option.second_name} ${option.last_name}`
+}
+
+export const setInputsEvents = (inputs: any) => {
+  getInput(inputs, 'memberships_id').change = change_memberships_id
+  getInput(inputs, 'recurrences_id').change = change_recurrences_id
+  getInput(inputs, 'locations_id').change = change_locations_id
+  getInput(inputs, 'discount').change = change_discount
+  getInput(inputs, 'discount').filter = filter_discount
+  getInput(inputs, 'staff_id').filterOptionText = filterOptionText_staff_id
+}

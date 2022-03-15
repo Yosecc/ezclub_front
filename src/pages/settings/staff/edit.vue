@@ -46,8 +46,22 @@ useHead({
 onMounted(() => {
   getStaff(route.query.id).then((response) => {
     for (var i in response.data) {
-      setInputModelData(inputsInformation, i, response.data[i])
-      setInputModelData(inputsPermitions, i, response.data[i])
+      if (i == 'rent_space') {
+        setInputModelData(
+          inputsInformation,
+          i,
+          response.data[i] == null ? '' : response.data[i]
+        )
+      } else if (i == 'price_rent') {
+        setInputModelData(
+          inputsInformation,
+          i,
+          response.data[i] == null ? '' : response.data[i]
+        )
+      } else {
+        setInputModelData(inputsInformation, i, response.data[i])
+        setInputModelData(inputsPermitions, i, response.data[i])
+      }
     }
   })
   getCompany().then((response) => {

@@ -7,6 +7,7 @@ import {
   setInputValuesData,
   perpareDataInputs,
   cleanUpModelInputs,
+  notyf,
 } from '/@src/models/Mixin.ts'
 
 import { inputs, saveDicipline, putDicipline } from '/@src/models/Diciplines.ts'
@@ -61,10 +62,18 @@ const saveData = () => {
   const data = perpareDataInputs(inputs.value)
   console.log(data)
   if (props.type == 'create') {
-    saveDicipline(data).then((response) => {
-      cleanUpModelInputs(inputs.value)
-      router.back()
-    })
+    saveDicipline(data)
+      .then((response) => {
+        cleanUpModelInputs(inputs.value)
+        router.back()
+      })
+      .catch((error) => {
+        for (var i in error.response.data.errores) {
+          error.response.data.errores[i].forEach((e) => {
+            notyf.error(`${i}: ${e}`)
+          })
+        }
+      })
   } else {
     putDicipline(route.query.id, data).then((response) => {
       // cleanUpModelInputs(inputs.value)

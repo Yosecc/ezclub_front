@@ -25,6 +25,7 @@ onMounted(() => {
     payment_intent_client_secret: route.query.payment_intent_client_secret,
     redirect_status: route.query.redirect_status,
     payment_type: route.query.payment_type,
+    membership: route.query.membership,
   }).then((response) => {
     if (response.data.status) {
       paymentStatus.value = route.query.redirect_status

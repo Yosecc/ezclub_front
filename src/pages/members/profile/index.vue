@@ -16,12 +16,14 @@ import {
   parentInsputs,
   inputsFamily,
   emergencyInputs,
-  inputsMembership,
+  membershipsData,
   getMember,
   memberMermship,
   member,
   isSolvente,
+  sinMembresia,
   DueDate,
+  storeNewMembership,
 } from '/@src/models/Members.ts'
 
 import { getDiscounts } from '/@src/models/Discounts.ts'
@@ -32,7 +34,10 @@ import { getLocationsDiciplines } from '/@src/models/Diciplines.ts'
 import {
   setInputModelData,
   setInputValuesData,
+  getValueInput,
   getInput,
+  perpareDataInputs,
+  notyf,
 } from '/@src/models/Mixin.ts'
 import { getAllConfig } from '/@src/services/config.ts'
 import { getCompany, locations } from '/@src/models/Companies.ts'
@@ -90,7 +95,7 @@ onMounted(() => {
     Component.value = route.hash.slice(1)
   }
   getCompany().then((response) => {
-    setInputValuesData(inputsMembership, 'locations_id', locations.value)
+    setInputValuesData(membershipsData, 'locations_id', locations.value)
   })
   getAllConfig().then((response) => {
     setInputValuesData(inputsInformation, 'country_id', response.contries)
@@ -103,20 +108,20 @@ onMounted(() => {
   })
   getMeberships().then((response) => {
     setInputValuesData(
-      inputsMembership,
+      membershipsData,
       'memberships_id',
       response.data.memberships
     )
   })
   getDiscounts().then((response) => {
-    setInputValuesData(inputsMembership, 'discount', response.data.discounts)
+    setInputValuesData(membershipsData, 'discount', response.data.discounts)
   })
   getRecurrences().then((response) => {
     // console.log(response.data)
-    setInputValuesData(inputsMembership, 'recurrences_id', response.data)
+    setInputValuesData(membershipsData, 'recurrences_id', response.data)
   })
   getTrainers().then((response) => {
-    setInputValuesData(inputsMembership, 'staff_id', response.data)
+    setInputValuesData(membershipsData, 'staff_id', response.data)
   })
 
   mountMember()
@@ -135,13 +140,13 @@ const mountMember = async () => {
       } else if (i == 'membership_members') {
         for (var e in response.data[i]) {
           if (e == 'memberships_location') {
-            getInput(inputsMembership.value, 'locations_id').model =
+            getInput(membershipsData.value, 'locations_id').model =
               response.data[i][e].companies_locations_id
 
             getLocationsDiciplines([
               response.data[i][e].companies_locations_id,
             ]).then((response) => {
-              setInputValuesData(inputsMembership, 'diciplines', response.data)
+              setInputValuesData(membershipsData, 'diciplines', response.data)
             })
           } else if (e == 'recurrence') {
             let recurrencesData = []
@@ -153,33 +158,43 @@ const mountMember = async () => {
               recurrencesData.push(recurrencesD)
             })
 
-            getInput(inputsMembership.value, 'recurrences_id').model =
+            getInput(membershipsData.value, 'recurrences_id').model =
               response.data[i].recurrences_id
-            getInput(inputsMembership.value, 'amount').model =
+            getInput(membershipsData.value, 'amount').model =
               recurrencesData.find(
                 (e) => e.id == response.data[i].recurrences_id
               ).amount
-            console.log()
+          } else if (e == 'is_recurrence') {
+            getInput(membershipsData.value, 'recurrence').model = response.data[
+              i
+            ][e]
+              ? [e]
+              : []
           } else if (e == 'diciplines') {
-            getInput(inputsMembership.value, 'diciplines').model = []
+            getInput(membershipsData.value, 'diciplines').model = []
             response.data[i][e].forEach((element) => {
-              getInput(inputsMembership.value, 'diciplines').model.push(
+              getInput(membershipsData.value, 'diciplines').model.push(
                 element.diciplines_id
               )
             })
           } else if (e == 'membership') {
-            getInput(inputsMembership.value, 'initiation_fee').model =
+            getInput(membershipsData.value, 'initiation_fee').model =
               response.data[i][e].initiation_fee
           } else if (e == 'is_initiation_fee') {
-            getInput(inputsMembership.value, 'is_initiation_fee').model =
+            getInput(membershipsData.value, 'is_initiation_fee').model =
               response.data[i][e] == 0 ? [e] : []
+          } else if (e == 'discount') {
+            getInput(membershipsData.value, 'discount').disabled = true
+            if (response.data[i][e] != null) {
+              getInput(membershipsData.value, 'discount').model =
+                response.data[i][e].id
+            }
           } else {
-            setInputModelData(inputsMembership, e, response.data[i][e])
+            setInputModelData(membershipsData, e, response.data[i][e])
           }
         }
-        // console.log('inputsMembership',inputsMembership.value)
       } else if (i == 'staff_id') {
-        setInputModelData(inputsMembership, i, response.data[i])
+        setInputModelData(membershipsData, i, response.data[i])
       } else if (i == 'emergency') {
         for (e in response.data[i]) {
           setInputModelData(emergencyInputs, e, response.data[i][e])
@@ -189,13 +204,29 @@ const mountMember = async () => {
           setInputModelData(parentInsputs, e, response.data[i][e])
         }
       } else {
-        // console.error(i)
         setInputModelData(inputsInformation, i, response.data[i])
       }
     }
     isLoading.value = false
-    // console.log('inputsMembership', inputsMembership.value)
+    // console.log('membershipsData', membershipsData.value)
   })
+}
+
+const newMembership = () => {
+  const data = perpareDataInputs(membershipsData.value)
+  data.members_id = member.value.id
+  storeNewMembership(data)
+    .then((response) => {
+      member.value.membership_members = response.data.membership_member
+      renewMembership.value = true
+    })
+    .catch((error) => {
+      for (var i in error.response.data.errores) {
+        error.response.data.errores[i].forEach((e) => {
+          notyf.error(`${i}: ${e}`)
+        })
+      }
+    })
 }
 </script>
 
@@ -218,19 +249,29 @@ const mountMember = async () => {
         >
           <h3 class="title is-5 mb-0">Expired Membership</h3>
           <div>
-            <VButton class="mr-4" color=""> Cancel membership </VButton>
-            <VButton color="success" @click="renewMembership = true">
+            <!-- <VButton class="mr-4"> Cancel membership </VButton> -->
+            <VButton
+              v-if="
+                getValueInput(membershipsData, 'memberships_id') &&
+                !sinMembresia
+              "
+              color="success"
+              @click="renewMembership = true"
+            >
               Renew membership
+            </VButton>
+            <!--  -->
+            <VButton
+              v-if="sinMembresia"
+              :disabled="!getValueInput(membershipsData, 'memberships_id')"
+              color="success"
+              @click="newMembership"
+            >
+              New membership
             </VButton>
           </div>
         </VCard>
-        <memberPayment
-          v-if="renewMembership"
-          :member="member"
-          :familiares="member.families_children"
-          :member-membership="member.membership_members"
-          class="mb-4"
-        />
+        <memberPayment v-if="renewMembership" class="mb-4" />
         <VCard class="mb-4" v-if="member.membership_members != null">
           <div>
             <p>
@@ -246,7 +287,7 @@ const mountMember = async () => {
               <b>Membership Active:</b> {{ memberMermship.membership.name }}
             </p>
             <p><b>Due Date: </b> {{ DueDate.format('ddd - DD MMM YYYY') }}</p>
-            <p>
+            <p v-if="memberMermship.payments">
               <b>Last payment attempt: </b
               >{{
                 moment(memberMermship.payments[0].created_at).format(
@@ -260,9 +301,6 @@ const mountMember = async () => {
           :category="route.query.category"
           v-show="Component == 'personalInformation'"
         />
-        <!-- <memberCreditCard
-           v-show="Component == 'memberCreditCard'"
-        /> -->
         <memberMembership v-show="Component == 'memberMembership'" />
         <memberFamily v-show="Component == 'memberFamily'" />
         <memberEmergency v-show="Component == 'memberEmergency'" />
