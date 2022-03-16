@@ -297,7 +297,7 @@ onMounted(() => {
             v-model="input.model"
             :value="input.name"
             :label="input.placeholder"
-            :disabled="input.disabled"
+            :class="input.disabled ? 'is-disabled' : ''"
             color="primary"
             @change="$emit('changeCheckbox', input)"
           />

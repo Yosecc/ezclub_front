@@ -93,13 +93,15 @@ export const perpareDataInputs = (
 
 export const cleanUpModelInputs = (inputs) => {
   const typeArrays = ['checkbox', 'checkboxGroupSimple']
-  inputs.forEach((element) => {
+  inputs.forEach((element: any) => {
     if (typeArrays.includes(element.typeInput)) {
       element.model = []
     } else if (element.typeInput == 'inputsGroup') {
       element.model = {}
     } else if (element.typeInput == 'checkboxGroup') {
       element.values = []
+    } else if (element.typeInput == 'switchEventChange') {
+      element.model = false
     } else {
       element.model = ''
     }
