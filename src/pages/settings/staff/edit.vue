@@ -52,12 +52,36 @@ onMounted(() => {
           i,
           response.data[i] == null ? '' : response.data[i]
         )
+      } else if (i == 'company_name_staff') {
+        setInputModelData(
+          inputsInformation,
+          i,
+          response.data[i] == null ? '' : response.data[i]
+        )
+      } else if (i == 'ein') {
+        setInputModelData(
+          inputsInformation,
+          i,
+          response.data[i] == null ? '' : response.data[i]
+        )
       } else if (i == 'price_rent') {
         setInputModelData(
           inputsInformation,
           i,
           response.data[i] == null ? '' : response.data[i]
         )
+      } else if (i == 'locations') {
+        let arr = []
+        response.data[i].forEach((e) => {
+          arr.push(e.locations_id)
+        })
+        setInputModelData(inputsPermitions, i, arr)
+      } else if (i == 'staff_roles') {
+        let arr = []
+        response.data[i].forEach((e) => {
+          arr.push(e.staff_roles_id)
+        })
+        setInputModelData(inputsPermitions, i, arr)
       } else {
         setInputModelData(inputsInformation, i, response.data[i])
         setInputModelData(inputsPermitions, i, response.data[i])
@@ -65,11 +89,7 @@ onMounted(() => {
     }
   })
   getCompany().then((response) => {
-    setInputValuesData(
-      inputsPermitions,
-      'locations_id',
-      response.data.locations
-    )
+    setInputValuesData(inputsPermitions, 'locations', response.data.locations)
   })
   getcities().then((response) => {
     setInputValuesData(inputsInformation, 'city_id', cities.value)
@@ -83,7 +103,7 @@ onMounted(() => {
   getstaffRoles().then((response) => {
     setInputValuesData(
       inputsPermitions,
-      'staff_roles_id',
+      'staff_roles',
       response.data.staff_roles
     )
   })
@@ -95,6 +115,7 @@ const saveData = () => {
     ...perpareDataInputs(inputsPermitions.value),
     // ...perpareDataInputs(inputsSign.value, { array: false }),
   }
+
   const fd = new FormData()
 
   for (var i in obj) {

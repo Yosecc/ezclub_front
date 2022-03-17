@@ -29,7 +29,6 @@ const change = (val) => {
 <template>
   <formLayaut
     :titles="{ title: title }"
-    :is-loading="isLoading"
     :buttons="['next', 'prev']"
     :step="2"
     @changeStep="change"

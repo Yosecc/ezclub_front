@@ -91,8 +91,13 @@ export const perpareDataInputs = (
   }
 }
 
-export const cleanUpModelInputs = (inputs) => {
-  const typeArrays = ['checkbox', 'checkboxGroupSimple']
+export const cleanUpModelInputs = (inputs: any) => {
+  const typeArrays = [
+    'checkbox',
+    'checkboxGroupSimple',
+    'checkboxGroupSimpleAvatar',
+    'checkboxGroupSimpleEventInput',
+  ]
   inputs.forEach((element: any) => {
     if (typeArrays.includes(element.typeInput)) {
       element.model = []
@@ -102,6 +107,12 @@ export const cleanUpModelInputs = (inputs) => {
       element.values = []
     } else if (element.typeInput == 'switchEventChange') {
       element.model = false
+    } else if (
+      ['switch', 'switchEventChange', 'switchEventChangeInput'].includes(
+        element.typeInput
+      )
+    ) {
+      element.model = element.default
     } else {
       element.model = ''
     }
@@ -137,8 +148,21 @@ const setModel = (input, value) => {
   if (camposArray.includes(input.typeInput)) {
     input.model = []
     input.model.push(value)
+    if (value == null) {
+      input.model = []
+    }
+    return input
+  } else if (
+    ['switch', 'switchEventChange', 'switchEventChangeInput'].includes(
+      input.typeInput
+    )
+  ) {
+    input.model = value == 1 ? true : false
     return input
   } else {
+    if (value == null) {
+      input.model = ''
+    }
     input.model = value
     return input
   }
@@ -166,6 +190,7 @@ export const setInputModelData = (inputs: any, name, data) => {
 }
 
 export const moneda = (value) => {
+  value = parseFloat(value).toFixed(2)
   value += ''
   const x = value.split('.')
   let x1 = x[0]

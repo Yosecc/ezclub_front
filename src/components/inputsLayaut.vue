@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, defineProps, defineEmit, onMounted, watch } from 'vue'
+import { ref, computed, defineProps, defineEmit, onMounted, watch } from 'vue'
 
 const emit = defineEmit([
   'changeSelect',
@@ -46,6 +46,15 @@ const configClassCol = () => {
 onMounted(() => {
   configClassCol()
 })
+
+const showModalCamera = ref(false)
+
+const changeShowModal = (value) => {
+  showModalCamera.value = value
+}
+const takePhoto = (event) => {
+  console.log(event)
+}
 </script>
 
 <template>
@@ -109,6 +118,22 @@ onMounted(() => {
           />
         </V-Control>
       </V-Field>
+      <!-- switchEventChangeInput -->
+      <V-Field
+        v-else-if="input.typeInput == 'switchEventChangeInput'"
+        :data-class="input.class"
+        grouped
+      >
+        <V-Control :has-error="input.hasError ?? false">
+          <V-SwitchSegment
+            v-model="input.model"
+            :label-true="input.values[1]"
+            :label-false="input.values[0]"
+            color="primary"
+            @change="input.change(inputsStep)"
+          />
+        </V-Control>
+      </V-Field>
       <!-- file -->
       <V-Field
         v-else-if="input.typeInput == 'file'"
@@ -124,7 +149,7 @@ onMounted(() => {
                 type="file"
                 @change="changeData(input, $event.target.files[0])"
               />
-              <span class="file-cta">
+              <span class="file-cta" :class="input.model ? 'bg-success' : ''">
                 <span class="file-icon">
                   <i class="fas fa-cloud-upload-alt"></i>
                 </span>
@@ -133,6 +158,14 @@ onMounted(() => {
             </label>
           </div>
         </V-Control>
+        <div v-if="input.camera">
+          <V-Button @click="showModalCamera = true">Open Camera</V-Button>
+          <webCam
+            v-model:modal="showModalCamera"
+            @changeShowModal="changeShowModal"
+            @takePhoto="(photo) => (input.model = photo)"
+          />
+        </div>
       </V-Field>
       <!-- ['text','date','number','email','password'] -->
       <V-Field
@@ -287,6 +320,7 @@ onMounted(() => {
       <V-Field
         v-else-if="input.typeInput == 'checkbox'"
         :data-class="input.class"
+        :id="`${input.name}`"
       >
         <V-Control
           id="che"
@@ -294,6 +328,7 @@ onMounted(() => {
           :has-error="input.hasError ?? false"
         >
           <V-Checkbox
+            :id="`${input.name}`"
             v-model="input.model"
             :value="input.name"
             :label="input.placeholder"
@@ -318,6 +353,7 @@ onMounted(() => {
           v-for="(check, keyE) in input.values"
           :key="`check-${keyE}08`"
           :class="input.subClass ? input.subClass : 'mt-5'"
+          :id="`${input.name}`"
         >
           <V-Control
             class="input-checkbox-checkboxGroup"
@@ -327,6 +363,7 @@ onMounted(() => {
               <b>{{ check.placeholder }}</b>
             </p>
             <V-Checkbox
+              :id="`${input.name}-${keyE}`"
               v-for="(option, keyF) in check.values"
               :key="`option-${keyF}78`"
               v-model="option.model"
@@ -342,6 +379,7 @@ onMounted(() => {
         v-else-if="input.typeInput == 'checkboxGroupSimple'"
         v-show="input.values.length > 0"
         :data-class="input.class"
+        :id="`${input.name}`"
       >
         <p class="title is-6" v-if="input.text">{{ input.text }}</p>
         <div
@@ -367,6 +405,7 @@ onMounted(() => {
         v-else-if="input.typeInput == 'checkboxGroupSimpleEventInput'"
         v-show="input.values.length > 0"
         :data-class="input.class"
+        :id="`${input.name}`"
       >
         <p class="title is-6" v-if="input.text">{{ input.text }}</p>
         <div
@@ -382,7 +421,9 @@ onMounted(() => {
               :value="check.id"
               :label="!input.filter ? check.name : input.filter(check)"
               color="primary"
-              @click="input.click($event, inputsStep)"
+              :name="`check-${keyG}78-input${check.id}`"
+              :id="`check-${keyG}78-inputid${check.id}`"
+              @click="input.click($event, inputsStep, check.id)"
               @change="input.change($event, inputsStep)"
             />
           </V-Control>
@@ -392,6 +433,7 @@ onMounted(() => {
       <V-Field
         v-else-if="input.typeInput == 'checkboxGroupSimpleAvatar'"
         :data-class="input.class"
+        :id="`${input.name}`"
       >
         <p class="title is-6" v-if="input.placeholder">
           {{ input.placeholder }}

@@ -39,7 +39,7 @@ const filteredData = computed(() => {
         item.name.match(new RegExp(filters.value, 'i')) ||
         item.second_name.match(new RegExp(filters.value, 'i')) ||
         item.last_name.match(new RegExp(filters.value, 'i')) ||
-        item.staff_roles.description.match(new RegExp(filters.value, 'i')) ||
+        // item.staff_roles.description.match(new RegExp(filters.value, 'i')) ||
         item.phone.toString().match(new RegExp(filters.value, 'i')) ||
         item.email.match(new RegExp(filters.value, 'i')) ||
         status.match(new RegExp(filters.value, 'i'))
@@ -131,9 +131,14 @@ const filteredData = computed(() => {
                   <span class="light-text">{{ item.id }}</span>
                 </div> -->
                 <div class="flex-table-cell" data-th="Role">
-                  <span class="light-text">{{
-                    item.staff_roles.description
-                  }}</span>
+                  <ul>
+                    <li
+                      v-for="(i, k) in item.staff_roles"
+                      :key="`staff-role-${k}`"
+                    >
+                      <p>- {{ i.role.description }}</p>
+                    </li>
+                  </ul>
                 </div>
                 <div class="flex-table-cell" data-th="Phone">
                   <span class="light-text">{{ item.phone }}</span>

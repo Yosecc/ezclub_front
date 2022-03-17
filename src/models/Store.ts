@@ -56,8 +56,7 @@ export const changeCountProduct = (type, element, key) => {
 export const cash = ref(0)
 
 export const changeBack = computed(() => {
-  const calculo = cash.value - total.value
-
+  const calculo = parseFloat(cash.value) - parseFloat(total.value)
   if (calculo > 0) {
     return calculo
   }
@@ -66,8 +65,7 @@ export const changeBack = computed(() => {
 })
 
 export const addCash = (i) => {
-  console.log(i)
-  cash.value += i
+  cash.value = parseFloat(cash.value) + parseFloat(i)
 }
 
 export const typePayment = ref(null)

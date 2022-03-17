@@ -5,9 +5,7 @@ import { user, onLogout } from '/@src/pages/auth/auth.ts'
 export const API_URL = ref('')
 export const FRONTEND_URL = ref('')
 export const API_WEB_URL = ref('')
-export const PUBLIC_KEY_STRIPE = ref(
-  'pk_test_51JFMxBFllRtR3x1gBilPZnRFAmn5t6vpZSYDOLR2A14zgdDZUiVvLorUwZiq1ummftz3ZKmWRb4X9DtoBkju4w3g00z410NK5H'
-)
+export const PUBLIC_KEY_STRIPE = ref('')
 
 // const url = 'https://dev-api.ushuaiacreative.com/api/'
 // const url = 'https://ezclub.loc/api/'

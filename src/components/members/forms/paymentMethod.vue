@@ -259,7 +259,7 @@ const openModalCash = ref(false)
 const cash = ref(0)
 
 const changeBack = computed(() => {
-  const calculo = cash.value - total.value
+  const calculo = parseFloat(cash.value) - parseFloat(total.value)
 
   if (calculo > 0) {
     return calculo

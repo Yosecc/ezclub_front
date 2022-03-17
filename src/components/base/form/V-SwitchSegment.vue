@@ -55,7 +55,7 @@ const emit = defineEmit(['update:modelValue'])
 <template inherit-attrs="false">
   <div class="switch-segment">
     <label v-if="labelFalse" class="is-label" :for="blockSwitchId">
-      {{ labelFalse }}
+      <p>{{ labelFalse }}</p>
     </label>
     <label
       :for="blockSwitchId"
@@ -73,7 +73,7 @@ const emit = defineEmit(['update:modelValue'])
       <i aria-hidden="true"></i>
     </label>
     <label v-if="labelTrue" class="is-label" :for="blockSwitchId">
-      {{ labelTrue }}
+      <p>{{ labelTrue }}</p>
     </label>
   </div>
 </template>

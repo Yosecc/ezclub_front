@@ -7,7 +7,7 @@ import {
   // viewInput,
   setInputValuesData,
   setInputModelData,
-  // perpareDataInputs,
+  getValueInput,
   // hasErrors,
   getInput,
   notyf,
@@ -50,6 +50,7 @@ export const inputsInformation = ref([
     class: 'is-12 d-flex justify-content-end',
     categories: ['Adult', 'Minor'],
     typeMember: ['Individual', 'Company'],
+    camera: true,
   },
   {
     typeInput: 'text',
@@ -625,7 +626,7 @@ export const membershipsData = ref([
     class: 'is-4',
   },
   {
-    typeInput: 'checkboxGroupSimple',
+    typeInput: 'checkboxGroupSimpleEventInput',
     name: 'diciplines',
     text: 'Diciplines',
     required: true,
@@ -999,6 +1000,8 @@ const change_memberships_id = function (inputsStep: any) {
   } else {
     getInput(inputsStep, 'diciplines').required = true
   }
+
+  changeDiciplinesAll(inputsStep)
 }
 
 const change_recurrences_id = function (inputsStep: any) {
@@ -1011,8 +1014,20 @@ const change_recurrences_id = function (inputsStep: any) {
 
 const change_locations_id = function (inputsStep: any) {
   getLocationsDiciplines([this.model]).then((response: any) => {
+    getInput(inputsStep, 'diciplines').model = []
     setInputValuesData(inputsStep, 'diciplines', response.data)
+    changeDiciplinesAll(inputsStep)
   })
+}
+
+const changeDiciplinesAll = (inputsStep: any) => {
+  if (getValueInput(inputsStep, 'memberships_id').all_diciplines == 1) {
+    getInput(inputsStep, 'diciplines').values.forEach((e: any) => {
+      getInput(inputsStep, 'diciplines').model.push(e.id)
+    })
+  } else {
+    getInput(inputsStep, 'diciplines').model = []
+  }
 }
 
 const change_discount = function (inputsStep: any) {
@@ -1042,6 +1057,32 @@ export const filterOptionText_staff_id = function (option) {
   return `${option.name} ${option.second_name} ${option.last_name}`
 }
 
+const click_diciplines = function (event: any, inputsStep: any, id: number) {
+  const number = getValueInput(inputsStep, 'memberships_id').diciplines_number
+
+  if (number > 0) {
+    if (number <= this.model.length) {
+      event.returnValue = false
+    }
+
+    if (number == this.model.length) {
+      if (this.model.includes(id)) {
+        const index = this.model.findIndex((e) => e == id)
+        const arr = []
+
+        this.model.forEach((e, i) => {
+          if (index != i) {
+            arr.push(e)
+          }
+        })
+        this.model = arr
+      } else {
+        notyf.error('You must select a limit of ' + number + ' diciplines')
+      }
+    }
+  }
+}
+
 export const setInputsEvents = (inputs: any) => {
   getInput(inputs, 'memberships_id').change = change_memberships_id
   getInput(inputs, 'recurrences_id').change = change_recurrences_id
@@ -1049,4 +1090,9 @@ export const setInputsEvents = (inputs: any) => {
   getInput(inputs, 'discount').change = change_discount
   getInput(inputs, 'discount').filter = filter_discount
   getInput(inputs, 'staff_id').filterOptionText = filterOptionText_staff_id
+  getInput(inputs, 'diciplines').change = function (
+    event: any,
+    inputsStep: any
+  ) {}
+  getInput(inputs, 'diciplines').click = click_diciplines
 }

@@ -16,6 +16,7 @@ import {
   setInputModelData,
   setInputValuesData,
   perpareDataInputs,
+  cleanUpModelInputs,
   notyf,
   hasErrors,
 } from '/@src/models/Mixin.ts'
@@ -42,12 +43,10 @@ useHead({
 })
 
 onMounted(() => {
+  cleanUpModelInputs(inputsInformation.value)
+  cleanUpModelInputs(inputsPermitions.value)
   getCompany().then((response) => {
-    setInputValuesData(
-      inputsPermitions,
-      'locations_id',
-      response.data.locations
-    )
+    setInputValuesData(inputsPermitions, 'locations', response.data.locations)
   })
   getcities().then((response) => {
     setInputValuesData(inputsInformation, 'city_id', cities.value)
@@ -61,7 +60,7 @@ onMounted(() => {
   getstaffRoles().then((response) => {
     setInputValuesData(
       inputsPermitions,
-      'staff_roles_id',
+      'staff_roles',
       response.data.staff_roles
     )
   })
@@ -97,6 +96,7 @@ const saveData = () => {
     ...perpareDataInputs(inputsPermitions.value),
     // ...perpareDataInputs(inputsSign.value, { array: false }),
   }
+
   const fd = new FormData()
 
   for (var i in obj) {

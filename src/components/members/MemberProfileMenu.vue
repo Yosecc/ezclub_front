@@ -107,13 +107,12 @@ const change = (key) => {
 
 <template>
   <VCard :color="isSolvente ? undefined : 'danger'" v-if="member">
-    <div class="d-flex mb-4">
-      <VAvatar
-        :picture="`${API_WEB_URL}storage/${member.photo}`"
-        size="large"
-      />
+    <div
+      class="d-flex justify-content-center align-items-center flex-column mb-4"
+    >
+      <VAvatar :picture="`${API_WEB_URL}storage/${member.photo}`" size="xl" />
 
-      <div class="ml-3">
+      <div class="mt-5 text-center">
         <!-- <p>{{ member }}</p> -->
         <h2 class="title is-5 is-narrow">
           {{ member.name }} {{ member.second_name }} {{ member.last_name }}
