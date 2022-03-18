@@ -16,6 +16,7 @@ const changeData = (input, value) => {
   })
 }
 
+const k = ref(0)
 const props = defineProps({
   inputsStep: {
     type: Array,
@@ -158,28 +159,40 @@ const takePhoto = (event) => {
             </label>
           </div>
         </V-Control>
+
         <div v-if="input.camera">
           <V-Button @click="showModalCamera = true">Open Camera</V-Button>
           <webCam
             v-model:modal="showModalCamera"
+            :key-modal="`${input.modalName}-${key}`"
             @changeShowModal="changeShowModal"
             @takePhoto="(photo) => (input.model = photo)"
           />
         </div>
       </V-Field>
-      <!-- ['text','date','number','email','password'] -->
+      <!-- ['text','date','number','email','password', 'time'] -->
       <V-Field
         class="px-0 field"
         v-else-if="
-          ['text', 'date', 'number', 'email', 'password', 'hidden'].includes(
-            input.typeInput
-          )
+          [
+            'text',
+            'date',
+            'number',
+            'email',
+            'password',
+            'hidden',
+            'time',
+          ].includes(input.typeInput)
         "
         :data-class="input.class"
       >
         <V-Control :has-error="input.hasError ?? false">
+          <label class="label" v-if="input.isLabel" :for="input.name"
+            ><p>{{ input.placeholder }}</p></label
+          >
           <input
             v-model="input.model"
+            :name="input.name"
             :type="input.typeInput"
             class="input"
             :placeholder="input.placeholder"

@@ -58,7 +58,7 @@ const nextFamily = (familiar) => {
 
         <sign v-if="member" :loading="loading" :member="member" />
 
-        <!-- <div v-if="familiares.length > 0" class="mt-6">
+        <div v-if="familiares.length > 0" class="mt-6">
           <div v-for="(familiar, key) in familiares" :key="`familu${key}`">
             <VCard class="mb-4" radius="small">
               <h2 class="title is-3">
@@ -75,7 +75,7 @@ const nextFamily = (familiar) => {
               </V-Button>
             </VCard>
           </div>
-        </div> -->
+        </div>
       </div>
     </div>
   </SidebarLayout>

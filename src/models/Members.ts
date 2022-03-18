@@ -51,6 +51,7 @@ export const inputsInformation = ref([
     categories: ['Adult', 'Minor'],
     typeMember: ['Individual', 'Company'],
     camera: true,
+    modalName: 'Miembro',
   },
   {
     typeInput: 'text',
@@ -311,6 +312,8 @@ const familyData = ref([
     model: '',
     required: false,
     category: ['Adult', 'Minor'],
+    camera: true,
+    modalName: 'Familiar',
   },
   {
     typeInput: 'select',
@@ -403,6 +406,14 @@ const familyData = ref([
     class: 'is-8',
     required: false,
     category: ['Adult'],
+  },
+  {
+    typeInput: 'switchEventChangeInput',
+    name: 'misma_direccion',
+    values: ['', 'Use the same address as the parent member'],
+    model: false,
+    required: false,
+    class: 'is-12',
   },
   {
     typeInput: 'number',
@@ -948,10 +959,11 @@ export const memberMembershipPayments = computed(() => {
 })
 
 export const DueDate = computed(() => {
-  return moment(memberMermship.value.created_at).add(
-    memberMermship.value.recurrence.recurrence,
-    'd'
-  )
+  let fechas = memberMermship.value.created_at
+  if (memberMembershipPayments.value[0].status) {
+    fechas = memberMembershipPayments.value[0].created_at
+  }
+  return moment(fechas).add(memberMermship.value.recurrence.recurrence, 'd')
 })
 
 export const isSolvente = computed(() => {

@@ -4,8 +4,13 @@ import { Api } from '/@src/services'
 
 export const products = ref([])
 
-export const getProducts = async () => {
-  const response = await Api.get('products')
+export const getProducts = async (
+  locations_id: number = null,
+  status: string = null
+) => {
+  const response = await Api.get(
+    `products?locations_id=${locations_id}&status=${status}`
+  )
   products.value = response.data
   return response
 }
@@ -19,13 +24,13 @@ export const getProduct = async (id: any) => {
 
 export const putProduct = async (data: any) => {
   const response = await Api.post(`products/${product.value.id}/update`, data)
-  products.value = response.data
+  // products.value = response.data
   return response
 }
 
 export const storeProduct = async (data: any) => {
   const response = await Api.post(`products`, data)
-  products.value = response.data
+  // products.value = response.data
   return response
 }
 
@@ -39,10 +44,12 @@ export const geCategories = async () => {
 
 export const inputsProducts = ref([
   {
-    typeInput: 'checkbox',
+    typeInput: 'switch',
     name: 'status',
+    values: ['', 'Active'],
     placeholder: 'Status',
-    model: [''],
+    model: true,
+    default: true,
     // values:['active','inactive'],
     class: 'is-6',
   },

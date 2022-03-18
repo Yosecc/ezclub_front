@@ -36,8 +36,6 @@ const stripeStatus = ref(false)
 //  MEMBER //////////////////
 
 const infoMembership = computed(() => {
-  console.log('membresia', memberMermship.value)
-  console.log('inputs', membershipsData.value)
   let data = getValueInput(membershipsData.value, 'memberships_id')
   return data != undefined ? data : []
 })
@@ -114,6 +112,8 @@ const membershipCost = (recurrenceData) => {
   return recurrenceData.amount
 }
 
+const penalty = ref(null)
+
 const subtotalMemberMembership = computed(() => {
   let suma = 0
   suma += recurrence.value.amount
@@ -132,6 +132,15 @@ const subtotalMemberMembership = computed(() => {
   }
 
   suma += (suma / 100) * tax.value.value
+
+  if (member.value.penalty) {
+    penalty.value = infoMembership.value.penalty
+    suma += penalty.value
+  }
+
+  if (member.value.leo_vet_fr) {
+    suma -= (suma / 100) * infoMembership.value.descuento_vet
+  }
 
   return suma
 })
@@ -192,6 +201,7 @@ const paymentCash = async () => {
             <th scope="col">Initiation Fee</th>
             <th scope="col">Discount</th>
             <th scope="col">Taxes</th>
+            <th v-if="penalty" scope="col">Penalty</th>
             <th scope="col">Sub Total</th>
           </tr>
         </thead>
@@ -237,10 +247,13 @@ const paymentCash = async () => {
             </td>
 
             <td>{{ tax.text }}</td>
+            <td v-if="penalty">{{ moneda(penalty) }}</td>
             <td>{{ moneda(subtotalMemberMembership) }}</td>
           </tr>
           <tr>
-            <td style="text-align: right" colspan="8">Total</td>
+            <td style="text-align: right" :colspan="!penalty ? '8' : '9'">
+              Total
+            </td>
 
             <td class="is-end">
               {{ moneda(total) }}
@@ -338,11 +351,7 @@ const paymentCash = async () => {
         </div>
       </template>
       <template #action>
-        <VButton
-          color=""
-          @click="cash = 0"
-          class="d-flex justify-content-center"
-          raised
+        <VButton @click="cash = 0" class="d-flex justify-content-center" raised
           >Reset</VButton
         >
         <VButton

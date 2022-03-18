@@ -164,7 +164,6 @@ export const inputs = ref([
       }
     },
   },
-
   {
     typeInput: 'inputsGroup',
     name: 'amounts',
@@ -176,12 +175,37 @@ export const inputs = ref([
     required: true,
   },
   {
+    typeInput: 'number',
+    name: 'descuento_vet',
+    placeholder: 'Discount % LEO / VET / FR',
+    model: '',
+    required: true,
+    class: 'is-2',
+  },
+  {
+    typeInput: 'number',
+    name: 'penalty',
+    placeholder: 'Penalty $',
+    model: '',
+    required: false,
+    class: 'is-2',
+  },
+  {
+    typeInput: 'number',
+    name: 'days_penalty',
+    placeholder: 'Days Penalty',
+    model: 6,
+    required: false,
+    class: 'is-2',
+  },
+
+  {
     typeInput: 'selectData',
     name: 'taxes_id',
     placeholder: 'Apply Taxes',
     model: '',
     values: [],
-    class: 'is-4',
+    class: 'is-3',
     required: true,
     filterOptionText: function (option) {
       if (option.type == 'percentaje') {
@@ -196,7 +220,7 @@ export const inputs = ref([
     name: 'initiation_fee',
     placeholder: 'Initation Fee',
     model: '',
-    class: 'is-4',
+    class: 'is-3',
     required: true,
   },
   // {

@@ -8,6 +8,7 @@ import {
   getInventary,
   inventory,
   storeInventoryProducts,
+  locationInventory,
 } from '/@src/models/Inventory.ts'
 import { products, getProducts } from '/@src/models/Products.ts'
 import { notyf } from '/@src/models/Mixin.ts'
@@ -24,13 +25,21 @@ const data_list = ref([])
 
 onMounted(() => {
   isLoading.value = true
+  if (route.query.locations_id) {
+    locationInventory.value = route.query.locations_id
+  } else {
+    notyf.error('la location es requerida')
+    console.error('la locacion es requerida')
+    return
+  }
 
-  getProducts().then((response) => {
+  getProducts(locationInventory.value, 'active').then((response) => {
     getInventary(route.query.id).then((response) => {
       processData()
-      setTimeout(() => {
-        isLoading.value = false
-      }, 1000)
+      isLoading.value = false
+      // setTimeout(() => {
+      //   isLoading.value = false
+      // }, 1000)
     })
   })
 })
@@ -46,16 +55,25 @@ const processData = () => {
     let previous_stock = null
     let subtotal = null
     let status = false
+    let proveedor = null
+    let ingreso = null
 
     if (inventory.value.products != undefined) {
-      let get = inventory.value.products.find((e) => e.product_id == element.id)
-
-      if (get != undefined) {
-        // console.log('get', get)
-        current_stock = get.current_stock
-        previous_stock = get.previous_stock
+      const product = inventory.value.products.find(
+        (e) => e.product_id == element.id
+      )
+      console.log('element', element)
+      console.log('product', product)
+      if (product != undefined) {
+        previous_stock = product.previous_stock
+        current_stock = product.current_stock
         subtotal = current_stock + previous_stock
         status = true
+        proveedor = product.proveedor
+        ingreso = product.ingreso
+      } else {
+        previous_stock = element.stock ? element.stock.current_stock : 0
+        subtotal = previous_stock
       }
     }
 
@@ -67,6 +85,9 @@ const processData = () => {
       previous_stock: previous_stock,
       subtotal: subtotal,
       status: status,
+      sku: element.sku,
+      proveedor: proveedor,
+      ingreso: ingreso,
     }
 
     if (inventory.value.status == 0 && datos.status == false) {
@@ -78,14 +99,8 @@ const processData = () => {
   return
 }
 
-const changeNumber = (id: any) => {
-  // if(productsComputed.value != undefined){
-  //   productsComputed.value.map((e)=>{
-  //     if(e.id == id){
-  //       return  e.subtotal = parseFloat(e.current_stock) + parseFloat(e.previous_stock)
-  //     }
-  //   })
-  // }
+const changeNumber = (row: any) => {
+  row.subtotal = parseFloat(row.previous_stock) + parseFloat(row.current_stock)
 }
 
 const isLoading = ref(false)
@@ -113,14 +128,18 @@ const confirmar = () => {
   centeredActionsOpen.value = true
 
   productsComputed.value.forEach((element) => {
-    if (element.previous_stock != null && element.current_stock != null) {
-      dataProductsConfirmados.value.push({
-        product_id: element.id,
-        previous_stock: element.previous_stock,
-        current_stock: element.current_stock,
-      })
-    }
+    // if (element.previous_stock != null && element.current_stock != null) {
+    dataProductsConfirmados.value.push({
+      product_id: element.id,
+      previous_stock: element.previous_stock,
+      current_stock: element.subtotal,
+      proveedor: element.proveedor,
+      ingreso: element.ingreso,
+    })
+    // }
   })
+
+  console.log(dataProductsConfirmados.value)
 
   confirmModal.value = `Do you want to save ${dataProductsConfirmados.value.length} products out of ${products.value.length}? Products not added in inventory will have stock = 0`
 }
@@ -171,10 +190,14 @@ const inventoryProducts = computed(() => {
             <div class="flex-table-header">
               <!-- <span>ID</span> -->
               <span>Product</span>
+              <span>SKU</span>
               <span>Previous stock</span>
               <span>Current stock</span>
               <span>Total</span>
-              <span>-</span>
+              <span>Providers</span>
+              <span>Date of admission</span>
+
+              <span>Status</span>
             </div>
           </template>
           <template #body>
@@ -199,6 +222,11 @@ const inventoryProducts = computed(() => {
                   </div>
                 </span>
               </div>
+              <div class="flex-table-cell" data-th="SKU">
+                <p>
+                  <small>{{ row.sku }}</small>
+                </p>
+              </div>
               <div class="flex-table-cell" data-th="current_stock">
                 <V-Field>
                   <V-Control>
@@ -207,6 +235,8 @@ const inventoryProducts = computed(() => {
                       type="number"
                       class="input"
                       :readonly="inventory.status == 0"
+                      @keyup="changeNumber(row)"
+                      @change="changeNumber(row)"
                     />
                   </V-Control>
                 </V-Field>
@@ -219,13 +249,40 @@ const inventoryProducts = computed(() => {
                       type="number"
                       class="input"
                       :readonly="inventory.status == 0"
+                      @keyup="changeNumber(row)"
+                      @change="changeNumber(row)"
                     />
                   </V-Control>
                 </V-Field>
               </div>
               <div class="flex-table-cell" data-th="previous_stock">
-                <p>{{ !isNaN(row.subtotal) ? row.subtotal : '' }}</p>
+                <p>{{ !isNaN(row.subtotal) ? row.subtotal : 0 }}</p>
               </div>
+              <div class="flex-table-cell" data-th="previous_stock">
+                <V-Field>
+                  <V-Control>
+                    <input
+                      v-model="row.proveedor"
+                      type="text"
+                      class="input"
+                      :readonly="inventory.status == 0"
+                    />
+                  </V-Control>
+                </V-Field>
+              </div>
+              <div class="flex-table-cell" data-th="previous_stock">
+                <V-Field>
+                  <V-Control>
+                    <input
+                      v-model="row.ingreso"
+                      type="date"
+                      class="input"
+                      :readonly="inventory.status == 0"
+                    />
+                  </V-Control>
+                </V-Field>
+              </div>
+
               <div class="flex-table-cell" data-th="-">
                 <VTag
                   v-if="row.status"

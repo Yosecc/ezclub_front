@@ -2,14 +2,26 @@ import { Api } from '/@src/services'
 import { onMounted, watch, ref, computed } from 'vue'
 
 export const inventories = ref([])
-export const getInventories = async () => {
-  const response = await Api.get('inventory')
+export const locationInventory = ref(null)
+
+export const getInventories = async (locations_id: number) => {
+  if (!locations_id) {
+    console.error('la locacion es requerida')
+    return
+  }
+  const response = await Api.get(`inventory?location=${locations_id}`)
   inventories.value = response.data
   return response
 }
 
 export const storeInventory = async () => {
-  const response = await Api.post('inventory') //Return ID inventory
+  if (!locationInventory.value) {
+    console.error('la locacion es requerida')
+    return
+  }
+  const response = await Api.post('inventory', {
+    locations_id: locationInventory.value,
+  }) //Return ID inventory
   return response
 }
 

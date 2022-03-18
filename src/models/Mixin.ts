@@ -148,9 +148,9 @@ const setModel = (input, value) => {
   if (camposArray.includes(input.typeInput)) {
     input.model = []
     input.model.push(value)
-    if (value == null) {
-      input.model = []
-    }
+    // if (value == null) {
+    //   input.model = []
+    // }
     return input
   } else if (
     ['switch', 'switchEventChange', 'switchEventChangeInput'].includes(

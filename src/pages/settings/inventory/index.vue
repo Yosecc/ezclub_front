@@ -8,12 +8,14 @@ import {
   inventories,
   storeInventory,
   closeAndApplyInentory,
+  locationInventory,
 } from '/@src/models/Inventory.ts'
-import { getCompany, company } from '/@src/models/Companies.ts'
-import { notyf } from '/@src/models/Mixin.ts'
+import { getCompany, company, locationsSelect } from '/@src/models/Companies.ts'
+import { notyf, setInputValuesData, getInput } from '/@src/models/Mixin.ts'
 import moment from 'moment'
 import { users } from '/@src/data/layouts/flex-list-v1'
-
+import { useCookies } from 'vue3-cookies'
+const { cookies } = useCookies()
 const filters = ref('')
 
 const filteredData = computed(() => {
@@ -42,17 +44,33 @@ const modalNewInventory = ref(false)
 const centeredActionsOpen = ref(false)
 const text = ref('')
 const idInventory = ref(null)
-const isLoaded = ref(true)
+const isLoaded = ref(false)
 
 onMounted(() => {
-  getInventories().then((response) => {
-    console.log(response.data)
-    isLoaded.value = false
+  getCompany().then((response) => {
+    setInputValuesData(locationsSelect, 'locations_id', company.value.locations)
+    getInput(locationsSelect.value, 'locations_id').change = changeLocation
+    if (cookies.get('locations_id') != null) {
+      getInput(locationsSelect.value, 'locations_id').model =
+        cookies.get('locations_id')
+      changeLocation(cookies.get('locations_id'))
+    }
   })
 })
 
+const changeLocation = function (value) {
+  if (typeof value == 'object') {
+    value = this.model
+  }
+  isLoaded.value = true
+  locationInventory.value = value
+  getInventories(value).then((response) => {
+    isLoaded.value = false
+  })
+}
+
 const closeInventory = () => {
-  console.log(idInventory.value)
+  // console.log(idInventory.value)
   centeredActionsOpen.value = false
   isLoaded.value = true
   text.value =
@@ -81,7 +99,10 @@ const newInventory = () => {
     .then((response) => {
       router.push({
         name: 'settings-inventory-create',
-        query: { id: response.data.inventory },
+        query: {
+          id: response.data.inventory,
+          locations_id: locationInventory.value,
+        },
       })
     })
     .catch((error) => {
@@ -119,6 +140,25 @@ watch(data, (to) => {
   <SidebarLayout>
     <!-- Content Wrapper -->
     <div class="page-content-inner">
+      <VCard class="mb-6">
+        <div class="d-flex justify-content-between align-items-center">
+          <div class="w-100">
+            <div v-if="!locationInventory" class="w-100">
+              <h1 class="title is-4">Select a location</h1>
+            </div>
+            <inputsLayaut :inputs-step="locationsSelect" />
+          </div>
+          <V-Button
+            v-if="!isLoaded && locationInventory"
+            color="primary"
+            @click="modalNewInventory = true"
+            raised
+            class="mb-4"
+            >New Inventory</V-Button
+          >
+        </div>
+      </VCard>
+
       <V-Modal
         :open="centeredActionsOpen"
         actions="center"
@@ -156,17 +196,6 @@ watch(data, (to) => {
       </V-Modal>
 
       <h1 v-if="isLoaded" class="title is-4">{{ text }}</h1>
-
-      <div class="d-flex justify-content-end mb-6">
-        <V-Button
-          v-if="!isLoaded"
-          color="primary"
-          @click="modalNewInventory = true"
-          raised
-          class="mb-4"
-          >New Inventory</V-Button
-        >
-      </div>
 
       <VLoader size="large" :active="isLoaded">
         <div class="flex-list-wrapper flex-list-v1">
@@ -243,9 +272,10 @@ watch(data, (to) => {
                     }}</span>
                   </div>
                   <div class="flex-table-cell" data-th="Date Close">
-                    <span class="light-text">{{
-                      moment(item.updated_at).format('dd - DD/MM/YYYY')
+                    <span v-if="item.close" class="light-text">{{
+                      moment(item.close).format('dd - DD/MM/YYYY')
                     }}</span>
+                    <span v-else>-</span>
                   </div>
                   <div class="flex-table-cell" data-th="Products Total">
                     <span class="light-text">{{ item.products.length }}</span>
@@ -265,7 +295,7 @@ watch(data, (to) => {
                     <V-Button
                       :to="{
                         name: 'settings-inventory-create',
-                        query: { id: item.id },
+                        query: { id: item.id, locations_id: locationInventory },
                       }"
                       >View</V-Button
                     >

@@ -45,12 +45,14 @@ onMounted(() => {})
                   color="white"
                   @click="changeCountProduct('minus', i, key)"
                   label="-"
+                  style="cursor: pointer"
                 />
                 <VTag color="white" :label="i.count" />
                 <VTag
                   color="white"
                   @click="changeCountProduct('plus', i, key)"
                   label="+"
+                  style="cursor: pointer"
                 />
               </div>
             </td>

@@ -3,10 +3,15 @@ import { useHead } from '@vueuse/head'
 import { onMounted, watch, ref, computed } from 'vue'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
 import { useRoute, useRouter } from 'vue-router'
-import { getInventories, inventories } from '/@src/models/Inventory.ts'
+import {
+  getInventories,
+  inventories,
+  locationInventory,
+} from '/@src/models/Inventory.ts'
 import { inventoryStatus, activateOrders } from '/@src/models/Store.ts'
 import { Api } from '/@src/services'
-import { notyf } from '/@src/models/Mixin.ts'
+import { notyf, setInputValuesData, getInput } from '/@src/models/Mixin.ts'
+import { getCompany, company, locationsSelect } from '/@src/models/Companies.ts'
 import {
   products,
   getProducts,
@@ -15,13 +20,42 @@ import {
 } from '/@src/models/Products.ts'
 pageTitle.value = 'Store'
 import { API_WEB_URL } from '/@src/services/index.ts'
+import { useCookies } from 'vue3-cookies'
+const { cookies } = useCookies()
 useHead({
   title: 'Store',
 })
 
+const changeLocation = function (value) {
+  if (typeof value == 'object') {
+    value = this.model
+  }
+  locationInventory.value = value
+  getInventories(value).then((response) => {
+    if (inventories.value.length > 0) {
+      if (inventories.value[0].status == 1) {
+        inventoryStatus.value = true
+      } else {
+        inventoryStatus.value = false
+      }
+    }
+  })
+  getProducts(value, 'active')
+  geCategories()
+}
+
 const route = useRoute()
 const router = useRouter()
 onMounted(() => {
+  getCompany().then((response) => {
+    setInputValuesData(locationsSelect, 'locations_id', company.value.locations)
+    getInput(locationsSelect.value, 'locations_id').change = changeLocation
+    if (cookies.get('locations_id') != null) {
+      getInput(locationsSelect.value, 'locations_id').model =
+        cookies.get('locations_id')
+      changeLocation(cookies.get('locations_id'))
+    }
+  })
   if (route.query.payment_intent_client_secret != undefined) {
     if (route.query.redirect_status == 'succeeded') {
       activateOrders(route.query.payment_intent_client_secret).then(
@@ -32,22 +66,6 @@ onMounted(() => {
       )
     }
   }
-
-  getInventories().then((response) => {
-    if (inventories.value.length > 0) {
-      if (inventories.value[0].status == 1) {
-        inventoryStatus.value = true
-      } else {
-        inventoryStatus.value = false
-      }
-    }
-  })
-  getProducts().then((response) => {
-    console.log(response.data)
-  })
-  geCategories().then((response) => {
-    console.log(response.data)
-  })
 })
 
 import { posts } from '/@src/data/layouts/card-grid-v4'
@@ -85,6 +103,7 @@ const optionsSingle = [
   <SidebarLayout>
     <!-- <p>{{ filters }}</p> -->
     <!-- Content Wrapper -->
+    <inputsLayaut :inputs-step="locationsSelect" />
     <div
       v-if="!inventoryStatus"
       class="page-content-inner columns is-multiline"

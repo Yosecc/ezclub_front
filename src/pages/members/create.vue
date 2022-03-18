@@ -50,7 +50,7 @@ onMounted(() => {
       response.data.memberships
     )
   })
-  getDiscounts(1).then((response) => {
+  getDiscounts(1, 'membership').then((response) => {
     setInputValuesData(membershipsData, 'discount', response.data.discounts)
   })
   getRecurrences().then((response) => {

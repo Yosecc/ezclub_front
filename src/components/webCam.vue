@@ -8,6 +8,9 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  keyModal: {
+    type: String,
+  },
 })
 const show = ref(props.modal)
 watch(
@@ -46,10 +49,10 @@ import { imgdefault } from '/@src/data/image_default.ts'
 
 const mountedCamera = () => {
   var streaming = false,
-    video = document.querySelector('#video'),
-    canvas = document.querySelector('#canvas'),
-    photo = document.querySelector('#photo'),
-    startbutton = document.querySelector('#startbutton'),
+    video = document.querySelector(`#video-${props.keyModal}`),
+    canvas = document.querySelector(`#canvas-${props.keyModal}`),
+    photo = document.querySelector(`#photo-${props.keyModal}`),
+    startbutton = document.querySelector(`#startbutton-${props.keyModal}`),
     width = 320,
     height = 0
 
@@ -126,18 +129,22 @@ const confirm = () => {
 
 <template>
   <div>
-    <V-Modal title="''" :open="show" actions="center" @close="closeModal">
+    <V-Modal :open="show" actions="center" @close="closeModal">
       <template #content>
         <div
           class="d-flex flex-column align-items-center justify-content-center"
         >
-          <video id="video"></video>
-          <V-Button color="info" class="my-4" id="startbutton" raised
+          <video :id="`video-${keyModal}`"></video>
+          <V-Button
+            color="info"
+            class="my-4"
+            :id="`startbutton-${keyModal}`"
+            raised
             >Take Photo</V-Button
           >
-          <canvas style="display: none" id="canvas"></canvas>
-          <img :src="imgdefault" id="photo" alt="photo" />
-          <audio style="display: none" id="audiocamara" controls>
+          <canvas style="display: none" :id="`canvas-${keyModal}`"></canvas>
+          <img :src="imgdefault" :id="`photo-${keyModal}`" alt="photo" />
+          <audio style="display: none" :id="`audiocamara-${keyModal}`" controls>
             <source type="audio/mpeg" src="/public/sonidos/camara.mp3" />
           </audio>
         </div>

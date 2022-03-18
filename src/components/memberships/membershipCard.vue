@@ -2,37 +2,30 @@
 import { defineProps } from 'vue'
 
 import { putStatus } from '/@src/models/Memberships.ts'
-
+import { API_URL, API_WEB_URL } from '/@src/services'
 const props = defineProps({
-  membership:{
+  membership: {
     type: Object,
-    default: {}
-  }
+    default: {},
+  },
 })
-
-
 </script>
 
 <template>
-  <div >
+  <div>
     <div class="d-flex justify-content-between">
-
-      <label  class="h-toggle">
-        <input type="checkbox" @change="putStatus(membership)" :checked="!membership.status" />
+      <label class="h-toggle">
+        <input
+          type="checkbox"
+          @change="putStatus(membership)"
+          :checked="!membership.status"
+        />
         <span class="toggler">
           <span class="active">
-            <i
-              aria-hidden="true"
-              class="iconify"
-              data-icon="feather:lock"
-            ></i>
+            <i aria-hidden="true" class="iconify" data-icon="feather:lock"></i>
           </span>
           <span class="inactive">
-            <i
-              aria-hidden="true"
-              class="iconify"
-              data-icon="feather:check"
-            ></i>
+            <i aria-hidden="true" class="iconify" data-icon="feather:check"></i>
           </span>
         </span>
       </label>
@@ -47,31 +40,30 @@ const props = defineProps({
       <p>{{ membership.description }}</p>
     </div>
 
-
-     
     <div class="d-flex">
-      <VAvatar 
+      <VAvatar
         v-tooltip="location.company_locations.name"
         v-for="(location, key) in membership.locations"
         :key="`membership_location-${key}`"
-        class="mr-3" 
-        :picture="location.company_locations.image" />
+        class="mr-3"
+        :picture="`${API_WEB_URL}storage/${location.company_locations.image}`"
+      />
     </div>
-      
-
 
     <div class="d-flex justify-content-end mt-5">
       <V-Button
-        :to="{ name: 'settings-memberships-edit', query:{id:membership.id}}"
-       raised>
+        :to="{
+          name: 'settings-memberships-edit',
+          query: { id: membership.id },
+        }"
+        raised
+      >
         <span class="icon">
           <i class="fas fa-edit"></i>
         </span>
         <span>Edit Membership</span>
       </V-Button>
     </div>
-    
-    
   </div>
 </template>
 
@@ -174,7 +166,7 @@ const props = defineProps({
   }
 }
 
-.cardBox{
+.cardBox {
   background: white;
   height: 70px;
   width: 70px;
@@ -186,7 +178,7 @@ const props = defineProps({
   margin-right: auto;
   text-align: center;
   font-size: 20px;
-  box-shadow: 2px 2px 10px rgba(0,0,0,.3);
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
 }
 
 @media only screen and (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
