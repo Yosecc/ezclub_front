@@ -10,7 +10,7 @@ import {
   searchCodebar,
   inputSearchCodebar,
 } from '/@src/models/Access.ts'
-pageTitle.value = 'Members'
+pageTitle.value = 'Check in'
 useHead({
   title: 'List Members',
 })
@@ -24,7 +24,7 @@ const members = ref([])
 const paginationData = ref([])
 
 const isLoading = ref(true)
-const defalA = ref('Adult')
+const defalA = ref('All')
 
 const getMembers = async (
   filter,
