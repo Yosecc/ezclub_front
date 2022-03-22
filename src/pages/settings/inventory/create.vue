@@ -171,9 +171,9 @@ const inventoryProducts = computed(() => {
             <div class="flex-table-header">
               <!-- <span>ID</span> -->
               <span>Product</span>
-              <span>Previous stock</span>
-              <span>Current stock</span>
-              <span>Total</span>
+              <span>Previous Stock</span>
+              <span>Add New Stock</span>
+              <span>Available Stock</span>
               <span>-</span>
             </div>
           </template>
