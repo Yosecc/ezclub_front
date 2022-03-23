@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { computed, ref, defineProps, defineEmit, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-
+import { API_WEB_URL } from '/@src/services'
 import { inputsInformation } from '/@src/models/Staffs'
+import { viewInput } from '/@src/models/Mixin.ts'
 
 const router = useRouter()
 
@@ -34,6 +35,13 @@ const titles = computed(() => {
   }
 })
 
+const image = computed(() => {
+  return `${API_WEB_URL.value}storage/${viewInput(
+    inputsInformation.value,
+    'photo'
+  )}`
+})
+
 const emit = defineEmit(['changeStep', 'saveData'])
 </script>
 
@@ -44,6 +52,9 @@ const emit = defineEmit(['changeStep', 'saveData'])
     :titles="titles"
     @saveData="$emit('saveData')"
   >
+    <div class="d-flex justify-content-center">
+      <VAvatar :picture="image" class="mb-4 mr-5" size="xl" />
+    </div>
     <inputsLayaut :inputs-step="inputsInformation" />
   </formLayaut>
 </template>

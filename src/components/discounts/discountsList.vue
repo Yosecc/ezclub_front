@@ -120,7 +120,9 @@ const filteredData = computed(() => {
                   <span
                     v-if="moment(item.date_start).isValid()"
                     class="light-text"
-                    >{{ moment(item.date_start).format('DD-MM-YYYY') }}</span
+                    >{{
+                      moment(item.date_start).format('DD-MM-YYYY HH:mm:ss')
+                    }}</span
                   >
                   <spa v-else>-</spa>
                 </div>
@@ -128,7 +130,9 @@ const filteredData = computed(() => {
                   <span
                     v-if="moment(item.date_expired).isValid()"
                     class="light-text"
-                    >{{ moment(item.date_expired).format('DD-MM-YYYY') }}</span
+                    >{{
+                      moment(item.date_expired).format('DD-MM-YYYY HH:mm:ss')
+                    }}</span
                   >
                   <spa v-else>-</spa>
                 </div>

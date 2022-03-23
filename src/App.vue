@@ -9,18 +9,20 @@ const defaultLocale = useStorage(
   (navigator && navigator.language) || 'en'
 )
 
-import { Api } from '/@src/services'
+import { Api, PUBLIC_KEY_STRIPE } from '/@src/services'
 import { user } from '/@src/pages/auth/auth.ts'
 
-watch(user, ()=>{
-  if(user.value != null){
-    Api.defaults.headers.common['x-api-key'] = user.value.token;
+watch(user, () => {
+  if (user.value != null) {
+    Api.defaults.headers.common['x-api-key'] = user.value.token
+    PUBLIC_KEY_STRIPE.value = user.value.key_stripe_public
   }
 })
 
 watchEffect(() => {
-  if(user.value != null){
-    Api.defaults.headers.common['x-api-key'] = user.value.token;
+  if (user.value != null) {
+    Api.defaults.headers.common['x-api-key'] = user.value.token
+    PUBLIC_KEY_STRIPE.value = user.value.key_stripe_public
   }
   defaultLocale.value = i18n.locale.value
 })

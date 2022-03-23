@@ -45,6 +45,7 @@ const titles = computed(() => {
 
 const saveData = () => {
   const data = perpareDataInputs(inputs.value)
+
   if (props.type == 'create') {
     storeDiscount(data).then((response) => {
       if (response.data.status) {

@@ -50,7 +50,7 @@ onMounted(() => {
       response.data.memberships
     )
   })
-  getDiscounts(1).then((response) => {
+  getDiscounts(1, 'membership').then((response) => {
     setInputValuesData(membershipsData, 'discount', response.data.discounts)
   })
   getRecurrences().then((response) => {
@@ -296,7 +296,7 @@ const sendData = (payment, cashObj) => {
     .then((response) => {
       idMember.value = response.data.member.id
       idMemberMembership.value = response.data.member.membership_members.id
-      limpiarCampos()
+
       if (payment == 1) {
         window.location.href = `${FRONTEND_URL.value}members/process?payment_type=1&id=${idMember.value}&redirect_status=succeeded`
       }
@@ -311,8 +311,16 @@ const sendData = (payment, cashObj) => {
 }
 
 const limpiarCampos = () => {
-  cleanUpModelInputs(inputsInformation.value)
-  cleanUpModelInputs(membershipsData.value)
+  let alimpiar = []
+  let campos = ['is_family', 'principal_family']
+  cleanUpModelInputs(
+    inputsInformation.value.filter((e) => !campos.includes(e.name))
+  )
+
+  campos = ['recurrence']
+  cleanUpModelInputs(
+    membershipsData.value.filter((e) => !campos.includes(e.name))
+  )
   cleanUpModelInputs(notasInput.value)
   cleanUpModelInputs(parentInsputs.value)
 }

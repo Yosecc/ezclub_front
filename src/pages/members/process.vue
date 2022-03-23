@@ -49,14 +49,14 @@ const nextFamily = (familiar) => {
       <!-- <VPlaceload v-if="paymentStatus == null" height="500px" /> -->
       <!-- v-if="paymentStatus == 'succeeded'" -->
       <div>
-        <VCard class="mb-4" radius="small" color="success">
+        <VCard class="mb-4" color="success">
           <h1 class="title is-4">Successful Payment</h1>
         </VCard>
         <h2 class="title is-3">
           Sign {{ member.name }} {{ member.second_name }} {{ member.last_name }}
         </h2>
 
-        <sign :loading="loading" :member="member" />
+        <sign v-if="member" :loading="loading" :member="member" />
 
         <div v-if="familiares.length > 0" class="mt-6">
           <div v-for="(familiar, key) in familiares" :key="`familu${key}`">

@@ -8,7 +8,7 @@ type ModalAction = undefined | 'center' | 'right'
 const props = defineProps({
   title: {
     type: String,
-    required: true,
+    required: false,
   },
   size: {
     type: String as PropType<ModalSize>,

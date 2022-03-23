@@ -5,7 +5,7 @@ import { pageTitle } from '/@src/state/sidebarLayoutState'
 import { useRoute, useRouter } from 'vue-router'
 import { getDiscount, inputs } from '/@src/models/Discounts.ts'
 import { setInputModelData } from '/@src/models/Mixin.ts'
-
+import moment from 'moment'
 const route = useRoute()
 
 pageTitle.value = 'New Discount'
@@ -17,13 +17,27 @@ useHead({
 onMounted(() => {
   getDiscount(route.query.id).then((response) => {
     for (var i in response.data) {
-      if (i == 'status') {
-        setInputModelData(inputs, i, response.data[i] == 1 ? 'status' : [])
-      } else if (i == 'is_recurrence') {
+      if (i == 'date_start') {
         setInputModelData(
           inputs,
           i,
-          response.data[i] == 1 ? 'is_recurrence' : []
+          moment(response.data[i]).format('YYYY-MM-DD')
+        )
+        setInputModelData(
+          inputs,
+          'time_start',
+          moment(response.data[i]).format('HH:mm:ss')
+        )
+      } else if (i == 'date_expired') {
+        setInputModelData(
+          inputs,
+          i,
+          moment(response.data[i]).format('YYYY-MM-DD')
+        )
+        setInputModelData(
+          inputs,
+          'time_expired',
+          moment(response.data[i]).format('HH:mm:ss')
         )
       } else {
         setInputModelData(inputs, i, response.data[i])

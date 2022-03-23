@@ -5,8 +5,13 @@ import { Api } from '/@src/services'
 export const discounts = ref([])
 export const discount = ref({})
 
-export const getDiscounts = async (status: any = false) => {
-  const response = await Api.get(`discounts?status=${status}`)
+export const getDiscounts = async (
+  status: any = null,
+  applies: string = null
+) => {
+  const response = await Api.get(
+    `discounts?status=${status}&applies=${applies}`
+  )
   discounts.value = response.data.discounts
   return response
 }
@@ -36,10 +41,12 @@ export const validateCupon = async (code: any, applies: any) => {
 
 export const inputs = ref([
   {
-    typeInput: 'checkbox',
+    typeInput: 'switch',
     name: 'status',
     placeholder: 'Status',
-    model: [],
+    values: ['', 'Active'],
+    model: true,
+    default: true,
     required: false,
     class: 'is-4',
   },
@@ -80,16 +87,18 @@ export const inputs = ref([
     typeInput: 'select',
     name: 'applies',
     placeholder: 'Applies to',
-    values: ['membership', 'product'],
+    values: ['All', 'membership', 'product'],
     model: '',
     required: true,
     class: 'is-4',
   },
   {
-    typeInput: 'checkbox',
+    typeInput: 'switch',
     name: 'is_recurrence',
+    values: ['', 'Is Recurrence'],
     placeholder: 'Is Recurrence',
-    model: [],
+    model: false,
+    default: false,
     required: false,
     class: 'is-3',
   },
@@ -125,14 +134,35 @@ export const inputs = ref([
     placeholder: 'Start Date',
     model: '',
     required: false,
-    class: 'is-6',
+    class: 'is-3',
+    isLabel: true,
   },
+  {
+    typeInput: 'time',
+    name: 'time_start',
+    placeholder: 'Start Time',
+    model: '',
+    required: false,
+    class: 'is-3',
+    isLabel: true,
+  },
+
   {
     typeInput: 'date',
     name: 'date_expired',
     placeholder: 'End Date',
     model: '',
     required: false,
-    class: 'is-6',
+    class: 'is-3',
+    isLabel: true,
+  },
+  {
+    typeInput: 'time',
+    name: 'time_expired',
+    placeholder: 'End Time',
+    model: '',
+    required: false,
+    class: 'is-3',
+    isLabel: true,
   },
 ])

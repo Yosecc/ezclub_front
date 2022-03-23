@@ -46,7 +46,7 @@ const sinFirmar = () => {
 </script>
 
 <template>
-  <V-Card radius="small">
+  <V-Card>
     <div class="columns is-multiline">
       <div class="d-flex justify-content-center column is-12 mb-4">
         <div v-if="contract" class="text-center mr-6">

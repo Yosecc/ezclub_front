@@ -61,9 +61,10 @@ const data = computed(() => {
   }
 })
 
+const setLoading = ref(false)
 const initialize = async () => {
-  console.log('props.url', props.url)
-  console.log('data.value', data.value)
+  // console.log('props.url', props.url)
+  // console.log('data.value', data.value)
   let response = await Api.post(props.url, data.value)
     .then((response) => {
       elements.value = stripe.elements({
@@ -88,7 +89,7 @@ const initialize = async () => {
 
 const handleSubmit = async (e) => {
   e.preventDefault()
-  // setLoading(true);
+  setLoading.value = true
 
   const { error } = await stripe.confirmPayment({
     elements: elements.value,
@@ -112,7 +113,7 @@ const handleSubmit = async (e) => {
     console.log('An unexpected error occured.')
   }
 
-  // setLoading(false)
+  setLoading.value = false
 }
 
 onMounted(() => {
@@ -132,7 +133,9 @@ onMounted(() => {
         <div class="spinner hidden" id="spinner"></div>
         <span id="button-text">Pay now</span>
       </button> -->
-      <VButton id="submit" class="mt-4" color="success"> Pay now </VButton>
+      <VLoader size="small" :active="setLoading">
+        <VButton id="submit" class="mt-4" color="success"> Pay now </VButton>
+      </VLoader>
 
       <div id="payment-message" class="hidden"></div>
     </form>

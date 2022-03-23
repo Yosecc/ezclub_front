@@ -57,11 +57,8 @@ const emit = defineEmit(['changeStep', 'returnData'])
 
 const change = (val, payment = 3) => {
   let obj = {
-    // paymentData,
-    // dataCardFamiliares: {},
     total,
   }
-  // console.log(obj)
   emit('returnData', obj)
   emit('changeStep', val, payment, {
     cash: cash.value,
@@ -171,6 +168,10 @@ const subtotalMemberMembership = computed(() => {
 
   suma += (suma / 100) * tax.value.value
 
+  if (viewInput(membershipMember.value.member, 'leo_vet_fr').length) {
+    suma -= (suma / 100) * infoMembership.value.descuento_vet
+  }
+
   return suma
 })
 
@@ -185,15 +186,12 @@ const total = computed(() => {
 
 const membershipsFamilies = computed(() => {
   let data = []
-  console.log('familiares', inputsMembership.value)
-
   inputsMembership.value.forEach((e, index) => {
     if (index > 0) {
       console.log(e)
       data.push(e)
     }
   })
-
   return data
 })
 
@@ -216,6 +214,10 @@ const subtotalFamily = (data) => {
 
   suma += (suma / 100) * data.objTax.value
 
+  if (data.is_vet) {
+    suma -= (suma / 100) * data.discount_vet
+  }
+
   return suma
 }
 
@@ -237,6 +239,9 @@ const totalesFamilies = computed(() => {
           getValueInput(familiar.inputs, 'recurrences_id')
         ).amount,
         discount: getInput(familiar.inputs, 'discount').data,
+        is_vet: getInput(familiar.member, 'leo_vet_fr').model.length,
+        discount_vet: getValueInput(familiar.inputs, 'memberships_id')
+          .descuento_vet,
       })
       suma += subtotal
     }
@@ -259,7 +264,7 @@ const openModalCash = ref(false)
 const cash = ref(0)
 
 const changeBack = computed(() => {
-  const calculo = cash.value - total.value
+  const calculo = parseFloat(cash.value) - parseFloat(total.value)
 
   if (calculo > 0) {
     return calculo
@@ -456,6 +461,9 @@ const isStripe = computed(() => {
                     getValueInput(familiar.inputs, 'recurrences_id')
                   ).amount,
                   discount: getInput(familiar.inputs, 'discount').data,
+                  is_vet: getInput(familiar.member, 'leo_vet_fr').model.length,
+                  discount_vet: getValueInput(familiar.inputs, 'memberships_id')
+                    .descuento_vet,
                 })
               )
             }}
@@ -553,7 +561,7 @@ const isStripe = computed(() => {
       </template>
       <template #action>
         <VButton
-          color=""
+          :color="undefined"
           @click="cash = 0"
           class="d-flex justify-content-center"
           raised

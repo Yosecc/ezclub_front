@@ -6,7 +6,12 @@ import {
   putProduct,
   storeProduct,
 } from '/@src/models/Products.ts'
-import { perpareDataInputs, notyf, viewInput } from '/@src/models/Mixin.ts'
+import {
+  perpareDataInputs,
+  notyf,
+  viewInput,
+  cleanUpModelInputs,
+} from '/@src/models/Mixin.ts'
 import { API_WEB_URL } from '/@src/services'
 
 const router = useRouter()
@@ -53,14 +58,34 @@ const onSave = () => {
   console.log(...fd)
 
   if (props.type == 'edit') {
-    putProduct(fd).then((response) => {
-      notyf.success(response.data.message)
-    })
+    putProduct(fd)
+      .then((response) => {
+        notyf.success(response.data.message)
+        cleanUpModelInputs(inputsProducts.value)
+        router.back()
+      })
+      .catch((error) => {
+        for (var i in error.response.data.errores) {
+          error.response.data.errores[i].forEach((e) => {
+            notyf.error(`${i}: ${e}`)
+          })
+        }
+      })
   }
   if (props.type == 'create') {
-    storeProduct(fd).then((response) => {
-      notyf.success(response.data.message)
-    })
+    storeProduct(fd)
+      .then((response) => {
+        notyf.success(response.data.message)
+        cleanUpModelInputs(inputsProducts.value)
+        router.back()
+      })
+      .catch((error) => {
+        for (var i in error.response.data.errores) {
+          error.response.data.errores[i].forEach((e) => {
+            notyf.error(`${i}: ${e}`)
+          })
+        }
+      })
   }
 }
 </script>

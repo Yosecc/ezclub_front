@@ -1,6 +1,6 @@
 import { ref, computed, onBeforeMount } from 'vue'
 import { Api } from '/@src/services'
-import { notyf } from '/@src/models/Mixin.ts'
+import { notyf, getInput } from '/@src/models/Mixin.ts'
 
 export const memberships = ref([])
 
@@ -65,10 +65,12 @@ import { getInput } from '/@src/models/Mixin.ts'
 
 export const inputs = ref([
   {
-    typeInput: 'checkbox',
+    typeInput: 'switch',
     name: 'status',
     placeholder: 'Status',
-    model: [],
+    values: ['', 'Active'],
+    model: true,
+    default: true,
     class: 'is-12',
     required: false,
   },
@@ -76,6 +78,35 @@ export const inputs = ref([
     typeInput: 'text',
     name: 'name',
     placeholder: 'Membership Name',
+    model: '',
+    class: 'is-6',
+    required: true,
+  },
+
+  {
+    typeInput: 'switchEventChangeInput',
+    name: 'all_diciplines',
+    values: ['', 'All Diciplines'],
+    model: false,
+    default: false,
+    required: false,
+    class: 'is-2',
+    change: function (inputsStep: any) {
+      getInput(inputsStep, 'diciplines_number').disabled = !this.model
+      getInput(inputsStep, 'diciplines_number').required = this.model
+      if (!this.model) {
+        getInput(inputsStep, 'diciplines').values.forEach((e: any) => {
+          getInput(inputsStep, 'diciplines').model.push(e.id)
+        })
+      } else {
+        getInput(inputsStep, 'diciplines').model = []
+      }
+    },
+  },
+  {
+    typeInput: 'number',
+    name: 'diciplines_number',
+    placeholder: 'Number discipline access',
     model: '',
     class: 'is-4',
     required: true,
@@ -85,15 +116,7 @@ export const inputs = ref([
     name: 'description',
     placeholder: 'Membership Description',
     model: '',
-    class: 'is-4',
-    required: true,
-  },
-  {
-    typeInput: 'number',
-    name: 'diciplines_number',
-    placeholder: 'Number discipline access',
-    model: '',
-    class: 'is-4',
+    class: 'is-12',
     required: true,
   },
   {
@@ -123,26 +146,24 @@ export const inputs = ref([
     values: [],
     class: 'is-12',
     required: false,
-    change: function (event: any, inputsStep: any) {
-      event.returnValue = false
-      // let checkbox = event.target.parentNode
-      // console.log(checkbox)
-      // console.log(checkbox.)
-      // console.log(event)
-      // console.log('change',this.model)
-    },
-    click: function (event: any, inputsStep: any) {
-      // console.log('click event',event.target._value)
+    change: function (event: any, inputsStep: any) {},
+    click: function (event: any, inputsStep: any, id: number) {
       const number = getInput(inputsStep, 'diciplines_number').model
       if (number != '') {
-        // if(number <= this.model.length){
-        //   console.log('click model',this.model)
-        //   event.returnValue = false
-        // }
+        if (number <= this.model.length) {
+          event.returnValue = false
+        }
+        if (number == this.model.length) {
+          if (this.model.includes(id)) {
+            const index = this.model.findIndex((e) => e == id)
+            this.model.splice(1, index)
+          } else {
+            notyf.error('You must select a limit of ' + number + ' diciplines')
+          }
+        }
       }
     },
   },
-
   {
     typeInput: 'inputsGroup',
     name: 'amounts',
@@ -154,12 +175,37 @@ export const inputs = ref([
     required: true,
   },
   {
+    typeInput: 'number',
+    name: 'descuento_vet',
+    placeholder: 'Discount % LEO / VET / FR',
+    model: '',
+    required: true,
+    class: 'is-2',
+  },
+  {
+    typeInput: 'number',
+    name: 'penalty',
+    placeholder: 'Penalty $',
+    model: '',
+    required: false,
+    class: 'is-2',
+  },
+  {
+    typeInput: 'number',
+    name: 'days_penalty',
+    placeholder: 'Days Penalty',
+    model: 6,
+    required: false,
+    class: 'is-2',
+  },
+
+  {
     typeInput: 'selectData',
     name: 'taxes_id',
     placeholder: 'Apply Taxes',
     model: '',
     values: [],
-    class: 'is-4',
+    class: 'is-3',
     required: true,
     filterOptionText: function (option) {
       if (option.type == 'percentaje') {
@@ -174,7 +220,7 @@ export const inputs = ref([
     name: 'initiation_fee',
     placeholder: 'Initation Fee',
     model: '',
-    class: 'is-4',
+    class: 'is-3',
     required: true,
   },
   // {

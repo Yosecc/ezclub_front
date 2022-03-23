@@ -17,7 +17,8 @@ const route = useRoute()
 const isLoading = ref(true)
 
 onMounted(() => {
-  cleanUpModelInputs(inputs.value)
+  let campos = ['all_diciplines']
+  cleanUpModelInputs(inputs.value.filter((e) => !campos.includes(e.name)))
   getTaxes().then(() => {
     setInputValuesData(inputs, 'taxes_id', taxes)
   })
@@ -54,13 +55,6 @@ onMounted(() => {
               element.diciplines_id
             )
           })
-        } else if (i == 'status') {
-          if (response.data[i] == 1 || response.data[i] == '1') {
-            getInput(inputs.value, 'status').model = []
-            getInput(inputs.value, 'status').model.push('status')
-          } else {
-            getInput(inputs.value, 'status').model = []
-          }
         } else {
           setInputModelData(inputs, i, response.data[i])
         }

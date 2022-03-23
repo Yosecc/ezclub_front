@@ -61,6 +61,18 @@ export const storeLocation = async (data: any) => {
   return response
 }
 
+export const locationsSelect = ref([
+  {
+    typeInput: 'selectDataActionChangeInput',
+    name: 'locations_id',
+    placeholder: 'Location',
+    model: '',
+    values: [],
+    class: 'is-4',
+    change: null,
+  },
+])
+
 export const companyInputs = ref([
   {
     typeInput: 'file',

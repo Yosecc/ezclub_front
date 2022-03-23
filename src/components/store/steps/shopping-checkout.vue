@@ -122,6 +122,7 @@ watch(
     </div>
 
     <VModal
+      :title="''"
       :open="openModalCash"
       actions="center"
       @close="openModalCash = false"

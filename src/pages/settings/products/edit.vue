@@ -33,13 +33,13 @@ onMounted(() => {
     setInputValuesData(inputsProducts, 'product_categories_id', response.data)
   })
   getProduct(route.query.id).then((response) => {
-    console.log(response.data)
+    // console.log(response.data)
     for (var i in response.data) {
       if (i == 'status') {
         if (response.data[i] == 'active') {
-          setInputModelData(inputsProducts, 'status', 'status')
+          setInputModelData(inputsProducts, 'status', true)
         } else {
-          setInputModelData(inputsProducts, 'status', '')
+          setInputModelData(inputsProducts, 'status', false)
         }
       } else if (i == 'locations') {
         let ids = []

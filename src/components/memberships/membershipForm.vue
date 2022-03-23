@@ -96,15 +96,6 @@ const diciplines = computed(() => {
   return inputs.value.find((element) => element.name == 'diciplines')
 })
 
-watch(diciplines.value, (to) => {
-  let number = parseFloat(viewInput(inputs.value, 'diciplines_number'))
-  if (!isNaN(number)) {
-    if (to.model.length > number) {
-      notyf.error('You must select a limit of ' + number + ' diciplines')
-    }
-  }
-})
-
 const saveData = () => {
   let data = perpareDataInputs(inputs.value)
   let locationsData = []
@@ -148,9 +139,10 @@ const saveData = () => {
         router.back()
       })
       .catch((error) => {
-        for (var i in error.response.data.rerrores) {
-          error.response.data.rerrores[i].forEach((e) => {
-            notyf.error(e)
+        console.log(error.response.data.errores)
+        for (var i in error.response.data.errores) {
+          error.response.data.errores[i].forEach((e) => {
+            notyf.error(`${e}: ${i}`)
           })
         }
       })

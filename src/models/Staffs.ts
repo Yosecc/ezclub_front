@@ -52,6 +52,7 @@ export const inputsInformation = ref([
     placeholder: 'Staff Picture',
     model: '',
     required: true,
+    camera: true,
     class: 'is-12 d-flex justify-content-end',
   },
   {
@@ -209,13 +210,22 @@ export const inputsInformation = ref([
   //   class: 'is-4',
   // },
   {
-    typeInput: 'number',
-    name: 'working_hours',
-    placeholder: 'Working Hours',
+    typeInput: 'select',
+    name: 'recurrence',
+    placeholder: 'Recurrence',
+    values: ['bi-weekly', 'monthly', 'weekly', 'yearly', 'hourly'],
     model: '',
     required: true,
-    class: 'is-4',
+    class: 'is-3',
   },
+  // {
+  //   typeInput: 'number',
+  //   name: 'working_hours',
+  //   placeholder: 'Working Hours',
+  //   model: '',
+  //   required: true,
+  //   class: 'is-4',
+  // },
   {
     typeInput: 'number',
     name: 'salary',
@@ -225,12 +235,14 @@ export const inputsInformation = ref([
     class: 'is-4',
   },
   {
-    typeInput: 'number',
+    typeInput: 'switch',
     name: 'rent_space',
     placeholder: 'Rent Space',
-    model: '',
-    required: false,
+    values: ['', 'Rent Space'],
+    model: false,
+    default: false,
     class: 'is-4',
+    required: false,
   },
   {
     typeInput: 'number',
@@ -244,23 +256,23 @@ export const inputsInformation = ref([
 
 export const inputsPermitions = ref([
   {
-    typeInput: 'selectDataActionChange',
-    name: 'locations_id',
-    placeholder: 'Locations',
+    typeInput: 'checkboxGroupSimple',
+    name: 'locations',
+    text: 'Locations',
     values: [],
-    model: '',
+    model: [],
     disabled: false,
-    class: 'is-4',
+    class: 'is-12',
   },
   {
-    typeInput: 'selectData',
-    name: 'staff_roles_id',
-    placeholder: 'Role',
+    typeInput: 'checkboxGroupSimple',
+    name: 'staff_roles',
+    text: 'Role',
     values: [],
-    model: '',
+    model: [],
     required: true,
-    class: 'is-6',
-    filterOptionText: (option) => {
+    class: 'is-12',
+    filter: (option) => {
       return option.description
     },
   },

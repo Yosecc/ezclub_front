@@ -129,7 +129,7 @@ onMounted(() => {
 
 const mountMember = async () => {
   await getMember(route.query.id).then((response) => {
-    console.log(response.data)
+    // console.log(response.data)
     for (var i in response.data) {
       if (i == 'select_type') {
         if (response.data[i] == 'Individual') {
@@ -203,6 +203,8 @@ const mountMember = async () => {
         for (e in response.data[i]) {
           setInputModelData(parentInsputs, e, response.data[i][e])
         }
+      } else if (i == 'leo_vet_fr') {
+        setInputModelData(inputsInformation, i, response.data[i] == 1 ? i : [])
       } else {
         setInputModelData(inputsInformation, i, response.data[i])
       }

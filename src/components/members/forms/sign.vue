@@ -46,17 +46,13 @@ const sinFirmar = () => {
 </script>
 
 <template>
-  <!-- <p>{{ inputsStep }}</p> -->
-  <!--  <inputsLayaut
-    :inputsStep="inputsStep"
-  /> -->
-
   <V-Card radius="small">
     <div class="columns is-multiline">
       <div
         v-if="!loading"
         class="d-flex justify-content-center column is-12 mb-4"
       >
+        <p></p>
         <div class="text-center mr-6">
           <a
             target="_blank"

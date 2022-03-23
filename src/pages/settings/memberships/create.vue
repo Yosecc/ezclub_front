@@ -13,7 +13,8 @@ import { inputs } from '/@src/models/Memberships.ts'
 const isLoading = ref(true)
 
 onMounted(() => {
-  cleanUpModelInputs(inputs.value)
+  let campos = ['all_diciplines']
+  cleanUpModelInputs(inputs.value.filter((e) => !campos.includes(e.name)))
   getTaxes().then(() => {
     setInputValuesData(inputs, 'taxes_id', taxes)
   })

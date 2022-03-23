@@ -8,16 +8,25 @@ export const inventoryStatus = ref(false)
 
 export const addProduct = (product: any) => {
   const index = cart.value.findIndex((e) => e.product_id == product.id)
-
-  if (index == -1) {
-    cart.value.push({
-      product_id: product.id,
-      count: 1,
-      products_amount: product.price,
-      name: product.name,
-    })
+  if (product.stock && product.stock.current_stock > 0) {
+    if (index == -1) {
+      cart.value.push({
+        product_id: product.id,
+        count: 1,
+        products_amount: product.price,
+        name: product.name,
+        stock: product.stock.current_stock,
+      })
+    } else {
+      const cou = cart.value.find((e) => e.product_id == product.id).count + 1
+      if (cou <= product.stock.current_stock) {
+        cart.value.find((e) => e.product_id == product.id).count++
+      } else {
+        notyf.error('Sin Stock')
+      }
+    }
   } else {
-    cart.value.find((e) => e.product_id == product.id).count++
+    notyf.error('Sin Stock')
   }
 }
 
@@ -47,7 +56,11 @@ export const changeCountProduct = (type, element, key) => {
       cart.value.splice(key, 1)
     }
   } else {
-    element.count++
+    if (element.count + 1 <= element.stock) {
+      element.count++
+    } else {
+      notyf.error('Sin Stock')
+    }
   }
 }
 
@@ -56,8 +69,7 @@ export const changeCountProduct = (type, element, key) => {
 export const cash = ref(0)
 
 export const changeBack = computed(() => {
-  const calculo = cash.value - total.value
-
+  const calculo = parseFloat(cash.value) - parseFloat(total.value)
   if (calculo > 0) {
     return calculo
   }
@@ -66,8 +78,7 @@ export const changeBack = computed(() => {
 })
 
 export const addCash = (i) => {
-  console.log(i)
-  cash.value += i
+  cash.value = parseFloat(cash.value) + parseFloat(i)
 }
 
 export const typePayment = ref(null)

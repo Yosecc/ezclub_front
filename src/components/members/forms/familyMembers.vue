@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, defineProps, defineEmit, onMounted, watch } from 'vue'
-
+import { setInputModelData, viewInput, getInput } from '/@src/models/Mixin.ts'
+import { inputsInformation } from '/@src/models/Members.ts'
 const props = defineProps({
   type: {
     type: String,
@@ -74,9 +75,41 @@ const cantidadFamiliares = ref(0)
 const addFamily = () => {
   if (cantidadFamiliares.value > 0) {
     for (var i = 0; i < cantidadFamiliares.value; ++i) {
-      families.value.push(props.inputs)
+      const inputs = ref(JSON.parse(JSON.stringify(props.inputs)))
+      getInput(inputs.value, 'misma_direccion').change = mismaDirection
+      families.value.push(inputs.value)
     }
     // mostrar.value = true
+  }
+}
+
+const mismaDirection = function (inputsSteps) {
+  if (!this.model) {
+    setInputModelData(
+      inputsSteps,
+      'postal_code',
+      viewInput(inputsInformation.value, 'postal_code')
+    )
+    setInputModelData(
+      inputsSteps,
+      'country_id',
+      viewInput(inputsInformation.value, 'country_id')
+    )
+    setInputModelData(
+      inputsSteps,
+      'city_id',
+      viewInput(inputsInformation.value, 'city_id')
+    )
+    setInputModelData(
+      inputsSteps,
+      'state_id',
+      viewInput(inputsInformation.value, 'state_id')
+    )
+  } else {
+    setInputModelData(inputsSteps, 'postal_code', '')
+    setInputModelData(inputsSteps, 'country_id', '')
+    setInputModelData(inputsSteps, 'city_id', '')
+    setInputModelData(inputsSteps, 'state_id', '')
   }
 }
 </script>
@@ -90,7 +123,7 @@ const addFamily = () => {
     @changeStep="change"
   >
     <div v-if="mostrar">
-      <V-Card v-for="(family, ke) in inputsSteps" :key="ke" class="mb-4">
+      <V-Card v-for="(family, ke) in families" :key="ke" class="mb-4">
         <inputsLayaut
           :inputs-step="family"
           @changeSwitch="changeSwitchKey(ke)"

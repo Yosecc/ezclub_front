@@ -218,7 +218,9 @@ const colorCard = (member) => {
                   <span class="light-text">{{ item.id }}</span>
                 </div>
                 <div class="flex-table-cell" data-th="Membership Type">
-                  <span class="light-text">{{ item.membership.name }}</span>
+                  <span v-if="item.membership_members" class="light-text">{{
+                    item.membership_members.membership.name
+                  }}</span>
                 </div>
                 <div class="flex-table-cell is-media is-grow" data-th="Trainer">
                   <V-Avatar
