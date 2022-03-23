@@ -249,7 +249,7 @@ const newMembership = () => {
           class="mb-4 d-flex justify-content-between align-items-center"
           color="danger"
         >
-          <h3 class="title is-5 mb-0">Expired Membership</h3>
+          <h3 class="title is-5 mb-0">Filed Payment</h3>
           <div>
             <!-- <VButton class="mr-4"> Cancel membership </VButton> -->
             <VButton
@@ -260,7 +260,7 @@ const newMembership = () => {
               color="success"
               @click="renewMembership = true"
             >
-              Renew membership
+              Process Payment
             </VButton>
             <!--  -->
             <VButton
