@@ -63,7 +63,7 @@ const takePhoto = (event) => {
 
   <div class="columns is-multiline contentInputLayaut">
     <div class="column is-12">
-      <slot></slot>
+      <slot> </slot>
     </div>
     <div
       v-for="(input, key) in inputsStep"
@@ -170,7 +170,7 @@ const takePhoto = (event) => {
           />
         </div>
       </V-Field>
-      <!-- ['text','date','number','email','password', 'time'] -->
+      <!-- ['text','date','number','email','password', 'time', 'color'] -->
       <V-Field
         class="px-0 field"
         v-else-if="
@@ -182,6 +182,7 @@ const takePhoto = (event) => {
             'password',
             'hidden',
             'time',
+            'color',
           ].includes(input.typeInput)
         "
         :data-class="input.class"
@@ -199,6 +200,7 @@ const takePhoto = (event) => {
             :disabled="input.disabled ?? false"
             :maxLength="input.maxLength ?? ''"
             @keyup="input.keyUp ? input.keyUp($event, input) : null"
+            @change="input.change ? input.change($event, input) : null"
           />
         </V-Control>
       </V-Field>
@@ -231,6 +233,9 @@ const takePhoto = (event) => {
         :data-class="input.class"
         class="chucutu"
       >
+        <label class="label" v-if="input.isLabel" :for="input.name"
+          ><p>{{ input.placeholder }}</p></label
+        >
         <V-Control class="input-select" :has-error="input.hasError ?? false">
           <div class="select">
             <select v-model="input.model" :disabled="input.disabled ?? false">
@@ -433,6 +438,7 @@ const takePhoto = (event) => {
               v-model="input.model"
               :value="check.id"
               :label="!input.filter ? check.name : input.filter(check)"
+              :disabled="input.disabled ?? false"
               color="primary"
               :name="`check-${keyG}78-input${check.id}`"
               :id="`check-${keyG}78-inputid${check.id}`"

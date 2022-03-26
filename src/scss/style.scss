@@ -216,3 +216,13 @@ label.checkbox span {
     color: #2d2d31 !important;
   }
 }
+
+[disabled='false'].radio,
+[disabled='false'].checkbox,
+fieldset[disabled='false'] .radio,
+fieldset[disabled='false'] .checkbox,
+.radio input[disabled='false'],
+.checkbox input[disabled='false'] {
+  color: #a2a5b9;
+  cursor: pointer !important;
+}

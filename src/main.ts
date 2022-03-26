@@ -13,7 +13,7 @@
 
 import { createApp } from 'vue'
 import { createHead } from '@vueuse/head'
-import VCalendar from 'v-calendar'
+// import VCalendar from 'v-calendar'
 import VueMultiselect from '@vueform/multiselect'
 import VueSlider from '@vueform/slider'
 import VueApexCharts from 'vue3-apexcharts'
@@ -59,7 +59,8 @@ const head = createHead()
 app.use(router)
 app.use(i18n)
 app.use(head)
-app.use(VCalendar)
+// app.use(VCalendar)
+
 app.use(VueApexCharts)
 app.use(VueCKEditor)
 app.use(VueTippy, {

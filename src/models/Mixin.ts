@@ -134,6 +134,12 @@ export const getValueInput = (inputs: any, name: any) => {
     .values.find((i) => i.id == viewInput(inputs, name))
 }
 
+export const getValuesInput = (inputs: any, name: any) => {
+  return inputs
+    .find((e) => e.name == name)
+    .values.filter((i) => viewInput(inputs, name).includes(i.id))
+}
+
 export const setInputValuesData = (inputs, name, data) => {
   if (inputs.value == undefined) {
     return (inputs.find((element: any) => element.name == name).values = data)
