@@ -8,6 +8,7 @@ import {
   calcularMeses,
   getValueInput,
   getInput,
+  notyf,
 } from '/@src/models/Mixin.ts'
 import { getLocationsDiciplines } from '/@src/models/Diciplines.ts'
 import {
@@ -17,11 +18,13 @@ import {
 } from '/@src/models/PaymentMethodsData.ts'
 
 import moment from 'moment'
-
+import { Api, API_WEB_URL } from '/@src/services'
 import {
+  member,
   idMember,
   idMemberMembership,
   inputsMembership,
+  storeFirma,
 } from '/@src/models/Members.ts'
 
 const props = defineProps({
@@ -256,6 +259,7 @@ watch(
   () => idMember,
   (data, prevData) => {
     cardPayment.value = true
+    setLoading.value = false
   }
 )
 
@@ -285,6 +289,22 @@ const isStripe = computed(() => {
   }
   return false
 })
+
+const showBootomsPayment = ref(true)
+const PaymentAction = (data) => {
+  typePago.value = 0
+  showBootomsPayment.value = false
+}
+
+const isSign = ref(false)
+const onSign = (base64) => {
+  storeFirma(base64, idMemberMembership.value).then((response) => {
+    notyf.success('Sign Success')
+  })
+}
+
+const setLoading = ref(false)
+const disableSave = ref(false)
 </script>
 
 <template>
@@ -296,6 +316,9 @@ const isStripe = computed(() => {
     @changeStep="change"
     v-if="viewInput(membershipMember.inputs, 'memberships_id') != ''"
   >
+    <VCard color="success" class="mb-3" v-if="!showBootomsPayment">
+      <p class="title is-3">Payment Success</p>
+    </VCard>
     <table class="table is-hoverable is-striped is-fullwidth">
       <thead>
         <tr>
@@ -355,6 +378,17 @@ const isStripe = computed(() => {
 
           <td>{{ tax.text }}</td>
           <td>{{ moneda(subtotalMemberMembership) }}</td>
+        </tr>
+        <tr>
+          <td colspan="9">
+            <signComponent
+              v-if="!showBootomsPayment"
+              @onSign="onSign"
+              :is-sign="!isSign"
+              :contract="`contract_${idMember}_${idMemberMembership}_${idMember}.pdf`"
+              :url-contract="`${API_WEB_URL}generateContract/${idMember}`"
+            />
+          </td>
         </tr>
       </tbody>
       <tbody
@@ -480,20 +514,33 @@ const isStripe = computed(() => {
         </tr>
       </tbody>
     </table>
-    <div class="d-flex justify-content-between">
-      <VButton color="success" @click="change(6, 3), (typePago = 3)">
-        Card Payment
-      </VButton>
+    <div v-if="showBootomsPayment" class="d-flex justify-content-between">
+      <VLoader size="small" :active="setLoading">
+        <VButton
+          color="success"
+          @click="change(6, 3), (typePago = 3), (setLoading = true)"
+        >
+          Card Payment
+        </VButton>
+      </VLoader>
       <VButton color="warning" @click="openModalCash = true">
         Cash Payment
       </VButton>
     </div>
+
     <!-- <p>{{ idMemberMembership }}</p> -->
-    <stripeForm
+    <!-- <stripeForm
       v-if="isStripe"
       :amount="total"
       :id="idMember"
       :member_membership="idMemberMembership"
+    /> -->
+    <stripeAddCard
+      v-if="isStripe"
+      :amount="total"
+      :id="idMember"
+      :member_membership="idMemberMembership"
+      @PaymentAction="PaymentAction"
     />
     <VModal
       :open="openModalCash"

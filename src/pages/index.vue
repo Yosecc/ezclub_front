@@ -102,6 +102,11 @@ watch(
   <SidebarLayout>
     <!-- Content Wrapper -->
     <div class="page-content-inner">
+      <!-- <stripeAddCard
+        :amount="10"
+        :id="70"
+        :member_membership="71"
+      /> -->
       <div class="d-flex mb-5">
         <V-Field addons>
           <V-Control>

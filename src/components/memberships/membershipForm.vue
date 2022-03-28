@@ -131,7 +131,7 @@ const saveData = () => {
     })
   }
   data.amounts = amountsData
-
+  console.log(data)
   if (props.type == 'create') {
     saveMembership(data)
       .then((response) => {

@@ -14,6 +14,7 @@ import {
   idMember,
   idMemberMembership,
   membershipsData,
+  member,
 } from '/@src/models/Members.ts'
 
 import { getMeberships, memberships } from '/@src/models/Memberships.ts'
@@ -22,6 +23,7 @@ import { getDiscounts } from '/@src/models/Discounts.ts'
 import {
   setInputValuesData,
   perpareDataInputs,
+  notyf,
   cleanUpModelInputs,
 } from '/@src/models/Mixin.ts'
 
@@ -294,14 +296,17 @@ const sendData = (payment, cashObj) => {
   // console.log(...fd)
   saveMember(fd)
     .then((response) => {
+      console.log(response)
       idMember.value = response.data.member.id
       idMemberMembership.value = response.data.member.membership_members.id
-
-      if (payment == 1) {
-        window.location.href = `${FRONTEND_URL.value}members/process?payment_type=1&id=${idMember.value}&redirect_status=succeeded`
-      }
+      member.value = response.data.member
+      console.log(member.value)
+      // if (payment == 1) {
+      //   window.location.href = `${FRONTEND_URL.value}members/process?payment_type=1&id=${idMember.value}&redirect_status=succeeded`
+      // }
     })
     .catch((error) => {
+      console.log(error)
       for (var i in error.response.data.errores) {
         error.response.data.errores[i].forEach((e) => {
           notyf.error(`${i}: ${e}`)
