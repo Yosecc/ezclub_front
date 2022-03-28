@@ -1,0 +1,1 @@
+import{d as e,y as s,o as t,h as a}from"./vendor.685e53b0.js";import{p as o}from"./sidebarLayoutState.b1e70c1b.js";const i={class:"page-content-inner"};var r=e({expose:[],setup:e=>(o.value="List View 1",s({title:"List View 1 - Sidebar - Vuero"}),(e,s)=>(t(),a("div",i)))});export default r;
