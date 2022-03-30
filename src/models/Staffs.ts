@@ -68,7 +68,7 @@ export const inputsInformation = ref([
     name: 'second_name',
     placeholder: 'Middle Name',
     model: '',
-    required: true,
+    required: false,
     class: 'is-4',
   },
   {
