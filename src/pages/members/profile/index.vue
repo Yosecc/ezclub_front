@@ -129,7 +129,7 @@ onMounted(() => {
 
 const mountMember = async () => {
   await getMember(route.query.id).then((response) => {
-    // console.log(response.data)
+    console.log(response.data.membership_members)
     for (var i in response.data) {
       if (i == 'select_type') {
         if (response.data[i] == 'Individual') {
@@ -138,8 +138,16 @@ const mountMember = async () => {
           getInput(inputsInformation.value, 'select_type').model = true
         }
       } else if (i == 'membership_members') {
+        if (!response.data[i]) {
+          console.error('no posee una membresia :(')
+          return
+        }
         for (var e in response.data[i]) {
           if (e == 'memberships_location') {
+            if (!response.data[i][e]) {
+              console.error('no posee una locacion :(')
+              return
+            }
             getInput(membershipsData.value, 'locations_id').model =
               response.data[i][e].companies_locations_id
 
@@ -150,6 +158,7 @@ const mountMember = async () => {
             })
           } else if (e == 'recurrence') {
             let recurrencesData = []
+
             response.data[i].membership.amounts.forEach((element) => {
               let recurrencesD = recurrences.value.find(
                 (e) => e.id == element.recurrences_id
@@ -160,6 +169,16 @@ const mountMember = async () => {
 
             getInput(membershipsData.value, 'recurrences_id').model =
               response.data[i].recurrences_id
+
+            if (
+              !recurrencesData.find(
+                (e) => e.id == response.data[i].recurrences_id
+              )
+            ) {
+              console.error('no tiene un plan de membresia :( recurrences')
+              return
+            }
+
             getInput(membershipsData.value, 'amount').model =
               recurrencesData.find(
                 (e) => e.id == response.data[i].recurrences_id

@@ -25,7 +25,7 @@ const paginationData = ref([])
 
 const isLoading = ref(true)
 const defalA = ref('All')
-
+const categoryB = ref('All')
 const getMembers = async (
   filter,
   value = '',
@@ -33,6 +33,7 @@ const getMembers = async (
   category = null,
   reload = true
 ) => {
+  isLoading.value = true
   filterDate.value = filter
   await Api.get('accessday', {
     params: {
@@ -44,11 +45,15 @@ const getMembers = async (
   })
     .then((response) => {
       members.value = response.data.members
+      isLoading.value = false
+
       if (reload) {
         reloadForm()
       }
     })
     .catch((error) => {
+      isLoading.value = false
+
       console.log(error)
     })
 }
@@ -64,7 +69,7 @@ const filterChange = (val) => {
 }
 
 onMounted(() => {
-  getMembers('all', filters.value, route.query.page, 'Adult')
+  getMembers('all', filters.value, route.query.page, null)
 })
 
 const reloadForm = () => {
@@ -75,8 +80,11 @@ const reloadForm = () => {
 }
 const membersData = ref([])
 const computedMembers = computed(() => {
-  members.value.forEach((element) => {
-    membersData.value.push(element.member)
+  membersData.value = []
+  members.value.forEach((e) => {
+    if (e != null) {
+      membersData.value.push(e)
+    }
   })
   return membersData.value
 })
@@ -102,11 +110,6 @@ watch(
   <SidebarLayout>
     <!-- Content Wrapper -->
     <div class="page-content-inner">
-      <!-- <stripeAddCard
-        :amount="10"
-        :id="70"
-        :member_membership="71"
-      /> -->
       <div class="d-flex mb-5">
         <V-Field addons>
           <V-Control>
@@ -179,58 +182,84 @@ watch(
             />
           </V-Control>
         </V-Field>
-        <!-- <V-Buttons class="ml-0">
-          <V-Button
-            :to="{ name: 'members-create' }"
-            color="primary"
-            icon="fas fa-plus"
-            elevated
-          >
-            Add Members
-          </V-Button>
-        </V-Buttons> -->
       </div>
 
       <VPlaceload v-if="isLoading" height="500px" />
-      <VTabs
-        v-else
-        slider
-        type="rounded"
-        :selected="defalA"
-        :tabs="[
-          { label: 'Adult', value: 'Adult' },
-          { label: 'Minor', value: 'Minor' },
-          { label: 'Prospects', value: 'Prospect' },
-        ]"
-        @changeTab="change"
-      >
-        <template #tab="{ activeValue }">
-          <MembersListV2
-            v-if="activeValue === 'Adult'"
-            name="Adult"
-            :members="computedMembers"
-            :pagination-data="paginationData"
-            :filters="filters"
-            :filter-change="filterChange"
-          />
-
-          <MembersListV2
-            v-else-if="activeValue === 'Prospect'"
-            name="Prospect"
-            :members="computedMembers"
-            :filters="filters"
-            :filter-change="filterChange"
-          />
-
-          <MembersListV2
-            v-else-if="activeValue === 'Minor'"
-            name="Prospect"
-            :members="computedMembers"
-            :filters="filters"
-            :filter-change="filterChange"
-          />
-        </template>
-      </VTabs>
+      <div v-else>
+        <div class="d-flex justify-content-center mb-5">
+          <V-Field addons>
+            <V-Control>
+              <V-Button
+                :color="categoryB == 'All' ? 'primary' : undefined"
+                @click="getMembers('all'), (categoryB = 'All')"
+                rounded
+              >
+                All
+              </V-Button>
+            </V-Control>
+            <V-Control>
+              <V-Button
+                :color="categoryB == 'Adult' ? 'primary' : undefined"
+                @click="
+                  getMembers(
+                    'all',
+                    filters.value,
+                    route.query.page,
+                    'Adult',
+                    false
+                  ),
+                    (categoryB = 'Adult')
+                "
+                rounded
+              >
+                Adult
+              </V-Button>
+            </V-Control>
+            <V-Control>
+              <V-Button
+                :color="categoryB == 'Minor' ? 'primary' : undefined"
+                @click="
+                  getMembers(
+                    'all',
+                    filters.value,
+                    route.query.page,
+                    'Minor',
+                    false
+                  ),
+                    (categoryB = 'Minor')
+                "
+                rounded
+              >
+                Minor
+              </V-Button>
+            </V-Control>
+            <V-Control>
+              <V-Button
+                :color="categoryB == 'Prospect' ? 'primary' : undefined"
+                @click="
+                  getMembers(
+                    'all',
+                    filters.value,
+                    route.query.page,
+                    'Prospect',
+                    false
+                  ),
+                    (categoryB = 'Prospect')
+                "
+                rounded
+              >
+                Prospect
+              </V-Button>
+            </V-Control>
+          </V-Field>
+        </div>
+        <MembersListV2
+          :members="computedMembers"
+          :pagination-data="paginationData"
+          :filters="filters"
+          :filter-change="filterChange"
+        />
+      </div>
     </div>
   </SidebarLayout>
 </template>
