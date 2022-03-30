@@ -185,7 +185,7 @@ export const inputs = ref([
   {
     typeInput: 'number',
     name: 'penalty',
-    placeholder: 'Penalty $',
+    placeholder: 'Late fee',
     model: '',
     required: false,
     class: 'is-2',
@@ -193,7 +193,7 @@ export const inputs = ref([
   {
     typeInput: 'number',
     name: 'days_penalty',
-    placeholder: 'Days Penalty',
+    placeholder: 'Days late fee',
     model: 6,
     required: false,
     class: 'is-2',
