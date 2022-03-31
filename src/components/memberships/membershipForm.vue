@@ -15,6 +15,7 @@ import {
   notyf,
   perpareDataInputs,
   cleanUpModelInputs,
+  getInput,
 } from '/@src/models/Mixin.ts'
 
 const router = useRouter()
@@ -87,8 +88,10 @@ const changeLocation = (data) => {
     })
     setInputValuesData(inputs, 'locations_options', dat)
   }
+
   getLocationsDiciplines(locations.value.model).then((response) => {
     setInputValuesData(inputs, 'diciplines', response.data)
+    getInput(inputs.value, 'diciplines').values.push({ id: 0, name: 'All' })
   })
 }
 

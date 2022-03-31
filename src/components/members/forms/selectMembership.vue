@@ -106,6 +106,8 @@ const inputsMembershipInputs = computed(() => {
 
   const inputsMember = ref(JSON.parse(JSON.stringify(membershipsData.value)))
 
+  // console.log(getInput(inputsMember.value,'memberships_id'))
+
   setInputsEvents(inputsMember.value)
 
   inputsMembership.value.push({

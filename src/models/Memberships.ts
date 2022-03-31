@@ -61,6 +61,11 @@ export const putStatus = async (membership) => {
   return response
 }
 
+export const getMembershipDiciplines = async (id) => {
+  const response = await Api.get(`memberships/diciplines/${id}`)
+  return response
+}
+
 import { getInput } from '/@src/models/Mixin.ts'
 
 export const inputs = ref([
@@ -82,41 +87,12 @@ export const inputs = ref([
     class: 'is-6',
     required: true,
   },
-
-  {
-    typeInput: 'switchEventChangeInput',
-    name: 'all_diciplines',
-    values: ['', 'All Diciplines'],
-    model: false,
-    default: false,
-    required: false,
-    class: 'is-2',
-    change: function (inputsStep: any) {
-      getInput(inputsStep, 'diciplines_number').disabled = !this.model
-      getInput(inputsStep, 'diciplines_number').required = this.model
-      if (!this.model) {
-        getInput(inputsStep, 'diciplines').values.forEach((e: any) => {
-          getInput(inputsStep, 'diciplines').model.push(e.id)
-        })
-      } else {
-        getInput(inputsStep, 'diciplines').model = []
-      }
-    },
-  },
-  {
-    typeInput: 'number',
-    name: 'diciplines_number',
-    placeholder: 'Number discipline access',
-    model: '',
-    class: 'is-4',
-    required: true,
-  },
   {
     typeInput: 'text',
     name: 'description',
     placeholder: 'Membership Description',
     model: '',
-    class: 'is-12',
+    class: 'is-6',
     required: true,
   },
   {
@@ -146,24 +122,73 @@ export const inputs = ref([
     values: [],
     class: 'is-12',
     required: false,
-    change: function (event: any, inputsStep: any) {},
-    click: function (event: any, inputsStep: any, id: number) {
-      const number = getInput(inputsStep, 'diciplines_number').model
-      if (number != '') {
-        if (number <= this.model.length) {
-          event.returnValue = false
+    change: function (event: any, inputsStep: any) {
+      console.log(this.model)
+      if (this.model.includes(0) || this.model.includes('All')) {
+        getInput(inputsStep, 'diciplines').model = []
+        getInput(inputsStep, 'diciplines').values.forEach((e: any) => {
+          getInput(inputsStep, 'diciplines').model.push(e.id)
+        })
+      }
+      if (getInput(inputsStep, 'all_diciplines').model) {
+        if (this.model.length <= this.values.length) {
+          getInput(inputsStep, 'all_diciplines').model = false
         }
-        if (number == this.model.length) {
-          if (this.model.includes(id)) {
-            const index = this.model.findIndex((e) => e == id)
-            this.model.splice(1, index)
-          } else {
-            notyf.error('You must select a limit of ' + number + ' diciplines')
-          }
+      }
+      if (!getInput(inputsStep, 'all_diciplines').model) {
+        if (this.model.length == this.values.length) {
+          // getInput(inputsStep, 'all_diciplines').model = true
         }
       }
     },
+    click: function (event: any, inputsStep: any, id: number) {
+      // const number = getInput(inputsStep, 'diciplines_number').model
+      // console.log(number)
+      // if (number != '') {
+      //   if (number <= this.model.length) {
+      //     event.returnValue = false
+      //   }
+      //   if (number == this.model.length) {
+      //     if (this.model.includes(id)) {
+      //       const index = this.model.findIndex((e) => e == id)
+      //       this.model.splice(1, index)
+      //     } else {
+      //       notyf.error('You must select a limit of ' + number + ' diciplines')
+      //     }
+      //   }
+      // }
+    },
   },
+  {
+    typeInput: 'number',
+    name: 'diciplines_number',
+    placeholder: 'Number discipline access',
+    model: '',
+    class: 'is-4',
+    required: true,
+  },
+  {
+    typeInput: 'switchEventChangeInput',
+    name: 'all_diciplines',
+    values: ['', 'All Diciplines'],
+    model: false,
+    default: false,
+    required: false,
+    class: 'is-2',
+    change: function (inputsStep: any) {
+      getInput(inputsStep, 'diciplines_number').disabled = !this.model
+      getInput(inputsStep, 'diciplines_number').required = this.model
+      if (!this.model) {
+        getInput(inputsStep, 'diciplines').values.forEach((e: any) => {
+          getInput(inputsStep, 'diciplines').model.push(e.id)
+        })
+      } else {
+        getInput(inputsStep, 'diciplines').model = []
+        getInput(inputsStep, 'diciplines_number').model = ''
+      }
+    },
+  },
+
   {
     typeInput: 'inputsGroup',
     name: 'amounts',

@@ -99,7 +99,7 @@ const initialize = async () => {
 const nameCard = ref(null)
 const handleSubmit = async (e) => {
   e.preventDefault()
-  setLoading.value = true
+  // setLoading.value = true
 
   // const { error, paymentMethod }  = await stripe.createPaymentMethod({
   //   type: 'card',

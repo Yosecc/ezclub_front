@@ -4,14 +4,13 @@ import { recurrences } from '/@src/models/Recurrences.ts'
 import { getLocationsDiciplines } from '/@src/models/Diciplines.ts'
 import { validateCupon } from '/@src/models/Discounts.ts'
 import {
-  // viewInput,
   setInputValuesData,
   setInputModelData,
   getValueInput,
-  // hasErrors,
   getInput,
   notyf,
 } from '/@src/models/Mixin.ts'
+import { getMembershipDiciplines } from '/@src/models/Memberships.ts'
 
 import moment from 'moment'
 
@@ -77,7 +76,7 @@ export const inputsInformation = ref([
     name: 'second_name',
     placeholder: 'Middle Name',
     model: '',
-    required: true,
+    required: false,
     class: 'is-4',
     categories: ['Adult', 'Minor', 'Prospect'],
     typeMember: ['Individual', 'Company'],
@@ -1028,17 +1027,20 @@ const change_memberships_id = function (inputsStep: any) {
 
   setInputValuesData(inputsStep, 'recurrences_id', recurrencesData)
 
-  const numeroDiciplinas = this.values.find(
-    (e: any) => e.id == this.model
-  ).diciplines_number
+  getMembershipDiciplines(this.model).then((response) => {
+    setInputValuesData(inputsStep, 'diciplines', response.data)
+    getInput(inputsStep, 'diciplines').values.push({ id: 0, name: 'All' })
+    const numeroDiciplinas = this.values.find(
+      (e: any) => e.id == this.model
+    ).diciplines_number
 
-  if (numeroDiciplinas == 0) {
-    getInput(inputsStep, 'diciplines').required = false
-  } else {
-    getInput(inputsStep, 'diciplines').required = true
-  }
-
-  changeDiciplinesAll(inputsStep)
+    if (numeroDiciplinas == 0) {
+      getInput(inputsStep, 'diciplines').required = false
+    } else {
+      getInput(inputsStep, 'diciplines').required = true
+    }
+    changeDiciplinesAll(inputsStep)
+  })
 }
 
 const change_recurrences_id = function (inputsStep: any) {
@@ -1050,11 +1052,11 @@ const change_recurrences_id = function (inputsStep: any) {
 }
 
 const change_locations_id = function (inputsStep: any) {
-  getLocationsDiciplines([this.model]).then((response: any) => {
-    getInput(inputsStep, 'diciplines').model = []
-    setInputValuesData(inputsStep, 'diciplines', response.data)
-    changeDiciplinesAll(inputsStep)
-  })
+  // getLocationsDiciplines([this.model]).then((response: any) => {
+  //   getInput(inputsStep, 'diciplines').model = []
+  //   setInputValuesData(inputsStep, 'diciplines', response.data)
+  //   changeDiciplinesAll(inputsStep)
+  // })
 }
 
 const changeDiciplinesAll = (inputsStep: any) => {

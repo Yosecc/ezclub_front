@@ -518,7 +518,7 @@ const disableSave = ref(false)
       <VLoader size="small" :active="setLoading">
         <VButton
           color="success"
-          @click="change(6, 3), (typePago = 3), (setLoading = true)"
+          @click="change(6, 3), (typePago = 3), (setLoading = false)"
         >
           Card Payment
         </VButton>
