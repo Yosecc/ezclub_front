@@ -415,15 +415,20 @@ const disableSave = ref(false)
             </td>
           </tr>
           <tr style="text-align: right">
-            <td colspan="3" style="text-align: right">
-              Tax {{ presupuesto.tax.percentage }}%
-            </td>
-            <td>{{ presupuesto.quote.total_details.amount_tax }}</td>
-          </tr>
-          <tr style="text-align: right">
             <td colspan="3" style="text-align: right"><b>Subtotal</b></td>
             <td>{{ monedaDecimal(presupuesto.quote.amount_subtotal * 10) }}</td>
           </tr>
+          <tr style="text-align: right">
+            <td colspan="3" style="text-align: right">
+              Tax {{ presupuesto.tax.percentage }}%
+            </td>
+            <td>
+              {{
+                monedaDecimal(presupuesto.quote.total_details.amount_tax * 10)
+              }}
+            </td>
+          </tr>
+
           <tr style="text-align: right">
             <td colspan="3" style="text-align: right"><b>Total</b></td>
             <td>{{ monedaDecimal(presupuesto.quote.amount_total * 10) }}</td>
