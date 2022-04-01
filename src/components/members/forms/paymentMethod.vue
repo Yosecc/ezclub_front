@@ -1,5 +1,13 @@
 <script setup lang="ts">
-import { computed, ref, reactive, defineProps, defineEmit, watch } from 'vue'
+import {
+  computed,
+  ref,
+  reactive,
+  defineProps,
+  defineEmit,
+  watch,
+  onMounted,
+} from 'vue'
 import {
   viewInput,
   setInputValuesData,
@@ -9,6 +17,7 @@ import {
   getValueInput,
   getInput,
   notyf,
+  monedaDecimal,
 } from '/@src/models/Mixin.ts'
 import { getLocationsDiciplines } from '/@src/models/Diciplines.ts'
 import {
@@ -25,6 +34,8 @@ import {
   idMemberMembership,
   inputsMembership,
   storeFirma,
+  error,
+  getPresupuesto,
 } from '/@src/models/Members.ts'
 
 const props = defineProps({
@@ -54,6 +65,28 @@ const props = defineProps({
   },
 })
 
+onMounted(() => {
+  generaPresupuesto()
+})
+const presupuesto = ref(null)
+const generaPresupuesto = async () => {
+  let data = {
+    memberships_id: getInput(membershipMember.value.inputs, 'memberships_id')
+      .model,
+    recurrences_id: getInput(membershipMember.value.inputs, 'recurrences_id')
+      .model,
+    is_initiation_fee:
+      getInput(membershipMember.value.inputs, 'is_initiation_fee').model
+        .length == 0
+        ? true
+        : false,
+  }
+
+  getPresupuesto(data).then((response) => {
+    presupuesto.value = response.data
+    // console.log(resoponse.data)
+  })
+}
 const isLoading = ref(false)
 
 const emit = defineEmit(['changeStep', 'returnData'])
@@ -263,6 +296,12 @@ watch(
   }
 )
 
+watch(error.value, () => {
+  if (!error.value) {
+    setLoading.value = false
+  }
+})
+
 const openModalCash = ref(false)
 
 const cash = ref(0)
@@ -289,9 +328,17 @@ const isStripe = computed(() => {
   }
   return false
 })
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const showBootomsPayment = ref(true)
 const PaymentAction = (data) => {
+  router.push({
+    name: 'members-profile',
+    query: { id: idMember.value },
+    hash: '#memberMembership',
+  })
+
   typePago.value = 0
   showBootomsPayment.value = false
 }
@@ -319,213 +366,94 @@ const disableSave = ref(false)
     <VCard color="success" class="mb-3" v-if="!showBootomsPayment">
       <p class="title is-3">Payment Success</p>
     </VCard>
-    <table class="table is-hoverable is-striped is-fullwidth">
-      <thead>
-        <tr>
-          <th scope="col">Members</th>
-          <th scope="col">Membership Name</th>
-          <th scope="col">Recurrence</th>
-          <th scope="col">Prorated</th>
-          <th scope="col">Membership Cost</th>
-          <th scope="col">Initiation Fee</th>
-          <th scope="col">Discount</th>
-          <th scope="col">Taxes</th>
-          <th scope="col">Sub Total</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>
-            <p>
-              <b
-                >{{ viewInput(membershipMember.member, 'name') }}
-                {{ viewInput(membershipMember.member, 'second_name') }}
-                {{ viewInput(membershipMember.member, 'last_name') }}</b
-              >
-            </p>
-          </td>
-          <td v-if="infoMembership.legnth != 0">{{ infoMembership.name }}</td>
-          <td v-if="recurrence.length != 0">{{ recurrence.descriptions }}</td>
-          <td v-if="recurrence.length != 0">
-            <span v-if="recurrence.days >= 30">
-              {{ prorated.days }} days : <br />
-              - {{ moneda(prorated.amount) }}
-            </span>
-            <span v-else>-</span>
-          </td>
-          <td>{{ moneda(membershipCost(recurrence)) }}</td>
-          <td>
-            <span
-              v-if="
-                !viewInput(membershipMember.inputs, 'is_initiation_fee').length
-              "
-            >
-              {{ moneda(initiationFeeMember) }}
-            </span>
-            <span v-else>{{ moneda(0) }}</span>
-          </td>
-          <td>
-            <span v-if="cuponMember.data != null">
-              <span v-if="cuponMember.data.type == 'dolar'">
-                - {{ moneda(cuponMember.data.value) }}</span
-              >
-              <span v-if="cuponMember.data.type == 'percentaje'">
-                {{ cuponMember.data.value }}%</span
-              >
-            </span>
-            <span v-else>-</span>
-          </td>
-
-          <td>{{ tax.text }}</td>
-          <td>{{ moneda(subtotalMemberMembership) }}</td>
-        </tr>
-        <tr>
-          <td colspan="9">
-            <signComponent
-              v-if="!showBootomsPayment"
-              @onSign="onSign"
-              :is-sign="!isSign"
-              :contract="`contract_${idMember}_${idMemberMembership}_${idMember}.pdf`"
-              :url-contract="`${API_WEB_URL}generateContract/${idMember}`"
-            />
-          </td>
-        </tr>
-      </tbody>
-      <tbody
-        v-for="(familiar, keyj) in membershipsFamilies"
-        :key="`familiar${keyj}`"
-      >
-        <tr
-          v-if="
-            viewInput(familiar.inputs, 'memberships_id') != '' &&
-            viewInput(familiar.inputs, 'recurrences_id') != ''
-          "
-        >
-          <td>
-            <p>
-              <b>
-                {{ viewInput(familiar.member, 'name') }}
-                {{ viewInput(familiar.member, 'second_name') }}
-                {{ viewInput(familiar.member, 'last_name') }}
-              </b>
-            </p>
-          </td>
-          <td>{{ getValueInput(familiar.inputs, 'memberships_id').name }}</td>
-          <td>
-            {{ getValueInput(familiar.inputs, 'recurrences_id').descriptions }}
-          </td>
-          <td>
-            <span
-              v-if="getValueInput(familiar.inputs, 'recurrences_id').days >= 30"
-            >
+    <VCard class="mb-4" v-if="presupuesto">
+      <h1 class="title is-6"></h1>
+      <table class="table is-hoverable is-striped is-fullwidth">
+        <thead>
+          <tr>
+            <th scope="col">Membership Name</th>
+            <th scope="col">Plan</th>
+            <th scope="col">Cost</th>
+            <!-- <th scope="col">Initiation Fee</th> -->
+            <!-- <th scope="col">Discount</th> -->
+            <!-- <th scope="col">Taxes</th> -->
+            <th scope="col">Import</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>{{ presupuesto.membership.name }}</td>
+            <td>{{ presupuesto.quote.computed.recurring.interval }}</td>
+            <td>
               {{
-                proratedMethod(getValueInput(familiar.inputs, 'recurrences_id'))
-                  .days
-              }}
-              days : <br />
-              -
-              {{
-                moneda(
-                  proratedMethod(
-                    getValueInput(familiar.inputs, 'recurrences_id')
-                  ).amount
+                monedaDecimal(
+                  presupuesto.quote.computed.recurring.amount_subtotal * 10
                 )
               }}
-            </span>
-            <span v-else>-</span>
-          </td>
-          <td>
-            {{
-              moneda(
-                membershipCost(getValueInput(familiar.inputs, 'recurrences_id'))
-              )
-            }}
-          </td>
-          <td>
-            <span
-              v-if="!viewInput(familiar.inputs, 'is_initiation_fee').length"
-            >
-              {{ moneda(viewInput(familiar.inputs, 'initiation_fee')) }}
-            </span>
-            <span v-else>{{ moneda(0) }}</span>
-          </td>
-          <td>
-            <span v-if="getInput(familiar.inputs, 'discount').data != null">
-              <span
-                v-if="
-                  getInput(familiar.inputs, 'discount').data.type == 'dolar'
-                "
-              >
-                -
-                {{
-                  moneda(getInput(familiar.inputs, 'discount').data.value)
-                }}</span
-              >
-              <span
-                v-if="
-                  getInput(familiar.inputs, 'discount').data.type ==
-                  'percentaje'
-                "
-              >
-                {{ getInput(familiar.inputs, 'discount').data.value }}%</span
-              >
-            </span>
-            <span v-else>-</span>
-          </td>
-          <td>
-            {{ objTax(getValueInput(familiar.inputs, 'memberships_id')).text }}
-          </td>
+            </td>
+            <td style="text-align: right">
+              {{
+                monedaDecimal(
+                  presupuesto.quote.computed.recurring.amount_subtotal * 10
+                )
+              }}
+            </td>
+          </tr>
+          <tr
+            v-if="
+              getInput(membershipMember.inputs, 'is_initiation_fee').model
+                .length == 0
+            "
+          >
+            <td>{{ presupuesto.membership.name }}</td>
 
-          <td>
-            {{
-              moneda(
-                subtotalFamily({
-                  membershipCost: membershipCost(
-                    getValueInput(familiar.inputs, 'recurrences_id')
-                  ),
-                  is_initiation_fee: viewInput(
-                    familiar.inputs,
-                    'is_initiation_fee'
-                  ),
-                  initiation_fee: viewInput(familiar.inputs, 'initiation_fee'),
-                  objTax: objTax(
-                    getValueInput(familiar.inputs, 'memberships_id')
-                  ),
-                  prorated: proratedMethod(
-                    getValueInput(familiar.inputs, 'recurrences_id')
-                  ).amount,
-                  discount: getInput(familiar.inputs, 'discount').data,
-                  is_vet: getInput(familiar.member, 'leo_vet_fr').model.length,
-                  discount_vet: getValueInput(familiar.inputs, 'memberships_id')
-                    .descuento_vet,
-                })
-              )
-            }}
-          </td>
-        </tr>
-      </tbody>
-      <tbody>
-        <tr>
-          <td style="text-align: right" colspan="8">Total</td>
+            <td>Initiation Fee</td>
+            <td>{{ monedaDecimal(presupuesto.membership.initiation_fee) }}</td>
 
-          <td class="is-end">
-            {{ moneda(total) }}
-          </td>
-        </tr>
-      </tbody>
-    </table>
+            <td style="text-align: right">
+              {{ presupuesto.membership.initiation_fee }}
+            </td>
+          </tr>
+          <tr style="text-align: right">
+            <td colspan="3" style="text-align: right">
+              Tax {{ presupuesto.tax.percentage }}%
+            </td>
+            <td>{{ presupuesto.quote.total_details.amount_tax }}</td>
+          </tr>
+          <tr style="text-align: right">
+            <td colspan="3" style="text-align: right"><b>Subtotal</b></td>
+            <td>{{ monedaDecimal(presupuesto.quote.amount_subtotal * 10) }}</td>
+          </tr>
+          <tr style="text-align: right">
+            <td colspan="3" style="text-align: right"><b>Total</b></td>
+            <td>{{ monedaDecimal(presupuesto.quote.amount_total * 10) }}</td>
+          </tr>
+          <tr style="text-align: right">
+            <td colspan="3" style="text-align: right">Total recurrente</td>
+            <td>
+              {{
+                monedaDecimal(
+                  presupuesto.quote.computed.recurring.amount_total * 10
+                )
+              }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </VCard>
+
     <div v-if="showBootomsPayment" class="d-flex justify-content-between">
       <VLoader size="small" :active="setLoading">
         <VButton
           color="success"
-          @click="change(6, 3), (typePago = 3), (setLoading = false)"
+          @click="change(6, 3), (typePago = 3), (setLoading = true)"
         >
           Card Payment
         </VButton>
       </VLoader>
-      <VButton color="warning" @click="openModalCash = true">
+      <!-- <VButton color="warning" @click="openModalCash = true">
         Cash Payment
-      </VButton>
+      </VButton> -->
     </div>
 
     <!-- <p>{{ idMemberMembership }}</p> -->

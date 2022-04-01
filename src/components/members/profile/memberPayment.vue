@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, reactive, defineEmit, watch } from 'vue'
+import { computed, ref, reactive, defineEmit, watch, onMounted } from 'vue'
 import {
   viewInput,
   setInputValuesData,
@@ -32,6 +32,10 @@ import {
 const isLoading = ref(false)
 
 const stripeStatus = ref(false)
+
+onMounted(() => {
+  console.log('se monto el payment')
+})
 
 //  MEMBER //////////////////
 

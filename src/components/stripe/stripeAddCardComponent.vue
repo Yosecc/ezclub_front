@@ -1,100 +1,74 @@
 <script setup lang="ts">
 import { ref, onMounted, defineProps, watch, computed, defineEmit } from 'vue'
-import { PUBLIC_KEY_STRIPE } from '/@src/services'
+import { PUBLIC_KEY_STRIPE, Api, FRONTEND_URL } from '/@src/services'
 const stripe = Stripe(PUBLIC_KEY_STRIPE.value)
 import { notyf } from '/@src/models/Mixin.ts'
 
 const props = defineProps({
-  amount: {
-    type: Number,
-    required: true,
-  },
-  id: {
-    type: Number,
-    required: true,
-  },
-  url: {
+  clientSecret: {
     type: String,
-    default: 'stripe',
+    required: true,
   },
-  member_membership: {
+  membership_member_id: {
     type: Number,
-    default: 0,
+    required: true,
   },
 })
 
 const emit = defineEmit(['PaymentAction'])
 
 watch(
-  () => props.id,
+  () => props.clientSecret,
   (to) => {
-    console.log('cambio')
-    isLoading.value = true
     initialize()
   }
 )
 
-const isLoading = ref(true)
-
-const items = ref({ id: props.id, amount: props.amount })
-
 const elements = ref()
+const nameCard = ref(null)
 
-import { Api, FRONTEND_URL } from '/@src/services'
+// const data = computed(() => {
+//   if (props.url != 'stripe') {
+//     return {
+//       payment_type_id: 3,
+//       amount: props.amount,
+//     }
+//   }
+//   return {
+//     id: props.id,
+//     member_mermship_id: props.member_membership,
+//     amount: props.amount,
+//     payment_type_id: 1,
+//   }
+// })
 
-const data = computed(() => {
-  if (props.url != 'stripe') {
-    return {
-      payment_type_id: 3,
-      amount: props.amount,
-    }
-  }
-  return {
-    id: props.id,
-    member_mermship_id: props.member_membership,
-    amount: props.amount,
-    payment_type_id: 1,
-  }
-})
-
-const membership_member_id = ref(null)
-const datasecret = ref(null)
+// const membership_member_id = ref(null)
+// const datasecret = ref(null)
 const cardElement = ref(null)
-const setLoading = ref(false)
-const user_id = ref(null)
+const buttonLoading = ref(false)
+const formLoading = ref(true)
+// const user_id = ref(null)
 const initialize = async () => {
-  // console.log('props.url', props.url)
-  // console.log('data.value', data.value)
-  let response = await Api.post(props.url, data.value)
-    .then((response) => {
-      datasecret.value = response.data.clientSecret
-      user_id.value = response.data.user_id
+  formLoading.value = true
 
-      elements.value = stripe.elements({
-        clientSecret: datasecret.value,
-        appearance: {
-          theme: 'night',
-          rules: {
-            '.Input': {
-              boxShadow: 'none',
-            },
-          },
-        },
-      })
+  elements.value = await stripe.elements({
+    clientSecret: props.clientSecret,
+    appearance: {
+      theme: 'night',
+      labels: 'floating',
+    },
+  })
 
-      cardElement.value = elements.value.create('card', {
-        classes: {
-          base: 'base_card',
-        },
-      })
-      // cardElement.value = elements.value.create('payment')
-      cardElement.value.mount('#payment-element')
-    })
-    .catch((error) => {
-      isLoading.value = false
-    })
-  isLoading.value = false
-  return response
+  cardElement.value = elements.value.create('card', {
+    classes: {
+      base: 'base_card',
+    },
+  })
+  // cardElement.value = elements.value.create('payment')
+  cardElement.value.mount('#payment-element')
+
+  formLoading.value = false
+  return elements.value
 }
 
 // const paymentMethod = async ()=>{
@@ -102,10 +76,9 @@ const initialize = async () => {
 //   return
 // }
 
-const nameCard = ref(null)
 const handleSubmit = async (e) => {
   e.preventDefault()
-  setLoading.value = true
+  buttonLoading.value = true
   //
   // const { error, paymentMethod }  = await stripe.createPaymentMethod({
   //   type: 'card',
@@ -116,7 +89,7 @@ const handleSubmit = async (e) => {
   // })
 
   const { setupIntent, error } = await stripe.confirmCardSetup(
-    datasecret.value,
+    props.clientSecret,
     {
       payment_method: {
         card: cardElement.value,
@@ -130,11 +103,9 @@ const handleSubmit = async (e) => {
 
     const { data } = await Api.post('paymentStripe', {
       payment_method,
-      amount: props.amount,
-      user_id: user_id.value,
-      membership_member_id: props.member_membership,
+      membership_member_id: props.membership_member_id,
     }).catch((e) => {
-      setLoading.value = false
+      buttonLoading.value = false
     })
 
     if (data) {
@@ -144,23 +115,23 @@ const handleSubmit = async (e) => {
 
     // console.log(data)
   } else {
-    setLoading.value = false
-    console.log()
+    buttonLoading.value = false
+    // console.log()
     notyf.error(error.message)
   }
 
-  setLoading.value = false
+  buttonLoading.value = false
 }
 
 onMounted(() => {
-  setLoading.value = false
+  buttonLoading.value = false
   initialize()
 })
 </script>
 
 <template>
-  <VPlaceload v-if="isLoading" height="500px" />
-  <V-Card v-show="!isLoading" class="mt-6">
+  <VPlaceload v-if="formLoading" height="500px" />
+  <V-Card v-show="!formLoading" class="mt-6">
     <form @submit.prevent="handleSubmit" id="payment-form">
       <input
         id="card-holder-name"
@@ -172,7 +143,7 @@ onMounted(() => {
       <div id="payment-element">
         <!--Stripe.js injects the Payment Element-->
       </div>
-      <VLoader size="small" :active="setLoading">
+      <VLoader size="small" :active="buttonLoading">
         <VButton id="submit" class="mt-4" color="info">Pay now </VButton>
       </VLoader>
 
@@ -192,7 +163,7 @@ onMounted(() => {
       color 0.15s ease;
     border: 1px solid #4a4a54 !important;
     box-shadow: none;
-    font-size: 17px;
+    font-size: 14px;
   }
 }
 </style>

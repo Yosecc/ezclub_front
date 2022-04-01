@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, defineProps } from 'vue'
 import moment from 'moment'
 import {
   memberMermship,
@@ -11,6 +11,8 @@ import {
   isSolvente,
   setInputsEvents,
   storeFirma,
+  getPresupuesto,
+  storeNewMembership,
 } from '/@src/models/Members.ts'
 import { getLocationsDiciplines } from '/@src/models/Diciplines.ts'
 import {
@@ -19,18 +21,36 @@ import {
   setInputModelData,
   notyf,
   getInput,
+  monedaDecimal,
 } from '/@src/models/Mixin.ts'
 import { Api, API_WEB_URL } from '/@src/services'
 import { recurrences } from '/@src/models/Recurrences.ts'
+
+const props = defineProps({})
 
 onMounted(() => {
   setInputsEvents(membershipsData.value)
   disabledInputs()
 })
 
+const quote = ref(null)
+const membership_member = ref(null)
+const tax = ref(null)
+const clientSecret = ref(null)
+// const product = ref(null)
 const onSave = () => {
   const data = perpareDataInputs(membershipsData.value)
   putMembership(data).then((response) => {
+    if (response.data.cargo_automatico != 'none') {
+      if (response.data.cargo_automatico == 'no_method') {
+        membership_member.value = response.data.membership_member
+        quote.value = response.data.quote
+        tax.value = response.data.tax
+        clientSecret.value = response.data.clientSecret
+      } else if (response.data.cargo_automatico == 'ok') {
+        notyf.success('Payment')
+      }
+    }
     notyf.success('Success')
   })
 }
@@ -42,9 +62,58 @@ const onCancel = () => {
     // console.log(response)
   })
 }
+const presupuesto = ref(null)
 
 const onNew = () => {
   const data = perpareDataInputs(membershipsData.value)
+  console.log(data)
+  // const generaPresupuesto = async ()=>{
+
+  let datos = {
+    memberships_id: data.memberships_id,
+    recurrences_id: data.recurrences_id,
+    is_initiation_fee: data.is_initiation_fee.length == 0 ? true : false,
+    member_id: member.value.id,
+  }
+
+  getPresupuesto(datos).then((response) => {
+    presupuesto.value = {
+      name: response.data.membership.name,
+      interval: response.data.quote.computed.recurring.interval,
+      membership: {
+        amount_subtotal: response.data.quote.computed.recurring.amount_subtotal,
+        amount_total: response.data.quote.computed.recurring.amount_total,
+      },
+      initiation_fee: response.data.membership.initiation_fee,
+      percentage: response.data.tax.percentage,
+      amount_tax: response.data.quote.total_details.amount_tax,
+      amount_subtotal: response.data.quote.amount_subtotal,
+      amount_total: response.data.quote.amount_total,
+      is_initiation_fee: datos.is_initiation_fee,
+    }
+
+    // console.log(presupuesto.value)
+  })
+}
+const mebershipMemberid = ref(null)
+const newMembership = () => {
+  const data = perpareDataInputs(membershipsData.value)
+  data.members_id = member.value.id
+  storeNewMembership(data)
+    .then((response) => {
+      console.log(response.data)
+      mebershipMemberid.value = response.data.membership_member.id
+      clientSecret.value = response.data.clientSecret
+      // addCard.value = true
+      // console.log(membership_member.id)
+    })
+    .catch((error) => {
+      for (var i in error.response.data.errores) {
+        error.response.data.errores[i].forEach((e) => {
+          notyf.error(`${i}: ${e}`)
+        })
+      }
+    })
 }
 
 const disabledInputs = () => {
@@ -75,6 +144,10 @@ const onSign = (base64) => {
       // error.response.data
     })
 }
+
+const PaymentAction = (data) => {
+  window.location.reload()
+}
 </script>
 
 <template>
@@ -93,11 +166,99 @@ const onSign = (base64) => {
         <VButton v-if="memberMermship" @click="onSave" color="primary">
           Save Changes
         </VButton>
-        <!-- <VButton v-if="!memberMermship" @click="onNew" color="primary">
+        <VButton v-if="!memberMermship" @click="onNew" color="primary">
           New Membership
-        </VButton> -->
+        </VButton>
       </template>
       <template #content>
+        <VCard class="mb-4" v-if="quote">
+          <h1 class="title is-6"></h1>
+          <table class="table is-hoverable is-striped is-fullwidth">
+            <thead>
+              <tr>
+                <th scope="col">Membership Name</th>
+                <th scope="col">Plan</th>
+                <th scope="col">Cost</th>
+                <!-- <th scope="col">Initiation Fee</th> -->
+                <!-- <th scope="col">Discount</th> -->
+                <!-- <th scope="col">Taxes</th> -->
+                <th scope="col">Import</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{{ membership_member.membership.name }}</td>
+                <td>{{ quote.computed.recurring.interval }}</td>
+                <td>
+                  {{
+                    monedaDecimal(quote.computed.recurring.amount_subtotal * 10)
+                  }}
+                </td>
+                <td style="text-align: right">
+                  {{
+                    monedaDecimal(quote.computed.recurring.amount_subtotal * 10)
+                  }}
+                </td>
+              </tr>
+              <tr v-if="membership_member.is_initiation_fee == 1">
+                <td>{{ membership_member.membership.name }}</td>
+
+                <td>Initiation Fee</td>
+                <td>{{ monedaDecimal(membership_member.initiation_fee) }}</td>
+
+                <td style="text-align: right">
+                  {{ membership_member.initiation_fee }}
+                </td>
+              </tr>
+              <tr style="text-align: right">
+                <td colspan="3" style="text-align: right">
+                  Tax {{ tax.percentage }}%
+                </td>
+                <td>{{ quote.total_details.amount_tax }}</td>
+              </tr>
+              <tr style="text-align: right">
+                <td colspan="3" style="text-align: right"><b>Subtotal</b></td>
+                <td>{{ monedaDecimal(quote.amount_subtotal * 10) }}</td>
+              </tr>
+              <tr style="text-align: right">
+                <td colspan="3" style="text-align: right"><b>Total</b></td>
+                <td>{{ monedaDecimal(quote.amount_total * 10) }}</td>
+              </tr>
+              <tr style="text-align: right">
+                <td colspan="3" style="text-align: right">Total recurrente</td>
+                <td>
+                  {{
+                    monedaDecimal(quote.computed.recurring.amount_total * 10)
+                  }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <stripeAddCardComponent
+            :client-secret="clientSecret"
+            :membership_member_id="membership_member.id"
+            @PaymentAction="PaymentAction"
+          />
+          <!--             :amount="quote.amount_total"
+            :id="membership_member.member.id"
+            :member_membership="membership_member.id" -->
+        </VCard>
+
+        <presupuestoComponent v-if="presupuesto" :presupuesto="presupuesto">
+          <template #k>
+            <V-Button color="info" @click="newMembership" class="mt-4 py-1">
+              Payment Card
+            </V-Button>
+            <stripeAddCardComponent
+              v-if="clientSecret"
+              :client-secret="clientSecret"
+              :membership_member_id="mebershipMemberid"
+              @PaymentAction="PaymentAction"
+            />
+          </template>
+        </presupuestoComponent>
+
         <VCard class="mb-4">
           <h1 class="title is-6">Active Contract Information</h1>
           <div class="columns is-multiline">

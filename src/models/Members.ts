@@ -17,6 +17,7 @@ import moment from 'moment'
 export const idMember = ref(null)
 export const idMemberMembership = ref(null)
 export const cupon = ref(null)
+export const error = ref(false)
 
 export const categoriesMembers = ref({
   name: 'category',
@@ -604,10 +605,11 @@ export const inputsContact = ref([
 
 export const membershipsData = ref([
   {
-    typeInput: 'checkbox',
+    typeInput: 'switch',
     name: 'recurrence',
+    values: ['', 'Recurrence'],
     placeholder: 'Recurrence',
-    model: ['recurrence'],
+    model: true,
     disabled: false,
     class: 'is-12',
   },
@@ -880,6 +882,11 @@ export const emergencyInputs = ref([
 export const inputsMembership = ref([])
 
 export const member = ref()
+
+export const getPresupuesto = async (data: any) => {
+  const response = Api.post('getPresupuesto', data)
+  return response
+}
 
 export const saveMember = async (member: any) => {
   const response = await Api.post('members', member)

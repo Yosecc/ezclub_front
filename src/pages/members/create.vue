@@ -15,6 +15,7 @@ import {
   idMemberMembership,
   membershipsData,
   member,
+  error,
 } from '/@src/models/Members.ts'
 
 import { getMeberships, memberships } from '/@src/models/Memberships.ts'
@@ -25,6 +26,7 @@ import {
   perpareDataInputs,
   notyf,
   cleanUpModelInputs,
+  getInput,
 } from '/@src/models/Mixin.ts'
 
 import {
@@ -52,6 +54,11 @@ onMounted(() => {
       response.data.memberships
     )
   })
+  getInput(membershipsData.value, 'memberships_id').disabled = false
+  getInput(membershipsData.value, 'recurrences_id').disabled = false
+  getInput(membershipsData.value, 'is_initiation_fee').disabled = false
+  getInput(membershipsData.value, 'discount').disabled = false
+
   getDiscounts(1, 'membership').then((response) => {
     setInputValuesData(membershipsData, 'discount', response.data.discounts)
   })
@@ -296,6 +303,7 @@ const sendData = (payment, cashObj) => {
   // console.log(...fd)
   saveMember(fd)
     .then((response) => {
+      error.value = false
       console.log(response)
       idMember.value = response.data.member.id
       idMemberMembership.value = response.data.member.membership_members.id
@@ -307,6 +315,8 @@ const sendData = (payment, cashObj) => {
     })
     .catch((error) => {
       console.log(error)
+      error.value = true
+
       for (var i in error.response.data.errores) {
         error.response.data.errores[i].forEach((e) => {
           notyf.error(`${i}: ${e}`)
@@ -316,6 +326,9 @@ const sendData = (payment, cashObj) => {
 }
 
 const limpiarCampos = () => {
+  idMember.value = null
+  idMemberMembership.value = null
+
   let alimpiar = []
   let campos = ['is_family', 'principal_family']
   cleanUpModelInputs(
@@ -407,7 +420,7 @@ const limpiarCampos = () => {
         />
         <!-- paymentMethod -->
         <paymentMethod
-          v-show="stepActive == 5"
+          v-if="stepActive == 5"
           type="create"
           :title="step.text"
           :member="inputsInputsInformationStep"

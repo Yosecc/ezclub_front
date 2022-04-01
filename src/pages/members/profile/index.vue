@@ -66,6 +66,9 @@ watch(
   }
 )
 
+const mensaje = ref('Filed Payment')
+const subMensaje = ref('')
+
 watch(
   () => route.hash,
   (to) => {
@@ -129,7 +132,7 @@ onMounted(() => {
 
 const mountMember = async () => {
   await getMember(route.query.id).then((response) => {
-    console.log(response.data.membership_members)
+    // console.log(response.data.membership_members)
     for (var i in response.data) {
       if (i == 'select_type') {
         if (response.data[i] == 'Individual') {
@@ -139,8 +142,11 @@ const mountMember = async () => {
         }
       } else if (i == 'membership_members') {
         if (!response.data[i]) {
+          mensaje.value = 'Does not have a membership'
+          subMensaje.value =
+            'Does not have a membership go to the Membership/Contract section and create a new membership and press New Membership'
           console.error('no posee una membresia :(')
-          return
+          // return
         }
         for (var e in response.data[i]) {
           if (e == 'memberships_location') {
@@ -184,11 +190,8 @@ const mountMember = async () => {
                 (e) => e.id == response.data[i].recurrences_id
               ).amount
           } else if (e == 'is_recurrence') {
-            getInput(membershipsData.value, 'recurrence').model = response.data[
-              i
-            ][e]
-              ? [e]
-              : []
+            getInput(membershipsData.value, 'recurrence').model =
+              response.data[i][e] == 1 ? true : false
           } else if (e == 'diciplines') {
             getInput(membershipsData.value, 'diciplines').model = []
             response.data[i][e].forEach((element) => {
@@ -268,9 +271,12 @@ const newMembership = () => {
           class="mb-4 d-flex justify-content-between align-items-center"
           color="danger"
         >
-          <h3 class="title is-5 mb-0">Filed Payment</h3>
           <div>
-            <!-- <VButton class="mr-4"> Cancel membership </VButton> -->
+            <h3 class="title is-5 mb-0">{{ mensaje }}</h3>
+
+            <p>{{ subMensaje }}</p>
+          </div>
+          <div>
             <VButton
               v-if="
                 getValueInput(membershipsData, 'memberships_id') &&
@@ -281,15 +287,15 @@ const newMembership = () => {
             >
               Process Payment
             </VButton>
-            <!--  -->
-            <VButton
+
+            <!-- <VButton
               v-if="sinMembresia"
               :disabled="!getValueInput(membershipsData, 'memberships_id')"
               color="success"
               @click="newMembership"
             >
               New membership
-            </VButton>
+            </VButton> -->
           </div>
         </VCard>
         <memberPayment v-if="renewMembership" class="mb-4" />

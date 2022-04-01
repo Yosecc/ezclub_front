@@ -174,11 +174,12 @@ const colorCard = (member) => {
             v-if="filteredData.length !== 0"
           >
             <span class="is-grow">Member</span>
-            <span>Member ID</span>
+            <span>Email</span>
             <span>Membership Type</span>
             <span>Trainer</span>
             <span>Phone #</span>
             <span>Status</span>
+            <span>Card Default</span>
             <span class="cell-end">Actions</span>
           </div>
           <div class="flex-list-inner">
@@ -204,8 +205,16 @@ const colorCard = (member) => {
                   <div>
                     <span class="item-name dark-inverted">
                       <h3>
-                        {{ item.name }} {{ item.second_name }}
-                        {{ item.last_name }}
+                        <router-link
+                          :to="{
+                            name: 'members-profile',
+                            query: { id: item.id },
+                          }"
+                          style="color: white"
+                        >
+                          {{ item.name }} {{ item.second_name }}
+                          {{ item.last_name }}
+                        </router-link>
                       </h3>
                     </span>
                     <!-- <span class="item-meta">
@@ -215,7 +224,7 @@ const colorCard = (member) => {
                 </div>
 
                 <div class="flex-table-cell" data-th="member-id">
-                  <span class="light-text">{{ item.id }}</span>
+                  <span class="light-text">{{ item.email }}</span>
                 </div>
                 <div class="flex-table-cell" data-th="Membership Type">
                   <span v-if="item.membership_members" class="light-text">{{
@@ -251,12 +260,10 @@ const colorCard = (member) => {
                       item.membership_members != null ? 'Active' : 'Inactive'
                     }}</span
                   >
-
-                  <!--  <span
-                    v-if="item.status === 0"
-                    class="tag is-danger is-rounded"
-                    >{{ item.status ? 'Active' : 'Payment' }}</span
-                  > -->
+                </div>
+                <div v-if="item.user" class="flex-table-cell">
+                  <p class="mr-3">{{ item.user.pm_type }}</p>
+                  <p>****{{ item.user.pm_last_four }}</p>
                 </div>
                 <!-- <div class="flex-table-cell" data-th="Relations">
                   <V-AvatarStack
