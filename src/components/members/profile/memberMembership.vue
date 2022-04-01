@@ -285,7 +285,7 @@ const PaymentAction = (data) => {
                   @onSign="onSign"
                   :is-sign="!memberMermship.sign"
                   :contract="`contract_${member.id}_${member.membership_members.id}_${member.personal_identifications}.pdf`"
-                  :url-contract="`${API_WEB_URL}generateContract/${member.id}`"
+                  :url-contract="`generateContract/${member.id}`"
                 />
               </div>
             </div>
