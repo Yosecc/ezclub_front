@@ -78,7 +78,7 @@ export const inputs = ref([
   {
     typeInput: 'checkbox',
     name: 'status',
-    placeholder: 'Cam be add to membership',
+    placeholder: 'Can be add it to membership',
     model: [],
     required: true,
     class: 'is-3',
