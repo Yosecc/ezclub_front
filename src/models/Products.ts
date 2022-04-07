@@ -28,6 +28,13 @@ export const putProduct = async (data: any) => {
   return response
 }
 
+export const addNewPrice = async (price: any) => {
+  const response = await Api.post(`products/${product.value.id}/newPrice`, {
+    price,
+  })
+  return response
+}
+
 export const storeProduct = async (data: any) => {
   const response = await Api.post(`products`, data)
   // products.value = response.data
@@ -41,6 +48,16 @@ export const geCategories = async () => {
   categories.value = response.data
   return response
 }
+
+export const priceInputs = ref([
+  {
+    typeInput: 'number',
+    name: 'price',
+    placeholder: 'Price $',
+    model: '',
+    class: 'is-12',
+  },
+])
 
 export const inputsProducts = ref([
   {
@@ -65,7 +82,7 @@ export const inputsProducts = ref([
     name: 'name',
     placeholder: 'Product Name',
     model: '',
-    class: 'is-12',
+    class: 'is-6',
   },
   // {
   //   typeInput: 'number',
@@ -74,31 +91,25 @@ export const inputsProducts = ref([
   //   model: '',
   //   class: 'is-4'
   // },
-  {
-    typeInput: 'number',
-    name: 'retail_price',
-    placeholder: 'Retail Price $',
-    model: '',
-    class: 'is-4',
-  },
-  {
-    typeInput: 'number',
-    name: 'price',
-    placeholder: 'Product Cost $',
-    model: '',
-    class: 'is-4',
-  },
-  {
-    typeInput: 'selectData',
-    name: 'taxes_id',
-    placeholder: 'Apply Taxes',
-    model: '',
-    values: [''],
-    class: 'is-4',
-    filterOptionText: (option: any) => {
-      return option.name
-    },
-  },
+  // {
+  //   typeInput: 'number',
+  //   name: 'retail_price',
+  //   placeholder: 'Retail Price $',
+  //   model: '',
+  //   class: 'is-4',
+  // },
+
+  // {
+  //   typeInput: 'selectData',
+  //   name: 'taxes_id',
+  //   placeholder: 'Apply Taxes',
+  //   model: '',
+  //   values: [''],
+  //   class: 'is-4',
+  //   filterOptionText: (option: any) => {
+  //     return option.name
+  //   },
+  // },
   // {
   //   typeInput: 'select',
   //   name: 'can_discount_by_apply',
@@ -113,15 +124,14 @@ export const inputsProducts = ref([
     placeholder: 'Acceptable Payment Types',
     model: '',
     values: ['All', 'Card', 'Cash', 'Bitcoin'],
-    class: 'is-4',
+    class: 'is-3',
   },
-
   {
     typeInput: 'text',
     name: 'var_code',
     placeholder: 'Barcode',
     model: '',
-    class: 'is-4',
+    class: 'is-3',
   },
   {
     typeInput: 'selectData',
@@ -129,7 +139,7 @@ export const inputsProducts = ref([
     placeholder: 'Category',
     model: '',
     values: [''],
-    class: 'is-4',
+    class: 'is-3',
   },
   {
     typeInput: 'select',
@@ -137,7 +147,7 @@ export const inputsProducts = ref([
     placeholder: 'Zize',
     model: '',
     values: ['XS', 'S', 'M', 'XL', 'XXL', 'XXXL'],
-    class: 'is-4',
+    class: 'is-3',
   },
   {
     typeInput: 'select',
@@ -145,7 +155,7 @@ export const inputsProducts = ref([
     placeholder: 'Color',
     model: '',
     values: ['red', 'blue', 'yellow', 'green', 'black', 'white'],
-    class: 'is-4',
+    class: 'is-3',
   },
   {
     typeInput: 'checkboxGroupSimpleAvatar',
@@ -156,7 +166,6 @@ export const inputsProducts = ref([
     class: 'is-12',
     required: true,
   },
-
   {
     typeInput: 'textarea',
     name: 'descriptions',

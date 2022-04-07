@@ -43,7 +43,7 @@ const isLoaded = ref(false)
 
 const data = computed(() => {
   let datos = []
-  console.log(products.value)
+  // console.log(products.value)
   if (products.value) {
     products.value.forEach((element) => {
       datos.push([
