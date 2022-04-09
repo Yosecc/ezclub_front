@@ -226,3 +226,18 @@ fieldset[disabled='false'] .checkbox,
   color: #a2a5b9;
   cursor: pointer !important;
 }
+.button.v-button.v-modal-close {
+  justify-content: center;
+}
+
+.btn-card {
+  cursor: pointer;
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.btn-card[disabled='true'] {
+  opacity: 0.4;
+  cursor: not-allowed;
+}

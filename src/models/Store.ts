@@ -1,6 +1,8 @@
 import { ref, computed, reactive } from 'vue'
 import { Api } from '/@src/services'
 import { notyf } from '/@src/models/Mixin.ts'
+import { locationsSelect } from '/@src/models/Companies.ts'
+import { getInput } from '/@src/models/Mixin.ts'
 
 export const cart = ref([])
 
@@ -39,7 +41,10 @@ export const subTotal = computed(() => {
 })
 
 export const tax = computed(() => {
-  return (subTotal.value / 100) * 7
+  if (taxes.value && subTotal.value) {
+    return (subTotal.value / 100) * taxes.value.find((e) => e.id == 1).value
+  }
+  return 0
 })
 
 export const total = computed(() => {
@@ -95,6 +100,7 @@ export const payment = () => {
     barcode: client.value.barcode,
     change_back: changeBack.value,
     products: cart.value,
+    locations_id: getInput(locationsSelect.value, 'locations_id').model,
   }
   storeOrders(data)
     .then((response: any) => {
@@ -115,6 +121,7 @@ export const payment = () => {
       }
       order.value = response.data.order
       notyf.success('Success')
+      window.location.reload()
     })
     .catch((error: any) => {
       notyf.error(error.response.data.message)
@@ -146,5 +153,29 @@ export const SendReceipt = async () => {
   })
   notyf.success('Send')
   stepActive.value = 1
+  return response
+}
+
+export const taxes = ref(null)
+export const getTaxes = async () => {
+  const response = await Api.get('taxes')
+  taxes.value = response.data.taxes
+  return response
+}
+
+export const modalCheckout = ref(false)
+
+export const storeDebitAutomatic = async (obj: object) => {
+  const response = await Api.post('orders/store_debit_automatic', obj)
+  return response
+}
+
+export const storeNewCardClient = async (obj: object) => {
+  const response = await Api.post('orders/store_new_card_client', obj)
+  return response
+}
+
+export const newSetupIntent = async (id: number) => {
+  const response = await Api.post('orders/store_new_card_client/' + id)
   return response
 }

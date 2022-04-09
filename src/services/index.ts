@@ -10,9 +10,9 @@ export const PUBLIC_KEY_STRIPE = ref('')
 // const url = 'https://dev-api.ushuaiacreative.com/api/'
 // const url = 'https://ezclub.loc/api/'
 if (import.meta.env.MODE === 'development') {
-  API_URL.value = 'http://127.0.0.1:8000/api/'
+  API_URL.value = 'http://ezclub.loc/api/'
   FRONTEND_URL.value = 'http://localhost:3000/'
-  API_WEB_URL.value = 'http://127.0.0.1:8000/'
+  API_WEB_URL.value = 'http://ezclub.loc/'
 } else {
   API_URL.value = 'https://api.ezclub.app/api/'
   FRONTEND_URL.value = 'https://ezclub.app/'

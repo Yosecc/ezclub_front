@@ -100,17 +100,6 @@ export const inputsProducts = ref([
   // },
 
   // {
-  //   typeInput: 'selectData',
-  //   name: 'taxes_id',
-  //   placeholder: 'Apply Taxes',
-  //   model: '',
-  //   values: [''],
-  //   class: 'is-4',
-  //   filterOptionText: (option: any) => {
-  //     return option.name
-  //   },
-  // },
-  // {
   //   typeInput: 'select',
   //   name: 'can_discount_by_apply',
   //   placeholder: 'Can Discount by Apply',
@@ -156,6 +145,17 @@ export const inputsProducts = ref([
     model: '',
     values: ['red', 'blue', 'yellow', 'green', 'black', 'white'],
     class: 'is-3',
+  },
+  {
+    typeInput: 'selectData',
+    name: 'taxes_id',
+    placeholder: 'Apply Taxes',
+    model: '',
+    values: [''],
+    class: 'is-3',
+    filterOptionText: (option: any) => {
+      return option.name
+    },
   },
   {
     typeInput: 'checkboxGroupSimpleAvatar',

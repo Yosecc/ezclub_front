@@ -8,7 +8,11 @@ import {
   inventories,
   locationInventory,
 } from '/@src/models/Inventory.ts'
-import { inventoryStatus, activateOrders } from '/@src/models/Store.ts'
+import {
+  inventoryStatus,
+  activateOrders,
+  getTaxes,
+} from '/@src/models/Store.ts'
 import { Api } from '/@src/services'
 import { notyf, setInputValuesData, getInput } from '/@src/models/Mixin.ts'
 import { getCompany, company, locationsSelect } from '/@src/models/Companies.ts'
@@ -18,6 +22,7 @@ import {
   geCategories,
   categories,
 } from '/@src/models/Products.ts'
+
 pageTitle.value = 'Store'
 import { API_WEB_URL } from '/@src/services/index.ts'
 import { useCookies } from 'vue3-cookies'
@@ -47,6 +52,7 @@ const changeLocation = function (value) {
 const route = useRoute()
 const router = useRouter()
 onMounted(() => {
+  getTaxes()
   getCompany().then((response) => {
     setInputValuesData(locationsSelect, 'locations_id', company.value.locations)
     getInput(locationsSelect.value, 'locations_id').change = changeLocation
@@ -124,10 +130,6 @@ const optionsSingle = [
                 cursor-pointer
               "
             >
-              <!-- <VAvatar
-                  size="medium"
-                  :picture="`${API_WEB_URL}storage/${i.image}`"
-                /> -->
               <p>View All</p>
             </VCard>
             <VCard
@@ -191,7 +193,7 @@ const optionsSingle = [
             <div
               v-for="item in filteredData"
               :key="item.id"
-              class="column is-3"
+              class="column is-3 d-flex"
             >
               <store-product-card :product="item" />
             </div>

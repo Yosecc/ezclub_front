@@ -27,7 +27,7 @@ onMounted(() => {
     setInputValuesData(inputsProducts, 'locations', locations.value)
   })
   getTaxes().then((response) => {
-    // setInputValuesData(inputsProducts, 'taxes_id', response.value)
+    setInputValuesData(inputsProducts, 'taxes_id', response.value)
   })
   geCategories().then((response) => {
     setInputValuesData(inputsProducts, 'product_categories_id', response.data)
