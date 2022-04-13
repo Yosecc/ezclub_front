@@ -26,16 +26,16 @@ watchEffect(() => {
   }
   defaultLocale.value = i18n.locale.value
 })
-// Enable pusher logging - don't include this in production
-Pusher.logToConsole = true
-var pusher = new Pusher('bfeef3fa74babbbef3cb', {
-  cluster: 'us2',
-})
+// // Enable pusher logging - don't include this in production
+// Pusher.logToConsole = true
+// var pusher = new Pusher('bfeef3fa74babbbef3cb', {
+//   cluster: 'us2',
+// })
 
-var channel = pusher.subscribe('my-channel')
-channel.bind('my-event', function (data) {
-  console.log(JSON.stringify(data))
-})
+// var channel = pusher.subscribe('my-channel')
+// channel.bind('my-event', function (data) {
+//   console.log(JSON.stringify(data))
+// })
 </script>
 
 <template>
