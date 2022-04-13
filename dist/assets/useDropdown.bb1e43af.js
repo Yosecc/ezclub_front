@@ -1,1 +1,0 @@
-import{r as e,$ as a,g as s,a0 as l}from"./vendor.e90c84d1.js";function v(v){const u=e(!1);a(v,(()=>{u.value=!1}));return s((()=>{v.value&&(u.value?v.value.classList.add("is-active"):v.value.classList.remove("is-active"))})),l({isOpen:u,open:()=>{u.value=!0},close:()=>{u.value=!1},toggle:()=>{u.value=!u.value}})}export{v as u};
