@@ -22,7 +22,7 @@ import {
   geCategories,
   categories,
 } from '/@src/models/Products.ts'
-import Swal from 'sweetalert2'
+
 pageTitle.value = 'Store'
 import { API_WEB_URL } from '/@src/services/index.ts'
 import { useCookies } from 'vue3-cookies'
@@ -51,6 +51,8 @@ const changeLocation = function (value) {
 
 const route = useRoute()
 const router = useRouter()
+
+import swal from 'sweetalert'
 onMounted(() => {
   getTaxes()
   getCompany().then((response) => {
@@ -113,12 +115,7 @@ var pusher = new Pusher('bfeef3fa74babbbef3cb', {
 var channel = pusher.subscribe('payment_stripe_channel')
 channel.bind('payment_stripe_event', function (data) {
   console.log(data)
-  Swal.fire({
-    title: 'Well done!',
-    text: 'Payment success',
-    icon: 'success',
-    confirmButtonText: 'Cool',
-  })
+  swal('Good job!', 'Payment success', 'success')
 })
 </script>
 
