@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { ref } from 'vue'
 import { user, onLogout } from '/@src/pages/auth/auth.ts'
+import { notyf } from '/@src/models/Mixin.ts'
 
 export const API_URL = ref('')
 export const FRONTEND_URL = ref('')
@@ -38,17 +39,23 @@ const intance = axios.create({
   },
 })
 
-// intance.interceptors.response.use(function (response) {
-//   return response;
-// }, function (error) {
-//   // Any status codes that falls outside the range of 2xx cause this function to trigger
-//   // Do something with response error
-//   if(error.response.status == 401){
-//     // onLogout()
-//   }else{
-//     return Promise.reject(error);
-//   }
+intance.interceptors.response.use(
+  function (response) {
+    return response
+  },
+  function (error) {
+    // Any status codes that falls outside the range of 2xx cause this function to trigger
+    // Do something with response error
+    if (error.response.status == 401) {
+      // onLogout()
+    } else {
+      if (error.response.data.length) {
+        notyf.error(error.response.data)
+      }
 
-// });
+      return Promise.reject(error)
+    }
+  }
+)
 
 export const Api = intance
