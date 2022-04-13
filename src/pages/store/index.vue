@@ -22,7 +22,7 @@ import {
   geCategories,
   categories,
 } from '/@src/models/Products.ts'
-
+import Swal from 'sweetalert2'
 pageTitle.value = 'Store'
 import { API_WEB_URL } from '/@src/services/index.ts'
 import { useCookies } from 'vue3-cookies'
@@ -103,6 +103,23 @@ const optionsSingle = [
   'Older Posts',
   'Popular Posts',
 ]
+
+// Enable pusher logging - don't include this in production
+Pusher.logToConsole = true
+var pusher = new Pusher('bfeef3fa74babbbef3cb', {
+  cluster: 'us2',
+})
+
+var channel = pusher.subscribe('payment_stripe_channel')
+channel.bind('payment_stripe_event', function (data) {
+  console.log(data)
+  Swal.fire({
+    title: 'Well done!',
+    text: 'Payment success',
+    icon: 'success',
+    confirmButtonText: 'Cool',
+  })
+})
 </script>
 
 <template>

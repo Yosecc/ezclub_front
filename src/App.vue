@@ -26,16 +26,6 @@ watchEffect(() => {
   }
   defaultLocale.value = i18n.locale.value
 })
-// Enable pusher logging - don't include this in production
-Pusher.logToConsole = true
-var pusher = new Pusher('bfeef3fa74babbbef3cb', {
-  cluster: 'us2',
-})
-
-var channel = pusher.subscribe('payment_stripe_channel')
-channel.bind('payment_stripe_event', function (data) {
-  alert(JSON.stringify(data))
-})
 </script>
 
 <template>
