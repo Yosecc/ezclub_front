@@ -7,6 +7,7 @@ export const FRONTEND_URL = ref('')
 export const API_WEB_URL = ref('')
 export const PUBLIC_KEY_STRIPE = ref('')
 
+console.log('lleha')
 // const url = 'https://dev-api.ushuaiacreative.com/api/'
 // const url = 'https://ezclub.loc/api/'
 if (import.meta.env.MODE === 'development') {
@@ -14,9 +15,12 @@ if (import.meta.env.MODE === 'development') {
   FRONTEND_URL.value = 'http://localhost:3000/'
   API_WEB_URL.value = 'http://ezclub.loc/'
 } else {
-  API_URL.value = 'https://api.ezclub.app/api/'
-  FRONTEND_URL.value = 'https://ezclub.app/'
-  API_WEB_URL.value = 'https://api.ezclub.app/'
+  // API_URL.value = 'https://api.ezclub.app/api/'
+  // FRONTEND_URL.value = 'https://ezclub.app/'
+  // API_WEB_URL.value = 'https://api.ezclub.app/'
+  API_URL.value = 'https://dev-api.ushuaiacreative.com/api/'
+  FRONTEND_URL.value = 'https://dev-frontend.ushuaiacreative.com/'
+  API_WEB_URL.value = 'https://dev-api.ushuaiacreative.com/'
 }
 // console.log(VUE_APP_ROUTE_API)
 // console.log(env)
