@@ -2,6 +2,7 @@
 import { onMounted, watch, ref, computed, defineProps, defineEmit } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { Api, API_WEB_URL } from '/@src/services'
+import { notyf } from '/@src/models/Mixin.ts'
 
 const props = defineProps(['modelValue'])
 const emit = defineEmit(['update:modelValue'])
@@ -39,6 +40,7 @@ const selectMember = (member) => {
     })
     .catch((error) => {
       loadingMemberSelected.value = false
+      notyf.error(error.response.data)
     })
 }
 

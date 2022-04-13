@@ -3,7 +3,7 @@ import { ref, computed } from 'vue'
 import { Api } from '/@src/services'
 
 import { user } from '/@src/pages/auth/auth.ts'
-
+import { getInput } from '/@src/models/Mixin.ts'
 export const company = ref(null)
 
 export const company_name = computed(() => {
@@ -19,6 +19,28 @@ export const location = ref({})
 
 export const locations = computed(() => {
   if (company.value) return company.value.locations
+  return []
+})
+
+export const terminales = computed(() => {
+  if (company.value) {
+    const arr = []
+    company.value.locations.forEach((i) => {
+      i.terminales.forEach((e) => {
+        arr.push({
+          locations_id: i.id,
+          id: e.id,
+          label: e.label,
+          serial_number: e.serial_number,
+          status: e.status,
+        })
+      })
+    })
+    return arr.filter(
+      (e) =>
+        e.locations_id == getInput(locationsSelect.value, 'locations_id').model
+    )
+  }
   return []
 })
 

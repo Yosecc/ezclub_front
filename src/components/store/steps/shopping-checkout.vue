@@ -18,8 +18,9 @@ import {
   storeDebitAutomatic,
   storeNewCardClient,
   newSetupIntent,
+  storeSwipeCard,
 } from '/@src/models/Store.ts'
-import { locationsSelect } from '/@src/models/Companies.ts'
+import { locationsSelect, terminales } from '/@src/models/Companies.ts'
 
 const route = useRoute()
 
@@ -108,6 +109,31 @@ const addNewCardClient = () => {
   }
   showStripe.value = true
 }
+
+const terminalesOoptions = ref(false)
+const terminal_id = ref(null)
+const paymentSwipeCard = (id) => {
+  terminal_id.value = id
+  if (confirm('Send Terminal')) {
+    console.log(terminal_id.value)
+
+    storeSwipeCard({
+      cart: cart.value,
+      total: total.value,
+      locations_id: getInput(locationsSelect.value, 'locations_id').model,
+      terminal_id: terminal_id.value,
+    })
+      .then((response) => {
+        // loadingOptionDebit.value = false
+        notyf.success('Enviando....')
+        // window.location.reload()
+      })
+      .catch((error) => {
+        // loadingOptionDebit.value = false
+        notyf.error(error.response.data)
+      })
+  }
+}
 </script>
 
 <template>
@@ -129,37 +155,6 @@ const addNewCardClient = () => {
           </tr>
         </tbody>
       </table>
-
-      <!-- <VField>
-        <VControl>
-          <input
-            type="text"
-            v-model="client.email"
-            class="input"
-            placeholder="Email"
-          />
-        </VControl>
-      </VField>
-      <VField>
-        <VControl>
-          <input
-            type="text"
-            v-model="client.phone"
-            class="input"
-            placeholder="Phone"
-          />
-        </VControl>
-      </VField>
-      <VField>
-        <VControl>
-          <input
-            type="text"
-            v-model="client.barcode"
-            class="input"
-            placeholder="Barcode"
-          />
-        </VControl>
-      </VField> -->
     </div>
 
     <SearchBar v-model="member" />
@@ -190,7 +185,7 @@ const addNewCardClient = () => {
       </VCard>
       <VCard
         color="warning"
-        :disabled="showOptionsDebit"
+        :disabled="showOptionsDebit || terminalesOoptions"
         @click=";(typePayment = 1), (openModalCash = true), payment"
         class="mx-2 btn-card w-100 justify-content-center"
       >
@@ -201,15 +196,48 @@ const addNewCardClient = () => {
       </VCard>
       <VCard
         color="info"
-        :disabled="showOptionsDebit"
+        :disabled="showOptionsDebit || !terminales.length"
         class="mx-2 btn-card w-100 justify-content-center"
+        @click="
+          terminales.length
+            ? (terminalesOoptions = !terminalesOoptions)
+            : (terminalesOoptions = false)
+        "
+        v-tooltip="!terminales.length ? 'No posee terminales' : ''"
       >
-        <p class="title is-3">
-          <i class="fas fa-money-check-alt" aria-hidden="true"></i>
-        </p>
-        <p class="title is-5">Swipe Card</p>
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <p class="title is-3">
+              <i class="fas fa-money-check-alt" aria-hidden="true"></i>
+            </p>
+            <p class="title is-5">Swipe Card</p>
+          </div>
+          <p v-if="terminalesOoptions" class="title is-6">
+            <i class="fas fa-check" aria-hidden="true"></i>
+          </p>
+        </div>
       </VCard>
     </div>
+
+    <div class="mt-4 mx-2" v-if="terminalesOoptions">
+      <div class="d-flex">
+        <VCard
+          v-for="(terminal, key) in terminales"
+          :key="`terminal-${key}`"
+          class="m-2 p-6 btn-card"
+          :color="terminal_id == terminal.id ? 'info' : ''"
+          @click="paymentSwipeCard(terminal.id)"
+        >
+          <p class="title is-1">
+            <i class="lnir lnir-postcard" aria-hidden="true"></i>
+          </p>
+          <p class="title is-5">{{ terminal.label }}</p>
+          <p>Serial number: {{ terminal.serial_number }}</p>
+          <p>Status: {{ terminal.status }}</p>
+        </VCard>
+      </div>
+    </div>
+
     <div class="mt-4 mx-2" v-if="showOptionsDebit">
       <VLoader size="large" :active="loadingOptionDebit">
         <VCard
@@ -375,26 +403,6 @@ const addNewCardClient = () => {
           raised
           >Confirm</VButton
         >
-      </template>
-    </VModal>
-
-    <VModal
-      :open="openModalCard"
-      actions="center"
-      @close="openModalCard = false"
-    >
-      <template #content>
-        <stripeFormProduct v-if="order" :amount="total" :order_id="order" />
-      </template>
-      <template #action>
-        <!-- <VButton
-          color="success"
-          @click="payment"
-          :disabled="total > cash"
-          class="d-flex justify-content-center"
-          raised
-          >Confirm</VButton
-        > -->
       </template>
     </VModal>
   </VCard>

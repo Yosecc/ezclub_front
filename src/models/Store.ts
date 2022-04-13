@@ -170,6 +170,11 @@ export const storeDebitAutomatic = async (obj: object) => {
   return response
 }
 
+export const storeSwipeCard = async (obj: object) => {
+  const response = await Api.post('orders/swipe_card', obj)
+  return response
+}
+
 export const storeNewCardClient = async (obj: object) => {
   const response = await Api.post('orders/store_new_card_client', obj)
   return response
