@@ -54,8 +54,6 @@ const getMemberPaymentMethods = async (id) => {
   <VCard class="my-5">
     <p class="title is-6">Search Member</p>
     <input
-      id="inputSearchCodebar"
-      ref="inputSearchCodebar"
       v-focus
       v-model="value"
       type="text"
