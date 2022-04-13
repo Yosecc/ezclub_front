@@ -14,6 +14,7 @@ import {
   getPresupuesto,
   storeNewMembership,
 } from '/@src/models/Members.ts'
+
 import { getLocationsDiciplines } from '/@src/models/Diciplines.ts'
 import {
   setInputValuesData,
@@ -76,24 +77,33 @@ const onNew = () => {
     member_id: member.value.id,
   }
 
-  getPresupuesto(datos).then((response) => {
-    presupuesto.value = {
-      name: response.data.membership.name,
-      interval: response.data.quote.computed.recurring.interval,
-      membership: {
-        amount_subtotal: response.data.quote.computed.recurring.amount_subtotal,
-        amount_total: response.data.quote.computed.recurring.amount_total,
-      },
-      initiation_fee: response.data.membership.initiation_fee,
-      percentage: response.data.tax.percentage,
-      amount_tax: response.data.quote.total_details.amount_tax,
-      amount_subtotal: response.data.quote.amount_subtotal,
-      amount_total: response.data.quote.amount_total,
-      is_initiation_fee: datos.is_initiation_fee,
-    }
+  getPresupuesto(datos)
+    .then((response) => {
+      presupuesto.value = {
+        name: response.data.membership.name,
+        interval: response.data.quote.computed.recurring.interval,
+        membership: {
+          amount_subtotal:
+            response.data.quote.computed.recurring.amount_subtotal,
+          amount_total: response.data.quote.computed.recurring.amount_total,
+        },
+        initiation_fee: response.data.membership.initiation_fee,
+        percentage: response.data.tax.percentage,
+        amount_tax: response.data.quote.total_details.amount_tax,
+        amount_subtotal: response.data.quote.amount_subtotal,
+        amount_total: response.data.quote.amount_total,
+        is_initiation_fee: datos.is_initiation_fee,
+      }
 
-    // console.log(presupuesto.value)
-  })
+      // console.log(presupuesto.value)
+    })
+    .catch((error) => {
+      for (var i in error.response.data) {
+        error.response.data[i].forEach((e) => {
+          notyf.error(`${i}  ${e}`)
+        })
+      }
+    })
 }
 const mebershipMemberid = ref(null)
 const newMembership = () => {
@@ -250,6 +260,7 @@ const PaymentAction = (data) => {
             <V-Button color="info" @click="newMembership" class="mt-4 py-1">
               Payment Card
             </V-Button>
+            <!-- <MemberCards/> -->
             <stripeAddCardComponent
               v-if="clientSecret"
               :client-secret="clientSecret"

@@ -958,6 +958,11 @@ export const storeFirma = async (base64: any, id: any) => {
   return response
 }
 
+export const getCardsMembers = async (id: number) => {
+  const response = await Api.get(`members/cards/${id})`)
+  return response
+}
+
 export const memberMermship = computed(() => {
   return member.value.membership_members
 })

@@ -115,8 +115,6 @@ const terminal_id = ref(null)
 const paymentSwipeCard = (id) => {
   terminal_id.value = id
   if (confirm('Send Terminal')) {
-    console.log(terminal_id.value)
-
     storeSwipeCard({
       cart: cart.value,
       total: total.value,
@@ -259,7 +257,7 @@ const paymentSwipeCard = (id) => {
           </div>
         </VCard>
 
-        <div class="columns is-multiline w-100">
+        <!-- <div class="columns is-multiline w-100">
           <div
             v-for="(card, key) in member.cards"
             :key="`card-${key}`"
@@ -301,7 +299,7 @@ const paymentSwipeCard = (id) => {
               </div>
             </VCard>
           </div>
-        </div>
+        </div> -->
       </VLoader>
       <stripeAddCardStore
         v-if="showStripe"
