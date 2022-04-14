@@ -114,6 +114,19 @@ const terminalesOoptions = ref(false)
 const terminal_id = ref(null)
 const paymentSwipeCard = (id) => {
   terminal_id.value = id
+
+  // Enable pusher logging - don't include this in production
+  Pusher.logToConsole = true
+  var pusher = new Pusher('bfeef3fa74babbbef3cb', {
+    cluster: 'us2',
+  })
+
+  var channel = pusher.subscribe('payment_stripe_channel')
+  channel.bind('payment_stripe_event', function (data) {
+    console.log(data)
+    // swal('Good job!', 'Payment success', 'success')
+  })
+
   if (confirm('Send Terminal')) {
     storeSwipeCard({
       cart: cart.value,
@@ -238,26 +251,7 @@ const paymentSwipeCard = (id) => {
 
     <div class="mt-4 mx-2" v-if="showOptionsDebit">
       <VLoader size="large" :active="loadingOptionDebit">
-        <VCard
-          @click="debitAutomaticPaymentDefault({ payment_method: 'default' })"
-          :color="member.payment_method == 'default' ? 'success' : undefined"
-          v-if="member.user"
-          class="btn-card mb-4"
-        >
-          <div class="d-flex align-items-center">
-            <p class="title is-1 mb-0">
-              <i class="fas fa-credit-card" aria-hidden="true"></i>
-            </p>
-            <div class="ml-4">
-              <p class="title is-4 mb-2">Select Payment Method Default</p>
-              <p class="title is-4 mb-0">
-                {{ member.user.pm_type }} **** {{ member.user.pm_last_four }}
-              </p>
-            </div>
-          </div>
-        </VCard>
-
-        <!-- <div class="columns is-multiline w-100">
+        <div class="columns is-multiline w-100">
           <div
             v-for="(card, key) in member.cards"
             :key="`card-${key}`"
@@ -266,7 +260,7 @@ const paymentSwipeCard = (id) => {
             <VCard
               @click="debitAutomaticPaymentDefault({ payment_method: card.id })"
               :color="member.payment_method == card.id ? 'success' : undefined"
-              v-if="!showStripe && member.user.pm_last_four != card.card.last4"
+              v-if="!showStripe"
               class="btn-card"
             >
               <div class="d-flex align-items-center">
@@ -299,7 +293,7 @@ const paymentSwipeCard = (id) => {
               </div>
             </VCard>
           </div>
-        </div> -->
+        </div>
       </VLoader>
       <stripeAddCardStore
         v-if="showStripe"

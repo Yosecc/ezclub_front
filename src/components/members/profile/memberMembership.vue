@@ -109,6 +109,7 @@ const mebershipMemberid = ref(null)
 const newMembership = () => {
   const data = perpareDataInputs(membershipsData.value)
   data.members_id = member.value.id
+
   storeNewMembership(data)
     .then((response) => {
       console.log(response.data)
@@ -156,7 +157,12 @@ const onSign = (base64) => {
 }
 
 const PaymentAction = (data) => {
+  console.log(data)
   window.location.reload()
+}
+
+const onMethodPayment = (paymentMethod) => {
+  newMembership(paymentMethod)
 }
 </script>
 
@@ -173,9 +179,9 @@ const PaymentAction = (data) => {
         <VButton v-if="memberMermship" @click="onCancel" class="mr-4">
           Cancel Membership
         </VButton>
-        <VButton v-if="memberMermship" @click="onSave" color="primary">
+        <!-- <VButton v-if="memberMermship" @click="onSave" color="primary">
           Save Changes
-        </VButton>
+        </VButton> -->
         <VButton v-if="!memberMermship" @click="onNew" color="primary">
           New Membership
         </VButton>
@@ -250,9 +256,6 @@ const PaymentAction = (data) => {
             :membership_member_id="membership_member.id"
             @PaymentAction="PaymentAction"
           />
-          <!--             :amount="quote.amount_total"
-            :id="membership_member.member.id"
-            :member_membership="membership_member.id" -->
         </VCard>
 
         <presupuestoComponent v-if="presupuesto" :presupuesto="presupuesto">
@@ -260,11 +263,15 @@ const PaymentAction = (data) => {
             <V-Button color="info" @click="newMembership" class="mt-4 py-1">
               Payment Card
             </V-Button>
-            <!-- <MemberCards/> -->
+            <!-- <MemberCards
+              @onMethodPayment="onMethodPayment"
+              :method_default="member.user.pm_last_four"
+            /> -->
             <stripeAddCardComponent
               v-if="clientSecret"
               :client-secret="clientSecret"
               :membership_member_id="mebershipMemberid"
+              :pm_last_four="member.user.pm_last_four"
               @PaymentAction="PaymentAction"
             />
           </template>
@@ -303,7 +310,7 @@ const PaymentAction = (data) => {
           </div>
         </VCard>
 
-        <VCard class="mb-4" v-if="member">
+        <VCard class="mb-4" v-if="false">
           <h1 class="title is-6">Inactive Contract Information</h1>
           <table class="table is-hoverable is-fullwidth">
             <thead>
