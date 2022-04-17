@@ -112,6 +112,8 @@ const addNewCardClient = () => {
 
 const terminalesOoptions = ref(false)
 const terminal_id = ref(null)
+const paymentIntent = ref(null)
+const capturePayment = () => {}
 const paymentSwipeCard = (id) => {
   terminal_id.value = id
 
@@ -123,11 +125,12 @@ const paymentSwipeCard = (id) => {
 
   var channel = pusher.subscribe('payment_stripe_channel')
   channel.bind('payment_stripe_event', function (data) {
-    console.log(data)
-    // swal('Good job!', 'Payment success', 'success')
+    // console.log('oyente pusher',data)
+    swal('Good job!', 'Payment success', 'success')
   })
 
   if (confirm('Send Terminal')) {
+    notyf.success('Enviando....')
     storeSwipeCard({
       cart: cart.value,
       total: total.value,
@@ -136,7 +139,9 @@ const paymentSwipeCard = (id) => {
     })
       .then((response) => {
         // loadingOptionDebit.value = false
-        notyf.success('Enviando....')
+        paymentIntent.value = response.data
+        console.log('soy el paymentIntent', response.data)
+        notyf.success('Recibido en el terminal')
         // window.location.reload()
       })
       .catch((error) => {
@@ -247,6 +252,13 @@ const paymentSwipeCard = (id) => {
           <p>Status: {{ terminal.status }}</p>
         </VCard>
       </div>
+      <VCard
+        color="success"
+        class="m-2 btn-card d-flex justify-content-center"
+        v-if="paymentIntent"
+      >
+        <p class="title is-3">Finish payment</p>
+      </VCard>
     </div>
 
     <div class="mt-4 mx-2" v-if="showOptionsDebit">
@@ -380,11 +392,7 @@ const paymentSwipeCard = (id) => {
         </div>
       </template>
       <template #action>
-        <VButton
-          color=""
-          @click="cash = 0"
-          class="d-flex justify-content-center"
-          raised
+        <VButton @click="cash = 0" class="d-flex justify-content-center" raised
           >Reset</VButton
         >
         <VButton
