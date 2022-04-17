@@ -52,7 +52,6 @@ const changeLocation = function (value) {
 const route = useRoute()
 const router = useRouter()
 
-import swal from 'sweetalert'
 onMounted(() => {
   getTaxes()
   getCompany().then((response) => {

@@ -21,7 +21,7 @@ import {
   storeSwipeCard,
 } from '/@src/models/Store.ts'
 import { locationsSelect, terminales } from '/@src/models/Companies.ts'
-
+import swal from 'sweetalert'
 const route = useRoute()
 
 const props = defineProps({})
@@ -125,8 +125,9 @@ const paymentSwipeCard = (id) => {
 
   var channel = pusher.subscribe('payment_stripe_channel')
   channel.bind('payment_stripe_event', function (data) {
-    // console.log('oyente pusher',data)
-    swal('Good job!', 'Payment success', 'success')
+    if (data.message.payload.type == 'terminal.reader.action_succeeded') {
+      swal('Good job!', 'Payment success', 'success')
+    }
   })
 
   if (confirm('Send Terminal')) {
