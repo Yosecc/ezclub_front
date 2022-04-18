@@ -184,3 +184,18 @@ export const newSetupIntent = async (id: number) => {
   const response = await Api.post('orders/store_new_card_client/' + id)
   return response
 }
+
+export const cancelPayment = async (id: string) => {
+  const response = await Api.post('orders/cancel_payment_intent', { id })
+  return response
+}
+
+export const retryPayment = async (id: string, terminal_id: string) => {
+  const response = await Api.post('orders/another_try', { id, terminal_id })
+  return response
+}
+
+export const finishPayment = async (id: string) => {
+  const response = await Api.post('orders/capture_payment', { id })
+  return response
+}

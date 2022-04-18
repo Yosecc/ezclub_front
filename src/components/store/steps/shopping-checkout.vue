@@ -19,6 +19,9 @@ import {
   storeNewCardClient,
   newSetupIntent,
   storeSwipeCard,
+  cancelPayment,
+  retryPayment,
+  finishPayment,
 } from '/@src/models/Store.ts'
 import { locationsSelect, terminales } from '/@src/models/Companies.ts'
 import swal from 'sweetalert'
@@ -113,8 +116,14 @@ const addNewCardClient = () => {
 const terminalesOoptions = ref(false)
 const terminal_id = ref(null)
 const paymentIntent = ref(null)
-const capturePayment = () => {}
+
 const paymentSwipeCard = (id) => {
+  if (paymentIntent.value != null) {
+    notyf.error(
+      'A payment Intent already exists, Select one of the following actions'
+    )
+    return
+  }
   terminal_id.value = id
 
   // Enable pusher logging - don't include this in production
@@ -126,6 +135,7 @@ const paymentSwipeCard = (id) => {
   var channel = pusher.subscribe('payment_stripe_channel')
   channel.bind('payment_stripe_event', function (data) {
     if (data.message.payload.type == 'terminal.reader.action_succeeded') {
+      limpiezaSwipeCard()
       swal('Good job!', 'Payment success', 'success')
     }
   })
@@ -150,6 +160,75 @@ const paymentSwipeCard = (id) => {
         notyf.error(error.response.data)
       })
   }
+}
+
+const swipeCardStatus = computed(() => {
+  if (
+    showOptionsDebit.value ||
+    !terminales.value.length ||
+    paymentIntent.value
+  ) {
+    return true
+  } else {
+    return false
+  }
+})
+
+const changeSwipwCard = () => {
+  if (terminales.value.length) {
+    terminalesOoptions.value = !terminalesOoptions.value
+  } else {
+    terminalesOoptions.value = false
+  }
+  if (paymentIntent.value) {
+    terminalesOoptions.value = true
+  }
+}
+
+const oncancelPayment = () => {
+  cancelPayment(paymentIntent.value)
+    .then((response) => {
+      limpiezaSwipeCard()
+      notyf.success('payment canceled')
+    })
+    .catch((error) => {
+      notyf.error(error.response)
+      if (error.response.data) {
+        notyf.error(error.response.data)
+      }
+    })
+}
+const onretryPayment = () => {
+  notyf.success('Retry...')
+  retryPayment(paymentIntent.value, terminal_id.value)
+    .then((response) => {
+      paymentIntent.value = response.data
+      notyf.success('Received at the terminal')
+    })
+    .catch((error) => {
+      notyf.error(error.response)
+      if (error.response.data) {
+        notyf.error(error.response.data)
+      }
+    })
+}
+const onfinishPayment = () => {
+  finishPayment(paymentIntent.value)
+    .then((response) => {
+      limpiezaSwipeCard()
+    })
+    .catch((error) => {
+      notyf.error(error.response)
+      if (error.response.data) {
+        notyf.error(error.response.data)
+      }
+    })
+}
+
+const limpiezaSwipeCard = () => {
+  paymentIntent.value = null
+  terminal_id.value = null
+  terminalesOoptions.value = false
 }
 </script>
 
@@ -211,15 +290,12 @@ const paymentSwipeCard = (id) => {
         </p>
         <p class="title is-5">Cash</p>
       </VCard>
+
       <VCard
         color="info"
-        :disabled="showOptionsDebit || !terminales.length"
+        :disabled="swipeCardStatus"
         class="mx-2 btn-card w-100 justify-content-center"
-        @click="
-          terminales.length
-            ? (terminalesOoptions = !terminalesOoptions)
-            : (terminalesOoptions = false)
-        "
+        @click="changeSwipwCard"
         v-tooltip="!terminales.length ? 'No posee terminales' : ''"
       >
         <div class="d-flex justify-content-between align-items-start">
@@ -237,29 +313,67 @@ const paymentSwipeCard = (id) => {
     </div>
 
     <div class="mt-4 mx-2" v-if="terminalesOoptions">
-      <div class="d-flex">
-        <VCard
-          v-for="(terminal, key) in terminales"
-          :key="`terminal-${key}`"
-          class="m-2 p-6 btn-card"
-          :color="terminal_id == terminal.id ? 'info' : ''"
-          @click="paymentSwipeCard(terminal.id)"
-        >
-          <p class="title is-1">
-            <i class="lnir lnir-postcard" aria-hidden="true"></i>
-          </p>
-          <p class="title is-5">{{ terminal.label }}</p>
-          <p>Serial number: {{ terminal.serial_number }}</p>
-          <p>Status: {{ terminal.status }}</p>
-        </VCard>
-      </div>
-      <VCard
-        color="success"
-        class="m-2 btn-card d-flex justify-content-center"
-        v-if="paymentIntent"
+      <div
+        v-for="(terminal, key) in terminales"
+        :key="`terminal-${key}`"
+        class="columns is-multiline"
       >
-        <p class="title is-3">Finish payment</p>
-      </VCard>
+        <div class="column">
+          <VCard
+            class="p-4 btn-card"
+            :class="paymentIntent && terminal_id == terminal.id ? 'is-3' : ''"
+            :disabled="paymentIntent && terminal_id == terminal.id"
+            :color="terminal_id == terminal.id ? 'info' : ''"
+            @click="paymentSwipeCard(terminal.id)"
+          >
+            <p class="title is-1">
+              <i class="lnir lnir-postcard" aria-hidden="true"></i>
+            </p>
+            <p class="title is-5">{{ terminal.label }}</p>
+            <p>Serial number: {{ terminal.serial_number }}</p>
+            <p>Status: {{ terminal.status }}</p>
+          </VCard>
+        </div>
+
+        <div
+          v-if="paymentIntent && terminal_id == terminal.id"
+          class="column flex-column d-flex justify-content-between is-3"
+        >
+          <VCard
+            color="danger"
+            class="mb-2 btn-card d-flex justify-content-center"
+            @click="oncancelPayment()"
+          >
+            <p class="title is-5">Cancel Payment</p>
+          </VCard>
+          <VCard
+            color="warning"
+            class="btn-card d-flex justify-content-center"
+            @click="onretryPayment()"
+          >
+            <p class="title is-5">Retry Payment</p>
+          </VCard>
+        </div>
+
+        <div
+          v-if="paymentIntent && terminal_id == terminal.id"
+          class="column is-5"
+        >
+          <VCard
+            color="success"
+            class="
+              btn-card
+              h-100
+              d-flex
+              justify-content-center
+              align-items-center
+            "
+            @click="onfinishPayment()"
+          >
+            <p class="title is-3">Finish payment</p>
+          </VCard>
+        </div>
+      </div>
     </div>
 
     <div class="mt-4 mx-2" v-if="showOptionsDebit">
