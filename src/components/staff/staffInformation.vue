@@ -3,7 +3,7 @@ import { computed, ref, defineProps, defineEmit, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { API_WEB_URL } from '/@src/services'
 import { inputsInformation } from '/@src/models/Staffs'
-import { viewInput } from '/@src/models/Mixin.ts'
+import { getInput } from '/@src/models/Mixin.ts'
 
 const router = useRouter()
 
@@ -36,10 +36,9 @@ const titles = computed(() => {
 })
 
 const image = computed(() => {
-  return `${API_WEB_URL.value}storage/${viewInput(
-    inputsInformation.value,
-    'photo'
-  )}`
+  return `${API_WEB_URL.value}storage/${
+    getInput(inputsInformation.value, 'photo').model
+  }`
 })
 
 const emit = defineEmit(['changeStep', 'saveData'])
