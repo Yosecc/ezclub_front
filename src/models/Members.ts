@@ -916,6 +916,13 @@ export const putMembership = async (data: any) => {
   return response
 }
 
+export const pauseMembership = async (id: any) => {
+  const response = await Api.get(
+    `members/pause_membership/${memberMermship.value.id}`
+  )
+  return response
+}
+
 export const getMemberAccess = async (barcode: any) => {
   const response = Api.get(`searchmember/${barcode}`)
   return response

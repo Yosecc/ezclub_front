@@ -13,6 +13,7 @@ import {
   storeFirma,
   getPresupuesto,
   storeNewMembership,
+  pauseMembership,
 } from '/@src/models/Members.ts'
 
 import { getLocationsDiciplines } from '/@src/models/Diciplines.ts'
@@ -164,6 +165,13 @@ const PaymentAction = (data) => {
 const onMethodPayment = (paymentMethod) => {
   newMembership(paymentMethod)
 }
+
+const onPause = () => {
+  pauseMembership(memberMermship.value.id).then((response) => {
+    notyf.success('Success Pause')
+    window.location.reload()
+  })
+}
 </script>
 
 <template>
@@ -176,7 +184,29 @@ const onMethodPayment = (paymentMethod) => {
         </div>
       </template>
       <template #header-right>
-        <VButton v-if="memberMermship" @click="onCancel" class="mr-4">
+        <VButton
+          color="info"
+          :outlined="
+            member.subscription.pause_collection != null ? false : true
+          "
+          v-if="memberMermship"
+          @click="onPause"
+          class="mr-4"
+        >
+          HOLD Membership
+          <span v-if="member.subscription.pause_collection != null"
+            >Active until:
+            {{ member.subscription.pause_collection.resumes_at }}</span
+          >
+        </VButton>
+
+        <VButton
+          color="warning"
+          v-if="memberMermship"
+          outlined
+          @click="onCancel"
+          class="mr-4"
+        >
           Cancel Membership
         </VButton>
         <!-- <VButton v-if="memberMermship" @click="onSave" color="primary">
