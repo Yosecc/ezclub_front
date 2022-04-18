@@ -98,7 +98,7 @@ export const inputsInformation = ref([
     name: 'date_birth',
     placeholder: 'Date of Birth',
     model: '',
-    required: true,
+    required: false,
     class: 'is-3',
   },
   {
@@ -223,7 +223,7 @@ export const inputsInformation = ref([
     placeholder: 'Recurrence',
     values: ['bi-weekly', 'monthly', 'weekly', 'yearly', 'hourly'],
     model: '',
-    required: true,
+    required: false,
     class: 'is-3',
   },
   // {

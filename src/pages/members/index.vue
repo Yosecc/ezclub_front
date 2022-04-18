@@ -163,7 +163,7 @@ const reloadForm = () => {
                 "
                 rounded
               >
-                Prospect
+                Temporary Members
               </V-Button>
             </V-Control>
           </V-Field>
