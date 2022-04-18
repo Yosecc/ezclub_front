@@ -18,9 +18,9 @@ import { VitePWA } from 'vite-plugin-pwa'
  * @see https://vitejs.dev/config
  */
 export default defineConfig({
-  define: {
-    // 'process.env' : path.resolve(__dirname, './.env'),
-  },
+  // define: {
+  //   'process.env' : path.resolve(__dirname, './.env'),
+  // },
   // Project root directory (where index.html is located).
   root: process.cwd(),
   // Base public path when served in development or production.
@@ -170,8 +170,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       base: '/',
       manifest: {
-        name: 'Vuero - A complete Vue 3 design system',
-        short_name: 'Vuero',
+        name: 'Ezclub',
+        short_name: 'Ezclub',
         start_url: '/?utm_source=pwa',
         display: 'standalone',
         theme_color: '#ffffff',

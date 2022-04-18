@@ -82,6 +82,7 @@ const closeInventory = () => {
       isLoaded.value = false
       text.value = ''
       getInventories()
+      window.location.reload()
     })
     .catch((error) => {
       notyf.error(error.response.data)

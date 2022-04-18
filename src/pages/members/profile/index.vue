@@ -313,15 +313,22 @@ const newMembership = () => {
             <p>
               <b>Membership Active:</b> {{ memberMermship.membership.name }}
             </p>
-            <p><b>Due Date: </b> {{ DueDate.format('ddd - DD MMM YYYY') }}</p>
-            <p v-if="memberMermship.payments">
+            <p>
+              <b>Due Date: </b>
+              {{
+                moment(member.subscription.proxima_factura).format(
+                  'ddd - DD MMM YYYY'
+                )
+              }}
+            </p>
+            <!-- <p v-if="memberMermship.payments">
               <b>Last payment attempt: </b
               >{{
                 moment(memberMermship.payments[0].created_at).format(
                   'ddd - DD MMM YYYY'
                 )
               }}
-            </p>
+            </p> -->
           </div>
         </VCard>
         <personalInformation

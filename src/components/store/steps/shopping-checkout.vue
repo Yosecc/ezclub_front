@@ -2,7 +2,7 @@
 import { onMounted, watch, ref, computed, defineProps, defineEmit } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { Api, API_WEB_URL } from '/@src/services'
-import { moneda } from '/@src/models/Mixin.ts'
+import { moneda, notyf, getInput } from '/@src/models/Mixin.ts'
 import {
   cart,
   total,
@@ -15,8 +15,13 @@ import {
   openModalCash,
   openModalCard,
   order,
+  storeDebitAutomatic,
+  storeNewCardClient,
+  newSetupIntent,
+  storeSwipeCard,
 } from '/@src/models/Store.ts'
-
+import { locationsSelect, terminales } from '/@src/models/Companies.ts'
+import swal from 'sweetalert'
 const route = useRoute()
 
 const props = defineProps({})
@@ -31,12 +36,121 @@ const paymentCardStripe = () => {
   payment()
 }
 
+const member = ref(null)
+const showOptionsDebit = ref(false)
+
+watch(
+  () => member.value,
+  () => {
+    showOptionsDebit.value = false
+  }
+)
+
 watch(
   () => order.value,
   (to) => {
     console.log('acambio')
   }
 )
+
+const loadingOptionDebit = ref(false)
+
+const debitAutomaticPaymentDefault = (obj) => {
+  member.value.payment_method = obj.payment_method
+  if (!cart.value.length) {
+    notyf.error('No hay productos en el carro')
+    return
+  }
+  if (!total.value) {
+    notyf.error('No existe el total')
+    return
+  }
+  if (!member.value) {
+    notyf.error('No hay miembro seleccionado')
+    return
+  }
+
+  if (!confirm('Confirm Payment')) {
+    return
+  }
+
+  loadingOptionDebit.value = true
+  storeDebitAutomatic({
+    cart: cart.value,
+    total: total.value,
+    member_id: member.value.id,
+    locations_id: getInput(locationsSelect.value, 'locations_id').model,
+    payment_method: member.value.payment_method,
+  })
+    .then((response) => {
+      loadingOptionDebit.value = false
+      notyf.success('Success Payment')
+      window.location.reload()
+    })
+    .catch((error) => {
+      loadingOptionDebit.value = false
+      notyf.error(error.response.data)
+    })
+}
+
+const showStripe = ref(false)
+const addNewCardClient = () => {
+  if (!cart.value.length) {
+    notyf.error('No hay productos en el carro')
+    return
+  }
+  if (!total.value) {
+    notyf.error('No existe el total')
+    return
+  }
+  if (!member.value) {
+    notyf.error('No hay miembro seleccionado')
+    return
+  }
+  showStripe.value = true
+}
+
+const terminalesOoptions = ref(false)
+const terminal_id = ref(null)
+const paymentIntent = ref(null)
+const capturePayment = () => {}
+const paymentSwipeCard = (id) => {
+  terminal_id.value = id
+
+  // Enable pusher logging - don't include this in production
+  Pusher.logToConsole = true
+  var pusher = new Pusher('bfeef3fa74babbbef3cb', {
+    cluster: 'us2',
+  })
+
+  var channel = pusher.subscribe('payment_stripe_channel')
+  channel.bind('payment_stripe_event', function (data) {
+    if (data.message.payload.type == 'terminal.reader.action_succeeded') {
+      swal('Good job!', 'Payment success', 'success')
+    }
+  })
+
+  if (confirm('Send Terminal')) {
+    notyf.success('Enviando....')
+    storeSwipeCard({
+      cart: cart.value,
+      total: total.value,
+      locations_id: getInput(locationsSelect.value, 'locations_id').model,
+      terminal_id: terminal_id.value,
+    })
+      .then((response) => {
+        // loadingOptionDebit.value = false
+        paymentIntent.value = response.data
+        console.log('soy el paymentIntent', response.data)
+        notyf.success('Recibido en el terminal')
+        // window.location.reload()
+      })
+      .catch((error) => {
+        // loadingOptionDebit.value = false
+        notyf.error(error.response.data)
+      })
+  }
+}
 </script>
 
 <template>
@@ -48,14 +162,6 @@ watch(
       <slot></slot>
       <table class="table is-striped is-fullwidth">
         <tbody>
-          <!-- <tr>
-              <td>SubTotal</td>
-              <td class="text-right">{{ moneda(subTotal) }}</td>
-            </tr>
-            <tr>
-              <td>Tax</td>
-              <td class="text-right">{{ moneda(tax) }}</td>
-            </tr> -->
           <tr>
             <td>
               <p class="title is-4"><b>Total</b></p>
@@ -66,59 +172,155 @@ watch(
           </tr>
         </tbody>
       </table>
-
-      <VField>
-        <VControl>
-          <input
-            type="text"
-            v-model="client.email"
-            class="input"
-            placeholder="Email"
-          />
-        </VControl>
-      </VField>
-      <VField>
-        <VControl>
-          <input
-            type="text"
-            v-model="client.phone"
-            class="input"
-            placeholder="Phone"
-          />
-        </VControl>
-      </VField>
-      <VField>
-        <VControl>
-          <input
-            type="text"
-            v-model="client.barcode"
-            class="input"
-            placeholder="Barcode"
-          />
-        </VControl>
-      </VField>
     </div>
-    <div>
-      <VButton
+
+    <SearchBar v-model="member" />
+
+    <div class="d-flex">
+      <VCard
+        v-tooltip="!member ? 'Debe seleccionar un miembro' : ''"
         color="success"
-        :disabled="cart.length == 0"
-        @click="paymentCardStripe"
-        class="w-100 justify-content-center mb-4"
+        :disabled="!member"
+        @click="
+          member
+            ? (showOptionsDebit = !showOptionsDebit)
+            : (showOptionsDebit = false)
+        "
+        class="mx-2 btn-card w-100"
       >
-        Card
-      </VButton>
-      <VButton
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <p class="title is-3">
+              <i class="fas fa-credit-card" aria-hidden="true"></i>
+            </p>
+            <p class="title is-5">Debit Automatic</p>
+          </div>
+          <p v-if="showOptionsDebit" class="title is-6">
+            <i class="fas fa-check" aria-hidden="true"></i>
+          </p>
+        </div>
+      </VCard>
+      <VCard
         color="warning"
-        :disabled="cart.length == 0"
+        :disabled="showOptionsDebit || terminalesOoptions"
         @click=";(typePayment = 1), (openModalCash = true), payment"
-        class="w-100 justify-content-center mb-4"
+        class="mx-2 btn-card w-100 justify-content-center"
       >
-        Cash
-      </VButton>
-      <!-- <VButton 
-          color="info" 
-          :disabled="cart.length == 0"
-          class="w-100 justify-content-center"> Swipe Card </VButton> -->
+        <p class="title is-3">
+          <i class="fas fa-money-bill" aria-hidden="true"></i>
+        </p>
+        <p class="title is-5">Cash</p>
+      </VCard>
+      <VCard
+        color="info"
+        :disabled="showOptionsDebit || !terminales.length"
+        class="mx-2 btn-card w-100 justify-content-center"
+        @click="
+          terminales.length
+            ? (terminalesOoptions = !terminalesOoptions)
+            : (terminalesOoptions = false)
+        "
+        v-tooltip="!terminales.length ? 'No posee terminales' : ''"
+      >
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <p class="title is-3">
+              <i class="fas fa-money-check-alt" aria-hidden="true"></i>
+            </p>
+            <p class="title is-5">Swipe Card</p>
+          </div>
+          <p v-if="terminalesOoptions" class="title is-6">
+            <i class="fas fa-check" aria-hidden="true"></i>
+          </p>
+        </div>
+      </VCard>
+    </div>
+
+    <div class="mt-4 mx-2" v-if="terminalesOoptions">
+      <div class="d-flex">
+        <VCard
+          v-for="(terminal, key) in terminales"
+          :key="`terminal-${key}`"
+          class="m-2 p-6 btn-card"
+          :color="terminal_id == terminal.id ? 'info' : ''"
+          @click="paymentSwipeCard(terminal.id)"
+        >
+          <p class="title is-1">
+            <i class="lnir lnir-postcard" aria-hidden="true"></i>
+          </p>
+          <p class="title is-5">{{ terminal.label }}</p>
+          <p>Serial number: {{ terminal.serial_number }}</p>
+          <p>Status: {{ terminal.status }}</p>
+        </VCard>
+      </div>
+      <VCard
+        color="success"
+        class="m-2 btn-card d-flex justify-content-center"
+        v-if="paymentIntent"
+      >
+        <p class="title is-3">Finish payment</p>
+      </VCard>
+    </div>
+
+    <div class="mt-4 mx-2" v-if="showOptionsDebit">
+      <VLoader size="large" :active="loadingOptionDebit">
+        <div class="columns is-multiline w-100">
+          <div
+            v-for="(card, key) in member.cards"
+            :key="`card-${key}`"
+            class="column is-6"
+          >
+            <VCard
+              @click="debitAutomaticPaymentDefault({ payment_method: card.id })"
+              :color="member.payment_method == card.id ? 'success' : undefined"
+              v-if="!showStripe"
+              class="btn-card"
+            >
+              <div class="d-flex align-items-center">
+                <p class="title is-6 mb-0">
+                  <i class="fas fa-credit-card" aria-hidden="true"></i>
+                </p>
+                <div class="ml-4">
+                  <p class="title is-6 mb-2">Select Payment Method</p>
+                  <p class="title is-6 mb-0">
+                    {{ card.card.brand }} **** {{ card.card.last4 }}
+                  </p>
+                </div>
+              </div>
+            </VCard>
+          </div>
+          <div class="column is-12">
+            <VCard
+              @click="addNewCardClient"
+              v-show="!showStripe"
+              color="success"
+              class="btn-card"
+            >
+              <div class="d-flex align-items-center">
+                <p class="title is-1 mb-0">
+                  <i class="fas fa-plus-circle" aria-hidden="true"></i>
+                </p>
+                <div class="ml-4">
+                  <p class="title is-4 mb-2">Add new card</p>
+                </div>
+              </div>
+            </VCard>
+          </div>
+        </div>
+      </VLoader>
+      <stripeAddCardStore
+        v-if="showStripe"
+        :new_setup_intent="`orders/new_setup_intent/${member.id}`"
+        :member_id="member.id"
+        :url_payment="`orders/store_new_card_and_payment`"
+        :data="{
+          cart: cart,
+          total: total,
+          member_id: member.id,
+          locations_id: getInput(locationsSelect, 'locations_id').model,
+        }"
+        @PaymentAction="window.location.reload()"
+      />
     </div>
 
     <VModal
@@ -191,11 +393,7 @@ watch(
         </div>
       </template>
       <template #action>
-        <VButton
-          color=""
-          @click="cash = 0"
-          class="d-flex justify-content-center"
-          raised
+        <VButton @click="cash = 0" class="d-flex justify-content-center" raised
           >Reset</VButton
         >
         <VButton
@@ -206,26 +404,6 @@ watch(
           raised
           >Confirm</VButton
         >
-      </template>
-    </VModal>
-
-    <VModal
-      :open="openModalCard"
-      actions="center"
-      @close="openModalCard = false"
-    >
-      <template #content>
-        <stripeFormProduct v-if="order" :amount="total" :order_id="order" />
-      </template>
-      <template #action>
-        <!-- <VButton
-          color="success"
-          @click="payment"
-          :disabled="total > cash"
-          class="d-flex justify-content-center"
-          raised
-          >Confirm</VButton
-        > -->
       </template>
     </VModal>
   </VCard>

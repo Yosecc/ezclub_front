@@ -13,6 +13,10 @@ const props = defineProps({
     type: Number,
     required: true,
   },
+  pm_last_four: {
+    type: String,
+    required: '',
+  },
 })
 
 const emit = defineEmit(['PaymentAction'])
@@ -26,6 +30,7 @@ watch(
 
 const elements = ref()
 const nameCard = ref(null)
+const newCard = ref(false)
 
 // const data = computed(() => {
 //   if (props.url != 'stripe') {
@@ -49,8 +54,7 @@ const buttonLoading = ref(false)
 const formLoading = ref(true)
 // const user_id = ref(null)
 const initialize = async () => {
-  formLoading.value = true
-
+  newCard.value = true
   elements.value = await stripe.elements({
     clientSecret: props.clientSecret,
     appearance: {
@@ -67,26 +71,23 @@ const initialize = async () => {
   // cardElement.value = elements.value.create('payment')
   cardElement.value.mount('#payment-element')
 
-  formLoading.value = false
   return elements.value
 }
 
-// const paymentMethod = async ()=>{
+const payment = async (payment_method) => {
+  const { data } = await Api.post('paymentStripe', {
+    payment_method,
+    membership_member_id: props.membership_member_id,
+  }).catch((e) => {
+    buttonLoading.value = false
+  })
 
-//   return
-// }
+  return data
+}
 
 const handleSubmit = async (e) => {
   e.preventDefault()
   buttonLoading.value = true
-  //
-  // const { error, paymentMethod }  = await stripe.createPaymentMethod({
-  //   type: 'card',
-  //   card: cardElement.value,
-  //   billing_details: {
-  //     name: nameCard.value,
-  //   },
-  // })
 
   const { setupIntent, error } = await stripe.confirmCardSetup(
     props.clientSecret,
@@ -101,22 +102,14 @@ const handleSubmit = async (e) => {
   if (!error) {
     const { payment_method } = setupIntent
 
-    const { data } = await Api.post('paymentStripe', {
-      payment_method,
-      membership_member_id: props.membership_member_id,
-    }).catch((e) => {
-      buttonLoading.value = false
-    })
+    const data = payment(payment_method)
 
     if (data) {
       emit('PaymentAction', data)
       notyf.success('Success Payment')
     }
-
-    // console.log(data)
   } else {
     buttonLoading.value = false
-    // console.log()
     notyf.error(error.message)
   }
 
@@ -125,14 +118,22 @@ const handleSubmit = async (e) => {
 
 onMounted(() => {
   buttonLoading.value = false
-  initialize()
+  formLoading.value = false
+  // initialize()
 })
+const onMethodPayment = (paymentMethod) => {
+  console.log('hhegu')
+  payment(paymentMethod)
+}
 </script>
 
 <template>
   <VPlaceload v-if="formLoading" height="500px" />
   <V-Card v-show="!formLoading" class="mt-6">
-    <form @submit.prevent="handleSubmit" id="payment-form">
+    <form v-if="newCard" @submit.prevent="handleSubmit" id="payment-form">
+      <div class="w-100 d-flex justify-content-end">
+        <VButton @click="newCard = false" class="mb-4">Back</VButton>
+      </div>
       <input
         id="card-holder-name"
         class="input mb-3"
@@ -149,6 +150,13 @@ onMounted(() => {
 
       <div id="payment-message" class="hidden"></div>
     </form>
+
+    <MemberCards
+      v-else
+      @onMethodPayment="onMethodPayment"
+      @onNewCard="initialize()"
+      :method_default="pm_last_four"
+    />
   </V-Card>
 </template>
 

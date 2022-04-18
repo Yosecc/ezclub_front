@@ -4,7 +4,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { Api } from '/@src/services'
 import { API_WEB_URL } from '/@src/services/index.ts'
 import { moneda } from '/@src/models/Mixin.ts'
-import { cart, stepActive } from '/@src/models/Store.ts'
+import { cart, stepActive, modalCheckout } from '/@src/models/Store.ts'
 
 const route = useRoute()
 
@@ -29,11 +29,18 @@ const steps = ref([
     icon: 'fa-receipt',
   },
 ])
+
+const closeModal = () => {
+  modalCheckout.value = false
+  optionSelected.value = null
+}
+
+const optionSelected = ref(null)
 </script>
 
 <template>
   <div style="min-height: 400px">
-    <VCard class="mb-4 d-flex justify-content-around">
+    <!-- <VCard class="mb-4 d-flex justify-content-around">
       <p
         v-for="(i, key) in steps"
         :key="`sterpmenu-${key}`"
@@ -44,9 +51,12 @@ const steps = ref([
       >
         <i class="fas" :class="i.icon" aria-hidden="true"></i>
       </p>
-    </VCard>
+    </VCard> -->
 
-    <shopping-cart v-if="stepActive == 1" @proccessCheckout="stepActive = 2">
+    <shopping-cart
+      v-if="stepActive == 1"
+      @proccessCheckout="modalCheckout = true"
+    >
       <div class="d-flex justify-content-between mb-4">
         <h3 class="title is-5 mb-2">Order</h3>
         <VTag
@@ -59,18 +69,33 @@ const steps = ref([
       </div>
     </shopping-cart>
 
-    <shopping-checkout v-if="stepActive == 2">
-      <div class="d-flex justify-content-between mb-4">
-        <h3 class="title is-5 mb-2">Order</h3>
-        <VTag
-          color="info"
-          v-if="cart"
-          :label="`${cart.length} products`"
-          rounded
-          elevated
-        />
-      </div>
-    </shopping-checkout>
+    <VModal
+      :open="modalCheckout"
+      actions="center"
+      size="big"
+      noscroll
+      noclose
+      @close="closeModal"
+    >
+      <template #header> </template>
+      <template #content>
+        <shopping-checkout>
+          <div class="d-flex justify-content-between mb-4">
+            <h3 class="title is-5 mb-2">Order</h3>
+            <VTag
+              color="info"
+              v-if="cart"
+              :label="`${cart.length} products`"
+              rounded
+              elevated
+            />
+          </div>
+        </shopping-checkout>
+      </template>
+      <template #action>
+        <!-- <VButton color="primary" raised>Confirm</VButton> -->
+      </template>
+    </VModal>
 
     <sendFactura v-if="stepActive == 3" />
   </div>

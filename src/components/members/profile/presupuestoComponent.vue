@@ -93,10 +93,10 @@ const props = defineProps({
     <slot name="k"></slot>
 
     <!--  <stripeAddCardComponent
-    v-if="clientSecret"
-    :clientSecret="clientSecret"
-    :membership_member_id="membership_member.id"
-  /> -->
+      v-if="clientSecret"
+      :clientSecret="clientSecret"
+      :membership_member_id="membership_member.id"
+    /> -->
   </VCard>
 </template>
 

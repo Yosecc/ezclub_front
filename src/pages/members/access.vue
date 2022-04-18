@@ -47,7 +47,7 @@ const search = () => {
           </VCard>
         </div>
         <div class="column is-7">
-          <VCard color="" class="h-100" id="infoCliente">
+          <VCard class="h-100" id="infoCliente">
             <div
               class="
                 d-flex

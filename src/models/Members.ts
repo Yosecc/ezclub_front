@@ -958,6 +958,19 @@ export const storeFirma = async (base64: any, id: any) => {
   return response
 }
 
+// Stripe
+export const getCardsMembers = async (id: number) => {
+  const response = await Api.get(`members/cards/${id}`)
+  return response
+}
+
+// Stripe
+export const getListInvoices = async (id: number) => {
+  const response = await Api.get(`members/list_invoices/${id}`)
+  member.value.invoices = response.data
+  return response
+}
+
 export const memberMermship = computed(() => {
   return member.value.membership_members
 })

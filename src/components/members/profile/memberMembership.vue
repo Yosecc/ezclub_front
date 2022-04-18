@@ -14,6 +14,7 @@ import {
   getPresupuesto,
   storeNewMembership,
 } from '/@src/models/Members.ts'
+
 import { getLocationsDiciplines } from '/@src/models/Diciplines.ts'
 import {
   setInputValuesData,
@@ -76,29 +77,39 @@ const onNew = () => {
     member_id: member.value.id,
   }
 
-  getPresupuesto(datos).then((response) => {
-    presupuesto.value = {
-      name: response.data.membership.name,
-      interval: response.data.quote.computed.recurring.interval,
-      membership: {
-        amount_subtotal: response.data.quote.computed.recurring.amount_subtotal,
-        amount_total: response.data.quote.computed.recurring.amount_total,
-      },
-      initiation_fee: response.data.membership.initiation_fee,
-      percentage: response.data.tax.percentage,
-      amount_tax: response.data.quote.total_details.amount_tax,
-      amount_subtotal: response.data.quote.amount_subtotal,
-      amount_total: response.data.quote.amount_total,
-      is_initiation_fee: datos.is_initiation_fee,
-    }
+  getPresupuesto(datos)
+    .then((response) => {
+      presupuesto.value = {
+        name: response.data.membership.name,
+        interval: response.data.quote.computed.recurring.interval,
+        membership: {
+          amount_subtotal:
+            response.data.quote.computed.recurring.amount_subtotal,
+          amount_total: response.data.quote.computed.recurring.amount_total,
+        },
+        initiation_fee: response.data.membership.initiation_fee,
+        percentage: response.data.tax.percentage,
+        amount_tax: response.data.quote.total_details.amount_tax,
+        amount_subtotal: response.data.quote.amount_subtotal,
+        amount_total: response.data.quote.amount_total,
+        is_initiation_fee: datos.is_initiation_fee,
+      }
 
-    // console.log(presupuesto.value)
-  })
+      // console.log(presupuesto.value)
+    })
+    .catch((error) => {
+      for (var i in error.response.data) {
+        error.response.data[i].forEach((e) => {
+          notyf.error(`${i}  ${e}`)
+        })
+      }
+    })
 }
 const mebershipMemberid = ref(null)
 const newMembership = () => {
   const data = perpareDataInputs(membershipsData.value)
   data.members_id = member.value.id
+
   storeNewMembership(data)
     .then((response) => {
       console.log(response.data)
@@ -146,7 +157,12 @@ const onSign = (base64) => {
 }
 
 const PaymentAction = (data) => {
+  console.log(data)
   window.location.reload()
+}
+
+const onMethodPayment = (paymentMethod) => {
+  newMembership(paymentMethod)
 }
 </script>
 
@@ -163,9 +179,9 @@ const PaymentAction = (data) => {
         <VButton v-if="memberMermship" @click="onCancel" class="mr-4">
           Cancel Membership
         </VButton>
-        <VButton v-if="memberMermship" @click="onSave" color="primary">
+        <!-- <VButton v-if="memberMermship" @click="onSave" color="primary">
           Save Changes
-        </VButton>
+        </VButton> -->
         <VButton v-if="!memberMermship" @click="onNew" color="primary">
           New Membership
         </VButton>
@@ -240,9 +256,6 @@ const PaymentAction = (data) => {
             :membership_member_id="membership_member.id"
             @PaymentAction="PaymentAction"
           />
-          <!--             :amount="quote.amount_total"
-            :id="membership_member.member.id"
-            :member_membership="membership_member.id" -->
         </VCard>
 
         <presupuestoComponent v-if="presupuesto" :presupuesto="presupuesto">
@@ -250,10 +263,15 @@ const PaymentAction = (data) => {
             <V-Button color="info" @click="newMembership" class="mt-4 py-1">
               Payment Card
             </V-Button>
+            <!-- <MemberCards
+              @onMethodPayment="onMethodPayment"
+              :method_default="member.user.pm_last_four"
+            /> -->
             <stripeAddCardComponent
               v-if="clientSecret"
               :client-secret="clientSecret"
               :membership_member_id="mebershipMemberid"
+              :pm_last_four="member.user.pm_last_four"
               @PaymentAction="PaymentAction"
             />
           </template>
@@ -292,7 +310,7 @@ const PaymentAction = (data) => {
           </div>
         </VCard>
 
-        <VCard class="mb-4" v-if="member">
+        <VCard class="mb-4" v-if="false">
           <h1 class="title is-6">Inactive Contract Information</h1>
           <table class="table is-hoverable is-fullwidth">
             <thead>
