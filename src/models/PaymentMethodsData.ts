@@ -1,5 +1,6 @@
 import { ref } from 'vue'
-
+import moment from 'moment'
+import { notyf } from '/@src/models/Mixin.ts'
 export const optionsCreditCard = ref([
   {
     typeInput: 'switchEventChange',
@@ -23,7 +24,7 @@ export const paymentData = ref([
   {
     typeInput: 'text',
     name: 'card_name',
-    placeholder: 'Credit Card Name',
+    placeholder: 'Card Name',
     model: '',
     class: 'is-12',
     isLabel: true,
@@ -32,64 +33,63 @@ export const paymentData = ref([
     },
   },
   {
-    typeInput: 'text',
+    typeInput: 'number',
     name: 'card_number',
-    placeholder: 'Credit Card Number',
+    placeholder: 'Card Number',
     model: '',
     class: 'is-12',
-    maxLength: 19,
+    maxLength: 16,
     isLabel: true,
-    keyUp: (event, input) => {
+    keyUp: function (event, input) {
       flipped.value = false
-      const code = event.which ? event.which : event.keyCode
-      console.log(event)
-      if (code == 8) {
-        // backspace.
-        return true
-      } else if (code >= 48 && code <= 57) {
-        // is a number.
-        console.log('antes', input.model)
-
-        input.model = input.model
-          .replace(/[^\dA-Z]/g, '')
-          .replace(/(.{4})/g, '$1 ')
-          .trim()
-
-        console.log('despues', input.model)
+      if (this.model.length > 16) {
+        this.model = this.model.substring(0, this.model.length - 1)
       } else {
-        // other keys.
-        // input.model = input.model.substr(0,input.model.length -1)
-        return false
+        return true
       }
     },
   },
   {
-    typeInput: 'text',
-    name: 'date_expired',
-    placeholder: 'Expiration Date',
+    typeInput: 'number',
+    name: 'date_day_expired',
+    placeholder: 'Expiration Month',
     model: '',
     class: 'is-6',
-    maxLength: 5,
+    maxLength: 2,
     isLabel: true,
-    keyUp: (event, input) => {
+    keyUp: function (event, input) {
       flipped.value = false
-      const code = event.which ? event.which : event.keyCode
-
-      if (code == 8) {
-        // backspace.
-        return true
-      } else if (code >= 48 && code <= 57) {
-        // is a number.
-        if (input.model.length < 4) {
-          input.model = input.model
-            .replace(/[^\dA-Z]/g, '')
-            .replace(/(.{2})/g, '$1/')
-            .trim()
+      if (this.model.length > 2) {
+        this.model = this.model.substr(0, this.model.length - 1)
+      }
+    },
+    change: function (event, input) {
+      if (this.model.length == 1) {
+        this.model = `0${this.model}`
+      }
+    },
+  },
+  {
+    typeInput: 'number',
+    name: 'date_year_expired',
+    placeholder: 'Expiration Year',
+    model: '',
+    class: 'is-6',
+    maxLength: 2,
+    isLabel: true,
+    keyUp: function (event, input) {
+      flipped.value = false
+      if (this.model.length > 2) {
+        this.model = this.model.substr(0, this.model.length - 1)
+      }
+      if (this.model.length == 2) {
+        if (parseFloat(this.model) < parseFloat(moment().format('YY'))) {
+          this.model = ''
+          this.hasError = true
+          notyf.error('date expired')
+        } else {
+          this.hasError = false
         }
-      } else {
-        // other keys.
-        input.model = input.model.substr(0, input.model.length - 1)
-        return false
       }
     },
   },
@@ -98,23 +98,13 @@ export const paymentData = ref([
     name: 'cvv',
     placeholder: 'CVV',
     model: '',
-    class: 'is-6',
+    class: 'is-12',
     maxLength: 3,
     isLabel: true,
-    keyUp: (event, input) => {
+    keyUp: function (event, input) {
       flipped.value = true
-      const code = event.which ? event.which : event.keyCode
-
-      if (code == 8) {
-        // backspace.
-        return true
-      } else if (code >= 48 && code <= 57) {
-        // is a number.
-        return true
-      } else {
-        // other keys.
-        input.model = input.model.substr(0, input.model.length - 1)
-        return false
+      if (this.model.length > 3) {
+        this.model = this.model.substr(0, this.model.length - 1)
       }
     },
   },

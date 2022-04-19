@@ -75,6 +75,7 @@ onMounted(async () => {
 
 const onChangeStep = () => {
   const data = perpareDataInputs(direccionInput.value)
+  data.facturacion = perpareDataInputs(direccionFacturacionInputs.value)
 
   if (!hasErrors.value) {
     storeDirecciones(member.value.id, data)

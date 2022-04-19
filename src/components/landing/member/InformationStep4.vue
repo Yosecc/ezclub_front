@@ -5,6 +5,7 @@ import {
   currentStep,
   member,
   onconfirm,
+  storeCard,
 } from '/@src/state/wizardStateLandingMembersUpdated'
 
 import { paymentData, flipped } from '/@src/models/PaymentMethodsData.ts'
@@ -26,10 +27,19 @@ onMounted(() => {
 })
 
 const onChangeStep = () => {
-  const data = perpareDataInputs(direccionInput.value)
-
+  const data = perpareDataInputs(paymentData.value)
+  console.log(data)
   if (!hasErrors.value) {
-    currentStep.value = 5
+    storeCard(member.value.id, data)
+      .then((response) => {
+        currentStep.value = 1
+        window.location.reload()
+        notyf.success('Success')
+      })
+      .catch((error) => {
+        notyf.error(error.response.data)
+        console.log(typeof error.response.data)
+      })
   }
 }
 </script>
@@ -51,7 +61,9 @@ const onChangeStep = () => {
                 @flip="flipped = !flipped"
                 :number="getInput(paymentData, 'card_number').model"
                 :name="getInput(paymentData, 'card_name').model"
-                :expiry="getInput(paymentData, 'date_expired').model"
+                :expiry="`${getInput(paymentData, 'date_day_expired').model}/${
+                  getInput(paymentData, 'date_year_expired').model
+                }`"
                 :cvc="getInput(paymentData, 'cvv').model"
               />
             </VControl>
@@ -80,3 +92,10 @@ const onChangeStep = () => {
     </div>
   </VCard>
 </template>
+<style lang="scss">
+.column.is-6 {
+  width: 50% !important;
+  flex: none !important;
+  display: inline-table !important;
+}
+</style>

@@ -84,7 +84,7 @@ export const barCodeInput = ref([
     label: 'Barcode',
     maxLength: 9,
     placeholder: '123456789',
-    model: '301048254',
+    model: '',
     class: 'is-12',
   },
 ])
@@ -401,6 +401,11 @@ export const storeInformation = async (id: string, data: object) => {
 
 export const storeDirecciones = async (id: string, data: object) => {
   const response = await Api.post(`landing_pages/address_member/${id}`, data)
+  return response
+}
+
+export const storeCard = async (id: string, data: object) => {
+  const response = await Api.post(`landing_pages/card_member/${id}`, data)
   return response
 }
 
