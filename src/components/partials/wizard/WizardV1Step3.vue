@@ -89,7 +89,7 @@ const selectCustomer = (customer: WizardCustomer) => {
       </template>
     </div>
 
-    <div class="project-dates">
+    <!-- <div class="project-dates">
       <h4>Project Time Frame</h4>
       <v-date-picker
         v-model="wizardData.timeFrame"
@@ -137,7 +137,7 @@ const selectCustomer = (customer: WizardCustomer) => {
           </div>
         </template>
       </v-date-picker>
-    </div>
+    </div> -->
 
     <div class="project-budget">
       <h4>Project Budget</h4>

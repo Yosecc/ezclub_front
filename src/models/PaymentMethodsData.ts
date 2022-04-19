@@ -26,6 +26,7 @@ export const paymentData = ref([
     placeholder: 'Credit Card Name',
     model: '',
     class: 'is-12',
+    isLabel: true,
     keyUp: (event, input) => {
       flipped.value = false
     },
@@ -37,16 +38,17 @@ export const paymentData = ref([
     model: '',
     class: 'is-12',
     maxLength: 19,
+    isLabel: true,
     keyUp: (event, input) => {
       flipped.value = false
       const code = event.which ? event.which : event.keyCode
-      console.log(event)
+      // console.log(event)
       if (code == 8) {
         // backspace.
         return true
       } else if (code >= 48 && code <= 57) {
         // is a number.
-        console.log()
+        // console.log()
         input.model = input.model
           .replace(/[^\dA-Z]/g, '')
           .replace(/(.{4})/g, '$1 ')
@@ -65,6 +67,7 @@ export const paymentData = ref([
     model: '',
     class: 'is-6',
     maxLength: 5,
+    isLabel: true,
     keyUp: (event, input) => {
       flipped.value = false
       const code = event.which ? event.which : event.keyCode
@@ -94,6 +97,7 @@ export const paymentData = ref([
     model: '',
     class: 'is-6',
     maxLength: 3,
+    isLabel: true,
     keyUp: (event, input) => {
       flipped.value = true
       const code = event.which ? event.which : event.keyCode

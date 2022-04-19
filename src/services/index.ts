@@ -19,7 +19,7 @@ if (import.meta.env.MODE === 'development') {
   // FRONTEND_URL.value = 'https://ezclub.app/'
   // API_WEB_URL.value = 'https://api.ezclub.app/'
   API_URL.value = 'https://dev-api.ushuaiacreative.com/api/'
-  FRONTEND_URL.value = 'https://dev-frontend.ushuaiacreative.com/'
+  FRONTEND_URL.value = 'https://dev-frontend.ushuaiacreative.com/'``
   API_WEB_URL.value = 'https://dev-api.ushuaiacreative.com/'
 }
 // console.log(VUE_APP_ROUTE_API)

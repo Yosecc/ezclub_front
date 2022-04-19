@@ -56,6 +56,12 @@ export const getCompany = async () => {
   return response
 }
 
+export const getCompanySlug = async (slug: string) => {
+  const response = await Api.get(`company/${slug}`)
+  company.value = response.data
+  return response
+}
+
 export const putCompanyInformation = async (data: any) => {
   const response = await Api.post(
     `companies/updatecompany/${company.value.id}`,
