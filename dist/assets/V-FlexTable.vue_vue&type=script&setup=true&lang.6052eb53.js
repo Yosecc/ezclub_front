@@ -1,1 +1,0 @@
-import{d as s,o,h as a,G as e}from"./vendor.2e3b8db9.js";var t=s({expose:[],props:{compact:{type:Boolean,default:!1}},setup:s=>(t,p)=>(o(),a("div",{class:["flex-table",[s.compact&&"is-compact"]]},[e(t.$slots,"header"),e(t.$slots,"body")],2))});export{t as _};
