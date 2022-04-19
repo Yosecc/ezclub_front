@@ -40,7 +40,9 @@ const validateData = (inputs, array = true) => {
   inputs.forEach((input) => {
     if (input.required && (input.model == '' || !input.model)) {
       input.hasError = true
-
+      notyf.error(
+        `${input.placeholder ? input.placeholder : input.name} is required`
+      )
       errors.value.push(true)
     } else {
       errors.value.push(false)

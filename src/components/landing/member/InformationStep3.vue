@@ -1,12 +1,22 @@
 <script setup lang="ts">
 import type { WizardRelatedTo } from '/@src/models/wizard'
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch, computed } from 'vue'
 import {
   currentStep,
   direccionInput,
+  direccionFacturacionInputs,
   member,
+  onconfirm,
+  storeDirecciones,
 } from '/@src/state/wizardStateLandingMembersUpdated'
-import { getcities, getstates, getcontries } from '/@src/services/config.ts'
+import {
+  getcities,
+  getstates,
+  getcontries,
+  cities,
+  states,
+  contries,
+} from '/@src/services/config.ts'
 import {
   notyf,
   getInput,
@@ -17,6 +27,36 @@ import {
 } from '/@src/models/Mixin.ts'
 
 const isLoaderActive = ref(false)
+
+const mismadireccion = computed(() => {
+  return getInput(direccionFacturacionInputs.value, 'is_direction_facturacion')
+    .model
+})
+
+watch(
+  () => mismadireccion.value,
+  () => {
+    if (!mismadireccion.value) {
+      setInputValuesData(
+        direccionFacturacionInputs.value,
+        'city_id',
+        cities.value
+      )
+
+      setInputValuesData(
+        direccionFacturacionInputs.value,
+        'state_id',
+        states.value
+      )
+
+      setInputValuesData(
+        direccionFacturacionInputs.value,
+        'country_id',
+        contries.value
+      )
+    }
+  }
+)
 
 onMounted(async () => {
   await getcities().then((response) => {
@@ -37,7 +77,15 @@ const onChangeStep = () => {
   const data = perpareDataInputs(direccionInput.value)
 
   if (!hasErrors.value) {
-    currentStep.value = 4
+    storeDirecciones(member.value.id, data)
+      .then((response) => {
+        currentStep.value = 4
+        notyf.success('Success')
+      })
+      .catch((error) => {
+        notyf.error(error.response.data)
+        console.log(typeof error.response.data)
+      })
   }
 }
 </script>
@@ -52,6 +100,7 @@ const onChangeStep = () => {
       <div class="wizard-types">
         <div class="text-center p-1 pt-4">
           <inputsLayaut :inputs-step="direccionInput" />
+          <inputsLayaut :inputs-step="direccionFacturacionInputs" />
 
           <VLoader style="height: 50px" :active="isLoaderActive">
             <div class="d-flex justify-content-between">
@@ -60,7 +109,7 @@ const onChangeStep = () => {
                 color="danger"
                 class="mr-3"
                 @click="
-                  confirm('Rolling back will lose changes')
+                  onconfirm('Rolling back will lose changes')
                     ? (currentStep = 2)
                     : (currentStep = currentStep)
                 "

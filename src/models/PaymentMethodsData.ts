@@ -42,17 +42,20 @@ export const paymentData = ref([
     keyUp: (event, input) => {
       flipped.value = false
       const code = event.which ? event.which : event.keyCode
-      // console.log(event)
+      console.log(event)
       if (code == 8) {
         // backspace.
         return true
       } else if (code >= 48 && code <= 57) {
         // is a number.
-        // console.log()
+        console.log('antes', input.model)
+
         input.model = input.model
           .replace(/[^\dA-Z]/g, '')
           .replace(/(.{4})/g, '$1 ')
           .trim()
+
+        console.log('despues', input.model)
       } else {
         // other keys.
         // input.model = input.model.substr(0,input.model.length -1)

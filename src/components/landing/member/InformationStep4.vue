@@ -4,6 +4,7 @@ import { ref, onMounted } from 'vue'
 import {
   currentStep,
   member,
+  onconfirm,
 } from '/@src/state/wizardStateLandingMembersUpdated'
 
 import { paymentData, flipped } from '/@src/models/PaymentMethodsData.ts'
@@ -65,7 +66,7 @@ const onChangeStep = () => {
                 color="danger"
                 class="mr-3"
                 @click="
-                  confirm('Rolling back will lose changes')
+                  onconfirm('Rolling back will lose changes')
                     ? (currentStep = 3)
                     : (currentStep = currentStep)
                 "

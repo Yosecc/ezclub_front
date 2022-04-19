@@ -6,6 +6,8 @@ import {
   photoInput,
   inputsInformation,
   member,
+  onconfirm,
+  storeInformation,
 } from '/@src/state/wizardStateLandingMembersUpdated'
 
 import {
@@ -29,6 +31,15 @@ const onAddFile = (error: any, fileInfo: any) => {
   }
 }
 
+const onRemoveFile = (error: any, fileInfo: any) => {
+  if (error) {
+    console.error(error)
+    return
+  }
+
+  getInput(photoInput.value, 'photo').model = null
+}
+
 onMounted(() => {
   for (var i in member.value) {
     setInputModelData(inputsInformation, i, member.value[i])
@@ -39,7 +50,15 @@ const onChangeStep = () => {
   const data = perpareDataInputs(inputsInformation.value)
 
   if (!hasErrors.value) {
-    currentStep.value = 3
+    storeInformation(member.value.id, data)
+      .then((response) => {
+        currentStep.value = 3
+        notyf.success('Success')
+      })
+      .catch((error) => {
+        notyf.error(error.response.data)
+        console.log(typeof error.response.data)
+      })
   }
 }
 </script>
@@ -86,7 +105,7 @@ const onChangeStep = () => {
                 color="danger"
                 class="mr-3"
                 @click="
-                  confirm('Rolling back will lose changes')
+                  onconfirm('Rolling back will lose changes')
                     ? (currentStep = 1)
                     : (currentStep = currentStep)
                 "

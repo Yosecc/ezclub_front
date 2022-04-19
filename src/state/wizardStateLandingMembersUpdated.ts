@@ -11,8 +11,8 @@
 import { reactive, ref, computed } from 'vue'
 import sleep from '/@src/utils/sleep'
 import { Api } from '/@src/services'
-
-import { getInput } from '/@src/models/Mixin.ts'
+import moment from 'moment'
+import { getInput, notyf } from '/@src/models/Mixin.ts'
 /**
  * Using typescript types allow better developer experience
  * with autocompletion and compiler error prechecking
@@ -84,7 +84,7 @@ export const barCodeInput = ref([
     label: 'Barcode',
     maxLength: 9,
     placeholder: '123456789',
-    model: '',
+    model: '301048254',
     class: 'is-12',
   },
 ])
@@ -149,6 +149,17 @@ export const inputsInformation = ref([
         }
       }
     },
+    change: function (event, input) {
+      const hoy = moment()
+      const model = moment(this.model)
+      if (hoy.diff(model, 'year') < 10) {
+        this.model = ''
+        notyf.error('date invalid')
+        this.hasError = true
+      } else {
+        this.hasError = false
+      }
+    },
   },
   {
     typeInput: 'select',
@@ -197,7 +208,7 @@ export const inputsInformation = ref([
     isLabel: true,
   },
   {
-    typeInput: 'number',
+    typeInput: 'text',
     name: 'phone',
     placeholder: 'Phone Number',
     model: '',
@@ -251,7 +262,7 @@ export const direccionInput = ref([
     model: '',
     required: true,
     values: [''],
-    class: 'is-3',
+    class: 'is-12',
     isLabel: true,
     filterOptionText: function (option) {
       return option.name
@@ -264,7 +275,7 @@ export const direccionInput = ref([
     model: '',
     required: true,
     values: [''],
-    class: 'is-3',
+    class: 'is-12',
     isLabel: true,
     filterOptionText: function (option) {
       return option.name
@@ -276,7 +287,7 @@ export const direccionInput = ref([
     placeholder: 'Postal Code',
     required: true,
     model: '',
-    class: 'is-3',
+    class: 'is-12',
     isLabel: true,
   },
   {
@@ -286,7 +297,7 @@ export const direccionInput = ref([
     model: '',
     required: true,
     values: [''],
-    class: 'is-3',
+    class: 'is-12',
     isLabel: true,
     filterOptionText: function (option) {
       return option.name
@@ -300,21 +311,25 @@ export const direccionFacturacionInputs = ref([
     name: 'is_direction_facturacion',
     values: ['', 'Use the same address for billing'],
     placeholder: 'Use the same address for billing',
-    model: false,
+    model: true,
     required: false,
-    class: 'is-5',
+    class: 'is-12',
     change: function (inputsStep: any) {
-      if (!this.model) {
-        getInput(inputsStep, 'address').typeInput = 'text'
-        getInput(inputsStep, 'address').required = true
-      } else {
-        getInput(inputsStep, 'address').typeInput = 'hidden'
-        getInput(inputsStep, 'address').required = false
+      if (this.model) {
+        inputsAddress.forEach((e) => {
+          inputsStep.push(e)
+        })
+      } else if (!this.model) {
+        for (let i = 0; i < 5; ++i) {
+          inputsStep.splice(1, 1)
+        }
       }
     },
   },
+])
+const inputsAddress = [
   {
-    typeInput: 'hidden',
+    typeInput: 'text',
     name: 'address',
     placeholder: 'Address',
     model: '',
@@ -329,7 +344,7 @@ export const direccionFacturacionInputs = ref([
     model: '',
     required: true,
     values: [''],
-    class: 'is-3',
+    class: 'is-12',
     isLabel: true,
     filterOptionText: function (option) {
       return option.name
@@ -342,7 +357,7 @@ export const direccionFacturacionInputs = ref([
     model: '',
     required: true,
     values: [''],
-    class: 'is-3',
+    class: 'is-12',
     isLabel: true,
     filterOptionText: function (option) {
       return option.name
@@ -354,7 +369,7 @@ export const direccionFacturacionInputs = ref([
     placeholder: 'Postal Code',
     required: true,
     model: '',
-    class: 'is-3',
+    class: 'is-12',
     isLabel: true,
   },
   {
@@ -364,17 +379,33 @@ export const direccionFacturacionInputs = ref([
     model: '',
     required: true,
     values: [''],
-    class: 'is-3',
+    class: 'is-12',
     isLabel: true,
     filterOptionText: function (option) {
       return option.name
     },
   },
-])
-
+]
 export const searchBarCode = async (barcode: string) => {
   const response = await Api.post(`landing_pages/search_barcode/${barcode}`)
   return response
 }
 
+export const storeInformation = async (id: string, data: object) => {
+  const response = await Api.post(
+    `landing_pages/actualizacion_member/${id}`,
+    data
+  )
+  return response
+}
+
+export const storeDirecciones = async (id: string, data: object) => {
+  const response = await Api.post(`landing_pages/address_member/${id}`, data)
+  return response
+}
+
 export const member = ref(null)
+
+export const onconfirm = (text: string) => {
+  return confirm(text)
+}
