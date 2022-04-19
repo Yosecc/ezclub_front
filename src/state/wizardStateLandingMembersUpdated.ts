@@ -294,6 +294,84 @@ export const direccionInput = ref([
   },
 ])
 
+export const direccionFacturacionInputs = ref([
+  {
+    typeInput: 'switchEventChangeInput',
+    name: 'is_direction_facturacion',
+    values: ['', 'Use the same address for billing'],
+    placeholder: 'Use the same address for billing',
+    model: false,
+    required: false,
+    class: 'is-5',
+    change: function (inputsStep: any) {
+      if (!this.model) {
+        getInput(inputsStep, 'address').typeInput = 'text'
+        getInput(inputsStep, 'address').required = true
+      } else {
+        getInput(inputsStep, 'address').typeInput = 'hidden'
+        getInput(inputsStep, 'address').required = false
+      }
+    },
+  },
+  {
+    typeInput: 'hidden',
+    name: 'address',
+    placeholder: 'Address',
+    model: '',
+    required: true,
+    class: 'is-12',
+    isLabel: true,
+  },
+  {
+    typeInput: 'selectData',
+    name: 'city_id',
+    placeholder: 'City',
+    model: '',
+    required: true,
+    values: [''],
+    class: 'is-3',
+    isLabel: true,
+    filterOptionText: function (option) {
+      return option.name
+    },
+  },
+  {
+    typeInput: 'selectData',
+    name: 'state_id',
+    placeholder: 'State',
+    model: '',
+    required: true,
+    values: [''],
+    class: 'is-3',
+    isLabel: true,
+    filterOptionText: function (option) {
+      return option.name
+    },
+  },
+  {
+    typeInput: 'number',
+    name: 'postal_code',
+    placeholder: 'Postal Code',
+    required: true,
+    model: '',
+    class: 'is-3',
+    isLabel: true,
+  },
+  {
+    typeInput: 'selectData',
+    name: 'country_id',
+    placeholder: 'Country',
+    model: '',
+    required: true,
+    values: [''],
+    class: 'is-3',
+    isLabel: true,
+    filterOptionText: function (option) {
+      return option.name
+    },
+  },
+])
+
 export const searchBarCode = async (barcode: string) => {
   const response = await Api.post(`landing_pages/search_barcode/${barcode}`)
   return response
