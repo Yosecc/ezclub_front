@@ -46,7 +46,14 @@ const onsearchBarCode = () => {
       <div class="wizard-types">
         <div class="text-center p-1 pt-4">
           <div style="width: 80%" class="mx-auto">
-            <img src="/@src/assets/card.png" alt="" />
+            <img
+              src="/@src/assets/card.png"
+              style="
+                box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.2);
+                border-radius: 15px;
+              "
+              alt=""
+            />
           </div>
           <!-- <h3 class="dark-inverted">UI/UX Design</h3> -->
           <!-- <p>Some short explanation about the type goes here.</p> -->

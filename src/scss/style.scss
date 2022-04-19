@@ -214,9 +214,9 @@ body.is-dark {
 input,
 select,
 label.checkbox span {
-  border-color: #2d2d31 !important;
+  border-color: rgba(#2d2d31, 0.3) !important;
   &::placeholder {
-    color: #2d2d31 !important;
+    color: rgba(#2d2d31, 0.3) !important;
   }
 }
 
@@ -233,6 +233,9 @@ fieldset[disabled='false'] .checkbox,
   justify-content: center;
 }
 
+.button {
+  border-color: rgba(#2d2d31, 0.3) !important;
+}
 .btn-card {
   cursor: pointer;
   &:hover {

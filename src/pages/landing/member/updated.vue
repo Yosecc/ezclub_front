@@ -24,7 +24,7 @@ import {
   notyf,
 } from '/@src/models/Mixin.ts'
 
-import { getAllConfig } from '/@src/services/config.ts'
+import { getcities, getstates, getcontries } from '/@src/services/config.ts'
 import { getCompanySlug } from '/@src/models/Companies.ts'
 
 useHead({
@@ -52,11 +52,14 @@ onMounted(async () => {
     .catch((error) => {
       notyf.error(error.response.data)
     })
-
-  await getAllConfig().then((response) => {
-    setInputValuesData(direccionInput.value, 'city_id', response.cities)
-    setInputValuesData(direccionInput.value, 'state_id', response.states)
-    setInputValuesData(direccionInput.value, 'country_id', response.contries)
+  await getcities().then((response) => {
+    setInputValuesData(direccionInput.value, 'city_id', response.value)
+  })
+  await getstates().then((response) => {
+    setInputValuesData(direccionInput.value, 'state_id', response.value)
+  })
+  await getcontries().then((response) => {
+    setInputValuesData(direccionInput.value, 'country_id', response.value)
   })
 })
 </script>

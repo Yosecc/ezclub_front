@@ -26,13 +26,30 @@ const setStep = (target: number) => {
 <template>
   <nav class="wizard-navigation">
     <VPlaceloadAvatar v-if="isLoading" class="mx-1" size="medium" />
-    <VAvatar v-else :picture="company.logo" size="medium" />
+    <VAvatar v-else :picture="company.logo" squared size="medium" />
 
-    <div class="navbar-item is-wizard-title">
+    <div class="navbar-item is-wizard-title" style="width: 70%">
       <VPlaceload v-if="isLoading" height="25px" width="200px" class="mx-2" />
-      <span v-else class="title-wrap">
+      <p v-else class="title is-6">
         Step {{ currentStep }}: <span>{{ stepTitle }}</span>
-      </span>
+      </p>
+    </div>
+
+    <div class="navbar-item is-dark-mode">
+      <div class="navbar-icon">
+        <label class="dark-mode">
+          <input
+            type="checkbox"
+            :checked="!isDark"
+            @change="
+              (event) => {
+                isDark = !event.target.checked
+              }
+            "
+          />
+          <span></span>
+        </label>
+      </div>
     </div>
   </nav>
 </template>

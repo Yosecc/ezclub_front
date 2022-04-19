@@ -80,7 +80,20 @@ const onChangeStep = () => {
           <inputsLayaut :inputs-step="inputsInformation" />
 
           <VLoader style="height: 50px" :active="isLoaderActive">
-            <VButton @click="onChangeStep">Continue</VButton>
+            <div class="d-flex justify-content-between">
+              <VButton
+                outlined
+                color="danger"
+                class="mr-3"
+                @click="
+                  confirm('Rolling back will lose changes')
+                    ? (currentStep = 1)
+                    : (currentStep = currentStep)
+                "
+                >Back</VButton
+              >
+              <VButton color="success" @click="onChangeStep">Continue</VButton>
+            </div>
           </VLoader>
         </div>
       </div>

@@ -186,10 +186,12 @@ const takePhoto = (event) => {
           ].includes(input.typeInput)
         "
         :data-class="input.class"
+        v-show="input.typeInput != 'hidden'"
       >
         <label class="label" v-if="input.isLabel" :for="input.name">
           <p class="m-0 text-left">
             {{ input.label ? input.label : input.placeholder }}
+            <span v-if="input.required" style="color: red">*</span>
           </p>
         </label>
         <V-Control :has-error="input.hasError ?? false">
@@ -239,6 +241,7 @@ const takePhoto = (event) => {
         <label class="label" v-if="input.isLabel" :for="input.name">
           <p class="m-0 text-left">
             {{ input.label ? input.label : input.placeholder }}
+            <span v-if="input.required" style="color: red">*</span>
           </p>
         </label>
         <V-Control class="input-select" :has-error="input.hasError ?? false">
@@ -265,6 +268,7 @@ const takePhoto = (event) => {
         <label class="label" v-if="input.isLabel" :for="input.name">
           <p class="m-0 text-left">
             {{ input.label ? input.label : input.placeholder }}
+            <span v-if="input.required" style="color: red">*</span>
           </p>
         </label>
         <!-- <p>{{ input.values }}</p> -->

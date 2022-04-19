@@ -6,18 +6,28 @@ import {
   direccionInput,
   member,
 } from '/@src/state/wizardStateLandingMembersUpdated'
-
+import { getcities, getstates, getcontries } from '/@src/services/config.ts'
 import {
   notyf,
   getInput,
   perpareDataInputs,
   setInputModelData,
+  setInputValuesData,
   hasErrors,
 } from '/@src/models/Mixin.ts'
 
 const isLoaderActive = ref(false)
 
-onMounted(() => {
+onMounted(async () => {
+  await getcities().then((response) => {
+    setInputValuesData(direccionInput.value, 'city_id', response.value)
+  })
+  await getstates().then((response) => {
+    setInputValuesData(direccionInput.value, 'state_id', response.value)
+  })
+  await getcontries().then((response) => {
+    setInputValuesData(direccionInput.value, 'country_id', response.value)
+  })
   for (var i in member.value) {
     setInputModelData(direccionInput, i, member.value[i])
   }
@@ -44,7 +54,20 @@ const onChangeStep = () => {
           <inputsLayaut :inputs-step="direccionInput" />
 
           <VLoader style="height: 50px" :active="isLoaderActive">
-            <VButton @click="onChangeStep">Continue</VButton>
+            <div class="d-flex justify-content-between">
+              <VButton
+                outlined
+                color="danger"
+                class="mr-3"
+                @click="
+                  confirm('Rolling back will lose changes')
+                    ? (currentStep = 2)
+                    : (currentStep = currentStep)
+                "
+                >Back</VButton
+              >
+              <VButton color="success" @click="onChangeStep">Continue</VButton>
+            </div>
           </VLoader>
         </div>
       </div>

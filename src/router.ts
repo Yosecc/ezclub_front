@@ -48,7 +48,7 @@ const routesCustom: RouteRecordRaw = [
 
 routes.value = routes.concat(routesCustom)
 
-console.log('routes', routes)
+// console.log('routes', routes)
 
 const router = createRouter({
   history: createWebHistory(),

@@ -11,6 +11,8 @@
 import { reactive, ref, computed } from 'vue'
 import sleep from '/@src/utils/sleep'
 import { Api } from '/@src/services'
+
+import { getInput } from '/@src/models/Mixin.ts'
 /**
  * Using typescript types allow better developer experience
  * with autocompletion and compiler error prechecking
@@ -204,16 +206,25 @@ export const inputsInformation = ref([
     isLabel: true,
   },
   {
-    typeInput: 'switch',
+    typeInput: 'switchEventChangeInput',
     name: 'leo_vet_fr',
     values: ['', 'LEO / VET / FR'],
     placeholder: 'LEO / VET / FR',
     model: false,
     required: false,
     class: 'is-5',
+    change: function (inputsStep: any) {
+      if (!this.model) {
+        getInput(inputsStep, 'id_leo_vet_fr').typeInput = 'number'
+        getInput(inputsStep, 'id_leo_vet_fr').required = true
+      } else {
+        getInput(inputsStep, 'id_leo_vet_fr').typeInput = 'hidden'
+        getInput(inputsStep, 'id_leo_vet_fr').required = false
+      }
+    },
   },
   {
-    typeInput: 'number',
+    typeInput: 'hidden',
     name: 'id_leo_vet_fr',
     placeholder: 'LEO / VET / FR ID#',
     model: '',
