@@ -42,6 +42,7 @@ const onMethodPayment = (MethodPayment) => {}
       <VCard class="mb-4">
         <p class="title is-5">Card List</p>
         <MemberCards
+          v-if="member.user"
           @onMethodPayment="onMethodPayment"
           :method_default="member.user.pm_last_four"
           :show-new-card="false"

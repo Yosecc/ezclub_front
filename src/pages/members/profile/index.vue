@@ -313,7 +313,7 @@ const newMembership = () => {
             <p>
               <b>Membership Active:</b> {{ memberMermship.membership.name }}
             </p>
-            <p>
+            <p v-if="member.subscription">
               <b>Due Date: </b>
               {{
                 moment(member.subscription.proxima_factura).format(

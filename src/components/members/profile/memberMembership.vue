@@ -189,7 +189,7 @@ const onPause = () => {
           :outlined="
             member.subscription.pause_collection != null ? false : true
           "
-          v-if="memberMermship"
+          v-if="memberMermship && member.subscription"
           @click="onPause"
           class="mr-4"
         >

@@ -12,6 +12,7 @@ import {
   inventoryStatus,
   activateOrders,
   getTaxes,
+  addProduct,
 } from '/@src/models/Store.ts'
 import { Api } from '/@src/services'
 import { notyf, setInputValuesData, getInput } from '/@src/models/Mixin.ts'
@@ -86,14 +87,11 @@ const filteredData = computed(() => {
     return products.value
   } else {
     return products.value.filter((item) => {
-      console.log(item)
-      console.log(filters.value)
       return (
         item.name.match(new RegExp(filters.value, 'i')) ||
         item.category.name.match(new RegExp(filters.value, 'i')) ||
         item.product_categories_id == filters.value ||
-        parseFloat(item.vard_code) == parseFloat(filters.value)
-        // item.vard_code.match(new RegExp(filters.value, 'i'))
+        item.var_code == filters.value
       )
     })
   }
@@ -106,6 +104,24 @@ const optionsSingle = [
   'Older Posts',
   'Popular Posts',
 ]
+
+const codeBar = ref(null)
+const searchCodeBar = () => {
+  if (codeBar.value) {
+    if (codeBar.value.length == 9) {
+      filters.value = codeBar.value
+      let product = products.value.find(
+        (item) => item.var_code == codeBar.value
+      )
+      if (product) {
+        addProduct(product)
+        codeBar.value = null
+        filters.value = null
+        notyf.success('Product success')
+      }
+    }
+  }
+}
 </script>
 
 <template>
@@ -118,14 +134,27 @@ const optionsSingle = [
       v-if="!inventoryStatus"
       class="page-content-inner columns is-multiline"
     >
-      <div class="column is-8">
-        <V-Control icon="feather:search">
-          <input
-            v-model="filters"
-            class="input custom-text-filter"
-            placeholder="Search..."
-          />
-        </V-Control>
+      <div class="column is-8 columns">
+        <div class="column is-8 is-multiline">
+          <V-Control icon="feather:search">
+            <input
+              v-model="filters"
+              class="input custom-text-filter"
+              placeholder="Search..."
+            />
+          </V-Control>
+        </div>
+        <div class="column is-4 is-multiline">
+          <V-Control icon="feather:search">
+            <input
+              v-focus
+              v-model="codeBar"
+              class="input custom-text-filter"
+              placeholder="Codebar..."
+              @keyup="searchCodeBar"
+            />
+          </V-Control>
+        </div>
       </div>
 
       <div class="column is-8">
@@ -136,7 +165,7 @@ const optionsSingle = [
               class="
                 column
                 p-1
-                py-2
+                py-3
                 is-1
                 d-flex
                 flex-column
@@ -155,7 +184,7 @@ const optionsSingle = [
               class="
                 column
                 p-1
-                py-2
+                py-3
                 is-1.5
                 d-flex
                 flex-column
@@ -169,7 +198,7 @@ const optionsSingle = [
                 size="small"
                 :picture="`${API_WEB_URL}storage/${i.image}`"
               />
-              <p class="title is-7">{{ i.name }}</p>
+              <p class="title is-7 mt-4">{{ i.name }}</p>
             </VCard>
           </div>
         </div>

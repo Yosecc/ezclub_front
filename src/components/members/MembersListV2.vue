@@ -22,7 +22,6 @@ const filteredData = computed(() => {
       return (
         item.name.match(new RegExp(props.filters, 'i')) ||
         item.last_name.match(new RegExp(props.filters, 'i')) ||
-        item.second_name.match(new RegExp(props.filters, 'i')) ||
         item.id == props.filters ||
         item.phone == props.filters ||
         item.personal_identifications == props.filters
