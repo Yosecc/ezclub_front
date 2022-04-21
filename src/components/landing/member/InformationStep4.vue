@@ -9,7 +9,7 @@ import {
 } from '/@src/state/wizardStateLandingMembersUpdated'
 
 import { paymentData, flipped } from '/@src/models/PaymentMethodsData.ts'
-
+import swal from 'sweetalert'
 import {
   notyf,
   getInput,
@@ -33,7 +33,14 @@ const onChangeStep = () => {
     storeCard(member.value.id, data)
       .then((response) => {
         currentStep.value = 1
-        window.location.reload()
+        swal(
+          'Finish',
+          'Thank you for updating your information. If you have any questions please contact us at (305) 754-9663.',
+          'success'
+        ).then((r) => {
+          window.location.reload()
+        })
+
         notyf.success('Success')
       })
       .catch((error) => {
@@ -41,6 +48,21 @@ const onChangeStep = () => {
         console.log(typeof error.response.data)
       })
   }
+}
+const showtarjetanueva = ref(true)
+const elecciontarjeta = () => {
+  console.log('algo')
+  showtarjetanueva.value = false
+  console.log(showtarjetanueva)
+}
+const finalizar = () => {
+  swal(
+    'Finish',
+    'Thank you for updating your information. If you have any questions please contact us at (305) 754-9663.',
+    'success'
+  ).then((r) => {
+    window.location.reload()
+  })
 }
 </script>
 
@@ -50,8 +72,14 @@ const onChangeStep = () => {
       <div class="step-title mb-4">
         <h2 class="dark-inverted title is-5">Card</h2>
       </div>
-
-      <div class="wizard-types">
+      <MemberCards
+        :method_default="'0000'"
+        :memberid="member.id"
+        :show-new-card="false"
+        :ancho="'is-12'"
+        @onMethodPayment="elecciontarjeta"
+      />
+      <div class="wizard-types" v-if="showtarjetanueva">
         <div class="text-center p-1 pt-4">
           <VField>
             <VControl>
@@ -88,6 +116,15 @@ const onChangeStep = () => {
             </div>
           </VLoader>
         </div>
+      </div>
+      <div
+        class="text-center w-100 mt-4 d-flex justify-content-between"
+        v-if="!showtarjetanueva"
+      >
+        <VButton color="danger" @click="showtarjetanueva = true"
+          >Add New Card</VButton
+        >
+        <VButton color="success" @click="finalizar">Continue</VButton>
       </div>
     </div>
   </VCard>

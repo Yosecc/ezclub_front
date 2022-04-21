@@ -81,7 +81,7 @@ export const barCodeInput = ref([
     typeInput: 'number',
     name: 'bar_code',
     isLabel: true,
-    label: 'Barcode',
+    label: 'Enter your Member ID #',
     maxLength: 9,
     placeholder: '123456789',
     model: '',
@@ -284,7 +284,7 @@ export const direccionInput = ref([
   {
     typeInput: 'number',
     name: 'postal_code',
-    placeholder: 'Postal Code',
+    placeholder: 'Zip Code',
     required: true,
     model: '',
     class: 'is-12',

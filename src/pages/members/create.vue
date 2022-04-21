@@ -115,7 +115,7 @@ const steps = ref([
   },
   {
     step: 6,
-    text: 'Sing Contract & Waiver',
+    text: 'Sign Contract & Waiver',
     categories: ['Adult', 'Minor', 'Prospect'],
   },
 ])

@@ -21,15 +21,33 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
+  memberid: {
+    type: Number,
+    default: null,
+  },
+  ancho: {
+    type: String,
+    default: 'is-6',
+  },
 })
 
 onMounted(() => {
-  if (!member.value.id) {
+  let miembro = null
+  if (member.value) {
+    miembro = member.value.id
+  }
+
+  if (props.memberid) {
+    console.log(props.memberid)
+    miembro = props.memberid
+  }
+  console.log(miembro)
+  if (!miembro) {
     console.error('Member Not Found')
     return
   }
   isLoading.value = true
-  getCardsMembers(member.value.id)
+  getCardsMembers(miembro)
     .then((response) => {
       isLoading.value = false
       cards.value = response.data
@@ -49,7 +67,8 @@ const selectMethodPayment = (id) => {
       <div
         v-for="(card, key) in cards"
         :key="`card-${key}`"
-        class="column is-6"
+        class="column"
+        :class="ancho"
       >
         <VCard
           @click="selectMethodPayment(card.id)"
