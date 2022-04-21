@@ -108,7 +108,7 @@ const optionsSingle = [
 const codeBar = ref(null)
 const searchCodeBar = () => {
   if (codeBar.value) {
-    if (codeBar.value.length == 9) {
+    if (codeBar.value.length > 9) {
       filters.value = codeBar.value
       let product = products.value.find(
         (item) => item.var_code == codeBar.value
