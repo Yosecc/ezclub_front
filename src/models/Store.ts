@@ -5,8 +5,15 @@ import { locationsSelect } from '/@src/models/Companies.ts'
 import { getInput } from '/@src/models/Mixin.ts'
 
 export const cart = ref([])
-
+export const openModalCash = ref(false)
+export const openModalCard = ref(false)
+export const stepActive = ref(1)
+export const order = ref(null)
+export const openModalRecibo = ref(false)
 export const inventoryStatus = ref(false)
+export const member = ref(null)
+export const invoice_pdf = ref(null)
+export const modalCheckout = ref(false)
 
 export const addProduct = (product: any) => {
   const index = cart.value.findIndex((e) => e.product_id == product.id)
@@ -105,7 +112,6 @@ export const payment = () => {
   storeOrders(data)
     .then((response: any) => {
       console.log(response.data)
-
       if (typePayment.value == 1) {
         typePayment.value = null
         client.value.email = null
@@ -121,16 +127,16 @@ export const payment = () => {
       }
       order.value = response.data.order
       notyf.success('Success')
-      window.location.reload()
+
+      finishPaymentOrder({
+        invoice_pdf: response.data.invoice_pdf,
+        order: response.data.order,
+      })
     })
     .catch((error: any) => {
       notyf.error(error.response.data.message)
     })
 }
-export const openModalCash = ref(false)
-export const openModalCard = ref(false)
-export const stepActive = ref(1)
-export const order = ref(null)
 
 export const storeOrders = async (data: any) => {
   const response = await Api.post('orders', data)
@@ -163,7 +169,13 @@ export const getTaxes = async () => {
   return response
 }
 
-export const modalCheckout = ref(false)
+export const finishPaymentOrder = (data: object) => {
+  invoice_pdf.value = data.invoice_pdf
+  order.value = data.order
+  openModalRecibo.value = true
+}
+
+//
 
 export const storeDebitAutomatic = async (obj: object) => {
   const response = await Api.post('orders/store_debit_automatic', obj)
@@ -197,5 +209,27 @@ export const retryPayment = async (id: string, terminal_id: string) => {
 
 export const finishPayment = async (id: string) => {
   const response = await Api.post('orders/capture_payment', { id })
+  return response
+}
+
+export const getPedido = async (id: string) => {
+  const response = await Api.get(`orders/pedido/${id}`)
+  return response
+}
+
+export const sendReceipt = async (order: string, email: string) => {
+  const response = await Api.post(`orders/send_receipt/${order}`, { email })
+  return response
+}
+
+export const sendInvoice = async (
+  order: string,
+  email: string,
+  invoice_pdf: string
+) => {
+  const response = await Api.post(`orders/send_invoice_mail/${order}`, {
+    email,
+    invoice_pdf,
+  })
   return response
 }

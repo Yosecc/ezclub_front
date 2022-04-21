@@ -86,11 +86,13 @@ const filteredData = computed(() => {
     return products.value
   } else {
     return products.value.filter((item) => {
+      console.log(item)
+      console.log(filters.value)
       return (
         item.name.match(new RegExp(filters.value, 'i')) ||
         item.category.name.match(new RegExp(filters.value, 'i')) ||
         item.product_categories_id == filters.value ||
-        item.vard_code == filters.value
+        parseFloat(item.vard_code) == parseFloat(filters.value)
         // item.vard_code.match(new RegExp(filters.value, 'i'))
       )
     })
@@ -110,6 +112,7 @@ const optionsSingle = [
   <SidebarLayout>
     <!-- <p>{{ filters }}</p> -->
     <!-- Content Wrapper -->
+
     <inputsLayaut :inputs-step="locationsSelect" />
     <div
       v-if="!inventoryStatus"

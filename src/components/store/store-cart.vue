@@ -4,7 +4,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { Api } from '/@src/services'
 import { API_WEB_URL } from '/@src/services/index.ts'
 import { moneda } from '/@src/models/Mixin.ts'
-import { cart, stepActive, modalCheckout } from '/@src/models/Store.ts'
+import { cart, stepActive, modalCheckout, order } from '/@src/models/Store.ts'
 
 const route = useRoute()
 
@@ -31,8 +31,10 @@ const steps = ref([
 ])
 
 const closeModal = () => {
+  order.value = null
   modalCheckout.value = false
   optionSelected.value = null
+  cart.value = []
 }
 
 const optionSelected = ref(null)
@@ -53,10 +55,7 @@ const optionSelected = ref(null)
       </p>
     </VCard> -->
 
-    <shopping-cart
-      v-if="stepActive == 1"
-      @proccessCheckout="modalCheckout = true"
-    >
+    <shopping-cart @proccessCheckout="modalCheckout = true">
       <div class="d-flex justify-content-between mb-4">
         <h3 class="title is-5 mb-2">Order</h3>
         <VTag
@@ -80,7 +79,7 @@ const optionSelected = ref(null)
       <template #header> </template>
       <template #content>
         <shopping-checkout>
-          <div class="d-flex justify-content-between mb-4">
+          <!-- <div class="d-flex justify-content-between mb-4">
             <h3 class="title is-5 mb-2">Order</h3>
             <VTag
               color="info"
@@ -89,7 +88,7 @@ const optionSelected = ref(null)
               rounded
               elevated
             />
-          </div>
+          </div> -->
         </shopping-checkout>
       </template>
       <template #action>
@@ -97,7 +96,7 @@ const optionSelected = ref(null)
       </template>
     </VModal>
 
-    <sendFactura v-if="stepActive == 3" />
+    <!-- <sendFactura v-if="stepActive == 3" /> -->
   </div>
 </template>
 
