@@ -4,11 +4,33 @@ import { useRoute, useRouter } from 'vue-router'
 import { Api, API_WEB_URL } from '/@src/services'
 import { notyf } from '/@src/models/Mixin.ts'
 
-const props = defineProps(['modelValue'])
-const emit = defineEmit(['update:modelValue'])
+const props = defineProps({
+  modelValue: {
+    default: null,
+  },
+  dato: {
+    type: String,
+    default: 'name',
+  },
+  valor: {
+    default: null,
+  },
+})
+
+const emit = defineEmit(['update:modelValue', 'update:valor'])
+
+watch(props.valor, () => {
+  console.log('cambia')
+  value.value = props.valor
+})
 
 onMounted(() => {
-  value.value = ''
+  if (props.valor) {
+    value.value = props.valor
+  } else {
+    value.value = ''
+  }
+
   members.value = []
   showMembers.value = false
   memberSelect.value = null
@@ -38,8 +60,15 @@ const selectMember = (member) => {
       memberSelect.value = member
       memberSelect.value.cards = response.data
       loadingMemberSelected.value = false
-      value.value = memberSelect.value.name
+
+      if (props.dato == 'name') {
+        value.value =
+          memberSelect.value.name + ' ' + memberSelect.value.last_name
+      } else {
+        value.value = memberSelect.value[props.dato]
+      }
       emit('update:modelValue', memberSelect.value)
+      emit('update:valor', value.value)
     })
     .catch((error) => {
       loadingMemberSelected.value = false
@@ -69,8 +98,9 @@ const getMemberPaymentMethods = async (id) => {
       v-model="value"
       type="text"
       class="input custom-text-filter"
-      placeholder="Search member"
+      placeholder="Search"
       @keyup="searchMember"
+      @change="$emit('update:valor', value)"
     />
     <div
       class="mt-4 box-table-scroll w-100"

@@ -217,7 +217,19 @@ export const getPedido = async (id: string) => {
   return response
 }
 
-export const sendReceipt = async (order: string) => {
-  const response = await Api.get(`orders/send_receipt/${order}`)
+export const sendReceipt = async (order: string, email: string) => {
+  const response = await Api.post(`orders/send_receipt/${order}`, { email })
+  return response
+}
+
+export const sendInvoice = async (
+  order: string,
+  email: string,
+  invoice_pdf: string
+) => {
+  const response = await Api.post(`orders/send_invoice_mail/${order}`, {
+    email,
+    invoice_pdf,
+  })
   return response
 }

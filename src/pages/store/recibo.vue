@@ -34,7 +34,7 @@ const recibo = computed(() => {
       company_name: order.value.company.company_name,
       logo: `${API_WEB_URL}storage/${order.value.company.logo}`,
       monto: order.value.total,
-      fecha: moment(order.value.created_at).format('DD-MM-YYYY'),
+      fecha: moment(order.value.created_at).format('MM-DD-YYYY'),
       numero: `REP-000${order.value.id}`,
       factura: `INV-000${order.value.id}`,
       products: arr,
