@@ -4,11 +4,28 @@ import { useRoute, useRouter } from 'vue-router'
 import { Api, API_WEB_URL } from '/@src/services'
 import { notyf } from '/@src/models/Mixin.ts'
 
-const props = defineProps(['modelValue'])
-const emit = defineEmit(['update:modelValue'])
+const props = defineProps({
+  modelValue: {
+    default: null,
+  },
+  dato: {
+    type: String,
+    default: 'name',
+  },
+  valor: {
+    default: null,
+  },
+})
+
+const emit = defineEmit(['update:modelValue', 'update:valor'])
+
+watch(props.valor, () => {
+  console.log('cambia')
+  props.valor = props.valor
+})
 
 onMounted(() => {
-  value.value = ''
+  props.valor = ''
   members.value = []
   showMembers.value = false
   memberSelect.value = null
@@ -25,7 +42,7 @@ const searchMember = async () => {
   memberSelect.value = null
   emit('update:modelValue', null)
 
-  const response = await Api.get(`search_member?value=${value.value}`)
+  const response = await Api.get(`search_member?value=${props.valor}`)
   showMembers.value = true
   members.value = response.data
 }
@@ -38,8 +55,15 @@ const selectMember = (member) => {
       memberSelect.value = member
       memberSelect.value.cards = response.data
       loadingMemberSelected.value = false
-      value.value = memberSelect.value.name
+
+      if (props.dato == 'name') {
+        props.valor =
+          memberSelect.value.name + ' ' + memberSelect.value.last_name
+      } else {
+        props.valor = memberSelect.value[props.dato]
+      }
       emit('update:modelValue', memberSelect.value)
+      emit('update:valor', props.valor)
     })
     .catch((error) => {
       loadingMemberSelected.value = false
@@ -66,11 +90,12 @@ const getMemberPaymentMethods = async (id) => {
     <!-- <p class="title is-6">Search Member</p> -->
     <input
       v-focus
-      v-model="value"
+      v-model="valor"
       type="text"
       class="input custom-text-filter"
-      placeholder="Search member"
+      placeholder="Search"
       @keyup="searchMember"
+      @change="$emit('update:valor', value)"
     />
     <div
       class="mt-4 box-table-scroll w-100"
