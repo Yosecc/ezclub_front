@@ -48,7 +48,8 @@ const sendMail = () => {
 
 const close = () => {
   emailSend.value = null
-  showSendMail.value.null = false
+  showSendMail.value = false
+  // modelValue = false
   emit('update:modelValue', false)
 }
 
@@ -164,6 +165,7 @@ const onsendInvoice = () => {
 
         <div v-if="showSendMail" class="column is-12 text-center">
           <SearchBar dato="email" v-model:valor="emailSend" v-model="member" />
+
           <VLoader size="large" :active="isLoaderActive">
             <VButton
               v-if="typeSend == 'receipt'"

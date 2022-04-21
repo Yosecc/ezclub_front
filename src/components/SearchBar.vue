@@ -21,11 +21,16 @@ const emit = defineEmit(['update:modelValue', 'update:valor'])
 
 watch(props.valor, () => {
   console.log('cambia')
-  props.valor = props.valor
+  value.value = props.valor
 })
 
 onMounted(() => {
-  props.valor = ''
+  if (props.valor) {
+    value.value = props.valor
+  } else {
+    value.value = ''
+  }
+
   members.value = []
   showMembers.value = false
   memberSelect.value = null
@@ -42,7 +47,7 @@ const searchMember = async () => {
   memberSelect.value = null
   emit('update:modelValue', null)
 
-  const response = await Api.get(`search_member?value=${props.valor}`)
+  const response = await Api.get(`search_member?value=${value.value}`)
   showMembers.value = true
   members.value = response.data
 }
@@ -57,13 +62,13 @@ const selectMember = (member) => {
       loadingMemberSelected.value = false
 
       if (props.dato == 'name') {
-        props.valor =
+        value.value =
           memberSelect.value.name + ' ' + memberSelect.value.last_name
       } else {
-        props.valor = memberSelect.value[props.dato]
+        value.value = memberSelect.value[props.dato]
       }
       emit('update:modelValue', memberSelect.value)
-      emit('update:valor', props.valor)
+      emit('update:valor', value.value)
     })
     .catch((error) => {
       loadingMemberSelected.value = false
@@ -90,7 +95,7 @@ const getMemberPaymentMethods = async (id) => {
     <!-- <p class="title is-6">Search Member</p> -->
     <input
       v-focus
-      v-model="valor"
+      v-model="value"
       type="text"
       class="input custom-text-filter"
       placeholder="Search"

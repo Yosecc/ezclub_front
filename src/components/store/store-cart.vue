@@ -34,6 +34,7 @@ const closeModal = () => {
   order.value = null
   modalCheckout.value = false
   optionSelected.value = null
+  cart.value = []
 }
 
 const optionSelected = ref(null)
