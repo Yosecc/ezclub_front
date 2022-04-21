@@ -119,13 +119,25 @@ const optionsSingle = [
       class="page-content-inner columns is-multiline"
     >
       <div class="column is-8">
+        <V-Control icon="feather:search">
+          <input
+            v-model="filters"
+            class="input custom-text-filter"
+            placeholder="Search..."
+          />
+        </V-Control>
+      </div>
+
+      <div class="column is-8">
         <div class="card-grid-toolbar">
           <div class="columns is-multiline w-100" v-if="categories">
             <VCard
               @click="filters = ''"
               class="
                 column
-                is-2
+                p-1
+                py-2
+                is-1
                 d-flex
                 flex-column
                 align-items-center
@@ -134,7 +146,7 @@ const optionsSingle = [
                 cursor-pointer
               "
             >
-              <p>View All</p>
+              <p class="title is-7">View All</p>
             </VCard>
             <VCard
               @click="filters = i.id"
@@ -142,7 +154,9 @@ const optionsSingle = [
               :key="`categorie-${key}`"
               class="
                 column
-                is-2
+                p-1
+                py-2
+                is-1.5
                 d-flex
                 flex-column
                 align-items-center
@@ -152,20 +166,12 @@ const optionsSingle = [
               "
             >
               <VAvatar
-                size="medium"
+                size="small"
                 :picture="`${API_WEB_URL}storage/${i.image}`"
               />
-              <p>{{ i.name }}</p>
+              <p class="title is-7">{{ i.name }}</p>
             </VCard>
           </div>
-
-          <V-Control icon="feather:search">
-            <input
-              v-model="filters"
-              class="input custom-text-filter"
-              placeholder="Search..."
-            />
-          </V-Control>
         </div>
 
         <div class="card-grid card-grid-v4">

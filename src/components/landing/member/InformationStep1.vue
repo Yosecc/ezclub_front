@@ -40,7 +40,7 @@ const onsearchBarCode = () => {
   <VCard class="column mx-auto is-5">
     <div class="step-content">
       <div class="step-title mb-4">
-        <h2 class="dark-inverted title is-5">Search with barcode</h2>
+        <h2 class="dark-inverted title is-5">Search with Member ID</h2>
       </div>
 
       <div class="wizard-types">
