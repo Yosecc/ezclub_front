@@ -13,11 +13,13 @@ onMounted(() => {
   showMembers.value = false
   memberSelect.value = null
 })
+
 const value = ref('')
 const members = ref([])
 const showMembers = ref(false)
 const memberSelect = ref(null)
 const loadingMemberSelected = ref(false)
+
 const searchMember = async () => {
   members.value = []
   memberSelect.value = null
@@ -36,6 +38,7 @@ const selectMember = (member) => {
       memberSelect.value = member
       memberSelect.value.cards = response.data
       loadingMemberSelected.value = false
+      value.value = memberSelect.value.name
       emit('update:modelValue', memberSelect.value)
     })
     .catch((error) => {
@@ -51,29 +54,37 @@ const getMemberPaymentMethods = async (id) => {
 </script>
 
 <template>
-  <VCard class="my-5">
-    <p class="title is-6">Search Member</p>
+  <VCard
+    class="
+      d-flex
+      justify-content-center
+      align-items-center
+      flex-column
+      position-relative
+    "
+  >
+    <!-- <p class="title is-6">Search Member</p> -->
     <input
       v-focus
       v-model="value"
       type="text"
       class="input custom-text-filter"
-      placeholder="Search"
+      placeholder="Search member"
       @keyup="searchMember"
     />
     <div
-      class="mt-4 box-table-scroll"
+      class="mt-4 box-table-scroll w-100"
       v-if="showMembers"
-      style="overflow-y: scroll; height: 200px"
+      style="overflow-y: scroll"
     >
       <table class="table is-hoverable is-fullwidth">
-        <thead>
+        <!--  <thead>
           <tr>
-            <th scope="col">Photo</th>
-            <th scope="col">Name</th>
-            <th scope="col">Email</th>
+            <th scope="col" class="text-center">Photo</th>
+            <th scope="col" class="text-">Name</th>
+            <th scope="col" class="text-">Email</th>
           </tr>
-        </thead>
+        </thead> -->
         <tbody>
           <tr
             @click="selectMember(member)"
@@ -95,12 +106,12 @@ const getMemberPaymentMethods = async (id) => {
       </table>
     </div>
 
-    <div class="d-flex align-items-center mt-5" v-if="memberSelect">
+    <div class="d-flex align-items-center mt-5 w-100" v-if="memberSelect">
       <VAvatar
         :picture="`${API_WEB_URL}storage/${memberSelect.photo}`"
         size="large"
       />
-      <div class="ml-4">
+      <div class="ml-4 w-100">
         <table class="table is-hoverable is-fullwidth">
           <tbody>
             <tr>
@@ -139,6 +150,15 @@ const getMemberPaymentMethods = async (id) => {
 
 <style lang="scss">
 .box-table-scroll {
+  overflow-y: scroll;
+  max-height: 300px;
+  position: absolute;
+  top: 60%;
+  /* background: red; */
+  z-index: 9;
+  box-shadow: 2px 2px 11px rgb(0 0 0 / 80%);
+  border-radius: 10px;
+
   &::-webkit-scrollbar {
     background: #2d2d31;
     width: 10px;
@@ -147,6 +167,20 @@ const getMemberPaymentMethods = async (id) => {
   &::-webkit-scrollbar-thumb {
     background: rgba(#2f3b62, 0.4);
     border-radius: 10px;
+  }
+}
+.input.custom-text-filter {
+  height: 50px !important;
+}
+.modal-card-body {
+  overflow: visible !important;
+}
+table {
+  tr {
+    cursor: pointer;
+  }
+  th {
+    font-size: 10px;
   }
 }
 </style>

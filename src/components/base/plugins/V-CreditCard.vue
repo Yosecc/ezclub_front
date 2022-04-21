@@ -114,7 +114,12 @@ const nameUppercase = computed(() => props.name.toUpperCase())
               transform="matrix(1 0 0 1 60.106 295.0121)"
               class="st2 st3 st4"
             >
-              {{ number || '1234 1234 1234 1234' }}
+              {{
+                number
+                  .replace(/[^\dA-Z]/g, '')
+                  .replace(/(.{4})/g, '$1 ')
+                  .trim() || '1234 1234 1234 1234'
+              }}
             </text>
             <text
               id="svgname"

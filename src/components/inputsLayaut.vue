@@ -186,16 +186,21 @@ const takePhoto = (event) => {
           ].includes(input.typeInput)
         "
         :data-class="input.class"
+        v-show="input.typeInput != 'hidden'"
       >
+        <label class="label" v-if="input.isLabel" :for="input.name">
+          <p class="m-0 text-left">
+            {{ input.label ? input.label : input.placeholder }}
+            <span v-if="input.required" style="color: red">*</span>
+          </p>
+        </label>
         <V-Control :has-error="input.hasError ?? false">
-          <label class="label" v-if="input.isLabel" :for="input.name"
-            ><p>{{ input.placeholder }}</p></label
-          >
           <input
             v-model="input.model"
             :name="input.name"
             :type="input.typeInput"
             class="input"
+            autocomplete="off"
             :placeholder="input.placeholder"
             :disabled="input.disabled ?? false"
             :maxLength="input.maxLength ?? ''"
@@ -233,9 +238,12 @@ const takePhoto = (event) => {
         :data-class="input.class"
         class="chucutu"
       >
-        <label class="label" v-if="input.isLabel" :for="input.name"
-          ><p>{{ input.placeholder }}</p></label
-        >
+        <label class="label" v-if="input.isLabel" :for="input.name">
+          <p class="m-0 text-left">
+            {{ input.label ? input.label : input.placeholder }}
+            <span v-if="input.required" style="color: red">*</span>
+          </p>
+        </label>
         <V-Control class="input-select" :has-error="input.hasError ?? false">
           <div class="select">
             <select v-model="input.model" :disabled="input.disabled ?? false">
@@ -257,6 +265,12 @@ const takePhoto = (event) => {
         :data-class="input.class"
         class="bibibi"
       >
+        <label class="label" v-if="input.isLabel" :for="input.name">
+          <p class="m-0 text-left">
+            {{ input.label ? input.label : input.placeholder }}
+            <span v-if="input.required" style="color: red">*</span>
+          </p>
+        </label>
         <!-- <p>{{ input.values }}</p> -->
         <V-Control class="input-select" :has-error="input.hasError ?? false">
           <!-- <p>{{ input.values }}</p> -->
