@@ -58,6 +58,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  outlined: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const cardRadius = computed(() => {
@@ -67,7 +71,12 @@ const cardRadius = computed(() => {
     return 'l-card'
   }
 
-  return 'r-card'
+  let classs = 'r-card'
+
+  if (props.outlined) {
+    classs = 'r-card outlined'
+  }
+  return classs
 })
 </script>
 
