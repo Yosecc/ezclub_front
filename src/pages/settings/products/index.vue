@@ -172,7 +172,7 @@ const datatableV1 = computed(() => {
               </div>
               <div class="text-right">
                 <p>Total Quantity</p>
-                <h1 class="title is-2">{{ moneda(sumaTotalProducts) }}</h1>
+                <h1 class="title is-2">0</h1>
               </div>
             </div>
           </VCard>
@@ -189,7 +189,7 @@ const datatableV1 = computed(() => {
               </div>
               <div class="text-right">
                 <p>Value</p>
-                <h1 class="title is-2">$6,800.00</h1>
+                <h1 class="title is-2">$0.00</h1>
               </div>
             </div>
           </VCard>
