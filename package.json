@@ -5,6 +5,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "vite",
+    "staging": "vite build --mode staging",
     "dev:force": "vite --force",
     "preview": "vite preview",
     "build": "vite build",

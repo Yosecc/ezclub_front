@@ -3,27 +3,14 @@ import { ref } from 'vue'
 import { user, onLogout } from '/@src/pages/auth/auth.ts'
 import { notyf } from '/@src/models/Mixin.ts'
 
-export const API_URL = ref('')
-export const FRONTEND_URL = ref('')
-export const API_WEB_URL = ref('')
+export const API_URL = ref(import.meta.env.VITE_ROUTE_API)
+export const FRONTEND_URL = ref(import.meta.env.VITE_FRONTEND_URL)
+export const API_WEB_URL = ref(import.meta.env.VITE_API_WEB_URL)
 export const PUBLIC_KEY_STRIPE = ref('')
 
-// const url = 'https://dev-api.ushuaiacreative.com/api/'
-// const url = 'https://ezclub.loc/api/'
-if (import.meta.env.MODE === 'development') {
-  API_URL.value = 'http://ezclub.loc/api/'
-  FRONTEND_URL.value = 'http://localhost:3000/'
-  API_WEB_URL.value = 'http://ezclub.loc/'
-} else {
-  API_URL.value = 'https://api.ezclub.app/api/'
-  FRONTEND_URL.value = 'https://ezclub.app/'
-  API_WEB_URL.value = 'https://api.ezclub.app/'
-  // API_URL.value = 'https://dev-api.ushuaiacreative.com/api/'
-  // FRONTEND_URL.value = 'https://dev-frontend.ushuaiacreative.com/'
-  // API_WEB_URL.value = 'https://dev-api.ushuaiacreative.com/'
-}
-// console.log(VUE_APP_ROUTE_API)
-// console.log(env)
+API_URL.value = import.meta.env.VITE_ROUTE_API
+FRONTEND_URL.value = import.meta.env.VITE_FRONTEND_URL
+API_WEB_URL.value = import.meta.env.VITE_API_WEB_URL
 
 import { useCookies } from 'vue3-cookies'
 const { cookies } = useCookies()
