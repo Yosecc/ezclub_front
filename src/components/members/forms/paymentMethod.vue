@@ -385,16 +385,21 @@ const disableSave = ref(false)
             <td>{{ presupuesto.membership.name }}</td>
             <td>{{ presupuesto.quote.computed.recurring.interval }}</td>
             <td>
+              <p></p>
               {{
-                monedaDecimal(
-                  presupuesto.quote.computed.recurring.amount_subtotal * 10
+                moneda(
+                  new Intl.NumberFormat().format(
+                    presupuesto.quote.computed.recurring.amount_subtotal * 10
+                  )
                 )
               }}
             </td>
             <td style="text-align: right">
               {{
-                monedaDecimal(
-                  presupuesto.quote.computed.recurring.amount_subtotal * 10
+                moneda(
+                  new Intl.NumberFormat().format(
+                    presupuesto.quote.computed.recurring.amount_subtotal * 10
+                  )
                 )
               }}
             </td>
@@ -408,15 +413,31 @@ const disableSave = ref(false)
             <td>{{ presupuesto.membership.name }}</td>
 
             <td>Initiation Fee</td>
-            <td>{{ monedaDecimal(presupuesto.membership.initiation_fee) }}</td>
+            <td>
+              {{
+                moneda(
+                  new Intl.NumberFormat().format(
+                    presupuesto.membership.initiation_fee
+                  )
+                )
+              }}
+            </td>
 
             <td style="text-align: right">
-              {{ presupuesto.membership.initiation_fee }}
+              {{ moneda(presupuesto.membership.initiation_fee) }}
             </td>
           </tr>
           <tr style="text-align: right">
             <td colspan="3" style="text-align: right"><b>Subtotal</b></td>
-            <td>{{ monedaDecimal(presupuesto.quote.amount_subtotal * 10) }}</td>
+            <td>
+              {{
+                moneda(
+                  new Intl.NumberFormat().format(
+                    presupuesto.quote.amount_subtotal * 10
+                  )
+                )
+              }}
+            </td>
           </tr>
           <tr style="text-align: right">
             <td colspan="3" style="text-align: right">
@@ -424,21 +445,35 @@ const disableSave = ref(false)
             </td>
             <td>
               {{
-                monedaDecimal(presupuesto.quote.total_details.amount_tax * 10)
+                moneda(
+                  new Intl.NumberFormat().format(
+                    presupuesto.quote.total_details.amount_tax * 10
+                  )
+                )
               }}
             </td>
           </tr>
 
           <tr style="text-align: right">
-            <td colspan="3" style="text-align: right"><b>Total</b></td>
-            <td>{{ monedaDecimal(presupuesto.quote.amount_total * 10) }}</td>
-          </tr>
-          <tr style="text-align: right">
-            <td colspan="3" style="text-align: right">Total recurrente</td>
+            <td colspan="3" style="text-align: right"><b>Total to pay</b></td>
             <td>
               {{
-                monedaDecimal(
-                  presupuesto.quote.computed.recurring.amount_total * 10
+                moneda(
+                  new Intl.NumberFormat().format(
+                    presupuesto.quote.amount_total * 10
+                  )
+                )
+              }}
+            </td>
+          </tr>
+          <tr style="text-align: right">
+            <td colspan="3" style="text-align: right">Recurring total</td>
+            <td>
+              {{
+                moneda(
+                  new Intl.NumberFormat().format(
+                    presupuesto.quote.computed.recurring.amount_total * 10
+                  )
                 )
               }}
             </td>

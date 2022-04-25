@@ -9,6 +9,7 @@ import {
   storeNewCardClient,
   finishPaymentOrder,
   member,
+  order,
 } from '/@src/models/Store.ts'
 
 const loadingOptionDebit = ref(false)
@@ -82,7 +83,7 @@ const PaymentAction = (data) => {
 <template>
   <div class="mt-4 mx-2" v-if="!order">
     <VLoader size="large" :active="loadingOptionDebit">
-      <div class="columns is-multiline w-100">
+      <div v-if="!order" class="columns is-multiline w-100">
         <div
           v-for="(card, key) in member.cards"
           :key="`card-${key}`"

@@ -129,6 +129,14 @@ const cashStatus = computed(() => {
   }
 })
 
+const debitAutomaticStatus = computed(() => {
+  if (!member.value || order.value) {
+    return true
+  } else {
+    return false
+  }
+})
+
 const changeSwipwCard = () => {
   if (!swipeCardStatus.value) {
     if (terminales.value.length) {
@@ -200,8 +208,8 @@ const limpiezaSwipeCard = () => {
         <slot></slot>
         <div>
           <p class="title is-6 mb-1"><b>Total</b></p>
-          <p v-if="order" class="title is-2">{{ moneda(order.total) }}</p>
-          <p v-else class="title is-2">{{ moneda(total) }}</p>
+          <p v-if="order" class="title is-3">{{ moneda(order.total) }}</p>
+          <p v-else class="title is-3">{{ moneda(total) }}</p>
         </div>
       </VCard>
     </div>
@@ -215,9 +223,9 @@ const limpiezaSwipeCard = () => {
         <VCard
           v-tooltip="!member ? 'You must select a member' : ''"
           color="success"
-          :disabled="!member"
+          :disabled="debitAutomaticStatus"
           @click="
-            member
+            !debitAutomaticStatus
               ? (showOptionsDebit = !showOptionsDebit)
               : (showOptionsDebit = false)
           "

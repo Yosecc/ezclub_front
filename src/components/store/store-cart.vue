@@ -78,18 +78,7 @@ const optionSelected = ref(null)
     >
       <template #header> </template>
       <template #content>
-        <shopping-checkout>
-          <!-- <div class="d-flex justify-content-between mb-4">
-            <h3 class="title is-5 mb-2">Order</h3>
-            <VTag
-              color="info"
-              v-if="cart"
-              :label="`${cart.length} products`"
-              rounded
-              elevated
-            />
-          </div> -->
-        </shopping-checkout>
+        <shopping-checkout v-if="modalCheckout" />
       </template>
       <template #action>
         <!-- <VButton color="primary" raised>Confirm</VButton> -->

@@ -148,9 +148,15 @@ const saveData = () => {
     <!-- Content Wrapper -->
     <div class="page-content-inner">
       <div class="columns is-multiline">
-        <div class="column is-12">
-          <!-- <transition name="fade" mode="out-in" appear> -->
-
+        <div
+          class="column is-12"
+          style="display: flex"
+          :style="
+            route.query?.sign
+              ? { flexDirection: 'column-reverse' }
+              : { flexDirection: 'column' }
+          "
+        >
           <staffInformation
             type="edit"
             :buttons="['back', 'save']"
@@ -166,8 +172,13 @@ const saveData = () => {
             class="mb-3"
           />
 
-          <staffWaiver type="edit" :buttons="[]" :step="3" />
-          <!-- </transition> -->
+          <staffWaiver
+            class="mb-4"
+            v-if="staff"
+            :type="staff.sign ? 'edit' : 'create'"
+            :buttons="[]"
+            :step="3"
+          />
         </div>
       </div>
     </div>

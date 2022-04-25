@@ -29,7 +29,7 @@ const waivers = ref([
 const titles = computed(() => {
   if (props.type == 'create') {
     return {
-      title: 'Add a new staff',
+      title: 'Create staff waiver',
       subtitle: 'Add Waiver',
     }
   }

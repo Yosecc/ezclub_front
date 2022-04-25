@@ -35,6 +35,7 @@ import {
 // import { Api } from '/@src/services/index.ts'
 
 const route = useRoute()
+const router = useRouter()
 
 pageTitle.value = 'New Staff'
 
@@ -43,6 +44,7 @@ useHead({
 })
 
 onMounted(() => {
+  staff.value = null
   cleanUpModelInputs(inputsInformation.value)
   cleanUpModelInputs(inputsPermitions.value)
   getCompany().then((response) => {
@@ -109,6 +111,10 @@ const saveData = () => {
           notyf.success('Succeeded')
           stepActive.value = 3
           staff.value = response.data.staff
+          router.push({
+            name: 'settings-staff-edit',
+            query: { id: staff.value.id, sign: true },
+          })
         } else {
           notyf.error(response.data.mensaje)
           for (var i in response.data.errores) {
@@ -148,12 +154,11 @@ const saveData = () => {
               class="mb-3"
             />
           </div>
-          <staffWaiver
+          <!-- <staffWaiver
             type="create"
-            :buttons="['back']"
-            v-if="stepActive == 3"
+            :buttons="[]"
             :step="3"
-          />
+          /> -->
           <!-- </transition> -->
         </div>
       </div>
