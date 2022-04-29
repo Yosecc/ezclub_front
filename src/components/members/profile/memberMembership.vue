@@ -14,6 +14,7 @@ import {
   getPresupuesto,
   storeNewMembership,
   pauseMembership,
+  pagado,
 } from '/@src/models/Members.ts'
 
 import { getLocationsDiciplines } from '/@src/models/Diciplines.ts'
@@ -41,6 +42,7 @@ const tax = ref(null)
 const clientSecret = ref(null)
 // const product = ref(null)
 const onSave = () => {
+  isLoaderActive.value = true
   const data = perpareDataInputs(membershipsData.value)
   putMembership(data).then((response) => {
     if (response.data.cargo_automatico != 'none') {
@@ -54,21 +56,24 @@ const onSave = () => {
       }
     }
     notyf.success('Success')
+    isLoaderActive.value = false
   })
 }
 
 const onCancel = () => {
+  isLoaderActive.value = true
   cancelMembershipMembers().then((response) => {
     notyf.success('Memberships Cancel')
     window.location.reload()
-    // console.log(response)
+    isLoaderActive.value = false
   })
 }
 const presupuesto = ref(null)
-
+const isLoaderActive = ref(false)
 const onNew = () => {
+  isLoaderActive.value = true
   const data = perpareDataInputs(membershipsData.value)
-  console.log(data)
+
   // const generaPresupuesto = async ()=>{
 
   let datos = {
@@ -95,10 +100,13 @@ const onNew = () => {
         amount_total: response.data.quote.amount_total,
         is_initiation_fee: datos.is_initiation_fee,
       }
+      isLoaderActive.value = false
 
       // console.log(presupuesto.value)
     })
     .catch((error) => {
+      isLoaderActive.value = false
+
       for (var i in error.response.data) {
         error.response.data[i].forEach((e) => {
           notyf.error(`${i}  ${e}`)
@@ -110,16 +118,20 @@ const mebershipMemberid = ref(null)
 const newMembership = () => {
   const data = perpareDataInputs(membershipsData.value)
   data.members_id = member.value.id
-
+  isLoaderActive.value = true
   storeNewMembership(data)
     .then((response) => {
       console.log(response.data)
       mebershipMemberid.value = response.data.membership_member.id
       clientSecret.value = response.data.clientSecret
+      isLoaderActive.value = false
+
       // addCard.value = true
       // console.log(membership_member.id)
     })
     .catch((error) => {
+      isLoaderActive.value = false
+
       for (var i in error.response.data.errores) {
         error.response.data.errores[i].forEach((e) => {
           notyf.error(`${i}: ${e}`)
@@ -167,10 +179,21 @@ const onMethodPayment = (paymentMethod) => {
 }
 
 const onPause = () => {
-  pauseMembership(memberMermship.value.id).then((response) => {
-    notyf.success('Success Pause')
-    window.location.reload()
-  })
+  isLoaderActive.value = true
+  pauseMembership(memberMermship.value.id)
+    .then((response) => {
+      notyf.success('Success Pause')
+      isLoaderActive.value = false
+      window.location.reload()
+    })
+    .catch((error) => {
+      isLoaderActive.value = false
+      for (var i in error.response.data.errores) {
+        error.response.data.errores[i].forEach((e) => {
+          notyf.error(`${i}: ${e}`)
+        })
+      }
+    })
 }
 </script>
 
@@ -184,37 +207,43 @@ const onPause = () => {
         </div>
       </template>
       <template #header-right>
-        <VButton
-          color="info"
-          :outlined="
-            member.subscription.pause_collection != null ? false : true
-          "
-          v-if="memberMermship && member.subscription"
-          @click="onPause"
-          class="mr-4"
-        >
-          HOLD Membership
-          <span v-if="member.subscription.pause_collection != null"
-            >Active until:
-            {{ member.subscription.pause_collection.resumes_at }}</span
+        <VLoader size="small" :active="isLoaderActive">
+          <VButton
+            color="info"
+            :outlined="
+              member.subscription.pause_collection != null ? false : true
+            "
+            v-if="memberMermship && member.subscription"
+            @click="onPause"
+            class="mr-4"
           >
-        </VButton>
-
-        <VButton
-          color="warning"
-          v-if="memberMermship"
-          outlined
-          @click="onCancel"
-          class="mr-4"
-        >
-          Cancel Membership
-        </VButton>
+            HOLD Membership
+            <span v-if="member.subscription.pause_collection != null"
+              >Active until:
+              {{ member.subscription.pause_collection.resumes_at }}</span
+            >
+          </VButton>
+        </VLoader>
+        <VLoader size="small" :active="isLoaderActive">
+          <VButton
+            color="warning"
+            v-if="memberMermship"
+            outlined
+            @click="onCancel"
+            class="mr-4"
+          >
+            Cancel Membership
+          </VButton>
+        </VLoader>
         <!-- <VButton v-if="memberMermship" @click="onSave" color="primary">
           Save Changes
         </VButton> -->
-        <VButton v-if="!memberMermship" @click="onNew" color="primary">
-          New Membership
-        </VButton>
+
+        <VLoader v-if="!pagado" size="small" :active="isLoaderActive">
+          <VButton v-if="!memberMermship" @click="onNew" color="primary">
+            New Membership
+          </VButton>
+        </VLoader>
       </template>
       <template #content>
         <VCard class="mb-4" v-if="quote">
@@ -290,9 +319,16 @@ const onPause = () => {
 
         <presupuestoComponent v-if="presupuesto" :presupuesto="presupuesto">
           <template #k>
-            <V-Button color="info" @click="newMembership" class="mt-4 py-1">
-              Payment Card
-            </V-Button>
+            <VLoader size="small" :active="isLoaderActive">
+              <V-Button
+                v-if="!pagado"
+                color="info"
+                @click="newMembership"
+                class="mt-4 py-1"
+              >
+                Payment Card
+              </V-Button>
+            </VLoader>
             <!-- <MemberCards
               @onMethodPayment="onMethodPayment"
               :method_default="member.user.pm_last_four"

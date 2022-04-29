@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineProps, computed } from 'vue'
+import { defineProps, computed, defineEmit } from 'vue'
 import { useRoute } from 'vue-router'
 
 const props = defineProps({
@@ -20,6 +20,9 @@ const props = defineProps({
     default: 5,
   },
 })
+
+const emit = defineEmit(['onPaginate'])
+
 const route = useRoute()
 const lastPage = computed(
   () => Math.ceil(props.totalItems / props.itemPerPage) || 1
@@ -65,6 +68,7 @@ const paginatedLink = (page = 1) => {
     page: _page <= 1 ? undefined : _page,
   }
 
+  emit('onPaginate', page)
   return {
     name: route.name,
     params: route.params,
@@ -107,7 +111,7 @@ const paginatedLink = (page = 1) => {
       <li v-if="showFirstLink">
         <RouterLink
           :to="paginatedLink(1)"
-          class="pagination-link"
+          class="pagination-link justify-content-center"
           aria-label="Goto page 1"
         >
           1
@@ -119,7 +123,7 @@ const paginatedLink = (page = 1) => {
       <li v-for="page in pages" :key="page">
         <RouterLink
           :to="paginatedLink(page)"
-          class="pagination-link"
+          class="pagination-link justify-content-center"
           :aria-label="`Goto page ${page}`"
           :aria-current="currentPage === page ? 'page' : ''"
           :class="[currentPage === page && 'is-current']"
@@ -135,7 +139,7 @@ const paginatedLink = (page = 1) => {
       <li v-if="showLastLink">
         <RouterLink
           :to="paginatedLink(lastPage)"
-          class="pagination-link"
+          class="pagination-link justify-content-center"
           :aria-label="`Goto page ${lastPage}`"
         >
           {{ lastPage }}

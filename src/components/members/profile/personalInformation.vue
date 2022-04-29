@@ -17,7 +17,9 @@ const isProspect = computed(() => {
   return false
 })
 
+const isLoaderActive = ref(false)
 const onSave = () => {
+  isLoaderActive.value = true
   let data = perpareDataInputs(inputsInformation.value)
   let fd = new FormData()
 
@@ -31,9 +33,14 @@ const onSave = () => {
     }
   }
 
-  putInformation(fd).then((response) => {
-    notyf.success('Edit Success')
-  })
+  putInformation(fd)
+    .then((response) => {
+      notyf.success('Edit Success')
+      isLoaderActive.value = false
+    })
+    .catch((error) => {
+      isLoaderActive.value = false
+    })
 }
 </script>
 
@@ -46,10 +53,12 @@ const onSave = () => {
       </div>
     </template>
     <template #header-right>
-      <VButton @click="onSave" color="primary"> Save Changes </VButton>
-      <VButton v-if="props.category == 'Prospect'" color="info" class="ml-3">
-        Convert to Members
-      </VButton>
+      <VLoader size="small" :active="isLoaderActive">
+        <VButton @click="onSave" color="primary"> Save Changes </VButton>
+        <VButton v-if="props.category == 'Prospect'" color="info" class="ml-3">
+          Convert to Members
+        </VButton>
+      </VLoader>
     </template>
     <template #content>
       <!-- <div class="p-6">

@@ -13,11 +13,13 @@ import {
 import { getMembershipDiciplines } from '/@src/models/Memberships.ts'
 
 import moment from 'moment'
-
+export const members = ref([])
+export const membersSelected = ref([])
 export const idMember = ref(null)
 export const idMemberMembership = ref(null)
 export const cupon = ref(null)
 export const error = ref(false)
+export const pagado = ref(false)
 
 export const categoriesMembers = ref({
   name: 'category',
@@ -1048,6 +1050,15 @@ export const getCardsMembers = async (id: number) => {
 export const getListInvoices = async (id: number) => {
   const response = await Api.get(`members/list_invoices/${id}`)
   member.value.invoices = response.data
+  return response
+}
+
+export const subscriptionsCreateStripe = async () => {
+  const response = await Api.post(`members/subscriptions_create_stripe`, {
+    members: membersSelected.value,
+    trial_end: 3,
+    trial: true,
+  })
   return response
 }
 

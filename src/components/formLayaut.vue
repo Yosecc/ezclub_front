@@ -5,89 +5,106 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 
 const props = defineProps({
-  buttons:{
+  buttons: {
     type: Array,
-    default: ['save', 'back']
+    default: ['save', 'back'],
   },
-  step:{
+  step: {
     type: Number,
-    default: 1
+    default: 1,
   },
-  titles:{
+  titles: {
     type: Object,
     default: {
       title: '',
-      subtitle: ''
-    }
+      subtitle: '',
+    },
   },
-  newRoute:{
+  newRoute: {
     type: Object,
-    default: { name: '', to: '' }
+    default: { name: '', to: '' },
   },
-  isLoading:{
+  isLoading: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 })
 
-const emit = defineEmit(['changeStep','saveData']);
+const emit = defineEmit(['changeStep', 'saveData'])
 
+const load = () => {
+  isLoaderActive.value = true
+  setTimeout(() => {
+    isLoaderActive.value = false
+  }, '500')
+}
 </script>
 
 <template>
-  <VPlaceload v-if="isLoading" height="500px"   />
+  <VPlaceload v-if="isLoading" height="500px" />
   <VCardAdvanced v-else>
     <template #header-left>
       <div>
         <h1 class="title is-4 mb-0">
-       {{titles.title}}
-      </h1>
-      <p>{{titles.subtitle}}</p>
+          {{ titles.title }}
+        </h1>
+        <p>{{ titles.subtitle }}</p>
       </div>
     </template>
     <template #header-right>
-      <VButton
-        v-if="buttons.includes('back')"
-       @click="router.back()" 
-       class="mr-3"> Go Back </VButton>
+      <VLoader size="small" :active="isLoaderActive">
+        <VButton
+          v-if="buttons.includes('back')"
+          @click="router.back()"
+          class="mr-3"
+        >
+          Go Back
+        </VButton>
 
-       <VButton
-        v-if="buttons.includes('prev')"
-       @click="$emit('changeStep',step-1)" 
-       class="mr-3"> Go Back </VButton>
+        <VButton
+          v-if="buttons.includes('prev')"
+          @click="$emit('changeStep', step - 1)"
+          class="mr-3"
+        >
+          Go Back
+        </VButton>
 
-      <VButton 
-        v-if="buttons.includes('next')"
-        color="primary" 
-        @click="$emit('changeStep',step+1)"> Next </VButton>
+        <VButton
+          v-if="buttons.includes('next')"
+          color="primary"
+          @click="$emit('changeStep', step + 1)"
+        >
+          Next
+        </VButton>
 
-        <VButton 
-        v-if="buttons.includes('save')"
-        color="primary" 
-        @click="$emit('saveData')"> Save Changes </VButton>
+        <VButton
+          v-if="buttons.includes('save')"
+          color="primary"
+          @click="$emit('saveData')"
+        >
+          Save Changes
+        </VButton>
 
-        <VButton 
+        <VButton
           v-if="buttons.includes('new')"
           :to="newRoute.to"
-          color="primary" 
-          > {{ newRoute.title }} </VButton>
+          color="primary"
+        >
+          {{ newRoute.title }}
+        </VButton>
+      </VLoader>
     </template>
     <template #content>
-      
       <slot>
         <!-- <inputsLayaut
           :inputs-step="inputs"
         /> -->
       </slot>
-      
     </template>
-    
   </VCardAdvanced>
 </template>
 
 <style lang="scss">
 @import '../scss/abstracts/_variables.scss';
 @import '../scss/abstracts/_mixins.scss';
-
-
 </style>

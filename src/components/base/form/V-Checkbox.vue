@@ -19,6 +19,11 @@ const props = defineProps({
     type: String,
     default: undefined,
   },
+  isLabel: {
+    type: Boolean,
+    default: true,
+  },
+
   modelValue: {
     type: Array,
     default: [],
@@ -83,6 +88,6 @@ function change() {
       @change="change"
     />
     <span></span>
-    {{ props.label || props.value }}
+    <span v-if="isLabel">{{ props.label || props.value }}</span>
   </label>
 </template>

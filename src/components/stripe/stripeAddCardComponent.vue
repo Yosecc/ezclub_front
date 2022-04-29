@@ -3,7 +3,7 @@ import { ref, onMounted, defineProps, watch, computed, defineEmit } from 'vue'
 import { PUBLIC_KEY_STRIPE, Api, FRONTEND_URL } from '/@src/services'
 const stripe = Stripe(PUBLIC_KEY_STRIPE.value)
 import { notyf } from '/@src/models/Mixin.ts'
-
+import { pagado } from '/@src/models/Members.ts'
 const props = defineProps({
   clientSecret: {
     type: String,
@@ -75,13 +75,16 @@ const initialize = async () => {
 }
 
 const payment = async (payment_method) => {
+  isLoaderActive.value = true
   const { data } = await Api.post('paymentStripe', {
     payment_method,
     membership_member_id: props.membership_member_id,
   }).catch((e) => {
     buttonLoading.value = false
   })
-
+  pagado.value = true
+  isLoaderActive.value = false
+  window.location.reload()
   return data
 }
 
@@ -121,8 +124,8 @@ onMounted(() => {
   formLoading.value = false
   // initialize()
 })
+const isLoaderActive = ref(false)
 const onMethodPayment = (paymentMethod) => {
-  console.log('hhegu')
   payment(paymentMethod)
 }
 </script>
@@ -150,13 +153,19 @@ const onMethodPayment = (paymentMethod) => {
 
       <div id="payment-message" class="hidden"></div>
     </form>
-
-    <MemberCards
-      v-else
-      @onMethodPayment="onMethodPayment"
-      @onNewCard="initialize()"
-      :method_default="pm_last_four"
-    />
+    <div v-else>
+      <VLoader size="large" :active="isLoaderActive">
+        <MemberCards
+          v-if="!pagado"
+          @onMethodPayment="onMethodPayment"
+          @onNewCard="initialize()"
+          :method_default="pm_last_four"
+        />
+        <VCard v-else color="success">
+          <h1 class="title is-4">Success</h1>
+        </VCard>
+      </VLoader>
+    </div>
   </V-Card>
 </template>
 

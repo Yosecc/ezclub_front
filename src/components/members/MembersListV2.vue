@@ -2,8 +2,8 @@
 import { computed, ref, onMounted, watch, defineProps, defineEmit } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { API_WEB_URL } from '/@src/services'
-
-const emit = defineEmit(['filterChange'])
+import { membersSelected } from '/@src/models/Members.ts'
+const emit = defineEmit(['filterChange', 'onSearch'])
 
 const route = useRoute()
 const router = useRouter()
@@ -14,7 +14,6 @@ const filterDate = ref('all')
 const paginationData = ref({})
 
 const filteredData = computed(() => {
-  // console.log(props.members)
   if (!props.filters) {
     return props.members
   } else {
@@ -29,6 +28,16 @@ const filteredData = computed(() => {
     })
   }
 })
+
+watch(
+  () => filteredData.value,
+  (to) => {
+    // console.log('to',to)
+    // if(to.length == 0){
+    // emit('onSearch')
+    // }
+  }
+)
 
 const memberCard = ref({ status: false, member: null })
 
@@ -88,61 +97,28 @@ const colorCard = (member) => {
     return ''
   }
 }
+
+const All = ref([])
+
+watch(
+  () => All.value,
+  (t) => {
+    if (t.length != 0) {
+      membersSelected.value = []
+      filteredData.value.forEach((e) => {
+        membersSelected.value.push(e.id)
+      })
+    } else {
+      membersSelected.value = []
+    }
+  }
+)
 </script>
 
 <template>
   <div>
     <div class="page-content-inner">
       <div class="flex-list-wrapper flex-list-v1">
-        <!-- <div class="d-flex mb-5 mt-5">
-        <V-Field addons>
-          <V-Control>
-            <V-Button 
-              :color="filterDate == 'all' ? 'primary':undefined"
-              @click="filterChange('all')" 
-              rounded > All </V-Button>
-          </V-Control>
-          <V-Control>
-            <V-Button 
-              :color="filterDate == 'today' ? 'primary':undefined" 
-              @click="filterChange('today')" 
-              rounded > Today </V-Button>
-          </V-Control>
-          <V-Control>
-            <V-Button 
-              :color="filterDate == 'week' ? 'primary':undefined" 
-              @click="filterChange('week')"
-              rounded > Last Week </V-Button>
-          </V-Control>
-          <V-Control>
-            <V-Button
-              :color="filterDate == 'month' ? 'primary':undefined"
-              @click="filterChange('month')"
-              rounded> Last Month </V-Button>
-          </V-Control>
-        </V-Field> 
-        <V-Field class="w-90 mx-6">
-          <V-Control icon="feather:search">
-            <input
-              v-model="filters"
-              class="input custom-text-filter"
-              placeholder="Search..."
-              @keyup="filtersSearch"
-            />
-          </V-Control>
-        </V-Field>
-        <V-Buttons class="ml-0">
-        <V-Button 
-            :to="{ name: 'members-create' }"
-            color="primary" 
-            icon="fas fa-plus" 
-            elevated>
-            Add Members
-          </V-Button>
-        </V-Buttons>
-      </div> -->
-
-        <!--List Empty Search Placeholder -->
         <V-PlaceholderPage
           :class="[filteredData.length !== 0 && 'is-hidden']"
           title="We couldn't find any matching results."
@@ -177,10 +153,24 @@ const colorCard = (member) => {
             <span>Membership Type</span>
             <span>Trainer</span>
             <span>Phone #</span>
-            <span>Status</span>
-            <span>Card Default</span>
-            <span class="cell-end">Actions</span>
+            <span class="cell-end">Status</span>
+            <!-- <span>Card Default</span> -->
+            <span class="cell-end">
+              <div class="d-flex justify-content-end align-items-center">
+                <VControl raw subcontrol>
+                  <VCheckbox
+                    v-model="All"
+                    value="all"
+                    :is-label="false"
+                    label="All"
+                    color="primary"
+                  />
+                </VControl>
+                <membersOptionDropdown />
+              </div>
+            </span>
           </div>
+
           <div class="flex-list-inner">
             <transition-group name="list" tag="div">
               <!--Table item-->
@@ -211,6 +201,7 @@ const colorCard = (member) => {
                           }"
                           style="color: white"
                         >
+                          {{ item.id }}
                           {{ item.name }} {{ item.second_name }}
                           {{ item.last_name }}
                         </router-link>
@@ -251,7 +242,7 @@ const colorCard = (member) => {
                 <div class="flex-table-cell" data-th="Phone">
                   <span class="light-text">{{ item.phone }}</span>
                 </div>
-                <div class="flex-table-cell" data-th="Status">
+                <div class="flex-table-cell cell-end" data-th="Status">
                   <span
                     class="tag is-rounded"
                     :class="item.membership_members != null ? 'is-success' : ''"
@@ -260,10 +251,10 @@ const colorCard = (member) => {
                     }}</span
                   >
                 </div>
-                <div v-if="item.user" class="flex-table-cell">
+                <!-- <div v-if="item.user" class="flex-table-cell">
                   <p class="mr-3">{{ item.user.pm_type }}</p>
                   <p>****{{ item.user.pm_last_four }}</p>
-                </div>
+                </div> -->
                 <!-- <div class="flex-table-cell" data-th="Relations">
                   <V-AvatarStack
                     :avatars="item.contacts"
@@ -273,6 +264,14 @@ const colorCard = (member) => {
                   />
                 </div> -->
                 <div class="flex-table-cell cell-end" data-th="Actions">
+                  <VControl raw subcontrol>
+                    <VCheckbox
+                      v-model="membersSelected"
+                      :value="item.id"
+                      :is-label="false"
+                      color="primary"
+                    />
+                  </VControl>
                   <FlexTableDropdown :id-member="item.id" :member="item" />
                 </div>
               </div>
@@ -281,20 +280,20 @@ const colorCard = (member) => {
         </div>
 
         <!--Table Pagination-->
-        <!-- <V-FlexPagination
+
+        <V-FlexPagination
           v-if="filteredData.length > 0"
-          :item-per-page="props.paginationData.itemPerPage ?? 15"
-          :total-items="props.paginationData.totalItems ?? 0"
-          :current-page="props.paginationData.currentPage"
-          :max-links-displayed="props.paginationData.maxLinksDisplayed"
-        /> -->
+          :item-per-page="props.paginationData.per_page ?? 15"
+          :total-items="props.paginationData.total ?? 0"
+          :current-page="props.paginationData.current_page"
+        />
       </div>
     </div>
-    <sidebar-member
+    <!-- <sidebar-member
       :status="memberCard.status"
       :member="memberCard.member"
       @closeMemberCard="closeMemberCard"
-    />
+    /> -->
   </div>
 </template>
 
@@ -307,6 +306,15 @@ const colorCard = (member) => {
     max-width: 880px;
     margin-right: auto;
     margin-left: auto;
+  }
+}
+
+.cell-end {
+  .dropdown-trigger {
+    span {
+      padding: 0px !important;
+      justify-content: center;
+    }
   }
 }
 </style>

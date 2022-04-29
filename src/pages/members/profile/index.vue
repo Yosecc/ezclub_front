@@ -300,35 +300,33 @@ const newMembership = () => {
         </VCard>
         <memberPayment v-if="renewMembership" class="mb-4" />
         <VCard class="mb-4" v-if="member.membership_members != null">
-          <div>
-            <p>
-              <b>Member #{{ member.id }}</b>
-            </p>
-            <p>
-              <small
-                ><b>Member since.</b>
-                {{ moment(member.created_at).format('ddd - DD MMM YYYY') }}
-              </small>
-            </p>
-            <p>
-              <b>Membership Active:</b> {{ memberMermship.membership.name }}
-            </p>
-            <p v-if="member.subscription">
-              <b>Due Date: </b>
-              {{
-                moment(member.subscription.proxima_factura).format(
-                  'ddd - DD MMM YYYY'
-                )
-              }}
-            </p>
-            <!-- <p v-if="memberMermship.payments">
-              <b>Last payment attempt: </b
-              >{{
-                moment(memberMermship.payments[0].created_at).format(
-                  'ddd - DD MMM YYYY'
-                )
-              }}
-            </p> -->
+          <div class="d-flex justify-content-between">
+            <div>
+              <p>
+                <b>Member #{{ member.id }}</b>
+              </p>
+
+              <p>
+                <small
+                  ><b>Member since.</b>
+                  {{ moment(member.created_at).format('ddd - DD MMM YYYY') }}
+                </small>
+              </p>
+              <p>
+                <b>Membership Active:</b> {{ memberMermship.membership.name }}
+              </p>
+              <p v-if="member.subscription">
+                <b>Due Date: </b>
+                {{
+                  moment(member.subscription.proxima_factura).format(
+                    'ddd - DD MMM YYYY'
+                  )
+                }}
+              </p>
+            </div>
+            <div v-if="member.subscription">
+              <VTag color="info" :label="member.subscription.status" rounded />
+            </div>
           </div>
         </VCard>
         <personalInformation

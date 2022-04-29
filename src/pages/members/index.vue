@@ -4,6 +4,7 @@ import { onMounted, watch, ref, computed } from 'vue'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
 import { useRoute, useRouter } from 'vue-router'
 import { Api } from '/@src/services'
+import { members } from '/@src/models/Members.ts'
 pageTitle.value = 'Members'
 useHead({
   title: 'List Members',
@@ -14,16 +15,29 @@ const route = useRoute()
 const filters = ref('')
 const filterDate = ref('all')
 
-const members = ref([])
 const paginationData = ref([])
 
 const isLoading = ref(true)
 const defalA = ref('Adult')
 
+watch(
+  () => route.query.page,
+  () => {
+    getMembers('all', filters.value, route.query.page, categoryB.value, false)
+  }
+)
+
+watch(
+  () => filters.value,
+  () => {
+    getMembers('all', filters.value, 1, categoryB.value, false)
+  }
+)
+
 const getMembers = async (
   filter,
   value = '',
-  page = null,
+  page = 1,
   category = null,
   reload = true
 ) => {
@@ -33,12 +47,13 @@ const getMembers = async (
     params: {
       [filterDate.value]: true,
       filter: value,
-      // page: page,
+      page: page,
       category: category,
     },
   })
     .then((response) => {
       members.value = response.data.members
+      paginationData.value = response.data.pagination
       isLoading.value = false
       if (reload) {
         reloadForm()
@@ -63,6 +78,10 @@ const filterChange = (val) => {
 onMounted(() => {
   getMembers('all', filters.value, route.query.page, 'Adult')
 })
+
+const filtersSearch = () => {
+  console.log(filters.value.length)
+}
 
 const reloadForm = () => {
   isLoading.value = true
@@ -99,7 +118,17 @@ const reloadForm = () => {
         </V-Buttons>
       </div>
 
-      <VPlaceload v-if="isLoading" height="500px" />
+      <div v-if="isLoading">
+        <VPlaceload height="30px" width="40%" class="mb-4 mx-auto" />
+        <VPlaceload
+          v-for="i in 10"
+          :key="i"
+          height="48px"
+          width="100%"
+          class="mb-2"
+        />
+      </div>
+
       <div v-else>
         <div class="d-flex justify-content-center mb-5">
           <V-Field addons>
@@ -173,6 +202,7 @@ const reloadForm = () => {
           :pagination-data="paginationData"
           :filters="filters"
           :filter-change="filterChange"
+          @onSearch="onSearch"
         />
       </div>
     </div>
