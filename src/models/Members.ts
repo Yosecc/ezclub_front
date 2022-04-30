@@ -1056,7 +1056,7 @@ export const getListInvoices = async (id: number) => {
 export const subscriptionsCreateStripe = async () => {
   const response = await Api.post(`members/subscriptions_create_stripe`, {
     members: membersSelected.value,
-    trial_end: 3,
+    trial_end: 1,
     trial: true,
   })
   return response

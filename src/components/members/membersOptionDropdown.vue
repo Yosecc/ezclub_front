@@ -32,10 +32,13 @@ watch(
         let texto = `${data.message.member.id}: ${data.message.member.name} ${data.message.member.last_name} <br> ${data.message.message}`
 
         if (!data.message.status) {
+          // console.log('data.message.member.id',data.message.member.id)
+          // console.log('members',members.value.find((e)=>e.id == data.message.member.id))
+          // members.value.find((e)=>e.id == data.message.member.id).isSolvente = false
           notyf.error(texto)
         } else {
-          console.log(data.message.member.id)
-          console.log(members)
+          members.value.find((e) => e.id == data.message.member.id).isSolvente =
+            true
           notyf.success(texto)
         }
       })
@@ -70,7 +73,7 @@ const proccessSubcritions = () => {
     right
   >
     <template #content>
-      <VLoader size="large" :active="isLoaderActive">
+      <VLoader size="small" :active="isLoaderActive">
         <a
           @click.prevent="proccessSubcritions"
           role="menuitem"
