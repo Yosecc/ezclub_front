@@ -42,8 +42,8 @@ export const mismatarjeta = ref([
   {
     typeInput: 'switchEventChangeInput',
     name: 'mismatarjeta',
-    values: ['', 'Pay with different cards'],
-    model: false,
+    values: ['', 'Pay with the same card'],
+    model: true,
     required: false,
     class: 'is-12',
     isLabel: true,
@@ -1266,3 +1266,69 @@ export const setInputsEvents = (inputs: any) => {
   ) {}
   getInput(inputs, 'diciplines').click = click_diciplines
 }
+
+// export const proccessMembership = async (Obj: object) => {
+
+//   const fd = new FormData()
+//   const memberObject = perpareDataInputs(member)
+
+//   convertFormData(fd, memberObject)
+
+//   for (var i = 0; i < props.contact.length; i++) {
+//     var item = props.contact[i]
+//     for (var prop in item) {
+//       fd.append(`notifications[${i}][${prop}]`, item[prop])
+//     }
+//   }
+
+//   let memberMembershipFD = perpareDataInputs(props.membresia)
+//   for (var i in memberMembershipFD) {
+//     if (i == 'diciplines') {
+//       let ite = memberMembershipFD[i]
+//       for (var e = 0; e < ite.length; ++e) {
+//         fd.append('diciplines[]', ite[e])
+//       }
+//     } else {
+//       fd.append(i, memberMembershipFD[i])
+//     }
+//   }
+
+//   fd.append('total', props.total)
+//   fd.append('payment_type_id', 3)
+
+//   let categoriesMembersFD = perpareDataInputs(props.categoriesMembers, {
+//     array: false,
+//   })
+//   for (var i in categoriesMembersFD) {
+//     fd.append(i, categoriesMembersFD[i])
+//   }
+
+//   let notasInputFD = perpareDataInputs(props.notasInput)
+//   for (var i in notasInputFD) {
+//     fd.append(i, notasInputFD[i])
+//   }
+
+//   fd.append('presupuesto_id', props.presupuesto_id)
+
+//   if (idMemberPrincipal.value) {
+//     fd.append('id_principal', idMemberPrincipal.value)
+//   }
+
+//   await saveMember(fd)
+//     .then((response) => {
+//       idMember.value = response.data.id
+//       idMemberMembership.value = response.data.membership_members_id
+//       setLoading.value = false
+//       if (soyPrincipal.value) {
+//         idMemberPrincipal.value = idMember.value
+//       }
+//     })
+//     .catch((error) => {
+//       setLoading.value = false
+//       for (var i in error.response.data.errores) {
+//         error.response.data.errores[i].forEach((e) => {
+//           notyf.error(`${i}: ${e}`)
+//         })
+//       }
+//     })
+// }

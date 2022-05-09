@@ -141,11 +141,11 @@ const change = (val, payment = 3, total) => {
 }
 
 const presupuestoComputed = computed(() => {
-  // presupuestos.value.find((e,i)=> getInput(e.member,'is_family').model == 0 )
   return presupuestos.value.sort((a, b) => {
-    if (a.member.length) {
-      console.log(getInput(a.member, 'is_family').model)
-      return getInput(a.member, 'is_family').model == 1 ? 1 : 0
+    if (getInput(a.member, 'is_family').model == 0) {
+      return -1
+    } else {
+      return 1
     }
     return 0
   })
@@ -160,6 +160,12 @@ const presupuestoComputed = computed(() => {
     :step="5"
     @changeStep="change"
   >
+    <div class="d-flex justify-content-end align-items-center mb-4">
+      <!-- <inputsLayaut :inputs-step="mismatarjeta" /> -->
+      <VButton @click="PaymentAllMembership" color="primary"
+        >Pay all memberships</VButton
+      >
+    </div>
     <div v-if="presupuestos">
       <Presupuesto
         v-for="(presupuesto, key) in presupuestoComputed"

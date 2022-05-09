@@ -68,6 +68,7 @@ onMounted(() => {
 
 const save = () => {
   setLoading.value = true
+  // proccessMembership()
   const fd = new FormData()
   const memberObject = perpareDataInputs(props.member)
 
@@ -134,7 +135,6 @@ const save = () => {
 
 const isMemberPayment = ref(false)
 const PaymentAction = (data) => {
-  console.log(data)
   isMemberPayment.value = true
 }
 
