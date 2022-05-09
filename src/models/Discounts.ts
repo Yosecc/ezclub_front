@@ -1,6 +1,7 @@
 import { ref, computed } from 'vue'
 
 import { Api } from '/@src/services'
+import { getInput } from '/@src/models/Mixin.ts'
 
 export const discounts = ref([])
 export const discount = ref({})
@@ -32,6 +33,11 @@ export const getDiscount = async (id: any) => {
   return response
 }
 
+export const deleteDiscount = async (id: any) => {
+  const response = await Api.delete(`/discounts/destroy/${id}`)
+  return response
+}
+
 export const validateCupon = async (code: any, applies: any) => {
   const response = await Api.get(
     `discounts/validateCupon/${code}?applies=${applies}`
@@ -48,7 +54,8 @@ export const inputs = ref([
     model: true,
     default: true,
     required: false,
-    class: 'is-4',
+    class: 'is-12',
+    isLabel: true,
   },
   {
     typeInput: 'text',
@@ -57,14 +64,17 @@ export const inputs = ref([
     model: '',
     required: true,
     class: 'is-4',
+    isLabel: true,
   },
   {
     typeInput: 'text',
     name: 'name',
-    placeholder: 'description',
+    placeholder: 'Name',
     model: '',
     required: true,
     class: 'is-4',
+    isLabel: true,
+    maxLength: 40,
   },
   {
     typeInput: 'select',
@@ -74,6 +84,7 @@ export const inputs = ref([
     model: '',
     required: true,
     class: 'is-4',
+    isLabel: true,
   },
   {
     typeInput: 'text',
@@ -82,6 +93,7 @@ export const inputs = ref([
     model: '',
     required: true,
     class: 'is-4',
+    isLabel: true,
   },
   {
     typeInput: 'select',
@@ -91,62 +103,36 @@ export const inputs = ref([
     model: '',
     required: true,
     class: 'is-4',
-  },
-  {
-    typeInput: 'switch',
-    name: 'is_recurrence',
-    values: ['', 'Is Recurrence'],
-    placeholder: 'Is Recurrence',
-    model: false,
-    default: false,
-    required: false,
-    class: 'is-3',
+    isLabel: true,
   },
   {
     typeInput: 'select',
-    name: 'recurrence',
-    placeholder: 'Recurrence',
-    values: ['month', 'year'],
-    model: '',
-    required: false,
-    class: 'is-3',
-  },
-  {
-    typeInput: 'select',
-    name: 'usage',
-    placeholder: 'Usage Limits',
-    values: ['limit_num', 'unlimit', 'one'],
+    name: 'duration',
+    placeholder: 'Duration',
+    values: ['once', 'repeating', 'forever'],
     model: '',
     required: true,
-    class: 'is-3',
+    class: 'is-4',
+    isLabel: true,
+    change: function (event: any, inputs: any) {
+      if (this.model == 'repeating') {
+        getInput(inputs, 'duration_in_months').typeInput = 'number'
+        getInput(inputs, 'duration_in_months').required = true
+      } else {
+        getInput(inputs, 'duration_in_months').typeInput = 'hidden'
+        getInput(inputs, 'duration_in_months').required = false
+      }
+    },
   },
   {
     typeInput: 'number',
-    name: 'usage_limit_num',
+    name: 'max_redemptions',
     placeholder: 'Usage limit num',
     model: '',
     required: false,
     class: 'is-3',
-  },
-  {
-    typeInput: 'date',
-    name: 'date_start',
-    placeholder: 'Start Date',
-    model: '',
-    required: false,
-    class: 'is-3',
     isLabel: true,
   },
-  {
-    typeInput: 'time',
-    name: 'time_start',
-    placeholder: 'Start Time',
-    model: '',
-    required: false,
-    class: 'is-3',
-    isLabel: true,
-  },
-
   {
     typeInput: 'date',
     name: 'date_expired',
@@ -160,6 +146,15 @@ export const inputs = ref([
     typeInput: 'time',
     name: 'time_expired',
     placeholder: 'End Time',
+    model: '',
+    required: false,
+    class: 'is-3',
+    isLabel: true,
+  },
+  {
+    typeInput: 'hidden',
+    name: 'duration_in_months',
+    placeholder: 'Duration in months',
     model: '',
     required: false,
     class: 'is-3',

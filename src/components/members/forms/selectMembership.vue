@@ -28,6 +28,7 @@ import {
   membershipsData,
   inputsMembership,
   setInputsEvents,
+  memberMembership,
 } from '/@src/models/Members.ts'
 
 import { memberships } from '/@src/models/Memberships.ts'
@@ -84,7 +85,7 @@ const reloadForm = () => {
 
 const change = (val) => {
   let inputsMember = null
-  inputsMembership.value.forEach((element, index) => {
+  inputsMembership.forEach((element, index) => {
     if (index == 0) {
       inputsMember = element.inputs
     } else {
@@ -93,6 +94,8 @@ const change = (val) => {
   })
 
   if (!hasErrors.value) {
+    memberMembership.value = inputsMember
+
     emit('returnData', {
       memberMembership: inputsMember,
       familyMembership: inputsFamilies,
@@ -102,34 +105,47 @@ const change = (val) => {
 }
 
 const inputsMembershipInputs = computed(() => {
+  const datos = reactive([])
   inputsMembership.value = []
-
-  const inputsMember = ref(JSON.parse(JSON.stringify(membershipsData.value)))
-
-  // console.log(getInput(inputsMember.value,'memberships_id'))
-
-  setInputsEvents(inputsMember.value)
-
-  inputsMembership.value.push({
-    member: props.member,
-    inputs: inputsMember.value,
+  let membresiaInputs = []
+  membershipsData.forEach((e) => {
+    membresiaInputs.push(JSON.parse(JSON.stringify(e)))
   })
+  datos.push(
+    arregloDatos(
+      props.member,
+      JSON.parse(JSON.stringify(membresiaInputs)),
+      '1P'
+    )
+  )
 
   for (var i = 0; i < props.familiares.length; ++i) {
-    const inputsMemberFamily = ref(
-      JSON.parse(JSON.stringify(membershipsData.value))
+    datos.push(
+      arregloDatos(
+        props.familiares[i],
+        JSON.parse(JSON.stringify(membresiaInputs)),
+        `${i}F`
+      )
     )
+  }
+  inputsMembership.value = datos
+  return datos
+})
 
-    setInputsEvents(inputsMemberFamily.value)
-
-    inputsMembership.value.push({
-      member: props.familiares[i],
-      inputs: inputsMemberFamily.value,
-    })
+const arregloDatos = (member, membresiaInputs, id) => {
+  //
+  const arregloMembresias = {
+    member: null,
+    membresia: null,
   }
 
-  return inputsMembership.value
-})
+  arregloMembresias.member = member
+  arregloMembresias.membresia = membresiaInputs
+
+  setInputsEvents(arregloMembresias.membresia)
+
+  return arregloMembresias
+}
 
 const emit = defineEmit(['changeStep', 'returnData'])
 </script>
@@ -154,7 +170,8 @@ const emit = defineEmit(['changeStep', 'returnData'])
           {{ viewInput(i.member, 'last_name') }}</b
         >
       </p>
-      <inputsLayaut :inputs-step="i.inputs" />
+
+      <inputsLayaut :inputs-step="i.membresia" />
     </V-Card>
 
     <V-Card class="mb-4">

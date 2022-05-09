@@ -58,7 +58,7 @@ export const perpareDataInputs = (
   options = { anidados: false, array: true }
 ) => {
   const proccessDefault = (data) => {
-    validateData(data, options.array)
+    // validateData(data, options.array)
     const obj = {}
     if (data != null) {
       if (options.array) {
@@ -90,6 +90,12 @@ export const perpareDataInputs = (
       }
     })
     return a
+  }
+}
+
+export const convertFormData = (fd: any, objeto: object) => {
+  for (const i in objeto) {
+    fd.append(i, objeto[i])
   }
 }
 
@@ -198,6 +204,7 @@ export const setInputModelData = (inputs: any, name, data) => {
 }
 
 export const moneda = (value) => {
+  value = new Intl.NumberFormat().format(value)
   value = parseFloat(value).toFixed(2)
   value += ''
   const x = value.split('.')
@@ -207,6 +214,7 @@ export const moneda = (value) => {
   while (rgx.test(x1)) {
     x1 = x1.replace(rgx, '$1' + '.' + '$2')
   }
+
   return '$' + x1 + x2
 }
 
@@ -227,4 +235,16 @@ export const calcularMeses = (dias: any) => {
   const proxima = moment().add(dias, 'days')
 
   return Math.abs(Math.round(moment.duration(hoy.diff(proxima)).asMonths()))
+}
+
+export const setInputsReadOnly = (inputs: any, campos: any) => {
+  campos.forEach((c: string) => {
+    inputs.find((i: any) => i.name == c).disabled = true
+  })
+}
+
+export const resetInputsReadOnly = (inputs: any, campos: any) => {
+  campos.forEach((c: string) => {
+    inputs.find((i: any) => i.name == c).disabled = false
+  })
 }

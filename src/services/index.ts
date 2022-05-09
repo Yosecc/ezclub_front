@@ -36,7 +36,7 @@ intance.interceptors.response.use(
       notyf.error(error.response.data)
     }
     if (error.response.status == 401) {
-      // onLogout()
+      onLogout()
     } else {
       return Promise.reject(error)
     }

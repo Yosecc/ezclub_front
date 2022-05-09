@@ -1,5 +1,13 @@
 <script setup lang="ts">
-import { computed, ref, defineProps, defineEmit, onMounted, watch } from 'vue'
+import {
+  computed,
+  ref,
+  defineProps,
+  defineEmit,
+  onMounted,
+  watch,
+  reactive,
+} from 'vue'
 import { setInputModelData, viewInput, getInput } from '/@src/models/Mixin.ts'
 import { inputsInformation } from '/@src/models/Members.ts'
 const props = defineProps({
@@ -75,9 +83,9 @@ const cantidadFamiliares = ref(0)
 const addFamily = () => {
   if (cantidadFamiliares.value > 0) {
     for (var i = 0; i < cantidadFamiliares.value; ++i) {
-      const inputs = ref(JSON.parse(JSON.stringify(props.inputs)))
-      getInput(inputs.value, 'misma_direccion').change = mismaDirection
-      families.value.push(inputs.value)
+      const inputs = reactive(JSON.parse(JSON.stringify(props.inputs)))
+      getInput(inputs, 'misma_direccion').change = mismaDirection
+      families.value.push(inputs)
     }
     // mostrar.value = true
   }
@@ -85,6 +93,11 @@ const addFamily = () => {
 
 const mismaDirection = function (inputsSteps) {
   if (!this.model) {
+    setInputModelData(
+      inputsSteps,
+      'address',
+      viewInput(inputsInformation.value, 'address')
+    )
     setInputModelData(
       inputsSteps,
       'postal_code',

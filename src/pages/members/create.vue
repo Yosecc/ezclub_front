@@ -16,6 +16,8 @@ import {
   membershipsData,
   member,
   error,
+  familiaresMembers,
+  memberMembership,
 } from '/@src/models/Members.ts'
 
 import { getMeberships, memberships } from '/@src/models/Memberships.ts'
@@ -54,10 +56,10 @@ onMounted(() => {
       response.data.memberships
     )
   })
-  getInput(membershipsData.value, 'memberships_id').disabled = false
-  getInput(membershipsData.value, 'recurrences_id').disabled = false
-  getInput(membershipsData.value, 'is_initiation_fee').disabled = false
-  getInput(membershipsData.value, 'discount').disabled = false
+  getInput(membershipsData, 'memberships_id').disabled = false
+  getInput(membershipsData, 'recurrences_id').disabled = false
+  getInput(membershipsData, 'is_initiation_fee').disabled = false
+  getInput(membershipsData, 'discount').disabled = false
 
   getDiscounts(1, 'membership').then((response) => {
     setInputValuesData(membershipsData, 'discount', response.data.discounts)
@@ -170,7 +172,7 @@ const returDataFamily = (data) => {
   familiares.value = data.value
 }
 
-const memberMembership = ref([])
+// const memberMembership = ref([])
 const familyMembership = ref([])
 const returnDataMembership = (obj) => {
   familyMembership.value = obj.familyMembership.value
@@ -190,141 +192,6 @@ const convertFormData = (fd, objeto) => {
   }
 }
 
-const sendData = (payment, cashObj) => {
-  const fd = new FormData()
-
-  // // Informacion
-  convertFormData(fd, dataInformationMember.value)
-
-  // Contacto
-  let dataContactFD = dataContact.value
-
-  for (var i = 0; i < dataContactFD.length; i++) {
-    var item = dataContactFD[i]
-    for (var prop in item) {
-      fd.append(`notifications[${i}][${prop}]`, item[prop])
-    }
-  }
-
-  let memberMembershipFD = perpareDataInputs(memberMembership.value)
-  for (var i in memberMembershipFD) {
-    if (i == 'diciplines') {
-      let ite = memberMembershipFD[i]
-      for (var e = 0; e < ite.length; ++e) {
-        fd.append('diciplines[]', ite[e])
-      }
-    } else {
-      fd.append(i, memberMembershipFD[i])
-    }
-  }
-
-  fd.append('total', total.value)
-  fd.append('payment_type_id', payment)
-
-  if (payment == 1) {
-    fd.append('cash', cashObj.cash)
-    fd.append('cash_back', cashObj.changeBack)
-  }
-
-  let categoriesMembersFD = perpareDataInputs(categoriesMembers.value, {
-    array: false,
-  })
-
-  for (var i in categoriesMembersFD) {
-    fd.append(i, categoriesMembersFD[i])
-  }
-
-  let notasInputFD = perpareDataInputs(notasInput.value)
-  for (var i in notasInputFD) {
-    fd.append(i, notasInputFD[i])
-  }
-
-  let optionsCreditCardFD = perpareDataInputs(optionsCreditCard.value)
-  for (var i in optionsCreditCardFD) {
-    fd.append(i, optionsCreditCardFD[i])
-  }
-
-  familyMembership.value.forEach((element, index) => {
-    // Informacion
-    let familiarX = perpareDataInputs(element.member)
-    for (var i in familiarX) {
-      if (i == 'category') {
-        if (familiarX[i]) {
-          familiarX[i] = 'Minor'
-        } else {
-          familiarX[i] = 'Adult'
-        }
-      }
-      fd.append(`familiares[${index}][${i}]`, familiarX[i])
-    }
-    // contacto
-    let dataContactX = dataContact.value
-    for (var i = 0; i < dataContactX.length; i++) {
-      var item = dataContactX[i]
-      for (var prop in item) {
-        fd.append(
-          `familiares[${index}][notifications][${i}][${prop}]`,
-          item[prop]
-        )
-      }
-    }
-
-    let membresiaX = perpareDataInputs(element.inputs)
-    for (var i in membresiaX) {
-      if (i == 'diciplines') {
-        let ite = membresiaX[i]
-        for (var e = 0; e < ite.length; ++e) {
-          fd.append(`familiares[${index}][diciplines][]`, ite[e])
-        }
-      } else {
-        // console.log(membresiaX[i])
-        fd.append(`familiares[${index}][${i}]`, membresiaX[i])
-      }
-    }
-
-    fd.append(`familiares[${index}][total]`, total.value)
-
-    let notasInputFD = perpareDataInputs(notasInput.value)
-    for (var i in notasInputFD) {
-      fd.append(`familiares[${index}][${i}]`, notasInputFD[i])
-    }
-
-    let optionsCreditCardFD = perpareDataInputs(optionsCreditCard.value)
-    for (var i in optionsCreditCardFD) {
-      fd.append(`familiares[${index}][${i}]`, optionsCreditCardFD[i])
-    }
-  })
-
-  // Guardian
-  for (var i in memberGuardianComputed.value) {
-    fd.append(i, memberGuardianComputed.value[i])
-  }
-
-  // console.log(...fd)
-  saveMember(fd)
-    .then((response) => {
-      error.value = false
-      console.log(response)
-      idMember.value = response.data.member.id
-      idMemberMembership.value = response.data.member.membership_members.id
-      member.value = response.data.member
-      console.log(member.value)
-      // if (payment == 1) {
-      //   window.location.href = `${FRONTEND_URL.value}members/process?payment_type=1&id=${idMember.value}&redirect_status=succeeded`
-      // }
-    })
-    .catch((error) => {
-      console.log(error)
-      error.value = true
-
-      for (var i in error.response.data.errores) {
-        error.response.data.errores[i].forEach((e) => {
-          notyf.error(`${i}: ${e}`)
-        })
-      }
-    })
-}
-
 const limpiarCampos = () => {
   idMember.value = null
   idMemberMembership.value = null
@@ -336,9 +203,7 @@ const limpiarCampos = () => {
   )
 
   campos = ['recurrence']
-  cleanUpModelInputs(
-    membershipsData.value.filter((e) => !campos.includes(e.name))
-  )
+  cleanUpModelInputs(membershipsData.filter((e) => !campos.includes(e.name)))
   cleanUpModelInputs(notasInput.value)
   cleanUpModelInputs(parentInsputs.value)
 }
@@ -429,7 +294,6 @@ const limpiarCampos = () => {
           :member-membership="memberMembership"
           :family-membership="familyMembership"
           @changeStep="changeStep"
-          @returnData="returnDataPayment"
         />
       </div>
       <div class="column is-3">

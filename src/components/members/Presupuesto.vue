@@ -1,0 +1,79 @@
+<script setup lang="ts">
+import {
+  computed,
+  ref,
+  reactive,
+  defineProps,
+  defineEmit,
+  watch,
+  onMounted,
+} from 'vue'
+
+import { moneda } from '/@src/models/Mixin.ts'
+const props = defineProps({
+  presupuesto: {
+    type: Object,
+    required: true,
+  },
+})
+</script>
+
+<template>
+  <VCard class="mb-4" v-if="presupuesto">
+    <h1 class="title is-6"></h1>
+    <table class="table is-hoverable is-striped is-fullwidth">
+      <thead>
+        <tr>
+          <th scope="col">Membership Name</th>
+          <th scope="col">Plan</th>
+          <th scope="col">Quantity</th>
+          <th scope="col">Cost</th>
+          <th scope="col">Import</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          v-for="(membresia, key) in presupuesto.membresias"
+          :key="`membresia-${key}`"
+        >
+          <td>{{ membresia.description }}</td>
+          <td>{{ membresia.type ? membresia.type : 'Initiation Fee' }}</td>
+          <td>{{ membresia.quantity }}</td>
+          <td style="text-align: right">
+            {{ moneda((membresia.amount_subtotal / membresia.quantity) * 10) }}
+          </td>
+          <td style="text-align: right">
+            {{ moneda(membresia.amount_subtotal * 10) }}
+          </td>
+        </tr>
+
+        <tr style="text-align: right">
+          <td colspan="4" style="text-align: right"><b>Subtotal</b></td>
+          <td>
+            {{ moneda(presupuesto.totales.upfront.amount_subtotal * 10) }}
+          </td>
+        </tr>
+        <tr style="text-align: right">
+          <td colspan="4" style="text-align: right">Tax 7%</td>
+          <td>
+            {{
+              moneda(presupuesto.totales.upfront.total_details.amount_tax * 10)
+            }}
+          </td>
+        </tr>
+
+        <tr style="text-align: right">
+          <td colspan="4" style="text-align: right"><b>Total to pay</b></td>
+          <td>
+            {{ moneda(presupuesto.totales.upfront.amount_total * 10) }}
+          </td>
+        </tr>
+        <tr style="text-align: right">
+          <td colspan="4" style="text-align: right">Recurring total</td>
+          <td>{{ moneda(presupuesto.totales.recurring.amount_total * 10) }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <slot></slot>
+  </VCard>
+</template>

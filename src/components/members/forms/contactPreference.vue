@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, defineProps, defineEmit, watch } from 'vue'
 import { perpareDataInputs, hasErrors } from '/@src/models/Mixin.ts'
+import { dataContact } from '/@src/models/Members.ts'
 
 const props = defineProps({
   type: {
@@ -39,7 +40,7 @@ const change = (val) => {
       })
     })
   })
-
+  dataContact.value = notifications
   emit('returnData', notifications)
   emit('changeStep', val)
 }

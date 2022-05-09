@@ -3,6 +3,7 @@ import { Api } from '/@src/services'
 import { recurrences } from '/@src/models/Recurrences.ts'
 import { getLocationsDiciplines } from '/@src/models/Diciplines.ts'
 import { validateCupon } from '/@src/models/Discounts.ts'
+
 import {
   setInputValuesData,
   setInputModelData,
@@ -20,6 +21,11 @@ export const idMemberMembership = ref(null)
 export const cupon = ref(null)
 export const error = ref(false)
 export const pagado = ref(false)
+export const familiaresMembers = ref(null)
+export const dataInformationMember = ref(null)
+export const dataContact = ref(null)
+export const memberMembership = ref(null)
+export const idMemberPrincipal = ref(null)
 
 export const categoriesMembers = ref({
   name: 'category',
@@ -32,6 +38,17 @@ const categorieActive = computed(() => {
   return categoriesMembers.value.model
 })
 
+export const mismatarjeta = ref([
+  {
+    typeInput: 'switchEventChangeInput',
+    name: 'mismatarjeta',
+    values: ['', 'Pay with different cards'],
+    model: false,
+    required: false,
+    class: 'is-12',
+    isLabel: true,
+  },
+])
 export const inputsInformation = ref([
   {
     typeInput: 'switchEventChange',
@@ -139,6 +156,7 @@ export const inputsInformation = ref([
     categories: ['Adult', 'Minor', 'Prospect'],
     typeMember: ['Individual', 'Company'],
     maxLength: 10,
+    maxDate: moment().subtract(2, 'years').format('YYYY-MM-DD'),
     keyUp: (event, input) => {
       const formatos = ['YYYY-MM-DD', 'YYYY/MM/DD']
       if (input.model.length >= 10) {
@@ -388,6 +406,7 @@ const familyData = ref([
     isLabel: true,
     required: false,
     category: ['Adult', 'Minor'],
+    maxDate: moment().subtract(2, 'years').format('YYYY-MM-DD'),
   },
   {
     typeInput: 'select',
@@ -650,7 +669,7 @@ export const inputsContact = ref([
   },
 ])
 
-export const membershipsData = ref([
+export const membershipsData = reactive([
   {
     typeInput: 'switch',
     name: 'recurrence',
@@ -954,12 +973,17 @@ export const emergencyInputs = ref([
   },
 ])
 
-export const inputsMembership = ref([])
+export const inputsMembership = reactive([])
 
 export const member = ref()
 
 export const getPresupuesto = async (data: any) => {
   const response = Api.post('getPresupuesto', data)
+  return response
+}
+
+export const getRecurrencesSelect = async (id: any) => {
+  const response = Api.post('recurrences_select', { memberships_id: id })
   return response
 }
 
@@ -1127,16 +1151,9 @@ const change_memberships_id = function (inputsStep: any) {
   })
   setInputValuesData(inputsStep, 'locations_id', locations)
 
-  const recurrencesData = []
-  membershipSelected.amounts.forEach((element: any) => {
-    const recurrencesD = recurrences.value.find(
-      (e: any) => e.id == element.recurrences_id
-    )
-    recurrencesD.amount = element.amount
-    recurrencesData.push(recurrencesD)
+  getRecurrencesSelect(this.model).then((response) => {
+    getInput(inputsStep, 'recurrences_id').values = response.data
   })
-
-  setInputValuesData(inputsStep, 'recurrences_id', recurrencesData)
 
   getMembershipDiciplines(this.model).then((response) => {
     setInputValuesData(inputsStep, 'diciplines', response.data)
@@ -1188,7 +1205,7 @@ const change_discount = function (inputsStep: any) {
     )
       .then((response: any) => {
         this.data = response.data
-        notyf.success('Discuount Apply')
+        notyf.success('Discuount valid')
       })
       .catch((error: any) => {
         notyf.error(error.response.data)
@@ -1200,11 +1217,14 @@ const change_discount = function (inputsStep: any) {
 }
 
 const filter_discount = function (option) {
-  return `${option.code}`
+  return `${option.name}`
 }
 
 export const filterOptionText_staff_id = function (option) {
-  return `${option.name} ${option.second_name} ${option.last_name}`
+  if (option.second_name) {
+    return `${option.name} ${option.second_name} ${option.last_name}`
+  }
+  return `${option.name}  ${option.last_name}`
 }
 
 const click_diciplines = function (event: any, inputsStep: any, id: number) {

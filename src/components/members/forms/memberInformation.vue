@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, defineProps, defineEmit, onMounted, watch } from 'vue'
 import { perpareDataInputs, hasErrors } from '/@src/models/Mixin.ts'
+import { dataInformationMember } from '/@src/models/Members.ts'
 
 const props = defineProps({
   type: {
@@ -54,6 +55,7 @@ const change = (val) => {
     datos.select_type = !datos.select_type ? 'Individual' : 'Company'
     // datos.is_family = 0
     // datos.principal_family = 1
+    dataInformationMember.value = datos
     emit('returData', datos)
     emit('changeStep', val)
   }

@@ -31,7 +31,7 @@ const props = defineProps({
 })
 
 const emit = defineEmit(['changeStep', 'saveData'])
-
+const isLoaderActive = ref(false)
 const load = () => {
   isLoaderActive.value = true
   setTimeout(() => {

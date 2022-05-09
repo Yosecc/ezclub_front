@@ -6,7 +6,7 @@ import { notyf } from '/@src/models/Mixin.ts'
 
 const props = defineProps({
   amount: {
-    type: Number,
+    type: [Number, String],
     required: true,
   },
   id: {
@@ -159,7 +159,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <VPlaceload v-if="isLoading" height="500px" />
+  <VPlaceload v-if="isLoading" height="200px" class="mt-6" />
   <V-Card v-show="!isLoading" class="mt-6">
     <form @submit.prevent="handleSubmit" id="payment-form">
       <input

@@ -206,6 +206,9 @@ const takePhoto = (event) => {
             :maxLength="input.maxLength ?? ''"
             @keyup="input.keyUp ? input.keyUp($event, input) : null"
             @change="input.change ? input.change($event, input) : null"
+            :max="
+              input.maxDate && input.typeInput == 'date' ? input.maxDate : null
+            "
           />
         </V-Control>
       </V-Field>
@@ -246,7 +249,11 @@ const takePhoto = (event) => {
         </label>
         <V-Control class="input-select" :has-error="input.hasError ?? false">
           <div class="select">
-            <select v-model="input.model" :disabled="input.disabled ?? false">
+            <select
+              v-model="input.model"
+              :disabled="input.disabled ?? false"
+              @change="input.change ? input.change($event, inputsStep) : null"
+            >
               <option value="">{{ input.placeholder }}</option>
               <option
                 v-for="(option, keyB) in input.values"
@@ -629,5 +636,9 @@ const takePhoto = (event) => {
       }
     }
   }
+}
+input[disabled],
+select[disabled] {
+  opacity: 0.3;
 }
 </style>

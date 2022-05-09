@@ -2,9 +2,8 @@
 import { useHead } from '@vueuse/head'
 import { onMounted, watch, ref, computed } from 'vue'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
-// import { useRoute, useRouter } from 'vue-router'
-// import { Api } from '/@src/services'
-// import { getCompany, company } from '/@src/pages/companies/companies.ts'
+import { resetInputsReadOnly } from '/@src/models/Mixin.ts'
+import { inputs } from '/@src/models/Discounts.ts'
 
 pageTitle.value = 'New Discount'
 
@@ -14,6 +13,16 @@ useHead({
 
 onMounted(() => {
   // getCompany()
+  resetInputsReadOnly(inputs.value, [
+    'code',
+    'type',
+    'value',
+    'duration',
+    'max_redemptions',
+    'date_expired',
+    'time_expired',
+    'duration_in_months',
+  ])
 })
 </script>
 

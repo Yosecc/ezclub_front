@@ -1,14 +1,20 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useHead } from '@vueuse/head'
+import { useCookies } from 'vue3-cookies'
+const { cookies } = useCookies()
 
 import { isDark, logo } from '/@src/state/darkModeState'
 import useNotyf from '/@src/composable/useNotyf'
 import sleep from '/@src/utils/sleep'
 
 import { Api } from '/@src/services'
-import { setAuthStorage, remember, isAuthenticated} from '/@src/pages/auth/auth.ts'
+import {
+  setAuthStorage,
+  remember,
+  isAuthenticated,
+} from '/@src/pages/auth/auth.ts'
 
 import { getCompany } from '/@src/models/Companies.ts'
 
@@ -18,42 +24,52 @@ const isLoading = ref(false)
 const router = useRouter()
 const notif = useNotyf()
 
-const email    = ref('')
+const email = ref('')
 const password = ref('')
 
 const handleLogin = async () => {
-  if(email.value != '' && password.value != ''){
+  if (email.value != '' && password.value != '') {
+    await Api.post('login', { email: email.value, password: password.value })
+      .then((response) => {
+        let user = response.data.user
 
-    await Api.post('login',{ email:email.value , password:password.value }).then((response)=>{
-      let user = response.data.user
-  
-      if (response.data.status) {
-        isLoading.value = true
-        setAuthStorage(user).then((response)=>{
+        if (response.data.status) {
+          isLoading.value = true
+          setAuthStorage(user).then((response) => {
             notif.success(`Welcome back, ${user.name}`)
             router.push({ name: 'index' })
             isLoading.value = false
-        })
-        
-      }
-    }).catch((error)=>{
-
-      if(error.response.status == 422){
-        notif.error(error.response.data.message)
-      }
-    })
+          })
+        }
+      })
+      .catch((error) => {
+        if (error.response.status == 422) {
+          notif.error(error.response.data.message)
+        }
+      })
   }
 }
 
-onMounted(()=>{
-  if(isAuthenticated.value){
-     router.push({ path: '/' })
+onMounted(() => {
+  console.log(cookies.get('background'))
+  if (cookies.get('background') != null) {
+    background.value = cookies.get('background')
+  }
+  if (isAuthenticated.value) {
+    router.push({ path: '/' })
   }
 })
 
 useHead({
   title: 'Login',
 })
+
+const background = ref('#F39C12')
+
+const cambiarColor = (color) => {
+  cookies.set('background', color)
+  background.value = color
+}
 </script>
 
 <template>
@@ -61,9 +77,89 @@ useHead({
     <div class="underlay h-hidden-mobile h-hidden-tablet-p"></div>
 
     <div class="columns is-gapless is-vcentered">
+      <div
+        class=""
+        style="position: absolute; z-index: 9999999; top: 10px; left: 10px"
+      >
+        <div class="field is-grouped">
+          <div class="control">
+            <V-Dropdown>
+              <template #button="{ open, toggle }">
+                <VIconBox
+                  @mouseenter="open"
+                  @click="toggle"
+                  size="small"
+                  class="is-trigger"
+                  :color="'green'"
+                  rounded
+                >
+                  <i
+                    class="fas fa-palette"
+                    style="color: white"
+                    aria-hidden="true"
+                  ></i>
+                </VIconBox>
+              </template>
+              <template #content="{ close }">
+                <div @mouseleave="close" class="p-2 d-flex">
+                  <VIconBox
+                    size="small"
+                    @click="cambiarColor('#2980B9')"
+                    style="background: #2980b9"
+                    class="mr-2"
+                    :color="undefined"
+                  >
+                  </VIconBox>
+                  <VIconBox
+                    size="small"
+                    @click="cambiarColor('#00838F')"
+                    style="background: #00838f"
+                    class="mr-2"
+                    :color="undefined"
+                  >
+                  </VIconBox>
+                  <VIconBox
+                    size="small"
+                    @click="cambiarColor('#6A1B9A')"
+                    style="background: #6a1b9a"
+                    class="mr-2"
+                    :color="undefined"
+                  >
+                  </VIconBox>
+
+                  <VIconBox
+                    size="small"
+                    @click="cambiarColor('#3D5AFE')"
+                    style="background: #3d5afe"
+                    class="mr-2"
+                    :color="undefined"
+                  >
+                  </VIconBox>
+                  <VIconBox
+                    size="small"
+                    @click="cambiarColor('#F39C12')"
+                    style="background: #f39c12"
+                    class="mr-2"
+                    :color="undefined"
+                  >
+                  </VIconBox>
+                  <VIconBox
+                    size="small"
+                    @click="cambiarColor('#D50000')"
+                    style="background: #d50000"
+                    class="mr-2"
+                    :color="undefined"
+                  >
+                  </VIconBox>
+                </div>
+              </template>
+            </V-Dropdown>
+          </div>
+        </div>
+      </div>
       <div class="column is-relative is-8 h-hidden-mobile h-hidden-tablet-p">
         <div class="hero is-fullheight is-image">
-          <div class="hero-body" style="background: #F39C12">
+          <div class="hero-body" :style="{ background: `${background}` }">
             <div class="container">
               <div class="columns">
                 <div class="column">
@@ -80,12 +176,21 @@ useHead({
       </div>
       <div class="column is-4 is-relative">
         <RouterLink :to="{ name: 'index' }" class="">
-          
+          <img
+            v-if="isDark"
+            src="/@src/assets/logo_positive.svg"
+            width="250"
+            class="d-block mr-auto ml-auto"
+            alt=""
+          />
 
-          <img v-if="isDark" src="/@src/assets/logo_positive.svg" width="250" class="d-block mr-auto ml-auto"  alt="">
-
-          <img v-else src="/@src/assets/logo_negative.svg" width="250" class="d-block mr-auto ml-auto"  alt="">
-
+          <img
+            v-else
+            src="/@src/assets/logo_negative.svg"
+            width="250"
+            class="d-block mr-auto ml-auto"
+            alt=""
+          />
         </RouterLink>
         <label class="dark-mode ml-auto">
           <input

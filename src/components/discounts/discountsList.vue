@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import type { PropType } from 'vue'
 import { defineProps, computed, ref, onMounted } from 'vue'
-import { discounts } from '/@src/models/Discounts.ts'
+import { discounts, deleteDiscount } from '/@src/models/Discounts.ts'
+import { notyf } from '/@src/models/Mixin.ts'
+
 import moment from 'moment'
 
 // const discounts = ref([
@@ -34,6 +36,24 @@ const filteredData = computed(() => {
   }
   return []
 })
+
+const deleteCupon = (id) => {
+  if (
+    confirm(
+      'Delete permanently? ... However, deleting a coupon does not affect any customers who have already applied the coupon'
+    )
+  ) {
+    deleteDiscount(id)
+      .then((response) => {
+        notyf.success(response.data)
+        let index = discounts.value.findIndex((e) => e.id == id)
+        discounts.value.splice(index, 1)
+      })
+      .catch((error) => {
+        notyf.error(error.response.data)
+      })
+  }
+}
 </script>
 
 <template>
@@ -91,9 +111,9 @@ const filteredData = computed(() => {
             class="flex-table-header"
             :class="[filteredData.length === 0 && 'is-hidden']"
           >
-            <span class="">Promo Code</span>
-            <span>Description</span>
-            <span>Start Date</span>
+            <!-- <span class="">Promo Code</span> -->
+            <span>Name</span>
+
             <span>End Date</span>
             <span>Recurrence</span>
             <span>Type Discount</span>
@@ -110,46 +130,32 @@ const filteredData = computed(() => {
                 :key="item.id"
                 class="flex-table-item"
               >
-                <div class="flex-table-cell is-media" data-th="Promo Code">
+                <!-- <div class="flex-table-cell is-media" data-th="Promo Code">
                   <span class="item-name dark-inverted">{{ item.code }}</span>
-                </div>
+                </div> -->
                 <div class="flex-table-cell" data-th="Description">
                   <span class="light-text">{{ item.name }}</span>
                 </div>
-                <div class="flex-table-cell" data-th="Start Date">
-                  <span
-                    v-if="moment(item.date_start).isValid()"
-                    class="light-text"
-                    >{{
-                      moment(item.date_start).format('DD-MM-YYYY HH:mm:ss')
-                    }}</span
-                  >
-                  <spa v-else>-</spa>
-                </div>
+
                 <div class="flex-table-cell" data-th="End Date">
                   <span
                     v-if="moment(item.date_expired).isValid()"
                     class="light-text"
                     >{{
-                      moment(item.date_expired).format('DD-MM-YYYY HH:mm:ss')
+                      moment(item.date_expired).format('MM/DD/YYYY HH:mm:ss')
                     }}</span
                   >
                   <spa v-else>-</spa>
                 </div>
                 <div class="flex-table-cell" data-th="Recurrence">
-                  <span v-if="item.is_recurrence" class="light-text">{{
-                    item.recurrence
-                  }}</span>
-                  <span v-else>-</span>
+                  <span class="light-text">{{ item.duration }}</span>
                 </div>
                 <div class="flex-table-cell" data-th="Type Discount">
                   <span class="light-text">{{ item.type }}</span>
                 </div>
                 <div class="flex-table-cell" data-th="Usage Limit">
                   <span class="light-text">{{ item.usage }} </span>
-                  <span v-if="item.usage == 'limit_num'" class="light-text">
-                    {{ item.usage_limit_num }}</span
-                  >
+                  <span class="light-text"> {{ item.max_redemptions }}</span>
                 </div>
 
                 <div class="flex-table-cell" data-th="Status">
@@ -165,8 +171,12 @@ const filteredData = computed(() => {
                       query: { id: item.id },
                     }"
                     color="warning"
-                    ><i class="fas fa-edit" aria-hidden="true"></i
-                  ></V-button>
+                    ><i class="fas fa-edit" aria-hidden="true"></i></V-button
+                  >\
+
+                  <V-button @click="deleteCupon(item.id)" color="danger"
+                    ><i class="fas fa-trash" aria-hidden="true"></i>
+                  </V-button>
                 </div>
               </div>
             </transition-group>

@@ -4,7 +4,7 @@ import { onMounted, watch, ref, computed } from 'vue'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
 import { useRoute, useRouter } from 'vue-router'
 import { getDiscount, inputs } from '/@src/models/Discounts.ts'
-import { setInputModelData } from '/@src/models/Mixin.ts'
+import { setInputModelData, setInputsReadOnly } from '/@src/models/Mixin.ts'
 import moment from 'moment'
 const route = useRoute()
 
@@ -44,6 +44,16 @@ onMounted(() => {
       }
     }
   })
+  setInputsReadOnly(inputs.value, [
+    'code',
+    'type',
+    'value',
+    'duration',
+    'max_redemptions',
+    'date_expired',
+    'time_expired',
+    'duration_in_months',
+  ])
 })
 </script>
 

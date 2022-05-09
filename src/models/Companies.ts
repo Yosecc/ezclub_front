@@ -49,10 +49,20 @@ export const getLocation = async (id: any) => {
   location.value = response.data
   return response
 }
+import { PUBLIC_KEY_STRIPE } from '/@src/services'
 
 export const getCompany = async () => {
   const response = await Api.get('company/get')
   company.value = response.data
+  if (
+    import.meta.env.VITE_MODE == 'development' ||
+    import.meta.env.VITE_MODE == 'staging'
+  ) {
+    PUBLIC_KEY_STRIPE.value = response.data.dev_key_stripe_public
+  } else {
+    PUBLIC_KEY_STRIPE.value = response.data.key_stripe_public
+  }
+
   return response
 }
 
