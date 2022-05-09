@@ -177,7 +177,7 @@ watch(
               v-focus
               type="text"
               class="input custom-text-filter"
-              placeholder="Barcode"
+              placeholder="Member ID Barcode"
               @keyup.enter="searchCodebar"
             />
           </V-Control>
@@ -248,7 +248,7 @@ watch(
                 "
                 rounded
               >
-                Prospect
+                Temporary Members
               </V-Button>
             </V-Control>
           </V-Field>

@@ -72,7 +72,8 @@ export const inputs = ref([
     name: 'CombineDiscipline',
     placeholder: 'Combine Discipline',
     model: [],
-    required: true,
+    required: false,
+    isLabel: true,
     class: 'is-2',
   },
   {
@@ -81,6 +82,7 @@ export const inputs = ref([
     placeholder: 'Can be add it to membership',
     model: [],
     required: true,
+    isLabel: true,
     class: 'is-3',
   },
   {
@@ -89,6 +91,7 @@ export const inputs = ref([
     placeholder: 'Discipline Name',
     model: '',
     required: true,
+    isLabel: true,
     class: 'is-7',
   },
   {
@@ -99,6 +102,7 @@ export const inputs = ref([
     model: [],
     values: [],
     required: true,
+    isLabel: true,
     class: 'is-12',
   },
   {
@@ -108,6 +112,7 @@ export const inputs = ref([
     model: [],
     values: [],
     required: true,
+    isLabel: true,
     class: 'is-12',
   },
   {
@@ -116,6 +121,7 @@ export const inputs = ref([
     placeholder: 'Discipline Description',
     model: '',
     required: true,
+    isLabel: true,
     class: 'is-12',
   },
 
@@ -125,6 +131,7 @@ export const inputs = ref([
     placeholder: 'Internal Notes',
     model: '',
     required: false,
+    isLabel: true,
     class: 'is-12',
   },
 ])

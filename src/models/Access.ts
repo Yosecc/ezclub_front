@@ -21,7 +21,7 @@ export const searchCodebar = async (event) => {
       .catch((error) => {
         const audio = document.getElementById('audioFail')
         audio.play()
-
+        codebar.value = ''
         notyf.error(error.response.data.message)
       })
     return response

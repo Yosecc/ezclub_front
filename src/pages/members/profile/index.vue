@@ -66,7 +66,7 @@ watch(
   }
 )
 
-const mensaje = ref('Filed Payment')
+const mensaje = ref('FAILED PAYMENT')
 const subMensaje = ref('')
 
 watch(

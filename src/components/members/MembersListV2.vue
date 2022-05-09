@@ -118,7 +118,7 @@ watch(
 <template>
   <div>
     <div class="page-content-inner">
-      <div class="flex-list-wrapper flex-list-v1">
+      <div class="tile-grid tile-grid-v1">
         <V-PlaceholderPage
           :class="[filteredData.length !== 0 && 'is-hidden']"
           title="We couldn't find any matching results."
@@ -141,59 +141,44 @@ watch(
           </template>
         </V-PlaceholderPage>
 
-        <div class="flex-table">
-          <!--Table header-->
+        <transition-group name="list" tag="div" class="columns is-multiline">
+          <!--Grid item-->
           <div
-            class="flex-table-header"
-            :class="[filteredData.length === 0 && 'is-hidden']"
-            v-if="filteredData.length !== 0"
+            v-for="item in filteredData"
+            :key="`${props.name}-${item.id}`"
+            class="column is-4"
           >
-            <span class="is-grow">Member</span>
-            <span>Email</span>
-            <span>Membership Type</span>
-            <span>Trainer</span>
-            <span>Phone #</span>
-            <span class="cell-end">Status</span>
-            <!-- <span>Card Default</span> -->
-            <span class="cell-end">
-              <div class="d-flex justify-content-end align-items-center">
-                <VControl raw subcontrol>
-                  <VCheckbox
-                    v-model="All"
-                    value="all"
-                    :is-label="false"
-                    label="All"
-                    color="primary"
-                  />
-                </VControl>
-                <membersOptionDropdown />
-              </div>
-            </span>
-          </div>
-
-          <div class="flex-list-inner">
-            <transition-group name="list" tag="div">
-              <!--Table item-->
+            <div
+              @click="openMemberCard(true, item)"
+              class="tile-grid-item"
+              :class="item.isSolvente ? '' : 'bg-danger'"
+            >
               <div
-                v-for="item in filteredData"
-                :key="`${props.name}-${item.id}`"
-                class="flex-table-item cursor-pointer"
-                :class="item.isSolvente ? '' : 'bg-danger'"
+                class="
+                  tile-grid-item-inner
+                  justify-content-between
+                  align-items-start
+                "
               >
-                <div
-                  @click="openMemberCard(true, item)"
-                  class="flex-table-cell is-media is-grow"
-                >
-                  <V-Avatar
-                    :picture="`${API_WEB_URL}storage/${item.photo}`"
-                    color="primary"
-                    :initials="initials(item.name, item.last_name)"
-                    size="medium"
-                  />
-                  <!-- <V-PlaceloadAvatar size="medium" /> -->
+                <div class="d-flex">
+                  <div
+                    class="
+                      flex-column
+                      d-flex
+                      justify-content-center
+                      align-item-center
+                    "
+                  >
+                    <V-Avatar
+                      :picture="`${API_WEB_URL}storage/${item.photo}`"
+                      color="primary"
+                      :initials="initials(item.name, item.last_name)"
+                      size="medium"
+                    />
+                  </div>
                   <div>
-                    <span class="item-name dark-inverted">
-                      <h3>
+                    <div class="meta ml-2">
+                      <span>
                         <router-link
                           :to="{
                             name: 'members-profile',
@@ -201,83 +186,45 @@ watch(
                           }"
                           style="color: white"
                         >
-                          {{ item.id }}
                           {{ item.name }} {{ item.second_name }}
                           {{ item.last_name }}
                         </router-link>
-                      </h3>
-                    </span>
-                    <!-- <span class="item-meta">
-                      <span>{{ item.position }}</span>
-                    </span> -->
+                      </span>
+                    </div>
+
+                    <div class="p-3">
+                      <span
+                        ><p>{{ item.email }}</p></span
+                      >
+                      <span v-if="item.membership_members"
+                        ><p>
+                          {{ item.membership_members.membership.name }}
+                        </p></span
+                      >
+                      <span
+                        ><p>{{ item.phone }}</p></span
+                      >
+                      <span
+                        ><p>{{ item.barcode }}</p></span
+                      >
+                    </div>
                   </div>
                 </div>
-
-                <div class="flex-table-cell" data-th="member-id">
-                  <span class="light-text">{{ item.email }}</span>
-                </div>
-                <div class="flex-table-cell" data-th="Membership Type">
-                  <span v-if="item.membership_members" class="light-text">{{
-                    item.membership_members.membership.name
-                  }}</span>
-                </div>
-                <div class="flex-table-cell is-media is-grow" data-th="Trainer">
-                  <V-Avatar
-                    v-if="item.trainer != null"
-                    :picture="`${API_WEB_URL}storage/${item.trainer.photo}`"
-                    color="h-green"
-                    :initials="
-                      initials(item.trainer.name, item.trainer.last_name)
-                    "
-                    size="medium"
-                  />
-                  <span
-                    class="light-text dark-inverted ml-2"
-                    v-if="item.trainer != null"
-                  >
-                    {{ item.trainer.name }} {{ item.trainer.second_name }}
-                    {{ item.trainer.last_name }}</span
-                  >
-                </div>
-                <div class="flex-table-cell" data-th="Phone">
-                  <span class="light-text">{{ item.phone }}</span>
-                </div>
-                <div class="flex-table-cell cell-end" data-th="Status">
-                  <span
-                    class="tag is-rounded"
-                    :class="item.membership_members != null ? 'is-success' : ''"
-                    >{{
-                      item.membership_members != null ? 'Active' : 'Inactive'
-                    }}</span
-                  >
-                </div>
-                <!-- <div v-if="item.user" class="flex-table-cell">
-                  <p class="mr-3">{{ item.user.pm_type }}</p>
-                  <p>****{{ item.user.pm_last_four }}</p>
-                </div> -->
-                <!-- <div class="flex-table-cell" data-th="Relations">
-                  <V-AvatarStack
-                    :avatars="item.contacts"
-                    size="small"
-                    :limit="3"
-                    class="is-pushed-mobile"
-                  />
-                </div> -->
-                <div class="flex-table-cell cell-end" data-th="Actions">
-                  <VControl raw subcontrol>
-                    <VCheckbox
-                      v-model="membersSelected"
-                      :value="item.id"
-                      :is-label="false"
-                      color="primary"
-                    />
-                  </VControl>
+                <div class="flex-column d-flex">
                   <FlexTableDropdown :id-member="item.id" :member="item" />
                 </div>
               </div>
-            </transition-group>
+              <span
+                class="tag is-rounded py-0 d-flex align-items-center mt-3"
+                style="font-size: 10px"
+                :class="item.membership_members != null ? 'is-success' : ''"
+                >{{
+                  item.membership_members != null ? 'Active' : 'Inactive'
+                }}</span
+              >
+            </div>
           </div>
-        </div>
+        </transition-group>
 
         <!--Table Pagination-->
 
@@ -299,6 +246,8 @@ watch(
 
 <style lang="scss">
 @import '../../scss/abstracts/_variables.scss';
+@import '../../scss/abstracts/_mixins.scss';
+@import '../../scss/pages/lists/_tile-grid-v1.scss';
 
 .has-top-nav {
   .flex-list-wrapper,
