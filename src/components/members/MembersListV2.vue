@@ -146,7 +146,7 @@ watch(
           <div
             v-for="item in filteredData"
             :key="`${props.name}-${item.id}`"
-            class="column is-3"
+            class="column is-4"
           >
             <div
               @click="openMemberCard(true, item)"
@@ -175,51 +175,53 @@ watch(
                       :initials="initials(item.name, item.last_name)"
                       size="medium"
                     />
-
-                    <span
-                      class="tag is-rounded py-0 d-flex align-items-center mt-3"
-                      style="font-size: 10px"
-                      :class="
-                        item.membership_members != null ? 'is-success' : ''
-                      "
-                      >{{
-                        item.membership_members != null ? 'Active' : 'Inactive'
-                      }}</span
-                    >
                   </div>
+                  <div>
+                    <div class="meta ml-2">
+                      <span>
+                        <router-link
+                          :to="{
+                            name: 'members-profile',
+                            query: { id: item.id },
+                          }"
+                          style="color: white"
+                        >
+                          {{ item.name }} {{ item.second_name }}
+                          {{ item.last_name }}
+                        </router-link>
+                      </span>
+                    </div>
 
-                  <div class="meta ml-4">
-                    <span>
-                      <router-link
-                        :to="{
-                          name: 'members-profile',
-                          query: { id: item.id },
-                        }"
-                        style="color: white"
+                    <div class="p-3">
+                      <span
+                        ><p>{{ item.email }}</p></span
                       >
-                        {{ item.name }} {{ item.second_name }}
-                        {{ item.last_name }}
-                      </router-link>
-                    </span>
+                      <span v-if="item.membership_members"
+                        ><p>
+                          {{ item.membership_members.membership.name }}
+                        </p></span
+                      >
+                      <span
+                        ><p>{{ item.phone }}</p></span
+                      >
+                      <span
+                        ><p>{{ item.barcode }}</p></span
+                      >
+                    </div>
                   </div>
-
-                  <span
-                    ><p>{{ item.email }}</p></span
-                  >
-                  <span v-if="item.membership_members"
-                    ><p>{{ item.membership_members.membership.name }}</p></span
-                  >
-                  <span
-                    ><p>{{ item.phone }}</p></span
-                  >
-                  <span
-                    ><p>{{ item.barcode }}</p></span
-                  >
+                </div>
+                <div class="flex-column d-flex">
+                  <FlexTableDropdown :id-member="item.id" :member="item" />
                 </div>
               </div>
-              <div class="flex-column d-flex">
-                <FlexTableDropdown :id-member="item.id" :member="item" />
-              </div>
+              <span
+                class="tag is-rounded py-0 d-flex align-items-center mt-3"
+                style="font-size: 10px"
+                :class="item.membership_members != null ? 'is-success' : ''"
+                >{{
+                  item.membership_members != null ? 'Active' : 'Inactive'
+                }}</span
+              >
             </div>
           </div>
         </transition-group>
