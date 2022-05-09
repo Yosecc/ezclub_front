@@ -92,7 +92,7 @@ export const inputs = ref([
     name: 'description',
     placeholder: 'Membership Description',
     model: '',
-    class: 'is-6',
+    class: 'is-4',
     required: true,
   },
   {
@@ -117,7 +117,7 @@ export const inputs = ref([
   {
     typeInput: 'checkboxGroupSimpleEventInput',
     name: 'diciplines',
-    text: 'Diciplines',
+    text: 'Disciplines',
     model: [],
     values: [],
     class: 'is-12',
@@ -166,11 +166,12 @@ export const inputs = ref([
     model: '',
     class: 'is-4',
     required: true,
+    isLabel: true,
   },
   {
     typeInput: 'switchEventChangeInput',
     name: 'all_diciplines',
-    values: ['', 'All Diciplines'],
+    values: ['', 'All Dsiciplines'],
     model: false,
     default: false,
     required: false,
@@ -198,6 +199,7 @@ export const inputs = ref([
     values: [],
     class: 'is-12 d-flex',
     required: true,
+    isLabel: true,
   },
   {
     typeInput: 'number',
@@ -205,6 +207,7 @@ export const inputs = ref([
     placeholder: 'Discount % LEO / VET / FR',
     model: '',
     required: true,
+    isLabel: true,
     class: 'is-2',
   },
   {
@@ -213,6 +216,7 @@ export const inputs = ref([
     placeholder: 'Late fee',
     model: '',
     required: false,
+    isLabel: true,
     class: 'is-2',
   },
   {
@@ -221,6 +225,7 @@ export const inputs = ref([
     placeholder: 'Days late fee',
     model: 6,
     required: false,
+    isLabel: true,
     class: 'is-2',
   },
 
@@ -232,6 +237,7 @@ export const inputs = ref([
     values: [],
     class: 'is-3',
     required: true,
+    isLabel: true,
     filterOptionText: function (option) {
       if (option.type == 'percentaje') {
         return `${option.name} | ${option.value}%`
@@ -247,6 +253,7 @@ export const inputs = ref([
     model: '',
     class: 'is-3',
     required: true,
+    isLabel: true,
   },
   // {
   //   typeInput: 'checkboxGroupSimple',
@@ -267,5 +274,6 @@ export const inputs = ref([
     model: '',
     class: 'is-12',
     required: false,
+    isLabel: true,
   },
 ])

@@ -61,6 +61,7 @@ export const inputsInformation = ref([
     placeholder: 'First Name',
     model: '',
     required: true,
+    isLabel: true,
     class: 'is-4',
   },
   {
@@ -69,6 +70,7 @@ export const inputsInformation = ref([
     placeholder: 'Middle Name',
     model: '',
     required: false,
+    isLabel: true,
     class: 'is-4',
   },
   {
@@ -77,6 +79,7 @@ export const inputsInformation = ref([
     placeholder: 'Last Name',
     model: '',
     required: true,
+    isLabel: true,
     class: 'is-4',
   },
   {
@@ -84,6 +87,7 @@ export const inputsInformation = ref([
     name: 'company_name_staff',
     placeholder: 'Company Name',
     model: '',
+    isLabel: true,
     class: 'is-6',
   },
   {
@@ -91,6 +95,7 @@ export const inputsInformation = ref([
     name: 'ein',
     placeholder: 'Company EIN #',
     model: '',
+    isLabel: true,
     class: 'is-6',
   },
   {
@@ -99,6 +104,7 @@ export const inputsInformation = ref([
     placeholder: 'Date of Birth',
     model: '',
     required: false,
+    isLabel: true,
     class: 'is-3',
   },
   {
@@ -108,6 +114,7 @@ export const inputsInformation = ref([
     values: ['Male', 'Female', 'Binario'],
     model: '',
     required: true,
+    isLabel: true,
     class: 'is-3',
   },
   {
@@ -115,6 +122,7 @@ export const inputsInformation = ref([
     name: 'var_code',
     placeholder: 'Staff ID Card',
     model: '',
+    isLabel: true,
     class: 'is-6',
   },
   {
@@ -132,6 +140,7 @@ export const inputsInformation = ref([
     ],
     model: '',
     class: 'is-4',
+    isLabel: true,
   },
   {
     typeInput: 'text',
@@ -140,6 +149,7 @@ export const inputsInformation = ref([
     model: '',
     required: false,
     class: 'is-8',
+    isLabel: true,
   },
   {
     typeInput: 'text',
@@ -148,6 +158,7 @@ export const inputsInformation = ref([
     model: '',
     required: true,
     class: 'is-12',
+    isLabel: true,
   },
   {
     typeInput: 'selectData',
@@ -156,6 +167,7 @@ export const inputsInformation = ref([
     model: '',
     values: [''],
     class: 'is-3',
+    isLabel: true,
     filterOptionText: (option) => {
       return option.name
     },
@@ -167,6 +179,7 @@ export const inputsInformation = ref([
     model: '',
     values: [''],
     class: 'is-3',
+    isLabel: true,
     filterOptionText: (option) => {
       return option.name
     },
@@ -177,6 +190,7 @@ export const inputsInformation = ref([
     placeholder: 'Postal Code',
     model: '',
     class: 'is-3',
+    isLabel: true,
   },
   {
     typeInput: 'selectData',
@@ -185,6 +199,7 @@ export const inputsInformation = ref([
     model: '',
     values: [''],
     class: 'is-3',
+    isLabel: true,
     filterOptionText: (option) => {
       return option.name
     },
@@ -195,6 +210,7 @@ export const inputsInformation = ref([
     placeholder: 'Email',
     model: '',
     required: true,
+    isLabel: true,
     class: 'is-6',
   },
   {
@@ -203,6 +219,7 @@ export const inputsInformation = ref([
     placeholder: 'Phone Number',
     model: '',
     required: true,
+    isLabel: true,
     class: 'is-6',
   },
   // {
@@ -224,6 +241,7 @@ export const inputsInformation = ref([
     values: ['bi-weekly', 'monthly', 'weekly', 'yearly', 'hourly'],
     model: '',
     required: false,
+    isLabel: true,
     class: 'is-3',
   },
   // {
@@ -240,6 +258,7 @@ export const inputsInformation = ref([
     placeholder: 'Salary',
     model: '',
     required: false,
+    isLabel: true,
     class: 'is-4',
   },
   {
@@ -258,6 +277,7 @@ export const inputsInformation = ref([
     placeholder: 'Price Rent',
     model: '',
     required: false,
+    isLabel: true,
     class: 'is-4',
   },
 ])

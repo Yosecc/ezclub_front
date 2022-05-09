@@ -151,7 +151,7 @@ const searchCodeBar = () => {
               v-focus
               v-model="codeBar"
               class="input custom-text-filter"
-              placeholder="Codebar..."
+              placeholder="Barcode..."
               @keyup="searchCodeBar"
             />
           </V-Control>
