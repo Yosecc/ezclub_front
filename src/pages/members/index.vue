@@ -118,15 +118,10 @@ const reloadForm = () => {
         </V-Buttons>
       </div>
 
-      <div v-if="isLoading">
-        <VPlaceload height="30px" width="40%" class="mb-4 mx-auto" />
-        <VPlaceload
-          v-for="i in 10"
-          :key="i"
-          height="48px"
-          width="100%"
-          class="mb-2"
-        />
+      <div class="columns is-multiline" v-if="isLoading">
+        <div class="mb-2 column is-4" v-for="i in 12" :key="i">
+          <VPlaceload height="120px" />
+        </div>
       </div>
 
       <div v-else>
