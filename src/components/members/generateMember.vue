@@ -24,7 +24,11 @@ import {
 } from '/@src/models/Mixin.ts'
 saveMember
 
-import { saveMember, idMemberPrincipal } from '/@src/models/Members.ts'
+import {
+  saveMember,
+  idMemberPrincipal,
+  proccessMembership,
+} from '/@src/models/Members.ts'
 
 const emit = defineEmit([])
 
@@ -68,69 +72,23 @@ onMounted(() => {
 
 const save = () => {
   setLoading.value = true
-  // proccessMembership()
-  const fd = new FormData()
-  const memberObject = perpareDataInputs(props.member)
-
-  convertFormData(fd, memberObject)
-
-  for (var i = 0; i < props.contact.length; i++) {
-    var item = props.contact[i]
-    for (var prop in item) {
-      fd.append(`notifications[${i}][${prop}]`, item[prop])
-    }
-  }
-
-  let memberMembershipFD = perpareDataInputs(props.membresia)
-  for (var i in memberMembershipFD) {
-    if (i == 'diciplines') {
-      let ite = memberMembershipFD[i]
-      for (var e = 0; e < ite.length; ++e) {
-        fd.append('diciplines[]', ite[e])
-      }
-    } else {
-      fd.append(i, memberMembershipFD[i])
-    }
-  }
-
-  fd.append('total', props.total)
-  fd.append('payment_type_id', 3)
-
-  let categoriesMembersFD = perpareDataInputs(props.categoriesMembers, {
-    array: false,
+  idMember.value = null
+  idMemberMembership.value = null
+  proccessMembership({
+    member: props.member,
+    contact: props.contact,
+    membresia: props.membresia,
+    total: props.total,
+    categoriesMembers: props.categoriesMembers,
+    notasInput: props.notasInput,
+    presupuesto_id: props.presupuesto_id,
   })
-  for (var i in categoriesMembersFD) {
-    fd.append(i, categoriesMembersFD[i])
-  }
-
-  let notasInputFD = perpareDataInputs(props.notasInput)
-  for (var i in notasInputFD) {
-    fd.append(i, notasInputFD[i])
-  }
-
-  fd.append('presupuesto_id', props.presupuesto_id)
-
-  if (idMemberPrincipal.value) {
-    fd.append('id_principal', idMemberPrincipal.value)
-  }
-
-  saveMember(fd)
     .then((response) => {
       idMember.value = response.data.id
       idMemberMembership.value = response.data.membership_members_id
-      setLoading.value = false
-      if (soyPrincipal.value) {
-        idMemberPrincipal.value = idMember.value
-      }
     })
-    .catch((error) => {
-      setLoading.value = false
-      for (var i in error.response.data.errores) {
-        error.response.data.errores[i].forEach((e) => {
-          notyf.error(`${i}: ${e}`)
-        })
-      }
-    })
+    .catch((error) => {})
+  setLoading.value = false
 }
 
 const isMemberPayment = ref(false)

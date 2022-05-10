@@ -21,18 +21,13 @@ import {
 } from '/@src/models/Mixin.ts'
 
 import {
-  // member,
-  // idMember,
-  // idMemberMembership,
   inputsMembership,
-  // storeFirma,
-  // error,
   getPresupuesto,
   mismatarjeta,
   dataContact,
   categoriesMembers,
   notasInput,
-  // familiaresMembers
+  proccessMembership,
 } from '/@src/models/Members.ts'
 
 const emit = defineEmit(['changeStep', 'returnData'])
@@ -150,6 +145,58 @@ const presupuestoComputed = computed(() => {
     return 0
   })
 })
+
+const miembrosNuevos = ref([])
+
+const PaymentAllMembership = async () => {
+  const princial = presupuestoComputed.value.find(
+    (e) => getInput(e.member, 'is_family').model == 0
+  )
+
+  await proccessMembership({
+    member: princial.member,
+    membresia: princial.membresia,
+    contact: dataContact.value,
+    presupuesto_id: princial.presupuesto_id,
+    categoriesMembers: categoriesMembers.value,
+    notasInput: notasInput.value,
+    total: princial.totales.upfront.amount_total,
+  })
+    .then((response) => {
+      miembrosNuevos.value.push({
+        idMember: response.data.id,
+        idMemberMembership: response.data.membership_members_id,
+        principal: true,
+      })
+
+      presupuestoComputed.value.forEach((presupuesto) => {
+        if (getInput(presupuesto.member, 'is_family').model != 0) {
+          proccessMembership({
+            member: presupuesto.member,
+            membresia: presupuesto.membresia,
+            contact: dataContact.value,
+            presupuesto_id: presupuesto.presupuesto_id,
+            categoriesMembers: categoriesMembers.value,
+            notasInput: notasInput.value,
+            total: presupuesto.totales.upfront.amount_total,
+          }).then((response) => {
+            miembrosNuevos.value.push({
+              idMember: response.data.id,
+              idMemberMembership: response.data.membership_members_id,
+              principal: false,
+            })
+          })
+        }
+      })
+
+      console.log('ya cargo', miembrosNuevos.value)
+    })
+    .catch((error) => {
+      console.log('ya error', error)
+    })
+
+  // console.log('register',register)
+}
 </script>
 
 <template>
@@ -160,12 +207,24 @@ const presupuestoComputed = computed(() => {
     :step="5"
     @changeStep="change"
   >
-    <div class="d-flex justify-content-end align-items-center mb-4">
-      <!-- <inputsLayaut :inputs-step="mismatarjeta" /> -->
+    <!-- <div class="d-flex justify-content-end align-items-center mb-4">
+
       <VButton @click="PaymentAllMembership" color="primary"
         >Pay all memberships</VButton
       >
-    </div>
+
+      <div v-if="miembrosNuevos.length">
+        <stripeAddCard
+          :amount="props.total"
+          :id="miembrosNuevos[0].idMember"
+          :member_membership="miembrosNuevos[0].idMemberMembership"
+          :variosMiembros="true"
+          :miembros="miembrosNuevos"
+          @PaymentAction="PaymentAction"
+        />
+      </div>
+      
+    </div> -->
     <div v-if="presupuestos">
       <Presupuesto
         v-for="(presupuesto, key) in presupuestoComputed"

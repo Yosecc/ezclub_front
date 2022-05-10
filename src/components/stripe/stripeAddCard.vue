@@ -21,6 +21,14 @@ const props = defineProps({
     type: Number,
     default: 0,
   },
+  variosMiembros: {
+    type: Boolean,
+    default: false,
+  },
+  miembros: {
+    type: Array,
+    default: [],
+  },
 })
 
 const emit = defineEmit(['PaymentAction'])
@@ -28,7 +36,6 @@ const emit = defineEmit(['PaymentAction'])
 watch(
   () => props.id,
   (to) => {
-    console.log('cambio')
     isLoading.value = true
     initialize()
   }
@@ -63,8 +70,6 @@ const cardElement = ref(null)
 const setLoading = ref(false)
 const user_id = ref(null)
 const initialize = async () => {
-  // console.log('props.url', props.url)
-  // console.log('data.value', data.value)
   let response = await Api.post(props.url, data.value)
     .then((response) => {
       datasecret.value = response.data.clientSecret
@@ -87,7 +92,6 @@ const initialize = async () => {
           base: 'base_card',
         },
       })
-      // cardElement.value = elements.value.create('payment')
       cardElement.value.mount('#payment-element')
     })
     .catch((error) => {
@@ -106,14 +110,6 @@ const nameCard = ref(null)
 const handleSubmit = async (e) => {
   e.preventDefault()
   setLoading.value = true
-  //
-  // const { error, paymentMethod }  = await stripe.createPaymentMethod({
-  //   type: 'card',
-  //   card: cardElement.value,
-  //   billing_details: {
-  //     name: nameCard.value,
-  //   },
-  // })
 
   const { setupIntent, error } = await stripe.confirmCardSetup(
     datasecret.value,
@@ -128,16 +124,28 @@ const handleSubmit = async (e) => {
   if (!error) {
     const { payment_method } = setupIntent
 
-    const { data } = await Api.post('paymentStripe', {
-      payment_method,
-      amount: props.amount,
-      user_id: user_id.value,
-      membership_member_id: props.member_membership,
-    }).catch((e) => {
-      setLoading.value = false
-    })
+    if (props.variosMiembros) {
+      props.miembros.forEach((e) => {
+        Api.post('paymentStripe', {
+          payment_method,
+          user_id: e.idMember,
+          membership_member_id: e.idMemberMembership,
+        }).catch((e) => {
+          setLoading.value = false
+        })
+      })
+    } else {
+      const { data } = await Api.post('paymentStripe', {
+        payment_method,
+        amount: props.amount,
+        user_id: user_id.value,
+        membership_member_id: props.member_membership,
+      }).catch((e) => {
+        setLoading.value = false
+      })
+    }
 
-    if (data) {
+    if (data.value) {
       emit('PaymentAction', data)
       notyf.success('Success Payment')
     }
@@ -145,7 +153,7 @@ const handleSubmit = async (e) => {
     // console.log(data)
   } else {
     setLoading.value = false
-    console.log()
+
     notyf.error(error.message)
   }
 
