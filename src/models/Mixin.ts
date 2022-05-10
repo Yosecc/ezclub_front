@@ -187,9 +187,6 @@ export const setInputModelData = (inputs: any, name, data) => {
     if (!inputs.length) {
       console.error(`input no tiene array ${name}`)
     } else {
-      console.log('inputs', inputs)
-      console.log('name', name)
-      console.log('data', data)
       if (inputs.find((element) => element.name == name) != undefined) {
         return setModel(
           inputs.find((element) => element.name == name),
