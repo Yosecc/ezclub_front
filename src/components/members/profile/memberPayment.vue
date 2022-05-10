@@ -40,22 +40,22 @@ onMounted(() => {
 //  MEMBER //////////////////
 
 const infoMembership = computed(() => {
-  let data = getValueInput(membershipsData.value, 'memberships_id')
+  let data = getValueInput(membershipsData, 'memberships_id')
   return data != undefined ? data : []
 })
 
 const recurrence = computed(() => {
-  let data = getValueInput(membershipsData.value, 'recurrences_id')
+  let data = getValueInput(membershipsData, 'recurrences_id')
   return data != undefined ? data : []
 })
 
 const initiationFeeMember = computed(() => {
-  let data = viewInput(membershipsData.value, 'initiation_fee')
+  let data = viewInput(membershipsData, 'initiation_fee')
   return data != undefined ? data : []
 })
 
 const cuponMember = computed(() => {
-  let data = getInput(membershipsData.value, 'discount')
+  let data = getInput(membershipsData, 'discount')
   return data != undefined ? data : []
 })
 
@@ -88,7 +88,7 @@ const proratedMethod = (recurrence) => {
 }
 
 const objTax = (membership) => {
-  if (viewInput(membershipsData.value, 'memberships_id') != '') {
+  if (viewInput(membershipsData, 'memberships_id') != '') {
     if (!membership.value) {
       membership = membership
     } else {
@@ -121,7 +121,7 @@ const penalty = ref(null)
 const subtotalMemberMembership = computed(() => {
   let suma = 0
   suma += recurrence.value.amount
-  if (!viewInput(membershipsData.value, 'is_initiation_fee').length) {
+  if (!viewInput(membershipsData, 'is_initiation_fee').length) {
     suma += initiationFeeMember.value
   }
 

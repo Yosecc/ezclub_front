@@ -32,7 +32,7 @@ import { recurrences } from '/@src/models/Recurrences.ts'
 const props = defineProps({})
 
 onMounted(() => {
-  setInputsEvents(membershipsData.value)
+  setInputsEvents(membershipsData)
   disabledInputs()
 })
 
@@ -43,7 +43,7 @@ const clientSecret = ref(null)
 // const product = ref(null)
 const onSave = () => {
   isLoaderActive.value = true
-  const data = perpareDataInputs(membershipsData.value)
+  const data = perpareDataInputs(membershipsData)
   putMembership(data).then((response) => {
     if (response.data.cargo_automatico != 'none') {
       if (response.data.cargo_automatico == 'no_method') {
@@ -72,7 +72,7 @@ const presupuesto = ref(null)
 const isLoaderActive = ref(false)
 const onNew = () => {
   isLoaderActive.value = true
-  const data = perpareDataInputs(membershipsData.value)
+  const data = perpareDataInputs(membershipsData)
 
   // const generaPresupuesto = async ()=>{
 
@@ -116,7 +116,7 @@ const onNew = () => {
 }
 const mebershipMemberid = ref(null)
 const newMembership = () => {
-  const data = perpareDataInputs(membershipsData.value)
+  const data = perpareDataInputs(membershipsData)
   data.members_id = member.value.id
   isLoaderActive.value = true
   storeNewMembership(data)
@@ -142,11 +142,11 @@ const newMembership = () => {
 
 const disabledInputs = () => {
   if (memberMermship.value) {
-    getInput(membershipsData.value, 'is_initiation_fee').disabled = true
-    getInput(membershipsData.value, 'recurrences_id').disabled = true
-    getInput(membershipsData.value, 'amount').disabled = true
-    // getInput(membershipsData.value, 'recurrence').disabled = true
-    getInput(membershipsData.value, 'memberships_id').disabled = true
+    getInput(membershipsData, 'is_initiation_fee').disabled = true
+    getInput(membershipsData, 'recurrences_id').disabled = true
+    getInput(membershipsData, 'amount').disabled = true
+    // getInput(membershipsData, 'recurrence').disabled = true
+    getInput(membershipsData, 'memberships_id').disabled = true
   }
 }
 

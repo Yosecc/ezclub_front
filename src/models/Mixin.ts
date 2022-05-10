@@ -58,7 +58,7 @@ export const perpareDataInputs = (
   options = { anidados: false, array: true }
 ) => {
   const proccessDefault = (data) => {
-    // validateData(data, options.array)
+    validateData(data, options.array)
     const obj = {}
     if (data != null) {
       if (options.array) {
@@ -184,20 +184,31 @@ const setModel = (input, value) => {
 
 export const setInputModelData = (inputs: any, name, data) => {
   if (inputs.value == undefined) {
-    if (inputs.find((element) => element.name == name) != undefined) {
-      return setModel(
-        inputs.find((element) => element.name == name),
-        data
-      )
+    if (!inputs.length) {
+      console.error(`input no tiene array ${name}`)
     } else {
-      console.warn(`no se agrego el valor de ${name}`)
+      console.log('inputs', inputs)
+      console.log('name', name)
+      console.log('data', data)
+      if (inputs.find((element) => element.name == name) != undefined) {
+        return setModel(
+          inputs.find((element) => element.name == name),
+          data
+        )
+      } else {
+        console.warn(`no se agrego el valor de ${name}`)
+      }
     }
   }
   if (inputs.value.find((element) => element.name == name) != undefined) {
-    return setModel(
-      inputs.value.find((element) => element.name == name),
-      data
-    )
+    if (!inputs.value.length) {
+      console.error(`input no tiene array ${name}`)
+    } else {
+      return setModel(
+        inputs.value.find((element) => element.name == name),
+        data
+      )
+    }
   } else {
     console.warn(`no se agrego el valor de ${name}`)
   }

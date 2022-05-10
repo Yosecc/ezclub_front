@@ -146,7 +146,6 @@ const mountMember = async () => {
           subMensaje.value =
             'Does not have a membership go to the Membership/Contract section and create a new membership and press New Membership'
           console.error('no posee una membresia :(')
-          // return
         }
         for (var e in response.data[i]) {
           if (e == 'memberships_location') {
@@ -154,7 +153,7 @@ const mountMember = async () => {
               console.error('no posee una locacion :(')
               return
             }
-            getInput(membershipsData.value, 'locations_id').model =
+            getInput(membershipsData, 'locations_id').model =
               response.data[i][e].companies_locations_id
 
             getLocationsDiciplines([
@@ -173,7 +172,7 @@ const mountMember = async () => {
               recurrencesData.push(recurrencesD)
             })
 
-            getInput(membershipsData.value, 'recurrences_id').model =
+            getInput(membershipsData, 'recurrences_id').model =
               response.data[i].recurrences_id
 
             if (
@@ -185,34 +184,35 @@ const mountMember = async () => {
               return
             }
 
-            getInput(membershipsData.value, 'amount').model =
-              recurrencesData.find(
-                (e) => e.id == response.data[i].recurrences_id
-              ).amount
+            getInput(membershipsData, 'amount').model = recurrencesData.find(
+              (e) => e.id == response.data[i].recurrences_id
+            ).amount
           } else if (e == 'is_recurrence') {
-            getInput(membershipsData.value, 'recurrence').model =
+            getInput(membershipsData, 'recurrence').model =
               response.data[i][e] == 1 ? true : false
           } else if (e == 'diciplines') {
-            getInput(membershipsData.value, 'diciplines').model = []
+            getInput(membershipsData, 'diciplines').model = []
             response.data[i][e].forEach((element) => {
-              getInput(membershipsData.value, 'diciplines').model.push(
+              getInput(membershipsData, 'diciplines').model.push(
                 element.diciplines_id
               )
             })
           } else if (e == 'membership') {
-            getInput(membershipsData.value, 'initiation_fee').model =
+            getInput(membershipsData, 'initiation_fee').model =
               response.data[i][e].initiation_fee
           } else if (e == 'is_initiation_fee') {
-            getInput(membershipsData.value, 'is_initiation_fee').model =
+            getInput(membershipsData, 'is_initiation_fee').model =
               response.data[i][e] == 0 ? [e] : []
           } else if (e == 'discount') {
-            getInput(membershipsData.value, 'discount').disabled = true
+            getInput(membershipsData, 'discount').disabled = true
             if (response.data[i][e] != null) {
               getInput(membershipsData.value, 'discount').model =
                 response.data[i][e].id
             }
           } else {
-            setInputModelData(membershipsData, e, response.data[i][e])
+            if (getInput(membershipsData, e) != undefined) {
+              setInputModelData(membershipsData, e, response.data[i][e])
+            }
           }
         }
       } else if (i == 'staff_id') {
