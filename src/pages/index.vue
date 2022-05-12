@@ -110,7 +110,7 @@ watch(
   <SidebarLayout>
     <!-- Content Wrapper -->
     <div class="page-content-inner">
-      <div class="d-flex mb-5">
+      <div class="d-flex mb-5 justify-content-between">
         <V-Field addons>
           <V-Control>
             <V-Button
@@ -149,16 +149,7 @@ watch(
             </V-Button>
           </V-Control>
         </V-Field>
-        <V-Field class="is-6 column mt-0 pt-0">
-          <V-Control icon="feather:search">
-            <input
-              v-model="filters"
-              class="input custom-text-filter"
-              placeholder="Search..."
-              @keyup="filtersSearch"
-            />
-          </V-Control>
-        </V-Field>
+
         <V-Field class="">
           <V-Control icon="feather:search">
             <audio style="display: none" id="audioFail" controls>
@@ -258,6 +249,7 @@ watch(
           :pagination-data="paginationData"
           :filters="filters"
           :filter-change="filterChange"
+          name="checkin"
         />
       </div>
     </div>

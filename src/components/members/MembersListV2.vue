@@ -3,6 +3,7 @@ import { computed, ref, onMounted, watch, defineProps, defineEmit } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { API_WEB_URL } from '/@src/services'
 import { membersSelected } from '/@src/models/Members.ts'
+import moment from 'moment'
 const emit = defineEmit(['filterChange', 'onSearch'])
 
 const route = useRoute()
@@ -98,6 +99,21 @@ const colorCard = (member) => {
   }
 }
 
+const users = [
+  {
+    id: 0,
+    picture: '/demo/avatars/7.jpg',
+    initials: 'AC',
+    color: 'info',
+  },
+  {
+    id: 1,
+    picture: null,
+    initials: 'JP',
+    color: 'info',
+  },
+]
+
 const All = ref([])
 
 watch(
@@ -150,6 +166,7 @@ watch(
           >
             <div
               @click="openMemberCard(true, item)"
+              style="background: black"
               class="tile-grid-item"
               :class="item.isSolvente ? '' : 'bg-danger'"
             >
@@ -193,35 +210,49 @@ watch(
                     </div>
 
                     <div class="p-3">
-                      <span
-                        ><p>{{ item.email }}</p></span
-                      >
-                      <span v-if="item.membership_members"
-                        ><p>
-                          {{ item.membership_members.membership.name }}
-                        </p></span
-                      >
-                      <span
-                        ><p>{{ item.phone }}</p></span
-                      >
-                      <span
-                        ><p>{{ item.barcode }}</p></span
-                      >
+                      <span v-if="item.membership_members">
+                        <p>{{ item.membership_members.membership.name }}</p>
+                      </span>
+                      <span v-if="props.name == 'checkin'">
+                        <p style="font-color: grey">
+                          Check In:
+                          {{ moment(item.timecheckin).format('HH:MM:SS') }}
+                        </p>
+                      </span>
                     </div>
                   </div>
                 </div>
+
                 <div class="flex-column d-flex">
                   <FlexTableDropdown :id-member="item.id" :member="item" />
                 </div>
               </div>
-              <span
-                class="tag is-rounded py-0 d-flex align-items-center mt-3"
-                style="font-size: 10px"
-                :class="item.membership_members != null ? 'is-success' : ''"
-                >{{
-                  item.membership_members != null ? 'Active' : 'Inactive'
-                }}</span
-              >
+              <div class="d-flex justify-content-between">
+                <span
+                  class="tag is-rounded py-0 d-flex align-items-center mt-3"
+                  style="font-size: 10px"
+                  :class="item.membership_members != null ? 'is-success' : ''"
+                >
+                  {{ item.membership_members != null ? 'Active' : 'Inactive' }}
+                </span>
+
+                <span
+                  ><VAvatarStack
+                    v-if="item.trainer"
+                    :avatars="[
+                      {
+                        id: item.trainer.id,
+                        picture: `${API_WEB_URL}storage/${item.trainer.photo}`,
+                        initials: initials(
+                          item.trainer.name,
+                          item.trainer.last_name
+                        ),
+                        color: 'info',
+                      },
+                    ]"
+                    size="small"
+                /></span>
+              </div>
             </div>
           </div>
         </transition-group>

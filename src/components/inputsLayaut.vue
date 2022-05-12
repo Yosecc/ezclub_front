@@ -197,6 +197,7 @@ const takePhoto = (event) => {
         <V-Control :has-error="input.hasError ?? false">
           <input
             v-model="input.model"
+            :pattern="input.typeInput == 'date' ? '\d{4}-\d{2}-\d{2}' : ''"
             :name="input.name"
             :type="input.typeInput"
             class="input"
