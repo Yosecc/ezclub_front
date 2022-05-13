@@ -166,7 +166,6 @@ watch(
           >
             <div
               @click="openMemberCard(true, item)"
-              style="background: black"
               class="tile-grid-item"
               :class="item.isSolvente ? '' : 'bg-danger'"
             >
