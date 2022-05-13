@@ -1258,8 +1258,11 @@ const change_memberships_id = function (inputsStep: any) {
   })
 
   getMembershipDiciplines(this.model).then((response) => {
-    setInputValuesData(inputsStep, 'diciplines', response.data)
-    getInput(inputsStep, 'diciplines').values.push({ id: 0, name: 'All' })
+    if (response.data.length) {
+      setInputValuesData(inputsStep, 'diciplines', response.data)
+      getInput(inputsStep, 'diciplines').values.push({ id: 0, name: 'All' })
+    }
+
     const numeroDiciplinas = this.values.find(
       (e: any) => e.id == this.model
     ).diciplines_number
