@@ -393,7 +393,7 @@ const familyData = ref([
     model: '',
     class: 'is-6',
     isLabel: true,
-    required: false,
+    required: true,
     category: ['Adult', 'Minor'],
   },
   {
@@ -424,7 +424,7 @@ const familyData = ref([
     typeInputDefault: 'select',
     name: 'gender',
     placeholder: 'Gender',
-    values: ['Male', 'Female', 'Binario'],
+    values: ['Male', 'Female'],
     model: '',
     class: 'is-6',
     isLabel: true,
@@ -439,7 +439,7 @@ const familyData = ref([
     model: '',
     class: 'is-4',
     isLabel: true,
-    required: false,
+    required: true,
     category: ['Adult', 'Minor'],
   },
   {
@@ -461,7 +461,7 @@ const familyData = ref([
     model: '',
     class: 'is-4',
     isLabel: true,
-    required: false,
+    required: true,
     category: ['Adult', 'Minor'],
   },
   {
@@ -514,7 +514,7 @@ const familyData = ref([
     model: '',
     class: 'is-12',
     isLabel: true,
-    required: false,
+    required: true,
     category: ['Adult'],
   },
   {
@@ -526,7 +526,8 @@ const familyData = ref([
     values: [''],
     class: 'is-3',
     isLabel: true,
-    category: ['Adult'],
+    required: true,
+    categories: ['Adult'],
     typeMember: ['Individual', 'Company'],
   },
   {
@@ -538,7 +539,8 @@ const familyData = ref([
     values: [''],
     class: 'is-3',
     isLabel: true,
-    category: ['Adult'],
+    required: true,
+    categories: ['Adult'],
     typeMember: ['Individual', 'Company'],
   },
   {
@@ -549,7 +551,8 @@ const familyData = ref([
     model: '',
     class: 'is-3',
     isLabel: true,
-    category: ['Adult'],
+    required: true,
+    categories: ['Adult'],
     typeMember: ['Individual', 'Company'],
   },
   {
@@ -561,7 +564,8 @@ const familyData = ref([
     values: [''],
     class: 'is-3',
     isLabel: true,
-    category: ['Adult'],
+    required: true,
+    categories: ['Adult'],
     typeMember: ['Individual', 'Company'],
   },
 
@@ -573,7 +577,7 @@ const familyData = ref([
     model: '',
     class: 'is-6',
     isLabel: true,
-    required: false,
+    required: true,
     category: ['Adult'],
   },
   {
@@ -584,7 +588,7 @@ const familyData = ref([
     model: '',
     class: 'is-6',
     isLabel: true,
-    required: false,
+    required: true,
     category: ['Adult'],
   },
   {

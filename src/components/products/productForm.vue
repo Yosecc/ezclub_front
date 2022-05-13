@@ -146,6 +146,7 @@ const onSave = () => {
             <div class="d-flex justify-content-center">
               <div class="text-center">
                 <VAvatar :picture="image" class="mb-4" size="xl" />
+
                 <inputsLayaut :inputs-step="input_image" />
               </div>
             </div>
