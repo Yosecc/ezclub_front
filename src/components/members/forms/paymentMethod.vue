@@ -155,8 +155,6 @@ const PaymentAllMembership = async () => {
     .catch((error) => {
       console.log('ya error', error)
     })
-
-  // console.log('register',register)
 }
 
 const reloa = () => {

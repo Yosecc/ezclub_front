@@ -808,7 +808,7 @@ export const membershipsData = reactive([
     model: '',
     disabled: false,
     required: false,
-    class: 'is-6',
+    class: 'is-12',
   },
 ])
 
@@ -1503,8 +1503,12 @@ export const generaPresupuesto = async (membresia: any, member: any) => {
     ...Objectforthebudget(membresia),
   }
 
-  data.email = getInput(member, 'email').model
-  data.leo_vet_fr = getInput(member, 'leo_vet_fr').model
+  data.email = getInput(member, 'email')
+    ? getInput(member, 'email').model
+    : null
+  data.leo_vet_fr = getInput(member, 'leo_vet_fr')
+    ? getInput(member, 'leo_vet_fr').model
+    : null
 
   getPresupuesto(data)
     .then((response) => {

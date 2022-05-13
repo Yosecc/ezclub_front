@@ -93,7 +93,7 @@ const steps = ref([
   {
     step: 2,
     text: 'Add Family Member',
-    categories: ['Adult', 'Prospect'],
+    categories: ['Adult'],
   },
   {
     step: 2,
@@ -101,11 +101,15 @@ const steps = ref([
     categories: ['Minor'],
   },
   {
+    step: 2,
+    text: 'Contact Preference',
+    categories: ['Prospect'],
+  },
+  {
     step: 3,
     text: 'Contact Preference',
-    categories: ['Adult', 'Minor', 'Prospect'],
+    categories: ['Adult', 'Minor'],
   },
-
   {
     step: 4,
     text: 'Select membership',
@@ -116,11 +120,11 @@ const steps = ref([
     text: 'Add Payment Method',
     categories: ['Adult', 'Minor', 'Prospect'],
   },
-  {
-    step: 6,
-    text: 'Sign Contract & Waiver',
-    categories: ['Adult', 'Minor', 'Prospect'],
-  },
+  // {
+  //   step: 6,
+  //   text: 'Sign Contract & Waiver',
+  //   categories: ['Adult', 'Minor', 'Prospect'],
+  // },
 ])
 
 const inputsInputsInformationStep = computed(() => {
@@ -251,11 +255,7 @@ const limpiarCampos = () => {
         />
         <!-- familyMembers -->
         <familyMembers
-          v-show="
-            stepActive == 2 &&
-            (categoriesMembers.model == 'Adult' ||
-              categoriesMembers.model == 'Prospect')
-          "
+          v-show="stepActive == 2 && categoriesMembers.model == 'Adult'"
           type="create"
           :title="step.text"
           :inputs="inputsFamily"
@@ -264,7 +264,10 @@ const limpiarCampos = () => {
         />
         <!-- contactPreference -->
         <contactPreference
-          v-show="stepActive == 3"
+          v-show="
+            stepActive == 3 ||
+            (stepActive == 2 && categoriesMembers.model == 'Prospect')
+          "
           type="create"
           :title="step.text"
           :inputs="inputsContact"
