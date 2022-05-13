@@ -23,7 +23,7 @@ import {
   storeFirma,
 } from '/@src/models/Members.ts'
 
-const emit = defineEmit([])
+const emit = defineEmit(['PaymentAction'])
 
 const props = defineProps({
   member: {
@@ -85,8 +85,9 @@ const save = () => {
 }
 
 const isMemberPayment = ref(false)
-const PaymentAction = (data) => {
+const PaymentAction = (idMember) => {
   isMemberPayment.value = true
+  emit('PaymentAction', idMember)
 }
 
 const soyPrincipal = computed(() => {
@@ -158,7 +159,7 @@ const onSign = (base64) => {
       :amount="props.total"
       :id="idMember"
       :member_membership="idMemberMembership"
-      @PaymentAction="PaymentAction"
+      @PaymentAction="PaymentAction(idMember)"
     />
 
     <VCard color="success" class="my-6" v-if="isMemberPayment">

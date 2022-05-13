@@ -527,7 +527,7 @@ const familyData = ref([
     class: 'is-3',
     isLabel: true,
     required: true,
-    categories: ['Adult'],
+    category: ['Adult'],
     typeMember: ['Individual', 'Company'],
   },
   {
@@ -540,7 +540,7 @@ const familyData = ref([
     class: 'is-3',
     isLabel: true,
     required: true,
-    categories: ['Adult'],
+    category: ['Adult'],
     typeMember: ['Individual', 'Company'],
   },
   {
@@ -552,7 +552,7 @@ const familyData = ref([
     class: 'is-3',
     isLabel: true,
     required: true,
-    categories: ['Adult'],
+    category: ['Adult'],
     typeMember: ['Individual', 'Company'],
   },
   {
@@ -565,7 +565,7 @@ const familyData = ref([
     class: 'is-3',
     isLabel: true,
     required: true,
-    categories: ['Adult'],
+    category: ['Adult'],
     typeMember: ['Individual', 'Company'],
   },
 
@@ -623,7 +623,7 @@ const familyData = ref([
     model: 1,
     class: 'is-6',
     isLabel: true,
-    category: ['Adult', 'Minor', 'Prospect'],
+    category: ['Adult', 'Minor'],
     typeMember: ['Individual', 'Company'],
   },
   {
@@ -634,7 +634,7 @@ const familyData = ref([
     model: 0,
     class: 'is-6',
     isLabel: true,
-    category: ['Adult', 'Minor', 'Prospect'],
+    category: ['Adult', 'Minor'],
     typeMember: ['Individual', 'Company'],
   },
 ])
@@ -1491,9 +1491,17 @@ const Objectforthebudget = (inputs: any) => {
 }
 
 export const generaPresupuesto = async (membresia: any, member: any) => {
+  if (getInput(member, 'email').model == '') {
+    notyf.error('Email is required')
+    return
+  }
+
   const data = {
     ...Objectforthebudget(membresia),
   }
+
+  data.email = getInput(member, 'email').model
+  data.leo_vet_fr = getInput(member, 'leo_vet_fr').model
 
   getPresupuesto(data)
     .then((response) => {
@@ -1505,9 +1513,13 @@ export const generaPresupuesto = async (membresia: any, member: any) => {
     })
     .catch((error) => {
       for (const e in error.response.data) {
-        error.response.data[e].forEach((i) => {
-          notyf.error(`${e}: ${i}`)
-        })
+        if (typeof error.response.data[e] == 'string') {
+          // notyf.error(`${error.response.data[e]}`)
+        } else {
+          error.response.data[e].forEach((i) => {
+            notyf.error(`${e}: ${i}`)
+          })
+        }
       }
     })
 }

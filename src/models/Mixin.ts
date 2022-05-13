@@ -58,7 +58,7 @@ export const perpareDataInputs = (
   options = { anidados: false, array: true }
 ) => {
   const proccessDefault = (data) => {
-    validateData(data, options.array)
+    // validateData(data, options.array)
     const obj = {}
     if (data != null) {
       if (options.array) {
@@ -215,18 +215,10 @@ export const setInputModelData = (inputs: any, name, data) => {
 }
 
 export const moneda = (value) => {
-  value = new Intl.NumberFormat().format(value)
-  value = parseFloat(value).toFixed(2)
-  value += ''
-  const x = value.split('.')
-  let x1 = x[0]
-  const x2 = x.length > 1 ? '.' + x[1] : ''
-  const rgx = /(\d+)(\d{3})/
-  while (rgx.test(x1)) {
-    x1 = x1.replace(rgx, '$1' + '.' + '$2')
-  }
-
-  return '$' + x1 + x2
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+  }).format(value)
 }
 
 export const monedaDecimal = (value) => {

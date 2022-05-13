@@ -8,17 +8,7 @@ import {
   watch,
   onMounted,
 } from 'vue'
-import {
-  viewInput,
-  // setInputValuesData,
-  // setInputModelData,
-  // moneda,
-  // calcularMeses,
-  // getValueInput,
-  getInput,
-  notyf,
-  // monedaDecimal,
-} from '/@src/models/Mixin.ts'
+import { viewInput, getInput, notyf } from '/@src/models/Mixin.ts'
 
 import {
   inputsMembership,
@@ -172,6 +162,12 @@ const PaymentAllMembership = async () => {
 const reloa = () => {
   window.location.reload()
 }
+
+const membersPagados = ref([])
+
+const PaymentAction = (idMember) => {
+  membersPagados.value.push(idMember)
+}
 </script>
 
 <template>
@@ -200,6 +196,8 @@ const reloa = () => {
       </div>
       
     </div> -->
+
+    <VPlaceload height="300px" class="mb-4" v-if="!presupuestos.length" />
     <div v-if="presupuestos">
       <Presupuesto
         v-for="(presupuesto, key) in presupuestoComputed"
@@ -216,13 +214,33 @@ const reloa = () => {
             :categories-members="categoriesMembers"
             :notas-input="notasInput"
             :total="presupuesto.totales.upfront.amount_total"
+            @PaymentAction="PaymentAction"
           />
         </div>
       </Presupuesto>
     </div>
+
     <div class="d-flex justify-content-between w-100">
-      <VButton color="danger" :to="{ name: 'index' }"> Finish </VButton>
-      <VButton color="success" @click="reloa">
+      <VButton
+        v-if="
+          presupuestoComputed.length > 0 &&
+          membersPagados.length == presupuestoComputed.length
+        "
+        color="danger"
+        :to="{ name: 'index' }"
+      >
+        Finish
+      </VButton>
+      <VButton v-else color="danger" :to="{ name: 'index' }"> Cancel </VButton>
+
+      <VButton
+        v-if="
+          presupuestoComputed.length > 0 &&
+          membersPagados.length == presupuestoComputed.length
+        "
+        color="success"
+        @click="reloa"
+      >
         Register another member
       </VButton>
     </div>
