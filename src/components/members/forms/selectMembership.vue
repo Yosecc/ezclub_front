@@ -29,6 +29,7 @@ import {
   inputsMembership,
   setInputsEvents,
   memberMembership,
+  categorieActive,
 } from '/@src/models/Members.ts'
 
 import { memberships } from '/@src/models/Memberships.ts'
@@ -139,10 +140,16 @@ const arregloDatos = (member, membresiaInputs, id) => {
     membresia: null,
   }
 
+  if (categorieActive.value == 'Prospect') {
+    getInput(membresiaInputs, 'recurrence').model = false
+  } else {
+    getInput(membresiaInputs, 'recurrence').model = true
+  }
+
   arregloMembresias.member = member
   arregloMembresias.membresia = membresiaInputs
 
-  setInputsEvents(arregloMembresias.membresia)
+  setInputsEvents(arregloMembresias.membresia, arregloMembresias.member)
 
   return arregloMembresias
 }

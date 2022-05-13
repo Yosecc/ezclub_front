@@ -92,16 +92,25 @@ const takePhoto = (event) => {
       <V-Field
         v-else-if="input.typeInput == 'switch'"
         :data-class="input.class"
+        class="field"
         grouped
       >
-        <V-Control :has-error="input.hasError ?? false">
-          <V-SwitchSegment
-            v-model="input.model"
-            :label-true="input.values[1]"
-            :label-false="input.values[0]"
-            color="primary"
-          />
-        </V-Control>
+        <div class="d-flex flex-column">
+          <label class="label" v-if="input.isLabel" :for="input.name">
+            <p class="m-0 text-left">
+              {{ input.label ? input.label : input.placeholder }}
+              <span v-if="input.required" style="color: red">*</span>
+            </p>
+          </label>
+          <V-Control :has-error="input.hasError ?? false">
+            <V-SwitchSegment
+              v-model="input.model"
+              :label-true="input.values[1]"
+              :label-false="input.values[0]"
+              color="primary"
+            />
+          </V-Control>
+        </div>
       </V-Field>
       <!-- switchEventChange -->
       <V-Field
@@ -448,12 +457,17 @@ const takePhoto = (event) => {
       >
         <p class="title is-6" v-if="input.text">{{ input.text }}</p>
         <div
-          class="d-flex flex-wrap input-checkbox-checkboxGroupSimple"
-          :class="input.hasError ? 'has-error' : ''"
+          class="input-checkbox-checkboxGroupSimple"
+          :class="[
+            input.hasError ? 'has-error' : '',
+            input.checkboxColumns ? 'columns is-multiline' : 'd-flex flex-wrap',
+          ]"
         >
           <V-Control
             v-for="(check, keyG) in input.values"
             :key="`check-${keyG}78`"
+            class="column is-3"
+            :class="input.checkboxColumns ? input.checkboxColumns : ''"
           >
             <V-Checkbox
               v-model="input.model"

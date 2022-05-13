@@ -28,7 +28,7 @@ export const dataInformationMember = ref(null)
 export const dataContact = ref(null)
 export const memberMembership = ref(null)
 export const idMemberPrincipal = ref(null)
-
+export const presupuestos = ref([])
 export const categoriesMembers = ref({
   name: 'category',
   values: ['Adult', 'Minor', 'Prospect'],
@@ -36,7 +36,7 @@ export const categoriesMembers = ref({
   required: true,
 })
 
-const categorieActive = computed(() => {
+export const categorieActive = computed(() => {
   return categoriesMembers.value.model
 })
 
@@ -51,6 +51,7 @@ export const mismatarjeta = ref([
     isLabel: true,
   },
 ])
+
 export const inputsInformation = ref([
   {
     typeInput: 'switchEventChange',
@@ -305,10 +306,11 @@ export const inputsInformation = ref([
     typeMember: ['Individual', 'Company'],
   },
   {
-    typeInput: 'checkbox',
+    typeInput: 'switch',
     name: 'leo_vet_fr',
-    placeholder: 'LEO / VET / FR',
-    model: [],
+    values: ['', 'LEO / VET / FR'],
+    model: false,
+    default: false,
     required: false,
     class: 'is-6',
     isLabel: true,
@@ -340,7 +342,7 @@ export const inputsInformation = ref([
     typeInput: 'hidden',
     name: 'principal_family',
     placeholder: 'LEO / VET / FR ID#',
-    model: 0,
+    model: 1,
     class: 'is-6',
     isLabel: true,
     categories: ['Adult', 'Minor', 'Prospect'],
@@ -350,7 +352,8 @@ export const inputsInformation = ref([
 
 const familyData = ref([
   {
-    typeInput: 'switchEventChange',
+    typeInput: 'switchEventChangeInput',
+    typeInputDefault: 'switchEventChangeInput',
     name: 'category',
     values: ['Adult', 'Minor'],
     class: 'is-6',
@@ -360,6 +363,7 @@ const familyData = ref([
   },
   {
     typeInput: 'file',
+    typeInputDefault: 'file',
     name: 'photo',
     placeholder: 'Member Picture',
     class: 'is-6 d-flex justify-content-end',
@@ -372,6 +376,7 @@ const familyData = ref([
   },
   {
     typeInput: 'select',
+    typeInputDefault: 'select',
     name: 'relationships',
     placeholder: 'Relationship',
     values: [
@@ -393,6 +398,7 @@ const familyData = ref([
   },
   {
     typeInput: 'text',
+    typeInputDefault: 'text',
     name: 'bar_code',
     placeholder: 'Client ID Card',
     model: '',
@@ -403,6 +409,7 @@ const familyData = ref([
   },
   {
     typeInput: 'date',
+    typeInputDefault: 'date',
     name: 'date_birth',
     placeholder: 'Date of Birth',
     model: '',
@@ -414,6 +421,7 @@ const familyData = ref([
   },
   {
     typeInput: 'select',
+    typeInputDefault: 'select',
     name: 'gender',
     placeholder: 'Gender',
     values: ['Male', 'Female', 'Binario'],
@@ -425,6 +433,7 @@ const familyData = ref([
   },
   {
     typeInput: 'text',
+    typeInputDefault: 'text',
     name: 'name',
     placeholder: 'First Name',
     model: '',
@@ -435,6 +444,7 @@ const familyData = ref([
   },
   {
     typeInput: 'text',
+    typeInputDefault: 'text',
     name: 'second_name',
     placeholder: 'Middle Name',
     model: '',
@@ -445,6 +455,7 @@ const familyData = ref([
   },
   {
     typeInput: 'text',
+    typeInputDefault: 'text',
     name: 'last_name',
     placeholder: 'Last Name',
     model: '',
@@ -455,6 +466,7 @@ const familyData = ref([
   },
   {
     typeInput: 'select',
+    typeInputDefault: 'select',
     name: 'goverment_id',
     placeholder: 'Goverment ID Type',
     values: [
@@ -474,6 +486,7 @@ const familyData = ref([
   },
   {
     typeInput: 'number',
+    typeInputDefault: 'number',
     name: 'personal_identifications',
     placeholder: 'ID #',
     model: '',
@@ -484,69 +497,77 @@ const familyData = ref([
   },
   {
     typeInput: 'switchEventChangeInput',
+    typeInputDefault: 'switchEventChangeInput',
     name: 'misma_direccion',
     values: ['', 'Use the same address as the parent member'],
     model: false,
     required: false,
     class: 'is-12',
     isLabel: true,
+    category: ['Adult'],
   },
   {
     typeInput: 'text',
+    typeInputDefault: 'text',
     name: 'address',
     placeholder: 'Address',
     model: '',
     class: 'is-12',
     isLabel: true,
     required: false,
-    category: ['Adult', 'Prospect'],
+    category: ['Adult'],
   },
   {
     typeInput: 'selectData',
+    typeInputDefault: 'selectData',
     name: 'city_id',
     placeholder: 'City',
     model: '',
     values: [''],
     class: 'is-3',
     isLabel: true,
-    categories: ['Adult', 'Prospect'],
+    category: ['Adult'],
     typeMember: ['Individual', 'Company'],
   },
   {
     typeInput: 'selectData',
+    typeInputDefault: 'selectData',
     name: 'state_id',
     placeholder: 'State',
     model: '',
     values: [''],
     class: 'is-3',
     isLabel: true,
-    categories: ['Adult', 'Prospect'],
+    category: ['Adult'],
     typeMember: ['Individual', 'Company'],
   },
   {
     typeInput: 'number',
+    typeInputDefault: 'number',
     name: 'postal_code',
     placeholder: 'Postal Code',
     model: '',
     class: 'is-3',
     isLabel: true,
-    categories: ['Adult', 'Prospect'],
+    category: ['Adult'],
     typeMember: ['Individual', 'Company'],
   },
   {
     typeInput: 'selectData',
+    typeInputDefault: 'selectData',
     name: 'country_id',
     placeholder: 'Country',
     model: '',
     values: [''],
     class: 'is-3',
     isLabel: true,
-    categories: ['Adult', 'Prospect'],
+    category: ['Adult'],
     typeMember: ['Individual', 'Company'],
   },
 
   {
     typeInput: 'email',
+    typeInputDefault: 'email',
     name: 'email',
     placeholder: 'Email',
     model: '',
@@ -557,6 +578,7 @@ const familyData = ref([
   },
   {
     typeInput: 'number',
+    typeInputDefault: 'number',
     name: 'phone',
     placeholder: 'Phone Number',
     model: '',
@@ -567,44 +589,48 @@ const familyData = ref([
   },
   {
     typeInput: 'checkbox',
+    typeInputDefault: 'checkbox',
     name: 'leo_vet_fr',
     placeholder: 'LEO / VET / FR',
     model: [],
     required: false,
     class: 'is-6',
     isLabel: true,
-    categories: ['Adult'],
+    category: ['Adult'],
     typeMember: ['Individual'],
   },
   {
     typeInput: 'number',
+    typeInputDefault: 'number',
     name: 'id_leo_vet_fr',
     placeholder: 'LEO / VET / FR ID#',
     model: '',
     required: false,
     class: 'is-6',
     isLabel: true,
-    categories: ['Adult'],
+    category: ['Adult'],
     typeMember: ['Individual'],
   },
   {
     typeInput: 'hidden',
+    typeInputDefault: 'hidden',
     name: 'is_family',
     placeholder: '',
     model: 1,
     class: 'is-6',
     isLabel: true,
-    categories: ['Adult', 'Minor', 'Prospect'],
+    category: ['Adult', 'Minor', 'Prospect'],
     typeMember: ['Individual', 'Company'],
   },
   {
     typeInput: 'hidden',
+    typeInputDefault: 'hidden',
     name: 'principal_family',
     placeholder: '',
     model: 0,
     class: 'is-6',
     isLabel: true,
-    categories: ['Adult', 'Minor', 'Prospect'],
+    category: ['Adult', 'Minor', 'Prospect'],
     typeMember: ['Individual', 'Company'],
   },
 ])
@@ -676,7 +702,7 @@ export const inputsContact = ref([
 
 export const membershipsData = reactive([
   {
-    typeInput: 'switch',
+    typeInput: 'switchEventChangeInput',
     name: 'recurrence',
     values: ['', 'Recurrence'],
     placeholder: 'Recurrence',
@@ -803,6 +829,7 @@ export const parentInsputs = ref([
     class: 'is-12 d-flex justify-content-end',
     isLabel: true,
     required: true,
+    camera: true,
   },
   {
     typeInput: 'select',
@@ -1042,8 +1069,11 @@ export const getPresupuesto = async (data: any) => {
   return response
 }
 
-export const getRecurrencesSelect = async (id: any) => {
-  const response = Api.post('recurrences_select', { memberships_id: id })
+export const getRecurrencesSelect = async (id: any, is_recurrence: any = 1) => {
+  const response = Api.post('recurrences_select', {
+    memberships_id: id,
+    is_recurrence: is_recurrence,
+  })
   return response
 }
 
@@ -1210,8 +1240,16 @@ const change_memberships_id = function (inputsStep: any) {
     }
   })
   setInputValuesData(inputsStep, 'locations_id', locations)
+  let is_recurrence = 1
+  if (!getInput(inputsStep, 'recurrence').model) {
+    is_recurrence = 0
+  }
 
-  getRecurrencesSelect(this.model).then((response) => {
+  if (categorieActive.value == 'Prospect') {
+    is_recurrence = 0
+  }
+
+  getRecurrencesSelect(this.model, is_recurrence).then((response) => {
     getInput(inputsStep, 'recurrences_id').values = response.data
   })
 
@@ -1229,6 +1267,8 @@ const change_memberships_id = function (inputsStep: any) {
     }
     changeDiciplinesAll(inputsStep)
   })
+
+  // getInput(inputsStep,'discount').model = membershipSelected.descuento_vet
 }
 
 const change_recurrences_id = function (inputsStep: any) {
@@ -1313,6 +1353,26 @@ const click_diciplines = function (event: any, inputsStep: any, id: number) {
   }
 }
 
+const change_is_recurrence = function (inputsStep: any) {
+  const memberships_id = getInput(inputsStep, 'memberships_id').model
+  if (memberships_id != '') {
+    let is_recurrence = null
+    if (!this.model) {
+      is_recurrence = 1
+    } else {
+      is_recurrence = 0
+    }
+
+    if (categorieActive.value == 'Prospect') {
+      is_recurrence = 0
+    }
+
+    getRecurrencesSelect(memberships_id, is_recurrence).then((response) => {
+      getInput(inputsStep, 'recurrences_id').values = response.data
+    })
+  }
+}
+
 export const setInputsEvents = (inputs: any) => {
   getInput(inputs, 'memberships_id').change = change_memberships_id
   getInput(inputs, 'recurrences_id').change = change_recurrences_id
@@ -1324,6 +1384,7 @@ export const setInputsEvents = (inputs: any) => {
     event: any,
     inputsStep: any
   ) {}
+  getInput(inputs, 'recurrence').change = change_is_recurrence
   getInput(inputs, 'diciplines').click = click_diciplines
 }
 
@@ -1358,6 +1419,24 @@ export const proccessMembership = async (props: object) => {
   const categoriesMembersFD = perpareDataInputs(props.categoriesMembers, {
     array: false,
   })
+
+  console.log(categoriesMembersFD)
+
+  if (categoriesMembersFD.category == 'Minor') {
+    fd.append('address', getInput(parentInsputs.value, 'address').model)
+    fd.append('postal_code', getInput(parentInsputs.value, 'postal_code').model)
+    fd.append('city_id', getInput(parentInsputs.value, 'city_id').model)
+    fd.append('country_id', getInput(parentInsputs.value, 'country_id').model)
+    fd.append('state_id', getInput(parentInsputs.value, 'state_id').model)
+    fd.append('email', getInput(parentInsputs.value, 'parent_email').model)
+
+    const parent = perpareDataInputs(parentInsputs.value)
+
+    for (const i in parent) {
+      fd.append(`guardian[${i}]`, parent[i])
+    }
+  }
+
   for (const i in categoriesMembersFD) {
     fd.append(i, categoriesMembersFD[i])
   }
@@ -1393,4 +1472,38 @@ export const proccessMembership = async (props: object) => {
     })
 
   return response
+}
+
+const Objectforthebudget = (inputs: any) => {
+  return {
+    memberships_id: getInput(inputs, 'memberships_id').model,
+    recurrences_id: getInput(inputs, 'recurrences_id').model,
+    is_initiation_fee:
+      getInput(inputs, 'is_initiation_fee').model.length == 0 ? true : false,
+    discount: getInput(inputs, 'discount').data
+      ? getInput(inputs, 'discount').data.code
+      : null,
+  }
+}
+
+export const generaPresupuesto = async (membresia: any, member: any) => {
+  const data = {
+    ...Objectforthebudget(membresia),
+  }
+
+  getPresupuesto(data)
+    .then((response) => {
+      presupuestos.value.push({
+        ...response.data,
+        member: member,
+        membresia: membresia,
+      })
+    })
+    .catch((error) => {
+      for (const e in error.response.data) {
+        error.response.data[e].forEach((i) => {
+          notyf.error(`${e}: ${i}`)
+        })
+      }
+    })
 }

@@ -193,10 +193,12 @@ export const setInputModelData = (inputs: any, name, data) => {
           data
         )
       } else {
-        console.warn(`no se agrego el valor de ${name}`)
+        return
+        // console.warn(`no se agrego el valor de ${name}`)
       }
     }
   }
+
   if (inputs.value.find((element) => element.name == name) != undefined) {
     if (!inputs.value.length) {
       console.error(`input no tiene array ${name}`)
@@ -207,7 +209,8 @@ export const setInputModelData = (inputs: any, name, data) => {
       )
     }
   } else {
-    console.warn(`no se agrego el valor de ${name}`)
+    return
+    // console.warn(`no se agrego el valor de ${name}`)
   }
 }
 

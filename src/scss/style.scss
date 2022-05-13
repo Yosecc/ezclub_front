@@ -38,6 +38,9 @@
 .rotate90 {
   transform: rotate(90deg) translate(calc(50% + 25px), 100%);
 }
+.text-capitalize {
+  text-transform: capitalize;
+}
 // .progressCheck{
 // 	margin-bottom: 10%;
 // 	.bar-progress{

@@ -1,4 +1,4 @@
-import { ref, computed, onBeforeMount } from 'vue'
+import { ref, computed, onBeforeMount, reactive } from 'vue'
 import { Api } from '/@src/services'
 import { notyf, getInput } from '/@src/models/Mixin.ts'
 
@@ -7,7 +7,7 @@ export const memberships = ref([])
 export const membership = ref({})
 
 export const getMeberships = async () => {
-  const response = await Api.get('memberships')
+  const response = await Api.get(`memberships`)
   memberships.value = response.data.memberships
   return response
 }
@@ -29,11 +29,9 @@ export const getMembership = async (id: any) => {
 
 export const saveMembership = async (data) => {
   const response = await Api.post('memberships', data)
-  if (response.data && response.data.status) {
+  if (response.status == 200) {
     notyf.success('Record update')
     getMeberships()
-  } else {
-    notyf.error('error')
   }
   return response
 }
@@ -68,7 +66,7 @@ export const getMembershipDiciplines = async (id) => {
 
 import { getInput } from '/@src/models/Mixin.ts'
 
-export const inputs = ref([
+export const inputs = reactive([
   {
     typeInput: 'switch',
     name: 'status',
@@ -76,8 +74,19 @@ export const inputs = ref([
     values: ['', 'Active'],
     model: true,
     default: true,
-    class: 'is-12',
+    class: 'is-3',
     required: false,
+    isLabel: true,
+  },
+  {
+    typeInput: 'switch',
+    isLabel: true,
+    name: 'is_taxes',
+    placeholder: 'Apply Taxes',
+    model: true,
+    default: true,
+    values: ['NO', 'YES'],
+    class: 'is-3',
   },
   {
     typeInput: 'text',
@@ -86,14 +95,16 @@ export const inputs = ref([
     model: '',
     class: 'is-6',
     required: true,
+    isLabel: true,
   },
   {
     typeInput: 'text',
     name: 'description',
     placeholder: 'Membership Description',
     model: '',
-    class: 'is-4',
+    class: 'is-12',
     required: true,
+    isLabel: true,
   },
   {
     typeInput: 'checkboxGroupSimpleAvatar',
@@ -121,9 +132,9 @@ export const inputs = ref([
     model: [],
     values: [],
     class: 'is-12',
+    checkboxColumns: 'is-3',
     required: false,
     change: function (event: any, inputsStep: any) {
-      console.log(this.model)
       if (this.model.includes(0) || this.model.includes('All')) {
         getInput(inputsStep, 'diciplines').model = []
         getInput(inputsStep, 'diciplines').values.forEach((e: any) => {
@@ -165,7 +176,7 @@ export const inputs = ref([
     placeholder: 'Number discipline access',
     model: '',
     class: 'is-4',
-    required: true,
+    required: false,
     isLabel: true,
   },
   {
@@ -190,71 +201,6 @@ export const inputs = ref([
     },
   },
 
-  {
-    typeInput: 'inputsGroup',
-    name: 'amounts',
-    text: 'Amounts',
-    type: 'number',
-    model: {},
-    values: [],
-    class: 'is-12 d-flex',
-    required: true,
-    isLabel: true,
-  },
-  {
-    typeInput: 'number',
-    name: 'descuento_vet',
-    placeholder: 'Discount % LEO / VET / FR',
-    model: '',
-    required: true,
-    isLabel: true,
-    class: 'is-2',
-  },
-  {
-    typeInput: 'number',
-    name: 'penalty',
-    placeholder: 'Late fee',
-    model: '',
-    required: false,
-    isLabel: true,
-    class: 'is-2',
-  },
-  {
-    typeInput: 'number',
-    name: 'days_penalty',
-    placeholder: 'Days late fee',
-    model: 6,
-    required: false,
-    isLabel: true,
-    class: 'is-2',
-  },
-
-  {
-    typeInput: 'selectData',
-    name: 'taxes_id',
-    placeholder: 'Apply Taxes',
-    model: '',
-    values: [],
-    class: 'is-3',
-    required: true,
-    isLabel: true,
-    filterOptionText: function (option) {
-      if (option.type == 'percentaje') {
-        return `${option.name} | ${option.value}%`
-      } else {
-        return `${option.name} | $${option.value}`
-      }
-    },
-  },
-  {
-    typeInput: 'number',
-    name: 'initiation_fee',
-    placeholder: 'Initation Fee',
-    model: '',
-    class: 'is-3',
-    required: true,
-    isLabel: true,
-  },
   // {
   //   typeInput: 'checkboxGroupSimple',
   //   name: 'can_discount_by_apply',
@@ -266,7 +212,37 @@ export const inputs = ref([
   //     return option.code
   //   }
   // },
+])
 
+export const inputsRecurrentes = reactive([
+  {
+    typeInput: 'inputsGroup',
+    name: 'amounts_recurring',
+    text: 'Recurring Prices',
+    type: 'number',
+    model: {},
+    values: [],
+    class: 'is-12 d-flex',
+    required: true,
+    isLabel: true,
+  },
+])
+
+export const inputsUnicos = reactive([
+  {
+    typeInput: 'inputsGroup',
+    name: 'amounts_uniques',
+    text: 'Unique Prices',
+    type: 'number',
+    model: {},
+    values: [],
+    class: 'is-12 d-flex',
+    required: true,
+    isLabel: true,
+  },
+])
+
+export const notes = reactive([
   {
     typeInput: 'textarea',
     name: 'internals_notes',
@@ -275,5 +251,54 @@ export const inputs = ref([
     class: 'is-12',
     required: false,
     isLabel: true,
+  },
+])
+
+export const inputsConfig = reactive([
+  {
+    typeInput: 'number',
+    name: 'penalty',
+    placeholder: 'Price Late fee',
+    model: '',
+    required: true,
+    isLabel: true,
+    class: 'is-3',
+  },
+  {
+    typeInput: 'number',
+    name: 'days_penalty',
+    placeholder: 'Days late fee',
+    model: 6,
+    required: true,
+    isLabel: true,
+    class: 'is-3',
+  },
+  {
+    typeInput: 'number',
+    name: 'initiation_fee',
+    placeholder: 'Initation Fee Price',
+    model: '',
+    class: 'is-3',
+    required: true,
+    isLabel: true,
+  },
+  {
+    typeInput: 'number',
+    name: 'card_price',
+    placeholder: 'Card Price',
+    model: '',
+    class: 'is-3',
+    required: true,
+    isLabel: true,
+  },
+  {
+    typeInput: 'selectData',
+    name: 'descuento_vet',
+    placeholder: 'Discount % LEO / VET / FR',
+    model: '',
+    values: [],
+    required: true,
+    isLabel: true,
+    class: 'is-3',
   },
 ])

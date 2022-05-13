@@ -10,6 +10,7 @@ import {
 } from 'vue'
 import { setInputModelData, viewInput, getInput } from '/@src/models/Mixin.ts'
 import { inputsInformation } from '/@src/models/Members.ts'
+import moment from 'moment'
 const props = defineProps({
   type: {
     type: String,
@@ -85,39 +86,78 @@ const addFamily = () => {
     for (var i = 0; i < cantidadFamiliares.value; ++i) {
       const inputs = reactive(JSON.parse(JSON.stringify(props.inputs)))
       getInput(inputs, 'misma_direccion').change = mismaDirection
+      getInput(inputs, 'category').change = cambioCategoria
+
       families.value.push(inputs)
     }
     // mostrar.value = true
   }
 }
 
-const mismaDirection = function (inputsSteps) {
+const cambioCategoria = function (inputsSteps) {
+  console.log(inputsSteps)
+  inputsSteps.forEach((element) => {
+    if (!this.model) {
+      if (!element.category.includes('Minor')) {
+        element.typeInput = 'hidden'
+      }
+    } else {
+      if (element.category.includes('Adult')) {
+        element.typeInput = element.typeInputDefault
+      }
+    }
+  })
   if (!this.model) {
+    duplicaDireccionDesdePrincipal(inputsSteps)
     setInputModelData(
       inputsSteps,
-      'address',
-      viewInput(inputsInformation.value, 'address')
+      'email',
+      `family_${moment().format('hms')}_${viewInput(
+        inputsInformation.value,
+        'email'
+      )}`
     )
     setInputModelData(
       inputsSteps,
-      'postal_code',
-      viewInput(inputsInformation.value, 'postal_code')
+      'phone',
+      viewInput(inputsInformation.value, 'phone')
     )
-    setInputModelData(
-      inputsSteps,
-      'country_id',
-      viewInput(inputsInformation.value, 'country_id')
-    )
-    setInputModelData(
-      inputsSteps,
-      'city_id',
-      viewInput(inputsInformation.value, 'city_id')
-    )
-    setInputModelData(
-      inputsSteps,
-      'state_id',
-      viewInput(inputsInformation.value, 'state_id')
-    )
+  }
+  console.log(this.model)
+}
+
+const duplicaDireccionDesdePrincipal = (inputsSteps) => {
+  setInputModelData(
+    inputsSteps,
+    'address',
+    viewInput(inputsInformation.value, 'address')
+  )
+  setInputModelData(
+    inputsSteps,
+    'postal_code',
+    viewInput(inputsInformation.value, 'postal_code')
+  )
+  setInputModelData(
+    inputsSteps,
+    'country_id',
+    viewInput(inputsInformation.value, 'country_id')
+  )
+  setInputModelData(
+    inputsSteps,
+    'city_id',
+    viewInput(inputsInformation.value, 'city_id')
+  )
+  setInputModelData(
+    inputsSteps,
+    'state_id',
+    viewInput(inputsInformation.value, 'state_id')
+  )
+}
+
+const mismaDirection = function (inputsSteps) {
+  console.log('llejay')
+  if (!this.model) {
+    duplicaDireccionDesdePrincipal(inputsSteps)
   } else {
     setInputModelData(inputsSteps, 'postal_code', '')
     setInputModelData(inputsSteps, 'country_id', '')

@@ -16,6 +16,39 @@ const props = defineProps({
     required: true,
   },
 })
+
+const totales = computed(() => {
+  //!props.presupuesto.discount
+  // if(true){
+  return {
+    tax: moneda(
+      props.presupuesto.totales.upfront.total_details.amount_tax * 10
+    ),
+    total: moneda(props.presupuesto.totales.upfront.amount_total * 10),
+    recurrente: moneda(props.presupuesto.totales.recurring.amount_total * 10),
+  }
+  // }else{
+
+  //   let subtotal = props.presupuesto.totales.upfront.amount_subtotal * 10
+
+  //   let tax = 0
+  //   let descuento = 0
+  //   let total = 0
+  //   if(props.presupuesto.discount.type == 'percentaje'){
+  //     descuento = (subtotal * props.presupuesto.discount.value) / 100
+  //     tax = (descuento * 7) / 100
+
+  //     total = (subtotal - descuento) + tax
+  //   }
+
+  //   return {
+  //     descuento: descuento,
+  //     tax: moneda(tax),
+  //     total: moneda(total),
+  //     recurrente: null
+  //   }
+  // }
+})
 </script>
 
 <template>
@@ -37,7 +70,9 @@ const props = defineProps({
           :key="`membresia-${key}`"
         >
           <td>{{ membresia.description }}</td>
-          <td>{{ membresia.type ? membresia.type : 'Initiation Fee' }}</td>
+          <td class="text-capitalize">
+            {{ membresia.type ? membresia.type : 'Initiation Fee' }}
+          </td>
           <td>{{ membresia.quantity }}</td>
           <td style="text-align: right">
             {{ moneda((membresia.amount_subtotal / membresia.quantity) * 10) }}
@@ -47,30 +82,43 @@ const props = defineProps({
           </td>
         </tr>
 
+        <tr v-if="presupuesto.discount">
+          <td colspan="4">
+            {{ presupuesto.discount.name }}
+            <span v-if="presupuesto.discount.type == 'percentaje'">
+              ( {{ presupuesto.discount.value }}% off )
+            </span>
+            <span v-else> ( ${{ presupuesto.discount.value }} off ) </span>
+          </td>
+          <td>
+            <!-- - {{ moneda(totales.descuento) }} -->
+          </td>
+        </tr>
         <tr style="text-align: right">
           <td colspan="4" style="text-align: right"><b>Subtotal</b></td>
           <td>
             {{ moneda(presupuesto.totales.upfront.amount_subtotal * 10) }}
           </td>
         </tr>
+
         <tr style="text-align: right">
           <td colspan="4" style="text-align: right">Tax 7%</td>
           <td>
-            {{
-              moneda(presupuesto.totales.upfront.total_details.amount_tax * 10)
-            }}
+            {{ totales.tax }}
           </td>
         </tr>
 
         <tr style="text-align: right">
           <td colspan="4" style="text-align: right"><b>Total to pay</b></td>
           <td>
-            {{ moneda(presupuesto.totales.upfront.amount_total * 10) }}
+            {{ totales.total }}
           </td>
         </tr>
-        <tr style="text-align: right">
-          <td colspan="4" style="text-align: right">Recurring total</td>
-          <td>{{ moneda(presupuesto.totales.recurring.amount_total * 10) }}</td>
+        <tr v-if="presupuesto.totales.recurring" style="text-align: right">
+          <td v-if="totales.recurrente" colspan="4" style="text-align: right">
+            Recurring total
+          </td>
+          <td>{{ totales.recurrente }}</td>
         </tr>
       </tbody>
     </table>

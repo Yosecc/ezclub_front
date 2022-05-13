@@ -28,16 +28,13 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  isLoaderActive: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const emit = defineEmit(['changeStep', 'saveData'])
-const isLoaderActive = ref(false)
-const load = () => {
-  isLoaderActive.value = true
-  setTimeout(() => {
-    isLoaderActive.value = false
-  }, '500')
-}
 </script>
 
 <template>

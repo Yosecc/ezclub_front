@@ -37,10 +37,10 @@ const props = defineProps({
 
     <div class="mb-3">
       <h1 class="title is-4 mb-0">{{ membership.name }}</h1>
-      <p>{{ membership.description }}</p>
+      <!-- <p>{{ membership.description }}</p> -->
     </div>
 
-    <div class="d-flex">
+    <!-- <div class="d-flex">
       <VAvatar
         v-tooltip="location.company_locations.name"
         v-for="(location, key) in membership.locations"
@@ -48,7 +48,7 @@ const props = defineProps({
         class="mr-3"
         :picture="`${API_WEB_URL}storage/${location.company_locations.image}`"
       />
-    </div>
+    </div> -->
 
     <div class="d-flex justify-content-end mt-5">
       <V-Button

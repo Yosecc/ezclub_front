@@ -49,7 +49,7 @@ useHead({
 
 onMounted(() => {
   limpiarCampos()
-  getMeberships().then((response) => {
+  getMeberships(1).then((response) => {
     setInputValuesData(
       membershipsData,
       'memberships_id',
@@ -64,16 +64,17 @@ onMounted(() => {
   getDiscounts(1, 'membership').then((response) => {
     setInputValuesData(membershipsData, 'discount', response.data.discounts)
   })
-  getRecurrences().then((response) => {
-    // setInputValuesData(inputsMembership[0],'recurrences_id', response.data)
-  })
+  getRecurrences()
   getAllConfig().then((response) => {
     setInputValuesData(inputsInformation, 'city_id', cities.value)
     setInputValuesData(inputsFamily, 'city_id', cities.value)
+    setInputValuesData(parentInsputs, 'city_id', cities.value)
     setInputValuesData(inputsInformation, 'state_id', states.value)
     setInputValuesData(inputsFamily, 'state_id', states.value)
+    setInputValuesData(parentInsputs, 'state_id', states.value)
     setInputValuesData(inputsInformation, 'country_id', contries.value)
     setInputValuesData(inputsFamily, 'country_id', contries.value)
+    setInputValuesData(parentInsputs, 'country_id', contries.value)
   })
 
   getTrainers().then((response) => {

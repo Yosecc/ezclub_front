@@ -200,7 +200,7 @@ watch(
     </transition>
 
     <!-- Desktop navigation -->
-    <CircularMenu />
+    <!-- <CircularMenu /> -->
 
     <Sidebar :theme="props.theme" :is-open="isDesktopSidebarOpen">
       <template #links>

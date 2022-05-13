@@ -207,7 +207,11 @@ const onPause = () => {
         </div>
       </template>
       <template #header-right>
-        <VLoader size="small" :active="isLoaderActive">
+        <VLoader
+          v-if="member.membership_members.is_recurrence"
+          size="small"
+          :active="isLoaderActive"
+        >
           <VButton
             color="info"
             :outlined="
@@ -224,7 +228,11 @@ const onPause = () => {
             >
           </VButton>
         </VLoader>
-        <VLoader size="small" :active="isLoaderActive">
+        <VLoader
+          v-if="member.membership_members.is_recurrence"
+          size="small"
+          :active="isLoaderActive"
+        >
           <VButton
             color="warning"
             v-if="memberMermship"

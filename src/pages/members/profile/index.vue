@@ -181,6 +181,7 @@ const mountMember = async () => {
               )
             ) {
               console.error('no tiene un plan de membresia :( recurrences')
+              isLoading.value = false
               return
             }
 
@@ -231,7 +232,7 @@ const mountMember = async () => {
         setInputModelData(inputsInformation, i, response.data[i])
       }
     }
-    isLoading.value = false
+
     // console.log('membershipsData', membershipsData.value)
   })
 }
@@ -256,7 +257,20 @@ const newMembership = () => {
 
 <template>
   <SidebarLayout>
-    <VPlaceload v-if="isLoading" height="500px" />
+    <div v-if="isLoading" class="columns is-multiline">
+      <div class="column is-3">
+        <VPlaceload height="700px" />
+      </div>
+      <div class="column is-9">
+        <div class="columns is-multiline column is-12">
+          <VPlaceload height="150px" />
+        </div>
+        <div class="columns is-multiline column is-12">
+          <VPlaceload height="420px" />
+        </div>
+      </div>
+    </div>
+
     <div v-if="!isLoading && member" class="columns is-multiline">
       <div class="column is-3">
         <MemberProfileMenu
@@ -315,7 +329,11 @@ const newMembership = () => {
               <p>
                 <b>Membership Active:</b> {{ memberMermship.membership.name }}
               </p>
-              <p v-if="member.subscription">
+              <p
+                v-if="
+                  member.subscription && member.membership_members.is_recurrence
+                "
+              >
                 <b>Due Date: </b>
                 {{
                   moment(member.subscription.proxima_factura).format(

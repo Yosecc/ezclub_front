@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
-import { getCompany, locations } from '/@src/models/Companies.ts'
+import { onMounted, ref, watch } from 'vue'
+import { getCompany, locations, company } from '/@src/models/Companies.ts'
 import { getTaxes, taxes } from '/@src/services/config.ts'
 import {
   setInputValuesData,
@@ -9,55 +9,55 @@ import {
   cleanUpModelInputs,
 } from '/@src/models/Mixin.ts'
 import { getRecurrences, recurrences } from '/@src/models/Recurrences.ts'
-import { inputs, getMembership } from '/@src/models/Memberships.ts'
+import {
+  inputs,
+  getMembership,
+  inputsRecurrentes,
+  inputsUnicos,
+  inputsConfig,
+  notes,
+} from '/@src/models/Memberships.ts'
+import { getDiscounts } from '/@src/models/Discounts.ts'
+
 import { useRoute, useRouter } from 'vue-router'
 
 const route = useRoute()
 
 const isLoading = ref(true)
 
+watch(
+  () => company.value,
+  () => {
+    setInputValuesData(
+      inputs,
+      'locations',
+      locations.value.filter((e) => e.status == 1)
+    )
+  }
+)
+
 onMounted(() => {
   let campos = ['all_diciplines']
-  cleanUpModelInputs(inputs.value.filter((e) => !campos.includes(e.name)))
-  getTaxes().then(() => {
-    setInputValuesData(inputs, 'taxes_id', taxes)
-  })
-  getCompany().then(() => {
-    setInputValuesData(inputs, 'locations', locations)
+  cleanUpModelInputs(inputs.filter((e) => !campos.includes(e.name)))
+  cleanUpModelInputs(inputsRecurrentes)
+  cleanUpModelInputs(inputsUnicos)
+  cleanUpModelInputs(notes)
+  cleanUpModelInputs(inputsConfig)
+  getDiscounts(1, 'membership').then((response) => {
+    setInputValuesData(inputsConfig, 'descuento_vet', response.data.discounts)
   })
   getRecurrences().then(() => {
-    setInputValuesData(inputs, 'amounts', recurrences)
-    let model = {}
-    recurrences.value.forEach((element) => {
-      model[element.id] = ''
-    })
-    setInputModelData(inputs, 'amounts', model)
+    setInputValuesData(inputsRecurrentes, 'amounts_recurring', recurrences)
+    setInputValuesData(inputsUnicos, 'amounts_uniques', recurrences)
     isLoading.value = false
-
-    // console.log(inputs)
     getMembership(route.query.id).then((response) => {
+      console.log(response.data)
       for (var i in response.data) {
-        if (i == 'amounts') {
-          response.data[i].forEach((element) => {
-            getInput(inputs.value, 'amounts').model[element.recurrences_id] =
-              element.amount
-          })
-        } else if (i == 'locations') {
-          getInput(inputs.value, 'locations').model = []
-          response.data[i].forEach((element) => {
-            getInput(inputs.value, 'locations').model.push(
-              element.companies_locations_id
-            )
-          })
-        } else if (i == 'membership_diciplines') {
-          response.data[i].forEach((element) => {
-            getInput(inputs.value, 'diciplines').model.push(
-              element.diciplines_id
-            )
-          })
-        } else {
-          setInputModelData(inputs, i, response.data[i])
-        }
+        setInputModelData(inputs, i, response.data[i])
+        setInputModelData(inputsConfig, i, response.data[i])
+        setInputModelData(notes, i, response.data[i])
+        setInputModelData(inputsRecurrentes, i, response.data[i])
+        setInputModelData(inputsUnicos, i, response.data[i])
       }
     })
   })

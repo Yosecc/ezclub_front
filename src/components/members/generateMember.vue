@@ -10,24 +10,17 @@ import {
 } from 'vue'
 import {
   viewInput,
-  // setInputValuesData,
-  // setInputModelData,
-  // moneda,
-  // calcularMeses,
-  // getValueInput,
   getInput,
   notyf,
-  // monedaDecimal,
-  // convertFormData
   perpareDataInputs,
   convertFormData,
 } from '/@src/models/Mixin.ts'
-saveMember
 
 import {
   saveMember,
   idMemberPrincipal,
   proccessMembership,
+  storeFirma,
 } from '/@src/models/Members.ts'
 
 const emit = defineEmit([])
@@ -97,7 +90,7 @@ const PaymentAction = (data) => {
 }
 
 const soyPrincipal = computed(() => {
-  if (!getInput(props.member, 'is_family').model) {
+  if (getInput(props.member, 'is_family').model == 0) {
     return true
   }
   return false
@@ -113,6 +106,25 @@ const processMembershipStatus = computed(() => {
     return false
   }
 })
+
+const onSign = (base64) => {
+  storeFirma(base64, idMemberMembership.value)
+    .then((response) => {
+      if (response.data.status) {
+        notyf.success('Sign Success')
+      } else {
+        notyf.error(response.data.mensaje)
+        for (var i in response.data.errores) {
+          response.data.errores[i].forEach((e) => {
+            notyf.error(`${i} : ${e}`)
+          })
+        }
+      }
+    })
+    .catch((error) => {
+      // error.response.data
+    })
+}
 </script>
 
 <template>
@@ -125,6 +137,7 @@ const processMembershipStatus = computed(() => {
       <p>
         <small>{{ soyPrincipal ? 'Main member' : 'Family' }}</small>
       </p>
+
       <p v-if="!soyPrincipal && !idMemberPrincipal">
         <small>Register the principal first</small>
       </p>
@@ -148,9 +161,19 @@ const processMembershipStatus = computed(() => {
       @PaymentAction="PaymentAction"
     />
 
-    <VCard color="success" class="mt-6" v-if="isMemberPayment">
+    <VCard color="success" class="my-6" v-if="isMemberPayment">
       <p class="title is-4">Payment Success</p>
     </VCard>
+
+    <signComponent
+      v-if="isMemberPayment"
+      @onSign="onSign"
+      :is-sign="true"
+      :contract="`contract_${idMember}_${idMemberMembership}_${
+        getInput(props.member, 'personal_identifications').model
+      }.pdf`"
+      :url-contract="`generateContract/${idMember}`"
+    />
   </div>
 </template>
 

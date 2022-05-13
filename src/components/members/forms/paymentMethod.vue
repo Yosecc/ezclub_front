@@ -28,6 +28,8 @@ import {
   categoriesMembers,
   notasInput,
   proccessMembership,
+  generaPresupuesto,
+  presupuestos,
 } from '/@src/models/Members.ts'
 
 const emit = defineEmit(['changeStep', 'returnData'])
@@ -45,7 +47,6 @@ const props = defineProps({
 
 const setLoading = ref(false)
 const isLoading = ref(false)
-const presupuestos = ref([])
 
 //  MEMBER //////////////////
 
@@ -93,40 +94,6 @@ const pagarConDiferentesTarjetas = function () {
   }
 }
 
-const Objectforthebudget = (inputs) => {
-  return {
-    memberships_id: getInput(inputs, 'memberships_id').model,
-    recurrences_id: getInput(inputs, 'recurrences_id').model,
-    is_initiation_fee:
-      getInput(inputs, 'is_initiation_fee').model.length == 0 ? true : false,
-    discount: getInput(inputs, 'discount').data
-      ? getInput(inputs, 'discount').data.code
-      : null,
-  }
-}
-
-const generaPresupuesto = async (membresia, member) => {
-  let data = {
-    ...Objectforthebudget(membresia),
-  }
-
-  getPresupuesto(data)
-    .then((response) => {
-      presupuestos.value.push({
-        ...response.data,
-        member: member,
-        membresia: membresia,
-      })
-    })
-    .catch((error) => {
-      for (var e in error.response.data) {
-        error.response.data[e].forEach((i) => {
-          notyf.error(`${e}: ${i}`)
-        })
-      }
-    })
-}
-
 const change = (val, payment = 3, total) => {
   let obj = {
     total,
@@ -136,14 +103,18 @@ const change = (val, payment = 3, total) => {
 }
 
 const presupuestoComputed = computed(() => {
-  return presupuestos.value.sort((a, b) => {
-    if (getInput(a.member, 'is_family').model == 0) {
-      return -1
-    } else {
-      return 1
+  let arr = []
+  presupuestos.value.forEach((e) => {
+    if (getInput(e.member, 'is_family').model == 0) {
+      arr.push(e)
     }
-    return 0
   })
+  presupuestos.value.forEach((e) => {
+    if (getInput(e.member, 'is_family').model == 1) {
+      arr.push(e)
+    }
+  })
+  return arr
 })
 
 const miembrosNuevos = ref([])
@@ -197,6 +168,10 @@ const PaymentAllMembership = async () => {
 
   // console.log('register',register)
 }
+
+const reloa = () => {
+  window.location.reload()
+}
 </script>
 
 <template>
@@ -244,6 +219,12 @@ const PaymentAllMembership = async () => {
           />
         </div>
       </Presupuesto>
+    </div>
+    <div class="d-flex justify-content-between w-100">
+      <VButton color="danger" :to="{ name: 'index' }"> Finish </VButton>
+      <VButton color="success" @click="reloa">
+        Register another member
+      </VButton>
     </div>
   </formLayaut>
 </template>

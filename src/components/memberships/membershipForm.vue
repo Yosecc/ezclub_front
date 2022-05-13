@@ -1,12 +1,16 @@
 <script setup lang="ts">
-import { computed, ref, defineProps, onMounted, watch } from 'vue'
+import { computed, ref, defineProps, onMounted, watch, reactive } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 const route = useRoute()
 import {
   inputs,
+  inputsRecurrentes,
+  inputsUnicos,
   saveMembership,
   putMembership,
+  notes,
+  inputsConfig,
 } from '/@src/models/Memberships.ts'
 import { getLocationsDiciplines } from '/@src/models/Diciplines.ts'
 import {
@@ -16,6 +20,7 @@ import {
   perpareDataInputs,
   cleanUpModelInputs,
   getInput,
+  hasErrors,
 } from '/@src/models/Mixin.ts'
 
 const router = useRouter()
@@ -49,11 +54,11 @@ const titles = computed(() => {
 })
 
 const locations_options = computed(() => {
-  return inputs.value.find((element) => element.name == 'locations_options')
+  return inputs.find((element) => element.name == 'locations_options')
 })
 
 const locations = computed(() => {
-  return inputs.value.find((element) => element.name == 'locations')
+  return inputs.find((element) => element.name == 'locations')
 })
 
 watch(locations.value, (to) => {
@@ -91,16 +96,24 @@ const changeLocation = (data) => {
 
   getLocationsDiciplines(locations.value.model).then((response) => {
     setInputValuesData(inputs, 'diciplines', response.data)
-    getInput(inputs.value, 'diciplines').values.push({ id: 0, name: 'All' })
+    getInput(inputs, 'diciplines').values.push({ id: 0, name: 'All' })
   })
 }
 
 const diciplines = computed(() => {
-  return inputs.value.find((element) => element.name == 'diciplines')
+  return inputs.find((element) => element.name == 'diciplines')
 })
 
+const isLoaderButton = ref(false)
 const saveData = () => {
-  let data = perpareDataInputs(inputs.value)
+  isLoaderButton.value = true
+  let data = {
+    ...perpareDataInputs(inputs),
+    ...perpareDataInputs(inputsRecurrentes),
+    ...perpareDataInputs(inputsUnicos),
+    ...perpareDataInputs(notes),
+    ...perpareDataInputs(inputsConfig),
+  }
   let locationsData = []
   if (props.type == 'create') {
     if (data.locations.length > 0) {
@@ -125,34 +138,38 @@ const saveData = () => {
     }
   }
 
-  let amountsData = []
-  let obj = data.amounts
-  for (var i in obj) {
-    amountsData.push({
-      recurrences_id: parseFloat(i),
-      amount: parseFloat(obj[i]),
-    })
-  }
-  data.amounts = amountsData
-  console.log(data)
-  if (props.type == 'create') {
-    saveMembership(data)
-      .then((response) => {
-        cleanUpModelInputs(inputs.value)
-        router.back()
-      })
-      .catch((error) => {
-        console.log(error.response.data.errores)
-        for (var i in error.response.data.errores) {
-          error.response.data.errores[i].forEach((e) => {
-            notyf.error(`${e}: ${i}`)
-          })
-        }
-      })
-  } else {
-    putMembership(route.query.id, data).then((response) => {
-      notyf.success('Success')
-    })
+  // console.log(data)
+  if (!hasErrors.value) {
+    if (props.type == 'create') {
+      saveMembership(data)
+        .then((response) => {
+          // cleanUpModelInputs(inputs)
+          isLoaderButton.value = false
+          router.back()
+        })
+        .catch((error) => {
+          isLoaderButton.value = false
+          for (var i in error.response.data.errores) {
+            error.response.data.errores[i].forEach((e) => {
+              notyf.error(`${e}: ${i}`)
+            })
+          }
+        })
+    } else {
+      putMembership(route.query.id, data)
+        .then((response) => {
+          notyf.success('Success')
+          isLoaderButton.value = false
+        })
+        .catch((error) => {
+          isLoaderButton.value = false
+          for (var i in error.response.data.errores) {
+            error.response.data.errores[i].forEach((e) => {
+              notyf.error(`${e}: ${i}`)
+            })
+          }
+        })
+    }
   }
 }
 </script>
@@ -162,9 +179,26 @@ const saveData = () => {
     :buttons="props.buttons"
     :titles="titles"
     :is-loading="isLoading"
+    :is-loader-active="isLoaderButton"
     @saveData="saveData"
   >
-    <inputsLayaut :inputs-step="inputs" />
+    <div class="columns is-multiline">
+      <div class="column is-12">
+        <inputsLayaut :inputs-step="inputs" />
+      </div>
+      <div class="column is-6">
+        <inputsLayaut :inputs-step="inputsRecurrentes" />
+      </div>
+      <div class="column is-6">
+        <inputsLayaut :inputs-step="inputsUnicos" />
+      </div>
+      <div class="column is-12">
+        <inputsLayaut :inputs-step="inputsConfig" />
+      </div>
+      <div class="column is-12">
+        <inputsLayaut :inputs-step="notes" />
+      </div>
+    </div>
   </formLayaut>
 </template>
 
