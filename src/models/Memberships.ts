@@ -232,7 +232,7 @@ export const inputsUnicos = reactive([
   {
     typeInput: 'inputsGroup',
     name: 'amounts_uniques',
-    text: 'Unique Prices',
+    text: 'Temporary Pass',
     type: 'number',
     model: {},
     values: [],
