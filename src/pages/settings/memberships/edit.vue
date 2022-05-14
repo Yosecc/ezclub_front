@@ -47,8 +47,18 @@ onMounted(() => {
     setInputValuesData(inputsConfig, 'descuento_vet', response.data.discounts)
   })
   getRecurrences().then(() => {
-    setInputValuesData(inputsRecurrentes, 'amounts_recurring', recurrences)
-    setInputValuesData(inputsUnicos, 'amounts_uniques', recurrences)
+    setInputValuesData(
+      inputsRecurrentes,
+      'amounts_recurring',
+      recurrences.value.filter((e) => e.days >= 30)
+    )
+
+    setInputValuesData(
+      inputsUnicos,
+      'amounts_uniques',
+      recurrences.value.filter((e) => e.days <= 30)
+    )
+
     isLoading.value = false
     getMembership(route.query.id).then((response) => {
       console.log(response.data)
