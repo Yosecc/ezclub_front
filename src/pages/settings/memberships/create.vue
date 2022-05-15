@@ -46,12 +46,12 @@ onMounted(() => {
     setInputValuesData(
       inputsRecurrentes,
       'amounts_recurring',
-      recurrences.value.filter((e) => e.days >= 30)
+      recurrences.value.filter((e) => e.is_recurrence === 1)
     )
     setInputValuesData(
       inputsUnicos,
       'amounts_uniques',
-      recurrences.value.filter((e) => e.days <= 30)
+      recurrences.value.filter((e) => e.is_recurrence === 0)
     )
     isLoading.value = false
   })

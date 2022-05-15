@@ -280,7 +280,6 @@ const takePhoto = (event) => {
       <V-Field
         v-else-if="input.typeInput == 'selectData'"
         :data-class="input.class"
-        class="bibibi"
       >
         <label class="label" v-if="input.isLabel" :for="input.name">
           <p class="m-0 text-left">

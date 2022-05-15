@@ -351,38 +351,40 @@ const onPause = () => {
           </template>
         </presupuestoComponent>
 
-        <VCard class="mb-4">
+        <p class="title is-4 text-center">In construction ...</p>
+        <VCard class="mb-4" v-if="false">
           <h1 class="title is-6">Active Contract Information</h1>
           <div class="columns is-multiline">
             <div class="column is-12">
               <inputsLayaut :inputs-step="membershipsData" />
             </div>
-            <div
-              v-if="member && memberMermship"
-              class="columns is-multiline column mt-4 is-12"
-            >
-              <div>
-                <p>
-                  <b>Contract Date:</b>
-                  {{
-                    moment(member.membership_members.created_at).format(
-                      'ddd - DD MMM yyyy'
-                    )
-                  }}
-                </p>
-              </div>
-
-              <div class="column is-12">
-                <signComponent
-                  @onSign="onSign"
-                  :is-sign="!memberMermship.sign"
-                  :contract="`contract_${member.id}_${member.membership_members.id}_${member.personal_identifications}.pdf`"
-                  :url-contract="`generateContract/${member.id}`"
-                />
-              </div>
-            </div>
           </div>
         </VCard>
+
+        <div
+          v-if="member && memberMermship"
+          class="columns is-multiline column mt-4 is-12"
+        >
+          <div>
+            <p>
+              <b>Contract Date:</b>
+              {{
+                moment(member.membership_members.created_at).format(
+                  'ddd - DD MMM yyyy'
+                )
+              }}
+            </p>
+          </div>
+
+          <div class="column is-12">
+            <signComponent
+              @onSign="onSign"
+              :is-sign="!memberMermship.sign"
+              :contract="`contract_${member.id}_${member.membership_members.id}_${member.personal_identifications}.pdf`"
+              :url-contract="`generateContract/${member.id}`"
+            />
+          </div>
+        </div>
 
         <VCard class="mb-4" v-if="false">
           <h1 class="title is-6">Inactive Contract Information</h1>

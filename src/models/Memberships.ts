@@ -223,7 +223,7 @@ export const inputsRecurrentes = reactive([
     model: {},
     values: [],
     class: 'is-12 d-flex',
-    required: true,
+    required: false,
     isLabel: true,
   },
 ])
@@ -237,7 +237,7 @@ export const inputsUnicos = reactive([
     model: {},
     values: [],
     class: 'is-12 d-flex',
-    required: true,
+    required: false,
     isLabel: true,
   },
 ])

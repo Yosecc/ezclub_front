@@ -151,16 +151,16 @@ const mountMember = async () => {
           if (e == 'memberships_location') {
             if (!response.data[i][e]) {
               console.error('no posee una locacion :(')
-              return
+              // return
             }
-            getInput(membershipsData, 'locations_id').model =
-              response.data[i][e].companies_locations_id
+            // getInput(membershipsData, 'locations_id').model =
+            //   response.data[i][e].companies_locations_id
 
-            getLocationsDiciplines([
-              response.data[i][e].companies_locations_id,
-            ]).then((response) => {
-              setInputValuesData(membershipsData, 'diciplines', response.data)
-            })
+            // getLocationsDiciplines([
+            //   response.data[i][e].companies_locations_id,
+            // ]).then((response) => {
+            //   setInputValuesData(membershipsData, 'diciplines', response.data)
+            // })
           } else if (e == 'recurrence') {
             let recurrencesData = []
 

@@ -107,6 +107,7 @@ const diciplines = computed(() => {
 const isLoaderButton = ref(false)
 const saveData = () => {
   isLoaderButton.value = true
+
   let data = {
     ...perpareDataInputs(inputs),
     ...perpareDataInputs(inputsRecurrentes),
@@ -114,6 +115,7 @@ const saveData = () => {
     ...perpareDataInputs(notes),
     ...perpareDataInputs(inputsConfig),
   }
+
   let locationsData = []
   if (props.type == 'create') {
     if (data.locations.length > 0) {
@@ -149,10 +151,14 @@ const saveData = () => {
         })
         .catch((error) => {
           isLoaderButton.value = false
-          for (var i in error.response.data.errores) {
-            error.response.data.errores[i].forEach((e) => {
-              notyf.error(`${e}: ${i}`)
-            })
+          if (typeof error.response.data != 'string') {
+            for (var i in error.response.data) {
+              error.response.data[i].forEach((e) => {
+                notyf.error(`${e}: ${i}`)
+              })
+            }
+          } else {
+            notyf.error(`${error.response.data}`)
           }
         })
     } else {
@@ -163,10 +169,14 @@ const saveData = () => {
         })
         .catch((error) => {
           isLoaderButton.value = false
-          for (var i in error.response.data.errores) {
-            error.response.data.errores[i].forEach((e) => {
-              notyf.error(`${e}: ${i}`)
-            })
+          if (typeof error.response.data != 'string') {
+            for (var i in error.response.data) {
+              error.response.data[i].forEach((e) => {
+                notyf.error(`${e}: ${i}`)
+              })
+            }
+          } else {
+            notyf.error(`${error.response.data}`)
           }
         })
     }
