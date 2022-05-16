@@ -1,0 +1,1 @@
+import{d as a,G as s,o as r,h as e,a4 as o}from"./vendor.f3aa4145.js";var d=a({expose:[],setup(a){const d=o();return s((()=>{d.push({name:"navbar-dashboards"})})),(a,s)=>(r(),e("div"))}});export default d;

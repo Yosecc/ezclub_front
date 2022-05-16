@@ -99,7 +99,7 @@ watch(
 watch(
   () => codebar.value,
   (to) => {
-    if (codebar.value.length >= 9) {
+    if (codebar.value.length == 9) {
       searchCodebar()
     }
   }
@@ -169,7 +169,6 @@ watch(
               type="text"
               class="input custom-text-filter"
               placeholder="Member ID Barcode"
-              @keyup.enter="searchCodebar"
             />
           </V-Control>
         </V-Field>

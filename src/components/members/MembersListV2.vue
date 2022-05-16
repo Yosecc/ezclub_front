@@ -215,7 +215,7 @@ watch(
                       <span v-if="props.name == 'checkin'">
                         <p style="font-color: grey">
                           Check In:
-                          {{ moment(item.timecheckin).format('HH:MM:SS') }}
+                          {{ moment(item.timecheckin).format('H:m:s') }}
                         </p>
                       </span>
                     </div>

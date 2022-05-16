@@ -132,7 +132,6 @@ onMounted(() => {
 
 const mountMember = async () => {
   await getMember(route.query.id).then((response) => {
-    // console.log(response.data.membership_members)
     for (var i in response.data) {
       if (i == 'select_type') {
         if (response.data[i] == 'Individual') {
@@ -182,9 +181,8 @@ const mountMember = async () => {
             ) {
               console.error('no tiene un plan de membresia :( recurrences')
               isLoading.value = false
-              return
+              // return
             }
-
             getInput(membershipsData, 'amount').model = recurrencesData.find(
               (e) => e.id == response.data[i].recurrences_id
             ).amount
@@ -232,7 +230,7 @@ const mountMember = async () => {
         setInputModelData(inputsInformation, i, response.data[i])
       }
     }
-
+    isLoading.value = false
     // console.log('membershipsData', membershipsData.value)
   })
 }

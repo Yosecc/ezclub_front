@@ -7,6 +7,7 @@ export const codebar = ref(null)
 export const inputSearchCodebar = ref()
 
 export const searchCodebar = async (event) => {
+  console.log('Este evento de debe ejecutar una sola vez')
   if (codebar.value != '') {
     const response = await Api.get(`searchmember/${codebar.value}`)
       .then((response) => {
