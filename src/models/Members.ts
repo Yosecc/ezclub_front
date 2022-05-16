@@ -1093,6 +1093,11 @@ export const getMember = async (id: any) => {
   return response
 }
 
+export const FormaLizar = async (obj: object) => {
+  const response = await Api.post('paymentStripe', obj)
+  return response
+}
+
 export const putInformation = async (data: any) => {
   const response = await Api.post(
     `members/updatePersonalInformation/${member.value.id}`,
@@ -1520,8 +1525,8 @@ export const generaPresupuesto = async (membresia: any, member: any) => {
     })
     .catch((error) => {
       for (const e in error.response.data) {
-        if (typeof error.response.data[e] == 'string') {
-          // notyf.error(`${error.response.data[e]}`)
+        if (typeof error.response.data == 'string') {
+          notyf.error(`${error.response.data[e]}`)
         } else {
           error.response.data[e].forEach((i) => {
             notyf.error(`${e}: ${i}`)

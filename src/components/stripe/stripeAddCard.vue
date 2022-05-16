@@ -130,6 +130,7 @@ const handleSubmit = async (e) => {
           payment_method,
           user_id: e.idMember,
           membership_member_id: e.idMemberMembership,
+          payment_type_id: 3,
         }).catch((e) => {
           setLoading.value = false
         })
@@ -140,6 +141,7 @@ const handleSubmit = async (e) => {
         amount: props.amount,
         user_id: user_id.value,
         membership_member_id: props.member_membership,
+        payment_type_id: 3,
       }).catch((e) => {
         setLoading.value = false
       })

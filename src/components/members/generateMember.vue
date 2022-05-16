@@ -21,6 +21,8 @@ import {
   idMemberPrincipal,
   proccessMembership,
   storeFirma,
+  FormaLizar,
+  storePaymentCash,
 } from '/@src/models/Members.ts'
 
 const emit = defineEmit(['PaymentAction'])
@@ -55,15 +57,18 @@ const props = defineProps({
   },
 })
 
+const paymentMethod = ref(null)
 const setLoading = ref(false)
 const idMember = ref(null)
 const idMemberMembership = ref(null)
+
 onMounted(() => {
   setLoading.value = false
   isMemberPayment.value = false
 })
 
 const save = () => {
+  paymentMethod.value = null
   setLoading.value = true
   idMember.value = null
   idMemberMembership.value = null
@@ -126,6 +131,32 @@ const onSign = (base64) => {
       // error.response.data
     })
 }
+
+const onPaymentCash = (obj) => {
+  paymentMethod.value = 1
+  if (idMemberMembership.value) {
+    const datos = {
+      cash: obj.cash,
+      payment_type_id: paymentMethod.value,
+      total: props.total,
+      cash_back: obj.changeBack,
+      membership_member_id: idMemberMembership.value,
+    }
+    storePaymentCash(idMemberMembership.value, datos)
+      .then((response) => {
+        console.log(response.data)
+        PaymentAction(idMember.value)
+        notyf.success('Success Payment')
+      })
+      .catch((error) => {
+        console.log(error.response)
+      })
+  } else {
+    notyf.error(
+      'The membership ID is required. Click on Process Membership to generate it automatically'
+    )
+  }
+}
 </script>
 
 <template>
@@ -154,8 +185,35 @@ const onSign = (base64) => {
       </VButton>
     </VLoader>
 
-    <stripeAddCard
+    <!-- <p>{{ paymentMethod }}</p> -->
+    <div
       v-if="idMember && !isMemberPayment"
+      class="columns is-multiline justify-content-center mt-6"
+    >
+      <VCard
+        color="info"
+        class="mx-2 btn-card w-100 column is-4"
+        :style="paymentMethod == 1 ? { opacity: '0.4' } : {}"
+        @click="paymentMethod = 3"
+      >
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <p class="title is-3">
+              <i class="fas fa-credit-card" aria-hidden="true"></i>
+            </p>
+            <p class="title is-5">Debit Automatic</p>
+          </div>
+          <p v-if="paymentMethod == 3" class="title is-6">
+            <i class="fas fa-check" aria-hidden="true"></i>
+          </p>
+        </div>
+      </VCard>
+
+      <memberCheckoutCash :total="props.total" @onPaymentCash="onPaymentCash" />
+    </div>
+
+    <stripeAddCard
+      v-if="paymentMethod == 3"
       :amount="props.total"
       :id="idMember"
       :member_membership="idMemberMembership"
