@@ -30,7 +30,7 @@ watch(
 watch(
   () => filters.value,
   () => {
-    getMembers('all', filters.value, 1, categoryB.value, false)
+    // getMembers('all', filters.value, 1, categoryB.value, false)
   }
 )
 
@@ -55,6 +55,7 @@ const getMembers = async (
       members.value = response.data.members
       paginationData.value = response.data.pagination
       isLoading.value = false
+
       if (reload) {
         reloadForm()
       }
@@ -71,16 +72,13 @@ const change = (val) => {
   getMembers('all', filters.value, route.query.page, val, false)
 }
 
-const filterChange = (val) => {
-  getMembers('all', filters.value, route.query.page, val, false)
-}
-
 onMounted(() => {
   getMembers('all', filters.value, route.query.page, 'Adult')
 })
 
 const filtersSearch = () => {
-  console.log(filters.value.length)
+  // console.log(filters.value.length)
+  getMembers('all', filters.value, 1, categoryB.value, false)
 }
 
 const reloadForm = () => {
@@ -102,7 +100,7 @@ const reloadForm = () => {
               v-model="filters"
               class="input custom-text-filter"
               placeholder="Search..."
-              @keyup="filtersSearch"
+              @keyup.enter="filtersSearch"
             />
           </V-Control>
         </V-Field>
@@ -196,7 +194,6 @@ const reloadForm = () => {
           :members="members"
           :pagination-data="paginationData"
           :filters="filters"
-          :filter-change="filterChange"
           @onSearch="onSearch"
         />
       </div>

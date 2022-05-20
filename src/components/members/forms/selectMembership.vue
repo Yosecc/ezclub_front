@@ -101,6 +101,8 @@ const change = (val) => {
       memberMembership: inputsMember,
       familyMembership: inputsFamilies,
     })
+
+    // console.log('val',val)
     emit('changeStep', val)
   }
 }
@@ -142,8 +144,14 @@ const arregloDatos = (member, membresiaInputs, id) => {
 
   if (categorieActive.value == 'Prospect') {
     getInput(membresiaInputs, 'recurrence').model = false
+    getInput(membresiaInputs, 'recurrence').display = false
+    getInput(membresiaInputs, 'is_initiation_fee').model = true
+    getInput(membresiaInputs, 'is_card_price').model = true
   } else {
     getInput(membresiaInputs, 'recurrence').model = true
+    getInput(membresiaInputs, 'recurrence').display = true
+    getInput(membresiaInputs, 'is_initiation_fee').model = false
+    getInput(membresiaInputs, 'is_card_price').model = false
   }
 
   arregloMembresias.member = member

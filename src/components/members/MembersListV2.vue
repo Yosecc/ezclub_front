@@ -15,19 +15,19 @@ const filterDate = ref('all')
 const paginationData = ref({})
 
 const filteredData = computed(() => {
-  if (!props.filters) {
-    return props.members
-  } else {
-    return props.members.filter((item) => {
-      return (
-        item.name.match(new RegExp(props.filters, 'i')) ||
-        item.last_name.match(new RegExp(props.filters, 'i')) ||
-        item.id == props.filters ||
-        item.phone == props.filters ||
-        item.personal_identifications == props.filters
-      )
-    })
-  }
+  // if (!props.filters) {
+  return props.members
+  // } else {
+  //   return props.members.filter((item) => {
+  //     return (
+  //       item.name.match(new RegExp(props.filters, 'i')) ||
+  //       item.last_name.match(new RegExp(props.filters, 'i')) ||
+  //       item.id == props.filters ||
+  //       item.phone == props.filters ||
+  //       item.personal_identifications == props.filters
+  //     )
+  //   })
+  // }
 })
 
 watch(

@@ -153,6 +153,12 @@ const memberGuardianComputed = computed(() => {
 
 const changeStep = (val, payment = 3, cashObj = {}) => {
   if (categoriesMembers.value.model == 'Prospect') {
+    // if(val == 3){
+    //   val = 2
+    // }
+    // if(val == 2){
+    //   val = 1
+    // }
   }
 
   if (val == 6) {

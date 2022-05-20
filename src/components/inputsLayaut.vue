@@ -132,15 +132,17 @@ const takePhoto = (event) => {
       <V-Field
         v-else-if="input.typeInput == 'switchEventChangeInput'"
         :data-class="input.class"
+        v-show="typeof input.display != 'undefined' ? input.display : true"
         grouped
       >
+        <!-- <p>{{ typeof input.display }}</p> -->
         <V-Control :has-error="input.hasError ?? false">
           <V-SwitchSegment
             v-model="input.model"
             :label-true="input.values[1]"
             :label-false="input.values[0]"
             color="primary"
-            @change="input.change(inputsStep)"
+            @change="input.change ? input.change(inputsStep) : null"
           />
         </V-Control>
       </V-Field>
@@ -343,6 +345,12 @@ const takePhoto = (event) => {
         v-else-if="input.typeInput == 'selectDataActionChangeInput'"
         :data-class="input.class"
       >
+        <label class="label" v-if="input.isLabel" :for="input.name">
+          <p class="m-0 text-left">
+            {{ input.label ? input.label : input.placeholder }}
+            <span v-if="input.required" style="color: red">*</span>
+          </p>
+        </label>
         <V-Control class="input-select" :has-error="input.hasError ?? false">
           <div class="select">
             <select

@@ -713,6 +713,7 @@ export const membershipsData = reactive([
     model: true,
     disabled: false,
     class: 'is-12',
+    display: true,
     isLabel: true,
   },
   {
@@ -771,24 +772,7 @@ export const membershipsData = reactive([
     class: 'is-12',
     isLabel: true,
   },
-  {
-    typeInput: 'number',
-    name: 'initiation_fee',
-    required: true,
-    placeholder: 'Initiation fee',
-    model: [],
-    disabled: true,
-    class: 'is-4',
-    isLabel: true,
-  },
-  {
-    typeInput: 'checkbox',
-    name: 'is_initiation_fee',
-    placeholder: 'No initiation fee',
-    model: [],
-    disabled: false,
-    class: 'is-4',
-  },
+
   {
     typeInput: 'selectDataActionChangeInput',
     name: 'discount',
@@ -801,6 +785,27 @@ export const membershipsData = reactive([
     isLabel: true,
   },
   {
+    typeInput: 'switchEventChangeInput',
+    name: 'is_initiation_fee',
+    values: ['', 'No initiation fee'],
+    placeholder: 'No initiation fee',
+    default: false,
+    model: false,
+    disabled: false,
+    class: 'is-3',
+    isLabel: true,
+  },
+  {
+    typeInput: 'switchEventChangeInput',
+    default: false,
+    name: 'is_card_price',
+    values: ['', 'Card'],
+    model: false,
+    disabled: false,
+    class: 'is-3',
+  },
+
+  {
     typeInput: 'selectData',
     name: 'staff_id',
     placeholder: 'Trainer',
@@ -809,6 +814,16 @@ export const membershipsData = reactive([
     disabled: false,
     required: false,
     class: 'is-12',
+  },
+  {
+    typeInput: 'hidden',
+    name: 'initiation_fee',
+    required: true,
+    placeholder: 'Initiation fee',
+    model: [],
+    disabled: true,
+    class: 'is-4',
+    isLabel: true,
   },
 ])
 
@@ -1490,8 +1505,8 @@ const Objectforthebudget = (inputs: any) => {
   return {
     memberships_id: getInput(inputs, 'memberships_id').model,
     recurrences_id: getInput(inputs, 'recurrences_id').model,
-    is_initiation_fee:
-      getInput(inputs, 'is_initiation_fee').model.length == 0 ? true : false,
+    is_initiation_fee: !getInput(inputs, 'is_initiation_fee').model,
+    is_card_price: getInput(inputs, 'is_card_price').model,
     discount: getInput(inputs, 'discount').data
       ? getInput(inputs, 'discount').data.code
       : null,

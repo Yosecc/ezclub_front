@@ -212,8 +212,15 @@ const onPaymentCash = (obj) => {
       <memberCheckoutCash :total="props.total" @onPaymentCash="onPaymentCash" />
     </div>
 
+    <div class="columns is-multiline justify-content-center mt-6">
+      <memberCheckoutRecibo
+        v-if="idMemberMembership && isMemberPayment"
+        :membership_member="idMemberMembership"
+      />
+    </div>
+
     <stripeAddCard
-      v-if="paymentMethod == 3"
+      v-if="paymentMethod == 3 && !isMemberPayment"
       :amount="props.total"
       :id="idMember"
       :member_membership="idMemberMembership"

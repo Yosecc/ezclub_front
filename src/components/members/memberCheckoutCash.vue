@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { onMounted, watch, ref, computed, defineProps, defineEmit } from 'vue'
-import { locationsSelect, terminales } from '/@src/models/Companies.ts'
-import { moneda, notyf, getInput } from '/@src/models/Mixin.ts'
+import { ref, computed, defineProps, defineEmit } from 'vue'
+import { moneda } from '/@src/models/Mixin.ts'
 
 const openModalCash = ref(false)
 const cash = ref(0)
@@ -80,7 +79,12 @@ const payment = () => {
         </p>
       </div>
       <div class="d-flex justify-content-center flex-wrap mb-4">
-        <VButton bold class="m-3" style="font-size: 14px" @click="cash = total">
+        <VButton
+          bold
+          class="m-3"
+          style="font-size: 14px"
+          @click="cash = total / 100"
+        >
           Full Payment {{ moneda(total / 100) }}</VButton
         >
         <div class="w-100"></div>

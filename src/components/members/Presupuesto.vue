@@ -20,7 +20,7 @@ const props = defineProps({
 
 <template>
   <VCard class="mb-4" v-if="presupuesto">
-    <h1 class="title is-6"></h1>
+    <!-- <h1 @click="window.print()" class="title is-6">PRINT</h1> -->
     <table class="table is-hoverable is-striped is-fullwidth">
       <thead>
         <tr>
@@ -95,6 +95,7 @@ const props = defineProps({
         </tr>
       </tbody>
     </table>
+
     <slot></slot>
   </VCard>
 </template>
