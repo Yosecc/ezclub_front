@@ -58,7 +58,7 @@ export const perpareDataInputs = (
   options = { anidados: false, array: true }
 ) => {
   const proccessDefault = (data) => {
-    validateData(data, options.array)
+    // validateData(data, options.array)
     const obj = {}
     if (data != null) {
       if (options.array) {

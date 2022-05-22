@@ -23,6 +23,7 @@ import {
   storeFirma,
   FormaLizar,
   storePaymentCash,
+  storeNewMembership,
 } from '/@src/models/Members.ts'
 
 const emit = defineEmit(['PaymentAction'])
@@ -31,6 +32,10 @@ const props = defineProps({
   member: {
     type: Array,
     required: true,
+  },
+  member_id: {
+    type: Number,
+    default: 0,
   },
   membresia: {
     type: Array,
@@ -55,6 +60,10 @@ const props = defineProps({
     type: Object,
     required: true,
   },
+  type: {
+    type: String,
+    default: 'create',
+  },
 })
 
 const paymentMethod = ref(null)
@@ -72,6 +81,7 @@ const save = () => {
   setLoading.value = true
   idMember.value = null
   idMemberMembership.value = null
+
   proccessMembership({
     member: props.member,
     contact: props.contact,
@@ -87,6 +97,34 @@ const save = () => {
     })
     .catch((error) => {})
   setLoading.value = false
+}
+
+const newMembership = () => {
+  paymentMethod.value = null
+  setLoading.value = true
+
+  idMember.value = props.member.id
+  idMemberMembership.value = null
+
+  const data = perpareDataInputs(props.membresia)
+  data.members_id = props.member_id
+  data.total = props.total
+  data.payment_type_id = 3
+
+  storeNewMembership(data)
+    .then((response) => {
+      idMember.value = response.data.id
+      idMemberMembership.value = response.data.membership_members_id
+      notyf.success('Success')
+      setLoading.value = false
+    })
+    .catch((error) => {
+      for (var i in error.response.data.errores) {
+        error.response.data.errores[i].forEach((e) => {
+          notyf.error(`${i}: ${e}`)
+        })
+      }
+    })
 }
 
 const isMemberPayment = ref(false)
@@ -144,7 +182,6 @@ const onPaymentCash = (obj) => {
     }
     storePaymentCash(idMemberMembership.value, datos)
       .then((response) => {
-        console.log(response.data)
         PaymentAction(idMember.value)
         notyf.success('Success Payment')
       })
@@ -156,6 +193,29 @@ const onPaymentCash = (obj) => {
       'The membership ID is required. Click on Process Membership to generate it automatically'
     )
   }
+}
+
+const subscribir = (payment_method) => {
+  setLoading.value = true
+  FormaLizar({
+    payment_method: payment_method,
+    amount: props.total,
+    user_id: idMember.value,
+    membership_member_id: idMemberMembership.value,
+    payment_type_id: 3,
+  })
+    .then((response) => {
+      PaymentAction(idMember.value)
+      notyf.success('Success')
+      setLoading.value = false
+    })
+    .catch((error) => {
+      for (var i in error.response.data.errores) {
+        error.response.data.errores[i].forEach((e) => {
+          notyf.error(`${i}: ${e}`)
+        })
+      }
+    })
 }
 </script>
 
@@ -177,10 +237,14 @@ const onPaymentCash = (obj) => {
 
     <VLoader size="small" :active="setLoading">
       <VButton
+        v-if="props.type == 'create'"
         color="success"
         @click="processMembershipStatus ? save() : null"
         :style="!processMembershipStatus ? { opacity: '.5' } : {}"
       >
+        Process Membership
+      </VButton>
+      <VButton v-else color="success" @click="newMembership">
         Process Membership
       </VButton>
     </VLoader>
@@ -218,6 +282,13 @@ const onPaymentCash = (obj) => {
         :membership_member="idMemberMembership"
       />
     </div>
+
+    <MemberCards
+      v-if="paymentMethod == 3 && !isMemberPayment"
+      :show-new-card="false"
+      :memberid="idMember"
+      @onMethodPayment="subscribir"
+    />
 
     <stripeAddCard
       v-if="paymentMethod == 3 && !isMemberPayment"

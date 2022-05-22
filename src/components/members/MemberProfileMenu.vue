@@ -110,7 +110,10 @@ const change = (key) => {
     <div
       class="d-flex justify-content-center align-items-center flex-column mb-4"
     >
-      <VAvatar :picture="`${API_WEB_URL}storage/${member.photo}`" size="xl" />
+      <VAvatar
+        :picture="member.photo ? `${API_WEB_URL}storage/${member.photo}` : ''"
+        size="xl"
+      />
 
       <div class="mt-5 text-center">
         <!-- <p>{{ member }}</p> -->

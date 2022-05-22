@@ -1,5 +1,5 @@
 import { ref, computed, onBeforeMount, reactive } from 'vue'
-import { Api } from '/@src/services'
+import { Api, API_WEB_URL } from '/@src/services'
 import { recurrences } from '/@src/models/Recurrences.ts'
 import { getLocationsDiciplines } from '/@src/models/Diciplines.ts'
 import { validateCupon } from '/@src/models/Discounts.ts'
@@ -762,15 +762,17 @@ export const membershipsData = reactive([
     isLabel: true,
   },
   {
-    typeInput: 'checkboxGroupSimpleEventInput',
+    typeInput: 'DropdownCheckbox',
     name: 'diciplines',
     text: 'Disciplines',
+    placeholder: 'Disciplines',
     required: true,
     model: [],
     values: [],
     disabled: false,
     class: 'is-12',
     isLabel: true,
+    drop: false,
   },
 
   {
@@ -806,7 +808,7 @@ export const membershipsData = reactive([
   },
 
   {
-    typeInput: 'selectData',
+    typeInput: 'DropdownCheckbox',
     name: 'staff_id',
     placeholder: 'Trainer',
     values: [],
@@ -814,6 +816,7 @@ export const membershipsData = reactive([
     disabled: false,
     required: false,
     class: 'is-12',
+    drop: false,
   },
   {
     typeInput: 'hidden',
@@ -1242,6 +1245,7 @@ export const DueDate = computed(() => {
 export const isSolvente = computed(() => {
   return member.value.isSolvente
 })
+
 export const sinMembresia = computed(() => {
   return member.value.sinMembresia
 })
@@ -1307,11 +1311,11 @@ const change_recurrences_id = function (inputsStep: any) {
 }
 
 const change_locations_id = function (inputsStep: any) {
-  // getLocationsDiciplines([this.model]).then((response: any) => {
-  //   getInput(inputsStep, 'diciplines').model = []
-  //   setInputValuesData(inputsStep, 'diciplines', response.data)
-  //   changeDiciplinesAll(inputsStep)
-  // })
+  getLocationsDiciplines([this.model]).then((response: any) => {
+    // getInput(inputsStep, 'diciplines').model = []
+    setInputValuesData(inputsStep, 'diciplines', response.data)
+    // changeDiciplinesAll(inputsStep)
+  })
 }
 
 const changeDiciplinesAll = (inputsStep: any) => {
@@ -1406,7 +1410,7 @@ export const setInputsEvents = (inputs: any) => {
   getInput(inputs, 'locations_id').change = change_locations_id
   getInput(inputs, 'discount').change = change_discount
   getInput(inputs, 'discount').filter = filter_discount
-  getInput(inputs, 'staff_id').filterOptionText = filterOptionText_staff_id
+  getInput(inputs, 'staff_id').filter = filterOptionText_staff_id
   getInput(inputs, 'diciplines').change = function (
     event: any,
     inputsStep: any
@@ -1530,7 +1534,7 @@ export const generaPresupuesto = async (membresia: any, member: any) => {
     ? getInput(member, 'leo_vet_fr').model
     : null
 
-  getPresupuesto(data)
+  const response = await getPresupuesto(data)
     .then((response) => {
       presupuestos.value.push({
         ...response.data,
@@ -1549,4 +1553,23 @@ export const generaPresupuesto = async (membresia: any, member: any) => {
         }
       }
     })
+
+  return response
+}
+
+export const arregloTrainers = (trainers: any) => {
+  const arr = []
+  trainers.forEach((e) => {
+    arr.push({
+      id: e.id,
+      picture: `${API_WEB_URL}storage/${e.photo}`,
+      initials: initials(e.name, e.last_name),
+      color: '',
+    })
+  })
+  return arr
+}
+
+export const initials = (name, lastname) => {
+  return name.substr(0, 1) + lastname.substr(0, 1)
 }

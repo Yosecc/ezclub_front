@@ -491,6 +491,60 @@ const takePhoto = (event) => {
           </V-Control>
         </div>
       </V-Field>
+      <!-- DropdownCheckbox -->
+      <V-Field
+        v-else-if="input.typeInput == 'DropdownCheckbox'"
+        v-show="input.values.length > 0"
+        :data-class="input.class"
+        :id="`${input.name}`"
+        class="DropdownCheckbox"
+      >
+        <VCard
+          @click="input.drop = !input.drop"
+          :color="undefined"
+          class="p-2 butt btn-card d-flex justify-content-between"
+        >
+          <p>{{ input.placeholder }}</p>
+          <div class="pr-4">
+            <p v-if="!input.drop">
+              <i class="fas fa-arrow-down" aria-hidden="true"></i>
+            </p>
+            <p v-if="input.drop">
+              <i class="fas fa-arrow-up" aria-hidden="true"></i>
+            </p>
+          </div>
+        </VCard>
+
+        <div
+          class="input-checkbox-drop-checkboxGroupSimple"
+          :class="[
+            input.hasError ? 'has-error' : '',
+            input.checkboxColumns ? 'columns is-multiline' : 'd-flex flex-wrap',
+          ]"
+          v-show="input.drop"
+        >
+          <V-Control
+            v-for="(check, keyG) in input.values"
+            :key="`check-${keyG}78`"
+            class="column is-4"
+            :class="input.checkboxColumns ? input.checkboxColumns : ''"
+          >
+            <V-Checkbox
+              v-model="input.model"
+              :value="check.id"
+              :label="!input.filter ? check.name : input.filter(check)"
+              :disabled="input.disabled ?? false"
+              color="primary"
+              :name="`check-${keyG}78-input${check.id}`"
+              :id="`check-${keyG}78-inputid${check.id}`"
+              @click="
+                input.click ? input.click($event, inputsStep, check.id) : null
+              "
+              @change="input.change ? input.change($event, inputsStep) : null"
+            />
+          </V-Control>
+        </div>
+      </V-Field>
       <!-- checkboxGroupSimpleAvatar -->
       <V-Field
         v-else-if="input.typeInput == 'checkboxGroupSimpleAvatar'"
@@ -662,5 +716,25 @@ const takePhoto = (event) => {
 input[disabled],
 select[disabled] {
   opacity: 0.3;
+}
+
+.DropdownCheckbox {
+  position: relative;
+  .butt {
+    background: #3b3b41;
+    border-radius: 4px;
+    padding-left: calc(0.75em - 1px);
+    cursor: pointer;
+  }
+  .input-checkbox-drop-checkboxGroupSimple {
+    position: absolute;
+    background: #3b3b41;
+    z-index: 9;
+    margin-top: 8px;
+    max-height: 300px;
+    overflow-y: scroll;
+    box-shadow: 2px 2px 9px rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+  }
 }
 </style>

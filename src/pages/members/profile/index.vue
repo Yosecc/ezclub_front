@@ -132,6 +132,7 @@ onMounted(() => {
 
 const mountMember = async () => {
   await getMember(route.query.id).then((response) => {
+    console.log('response.data', response.data)
     for (var i in response.data) {
       if (i == 'select_type') {
         if (response.data[i] == 'Individual') {
@@ -151,44 +152,16 @@ const mountMember = async () => {
             if (!response.data[i][e]) {
               console.error('no posee una locacion :(')
               // return
+            } else {
+              getInput(membershipsData, 'locations_id').model =
+                response.data[i][e].companies_locations_id
+
+              getLocationsDiciplines([
+                response.data[i][e].companies_locations_id,
+              ]).then((response) => {
+                setInputValuesData(membershipsData, 'diciplines', response.data)
+              })
             }
-            // getInput(membershipsData, 'locations_id').model =
-            //   response.data[i][e].companies_locations_id
-
-            // getLocationsDiciplines([
-            //   response.data[i][e].companies_locations_id,
-            // ]).then((response) => {
-            //   setInputValuesData(membershipsData, 'diciplines', response.data)
-            // })
-          } else if (e == 'recurrence') {
-            let recurrencesData = []
-
-            response.data[i].membership.amounts.forEach((element) => {
-              let recurrencesD = recurrences.value.find(
-                (e) => e.id == element.recurrences_id
-              )
-              recurrencesD.amount = element.amount
-              recurrencesData.push(recurrencesD)
-            })
-
-            getInput(membershipsData, 'recurrences_id').model =
-              response.data[i].recurrences_id
-
-            if (
-              !recurrencesData.find(
-                (e) => e.id == response.data[i].recurrences_id
-              )
-            ) {
-              console.error('no tiene un plan de membresia :( recurrences')
-              isLoading.value = false
-              // return
-            }
-            getInput(membershipsData, 'amount').model = recurrencesData.find(
-              (e) => e.id == response.data[i].recurrences_id
-            ).amount
-          } else if (e == 'is_recurrence') {
-            getInput(membershipsData, 'recurrence').model =
-              response.data[i][e] == 1 ? true : false
           } else if (e == 'diciplines') {
             getInput(membershipsData, 'diciplines').model = []
             response.data[i][e].forEach((element) => {
@@ -196,26 +169,19 @@ const mountMember = async () => {
                 element.diciplines_id
               )
             })
-          } else if (e == 'membership') {
-            getInput(membershipsData, 'initiation_fee').model =
-              response.data[i][e].initiation_fee
-          } else if (e == 'is_initiation_fee') {
-            getInput(membershipsData, 'is_initiation_fee').model =
-              response.data[i][e] == 0 ? [e] : []
-          } else if (e == 'discount') {
-            getInput(membershipsData, 'discount').disabled = true
-            if (response.data[i][e] != null) {
-              getInput(membershipsData.value, 'discount').model =
-                response.data[i][e].id
-            }
           } else {
             if (getInput(membershipsData, e) != undefined) {
               setInputModelData(membershipsData, e, response.data[i][e])
             }
           }
         }
-      } else if (i == 'staff_id') {
-        setInputModelData(membershipsData, i, response.data[i])
+      } else if (i == 'trainers') {
+        let a = []
+        response.data[i].forEach((e) => {
+          a.push(e.id)
+        })
+
+        setInputModelData(membershipsData, 'staff_id', a)
       } else if (i == 'emergency') {
         for (e in response.data[i]) {
           setInputModelData(emergencyInputs, e, response.data[i][e])
@@ -225,31 +191,17 @@ const mountMember = async () => {
           setInputModelData(parentInsputs, e, response.data[i][e])
         }
       } else if (i == 'leo_vet_fr') {
-        setInputModelData(inputsInformation, i, response.data[i] == 1 ? i : [])
+        setInputModelData(
+          inputsInformation,
+          i,
+          response.data[i] == 1 ? true : false
+        )
       } else {
         setInputModelData(inputsInformation, i, response.data[i])
       }
     }
     isLoading.value = false
-    // console.log('membershipsData', membershipsData.value)
   })
-}
-
-const newMembership = () => {
-  const data = perpareDataInputs(membershipsData.value)
-  data.members_id = member.value.id
-  storeNewMembership(data)
-    .then((response) => {
-      member.value.membership_members = response.data.membership_member
-      renewMembership.value = true
-    })
-    .catch((error) => {
-      for (var i in error.response.data.errores) {
-        error.response.data.errores[i].forEach((e) => {
-          notyf.error(`${i}: ${e}`)
-        })
-      }
-    })
 }
 </script>
 
@@ -289,7 +241,7 @@ const newMembership = () => {
             <p>{{ subMensaje }}</p>
           </div>
           <div>
-            <VButton
+            <!-- <VButton
               v-if="
                 getValueInput(membershipsData, 'memberships_id') &&
                 !sinMembresia
@@ -298,7 +250,7 @@ const newMembership = () => {
               @click="renewMembership = true"
             >
               Process Payment
-            </VButton>
+            </VButton> -->
 
             <!-- <VButton
               v-if="sinMembresia"

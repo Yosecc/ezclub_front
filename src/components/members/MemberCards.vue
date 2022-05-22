@@ -41,7 +41,7 @@ onMounted(() => {
     console.log(props.memberid)
     miembro = props.memberid
   }
-  console.log(miembro)
+  // console.log(miembro)
   if (!miembro) {
     console.error('Member Not Found')
     return

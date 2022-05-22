@@ -2,7 +2,11 @@
 import { computed, ref, onMounted, watch, defineProps, defineEmit } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { API_WEB_URL } from '/@src/services'
-import { membersSelected } from '/@src/models/Members.ts'
+import {
+  membersSelected,
+  arregloTrainers,
+  initials,
+} from '/@src/models/Members.ts'
 import moment from 'moment'
 const emit = defineEmit(['filterChange', 'onSearch'])
 
@@ -50,10 +54,6 @@ const openMemberCard = (status, member) => {
 const closeMemberCard = () => {
   memberCard.value.status = false
   memberCard.value.member = null
-}
-
-const initials = (name, lastname) => {
-  return name.substr(0, 1) + lastname.substr(0, 1)
 }
 
 watch(
@@ -235,22 +235,13 @@ watch(
                   {{ item.membership_members != null ? 'Active' : 'Inactive' }}
                 </span>
 
-                <span
-                  ><VAvatarStack
-                    v-if="item.trainer"
-                    :avatars="[
-                      {
-                        id: item.trainer.id,
-                        picture: `${API_WEB_URL}storage/${item.trainer.photo}`,
-                        initials: initials(
-                          item.trainer.name,
-                          item.trainer.last_name
-                        ),
-                        color: 'info',
-                      },
-                    ]"
+                <span>
+                  <VAvatarStack
+                    v-if="item.trainers"
+                    :avatars="arregloTrainers(item.trainers)"
                     size="small"
-                /></span>
+                  />
+                </span>
               </div>
             </div>
           </div>
