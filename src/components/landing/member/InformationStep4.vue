@@ -21,9 +21,10 @@ import {
 const isLoaderActive = ref(false)
 
 onMounted(() => {
-  for (var i in member.value) {
-    // setInputModelData(direccionInput,i,member.value[i])
-  }
+  console.log(member)
+  // for (var i in member.value) {
+  //   // setInputModelData(direccionInput,i,member.value[i])
+  // }
 })
 
 const onChangeStep = () => {
@@ -73,6 +74,7 @@ const finalizar = () => {
         <h2 class="dark-inverted title is-5">Card</h2>
       </div>
       <MemberCards
+        v-if="member"
         :method_default="'0000'"
         :memberid="member.id"
         :show-new-card="false"

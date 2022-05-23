@@ -39,15 +39,20 @@ const onMethodPayment = (MethodPayment) => {}
     </template>
     <template #header-right> </template>
     <template #content>
-      <VCard class="mb-4">
-        <p class="title is-5">Card List</p>
-        <MemberCards
-          v-if="member.user"
-          @onMethodPayment="onMethodPayment"
-          :method_default="member.user.pm_last_four"
-          :show-new-card="false"
-        />
-      </VCard>
+      <!-- <VCard class="mb-4"> -->
+      <p class="title is-5">Card List</p>
+      <MemberCards
+        :show-option="true"
+        class="mb-6"
+        v-if="member.user"
+        @onMethodPayment="onMethodPayment"
+        :method_default="member.user.pm_last_four"
+        :show-new-card="false"
+      />
+      <!-- </VCard> -->
+
+      <memberCreditCard />
+
       <VCard class="p-">
         <div class="mt-4">
           <table class="table is-hoverable is-fullwidth">

@@ -237,29 +237,10 @@ const mountMember = async () => {
         >
           <div>
             <h3 class="title is-5 mb-0">{{ mensaje }}</h3>
-
             <p>{{ subMensaje }}</p>
-          </div>
-          <div>
-            <!-- <VButton
-              v-if="
-                getValueInput(membershipsData, 'memberships_id') &&
-                !sinMembresia
-              "
-              color="success"
-              @click="renewMembership = true"
-            >
-              Process Payment
-            </VButton> -->
-
-            <!-- <VButton
-              v-if="sinMembresia"
-              :disabled="!getValueInput(membershipsData, 'memberships_id')"
-              color="success"
-              @click="newMembership"
-            >
-              New membership
-            </VButton> -->
+            <small v-if="member.subscription">
+              <p>{{ member.subscription.status }}</p>
+            </small>
           </div>
         </VCard>
         <memberPayment v-if="renewMembership" class="mb-4" />

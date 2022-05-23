@@ -19,6 +19,7 @@ import {
   generaPresupuesto,
   presupuestos,
   inputsInformation,
+  paymentInvoice,
 } from '/@src/models/Members.ts'
 
 import { getLocationsDiciplines } from '/@src/models/Diciplines.ts'
@@ -57,10 +58,18 @@ const InputsDisponibles = computed(() => {
 
 const onSave = () => {
   // isLoaderActive.value = true
+  console.log(membershipsData)
+  getInput(membershipsData, 'amount').required = false
+  getInput(membershipsData, 'initiation_fee').required = false
+  getInput(membershipsData, 'diciplines').required = false
   const data = perpareDataInputs(membershipsData)
   putMembership(data).then((response) => {
     notyf.success('Success')
     isLoaderActive.value = false
+
+    getInput(membershipsData, 'amount').required = true
+    getInput(membershipsData, 'initiation_fee').required = true
+    getInput(membershipsData, 'diciplines').required = true
   })
 }
 
@@ -127,6 +136,45 @@ const onPause = () => {
       }
     })
 }
+
+const itentPayment = ref(false)
+const retryPayment = (payment_method, payment_type_id = 3, cash = {}) => {
+  if (!confirm('Do you want to try the payment?')) {
+    return
+  }
+  let data = {
+    invoice_id: member.value.subscription.latest_invoice,
+    payment_type_id: payment_type_id,
+    payment_method: payment_method,
+    total: member.value.subscription.total_invoice,
+  }
+
+  if (payment_type_id == 1) {
+    data.changeBack = cash.changeBack
+    data.cash = cash.cash
+  }
+  console.log('llaj', data)
+  paymentInvoice(memberMermship.value.id, data)
+    .then((response) => {
+      notyf.success('success')
+      window.location.reload()
+    })
+    .catch((error) => {
+      if (typeof error.response.data == 'object') {
+        for (var i in error.response.data) {
+          error.response.data[i].forEach((e) => {
+            notyf.error(`${i} : ${e}`)
+          })
+        }
+      } else {
+        notyf.error(error.response.data)
+      }
+    })
+}
+
+const paymentCash = (obj) => {
+  retryPayment(null, 1, obj)
+}
 </script>
 
 <template>
@@ -186,6 +234,43 @@ const onPause = () => {
               <p><b>Cancel Membership</b></p>
             </VCard>
           </VLoader>
+        </div>
+
+        <div v-if="member && memberMermship" class="column is-4 mb-6 mt-4">
+          <VLoader
+            v-if="member.membership_members.is_recurrence"
+            size="small"
+            :active="isLoaderActive"
+          >
+            <VCard
+              color="success"
+              v-if="memberMermship"
+              outlined
+              @click="itentPayment = !itentPayment"
+              class="mr-4 btn-card text-center"
+            >
+              <p><b>Retry Payment</b></p>
+            </VCard>
+          </VLoader>
+        </div>
+
+        <div class="mb-4 column is-12" v-if="itentPayment">
+          <MemberCards
+            v-if="member.user"
+            @onMethodPayment="retryPayment"
+            :memberid="member.id"
+            :method_default="member.user.pm_last_four"
+            :show-new-card="false"
+            class="mb-4"
+            ancho="is-4"
+          >
+            <memberCheckoutCash
+              :total="member.subscription.total_invoice"
+              margin="mx-0"
+              class="is-4"
+              @onPaymentCash="paymentCash"
+            />
+          </MemberCards>
         </div>
 
         <VCard class="mb-4 column is-12" v-if="!presupuestos.length">

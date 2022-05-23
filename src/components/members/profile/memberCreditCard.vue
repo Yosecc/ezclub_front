@@ -1,129 +1,79 @@
 <script setup lang="ts">
-
 import { ref } from 'vue'
+import { paymentData, flipped } from '/@src/models/PaymentMethodsData.ts'
+import {
+  notyf,
+  getInput,
+  perpareDataInputs,
+  setInputModelData,
+  hasErrors,
+} from '/@src/models/Mixin.ts'
+import { member, storeCard } from '/@src/models/Members.ts'
 
+const isLoaderActive = ref(false)
+import swal from 'sweetalert'
 
-const creditCard = ref([
-  {
-    typeInput: 'text',
-    name:'name_card',
-    placeholder: 'Name Card',
-    model: '',
-    class: 'is-12',
-    keyUp: (event, input)=>{
-      flipped.value = false
-    }
-  },
-  {
-    typeInput: 'text',
-    name:'number_card',
-    placeholder: 'Number Card',
-    model: '',
-    class: 'is-12',
-    maxLength: 19,
-    keyUp: (event, input)=>{
-      flipped.value = false
-      var code = (event.which) ? event.which : event.keyCode;
-
-      if(code==8) { // backspace.
-        return true;
-      } else if(code>=48 && code<=57) { // is a number.
-        input.model = input.model.replace(/[^\dA-Z]/g, '').replace(/(.{4})/g, '$1 ').trim();
-      } else{ // other keys.
-        input.model = input.model.substr(0,input.model.length -1)
-        return false;
-      }
-
-    }
-  },
-  {
-    typeInput: 'text',
-    name:'expiration_date',
-    placeholder: 'Expiration Date',
-    model: '',
-    class: 'is-6',
-    maxLength: 5,
-    keyUp: (event, input)=>{
-      flipped.value = false
-      var code = (event.which) ? event.which : event.keyCode;
-
-      if(code==8) { // backspace.
-        return true;
-      } else if(code>=48 && code<=57) { // is a number.
-        if(input.model.length < 4){
-          input.model = input.model.replace(/[^\dA-Z]/g, '').replace(/(.{2})/g, '$1/').trim();
+const save = () => {
+  const data = perpareDataInputs(paymentData.value)
+  if (!hasErrors.value) {
+    isLoaderActive.value = true
+    storeCard(member.value.id, data)
+      .then((response) => {
+        notyf.success('Success')
+        isLoaderActive.value = false
+      })
+      .catch((error) => {
+        if (typeof error.response.data == 'object') {
+          for (var i in error.response.data) {
+            error.response.data[i].forEach((e) => {
+              notyf.error(`${i} : ${e}`)
+            })
+          }
+        } else {
+          notyf.error(error.response.data)
         }
-      } else{ // other keys.
-        input.model = input.model.substr(0,input.model.length -1)
-        return false;
-      }
-    }
-  },
-  {
-    typeInput: 'text',
-    name:'password_card',
-    placeholder: 'CVC',
-    model: '',
-    class: 'is-6',
-    maxLength: 3,
-    keyUp: (event, input)=>{
-      flipped.value = true
-      var code = (event.which) ? event.which : event.keyCode;
-
-      if(code==8) { // backspace.
-        return true;
-      } else if(code>=48 && code<=57) { // is a number.
-        return true
-      } else{ // other keys.
-        input.model = input.model.substr(0,input.model.length -1)
-        return false;
-      }
-    }
-  },
-])
-
-const creditCardData = (campo) => {
-  return creditCard.value.find((element) => element.name == campo)
+        isLoaderActive.value = false
+      })
+  }
 }
-
-const flipped = ref(false)
 </script>
-
 
 <template>
   <VCardAdvanced>
-    <template #header-left>
+    <!-- <template #header-left>
       <div>
         <h1 class="title is-4 mb-0">
        Credit Card Information
       </h1>
       <p>Edit member's payment information</p>
       </div>
-    </template>
+    </template> -->
     <template #header-right>
-      <VButton color="primary"> Save Changes </VButton>
+      <VLoader :active="isLoaderActive" size="small">
+        <VButton @click="save" color="primary"> New Card </VButton>
+      </VLoader>
     </template>
     <template #content>
-      <VCreditCard 
-        color="orange"
-        :number="creditCardData('number_card').model"
-        :name="creditCardData('name_card').model"
-        :expiry="creditCardData('expiration_date').model"
-        :cvc="creditCardData('password_card').model"
-        :flipped="flipped" 
-        @flip="flipped = !flipped" 
-        class="mb-6"
-      />
+      <VField>
+        <VControl>
+          <VCreditCard
+            color="orange"
+            :flipped="flipped"
+            @flip="flipped = !flipped"
+            :number="getInput(paymentData, 'card_number').model"
+            :name="getInput(paymentData, 'card_name').model"
+            :expiry="`${getInput(paymentData, 'date_day_expired').model}/${
+              getInput(paymentData, 'date_year_expired').model
+            }`"
+            :cvc="getInput(paymentData, 'cvv').model"
+          />
+        </VControl>
+      </VField>
       <div class="column is-8 mx-auto">
-        <inputsLayaut
-          :inputs-step="creditCard"
-        />
+        <inputsLayaut :inputs-step="paymentData" />
       </div>
     </template>
-    
   </VCardAdvanced>
 </template>
 
-<style lang="scss" scope>
-  
-</style>
+<style lang="scss" scope></style>

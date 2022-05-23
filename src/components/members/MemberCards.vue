@@ -1,10 +1,15 @@
 <script setup lang="ts">
 import { computed, ref, watch, defineEmit, defineProps, onMounted } from 'vue'
-import { member, getCardsMembers } from '/@src/models/Members.ts'
+import {
+  member,
+  getCardsMembers,
+  storedeletePaymentMethod,
+  storedefaultPaymentMethod,
+} from '/@src/models/Members.ts'
 import moment from 'moment'
 import { API_WEB_URL } from '/@src/services'
 import { useRoute } from 'vue-router'
-
+import { notyf } from '/@src/models/Mixin.ts'
 const emit = defineEmit(['onMethodPayment', 'onNewCard'])
 
 const route = useRoute()
@@ -29,25 +34,33 @@ const props = defineProps({
     type: String,
     default: 'is-6',
   },
+  showOption: {
+    type: Boolean,
+    default: false,
+  },
 })
 
-onMounted(() => {
+const miembro = computed(() => {
   let miembro = null
   if (member.value) {
     miembro = member.value.id
   }
 
   if (props.memberid) {
-    console.log(props.memberid)
     miembro = props.memberid
   }
+
+  return miembro
+})
+
+onMounted(() => {
   // console.log(miembro)
-  if (!miembro) {
+  if (!miembro.value) {
     console.error('Member Not Found')
     return
   }
   isLoading.value = true
-  getCardsMembers(miembro)
+  getCardsMembers(miembro.value)
     .then((response) => {
       isLoading.value = false
       cards.value = response.data
@@ -59,6 +72,44 @@ const selectMethodPayment = (id) => {
   payment_method.value = id
   emit('onMethodPayment', id)
 }
+
+const deletePaymentMethod = (payment_method) => {
+  storedeletePaymentMethod(miembro.value, payment_method)
+    .then((response) => {
+      notyf.success('Success')
+      window.location.reload()
+    })
+    .catch((error) => {
+      if (typeof error.response.data == 'object') {
+        for (var i in error.response.data) {
+          error.response.data[i].forEach((e) => {
+            notyf.error(`${i} : ${e}`)
+          })
+        }
+      } else {
+        notyf.error(error.response.data)
+      }
+    })
+}
+const defaultPaymentMethod = (payment_method) => {
+  storedefaultPaymentMethod(miembro.value, payment_method)
+    .then((response) => {
+      notyf.success('Success')
+      window.location.reload()
+    })
+    .catch((error) => {
+      console.log(error)
+      // if(typeof error.response.data == 'object'){
+      //     for (var i in error.response.data) {
+      //       error.response.data[i].forEach((e) => {
+      //         notyf.error(`${i} : ${e}`)
+      //       })
+      //     }
+      //   }else{
+      //      notyf.error(error.response.data)
+      //   }
+    })
+}
 </script>
 
 <template>
@@ -67,15 +118,11 @@ const selectMethodPayment = (id) => {
       <div
         v-for="(card, key) in cards"
         :key="`card-${key}`"
-        class="column"
+        class="column py-0"
         :class="ancho"
       >
-        <VCard
-          @click="selectMethodPayment(card.id)"
-          :color="payment_method == card.id ? 'success' : undefined"
-          class="btn-card"
-        >
-          <div class="d-flex align-items-start">
+        <VCard @click="selectMethodPayment(card.id)" class="btn-card h-100">
+          <div class="d-flex align-items-start justify-content-between">
             <p class="title is-1 mb-0">
               <i class="fas fa-credit-card" aria-hidden="true"></i>
             </p>
@@ -88,9 +135,21 @@ const selectMethodPayment = (id) => {
                 Payment Default
               </p>
             </div>
+            <div class="text-right" v-if="showOption">
+              <VButton @click="deletePaymentMethod(card.id)" class="mb-2">
+                <i class="fas fa-trash" aria-hidden="true"></i>
+              </VButton>
+              <VButton
+                @click="defaultPaymentMethod(card.id, card.card.last4)"
+                class="mb-2"
+              >
+                <i class="fas fa-check" aria-hidden="true"></i>
+              </VButton>
+            </div>
           </div>
         </VCard>
       </div>
+      <slot></slot>
       <div v-if="showNewCard" class="column is-12">
         <VCard @click="$emit('onNewCard')" color="success" class="btn-card">
           <div class="d-flex align-items-center">

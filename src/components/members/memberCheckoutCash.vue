@@ -23,6 +23,10 @@ const props = defineProps({
     type: [Number, String],
     default: 0,
   },
+  margin: {
+    type: String,
+    default: 'mx-2',
+  },
 })
 
 const emit = defineEmit(['onPaymentCash'])
@@ -39,13 +43,16 @@ const payment = () => {
 <template>
   <VCard
     color="warning"
-    class="mx-2 btn-card w-100 justify-content-center column is-4"
+    class="btn-card w-100 justify-content-center column is-4"
+    :class="margin"
     @click="openModalCash = true"
   >
     <p class="title is-3">
       <i class="fas fa-money-bill" aria-hidden="true"></i>
     </p>
-    <p class="title is-5">Cash</p>
+    <p class="title is-5">
+      Cash <b>{{ moneda(total / 100) }}</b>
+    </p>
   </VCard>
   <VModal
     :title="''"

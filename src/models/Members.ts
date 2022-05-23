@@ -1151,6 +1151,28 @@ export const cancelMembershipMembers = async () => {
   return response
 }
 
+export const storedeletePaymentMethod = async (
+  id: number,
+  paymentMethod: string
+) => {
+  const response = await Api.post(`members/deletePaymentMethod`, {
+    id,
+    paymentMethod,
+  })
+  return response
+}
+
+export const storedefaultPaymentMethod = async (
+  id: number,
+  paymentMethod: string
+) => {
+  const response = await Api.post(`members/defaultPaymentMethod`, {
+    id,
+    paymentMethod,
+  })
+  return response
+}
+
 export const storeContactEmergency = async (data: any) => {
   const response = await Api.post(
     `members/contactEmergencystore/${member.value.id}`,
@@ -1200,6 +1222,16 @@ export const subscriptionsCreateStripe = async () => {
     trial_end: 1,
     trial: true,
   })
+  return response
+}
+
+export const storeCard = async (id: string, data: object) => {
+  const response = await Api.post(`card_member/${id}`, data)
+  return response
+}
+
+export const paymentInvoice = async (id: string, data: object) => {
+  const response = await Api.post(`paymentInvoice/${id}`, data)
   return response
 }
 
