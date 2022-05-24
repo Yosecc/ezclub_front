@@ -16,7 +16,12 @@ import {
 } from '/@src/models/Store.ts'
 import { Api } from '/@src/services'
 import { notyf, setInputValuesData, getInput } from '/@src/models/Mixin.ts'
-import { getCompany, company, locationsSelect } from '/@src/models/Companies.ts'
+import {
+  getCompany,
+  company,
+  locationsActives,
+  locationsSelect,
+} from '/@src/models/Companies.ts'
 import {
   products,
   getProducts,
@@ -50,20 +55,23 @@ const changeLocation = function (value) {
   geCategories()
 }
 
-const route = useRoute()
-const router = useRouter()
-
-onMounted(() => {
-  getTaxes()
-  getCompany().then((response) => {
-    setInputValuesData(locationsSelect, 'locations_id', company.value.locations)
+watch(
+  () => company.value,
+  () => {
+    setInputValuesData(locationsSelect, 'locations_id', locationsActives.value)
     getInput(locationsSelect.value, 'locations_id').change = changeLocation
     if (cookies.get('locations_id') != null) {
       getInput(locationsSelect.value, 'locations_id').model =
         cookies.get('locations_id')
       changeLocation(cookies.get('locations_id'))
     }
-  })
+  }
+)
+
+const route = useRoute()
+const router = useRouter()
+
+onMounted(() => {
   if (route.query.payment_intent_client_secret != undefined) {
     if (route.query.redirect_status == 'succeeded') {
       activateOrders(route.query.payment_intent_client_secret).then(

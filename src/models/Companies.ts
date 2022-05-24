@@ -21,6 +21,10 @@ export const locations = computed(() => {
   if (company.value) return company.value.locations
   return []
 })
+export const locationsActives = computed(() => {
+  if (company.value) return company.value.locations.filter((e) => e.status == 1)
+  return []
+})
 
 export const terminales = computed(() => {
   if (company.value) {

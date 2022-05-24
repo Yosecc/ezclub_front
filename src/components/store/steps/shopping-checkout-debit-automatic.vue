@@ -10,6 +10,7 @@ import {
   finishPaymentOrder,
   member,
   order,
+  discountInput,
 } from '/@src/models/Store.ts'
 
 const loadingOptionDebit = ref(false)
@@ -41,6 +42,7 @@ const debitAutomaticPaymentDefault = (obj) => {
     member_id: member.value.id,
     locations_id: getInput(locationsSelect.value, 'locations_id').model,
     payment_method: member.value.payment_method,
+    discount: getInput(discountInput, 'discount').model,
   })
     .then((response) => {
       loadingOptionDebit.value = false

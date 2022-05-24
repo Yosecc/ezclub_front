@@ -3,6 +3,7 @@ import { onMounted, watch, ref, computed, defineProps, defineEmit } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { Api, API_WEB_URL } from '/@src/services'
 import { moneda, notyf, getInput } from '/@src/models/Mixin.ts'
+import { getDiscounts } from '/@src/models/Discounts.ts'
 import {
   cart,
   total,
@@ -19,6 +20,7 @@ import {
   finishPayment,
   openModalRecibo,
   member,
+  discountInput,
 } from '/@src/models/Store.ts'
 import { locationsSelect, terminales } from '/@src/models/Companies.ts'
 import swal from 'sweetalert'
@@ -38,7 +40,10 @@ watch(
 )
 
 onMounted(() => {
-  console.log('se monta el checkout')
+  getInput(discountInput, 'discount').model = ''
+  getDiscounts(1, 'product').then((response) => {
+    getInput(discountInput, 'discount').values = response.data.discounts
+  })
   order.value = null
 })
 
@@ -67,20 +72,6 @@ const paymentSwipeCard = (id) => {
     return
   }
   terminal_id.value = id
-
-  // Enable pusher logging - don't include this in production
-  // Pusher.logToConsole = true
-  // var pusher = new Pusher('bfeef3fa74babbbef3cb', {
-  //   cluster: 'us2',
-  // })
-
-  // var channel = pusher.subscribe('payment_stripe_channel')
-  // channel.bind('payment_stripe_event', function (data) {
-  //   if (data.message.payload.type == 'terminal.reader.action_succeeded') {
-  //     // limpiezaSwipeCard()
-  //     // swal('Good job!', 'Payment success', 'success')
-  //   }
-  // })
 
   if (confirm('Send Terminal')) {
     notyf.success('Enviando....')
@@ -204,11 +195,11 @@ const limpiezaSwipeCard = () => {
 <template>
   <div class="columns is-multiline" style="min-height: 350px">
     <div class="column is-3">
-      <VCard class="">
+      <VCard class="mb-4">
         <slot></slot>
         <div>
           <p class="title is-6 mb-1"><b>Total</b></p>
-          <p v-if="order" class="title is-3">{{ moneda(order.total) }}</p>
+          <p v-if="order" class="title is-3">{{ moneda(order.total / 100) }}</p>
           <p v-else class="title is-3">{{ moneda(total) }}</p>
         </div>
       </VCard>
@@ -218,7 +209,7 @@ const limpiezaSwipeCard = () => {
       <SearchBar class="" v-model="member" />
     </div>
 
-    <div class="column is-12">
+    <div class="column is-12 mb-4">
       <div class="d-flex">
         <VCard
           v-tooltip="!member ? 'You must select a member' : ''"
@@ -303,6 +294,7 @@ const limpiezaSwipeCard = () => {
           </div>
         </VCard>
       </div>
+      <!-- Terminales -->
       <div class="mt-4 mx-2" v-if="terminalesOoptions">
         <div
           v-for="(terminal, key) in terminales"
@@ -370,6 +362,10 @@ const limpiezaSwipeCard = () => {
       <shopping-checkout-cash />
 
       <shopping-checkout-debit-automatic v-if="showOptionsDebit" />
+    </div>
+
+    <div v-if="member" class="mb-4 column is-12">
+      <inputsLayaut :slo="false" class="w-100" :inputs-step="discountInput" />
     </div>
 
     <shopping-send-recibo v-model="openModalRecibo" />

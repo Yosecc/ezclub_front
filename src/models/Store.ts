@@ -39,6 +39,24 @@ export const addProduct = (product: any) => {
   }
 }
 
+export const discountInput = reactive([
+  {
+    typeInput: 'selectDataActionChangeInput',
+    name: 'discount',
+    placeholder: 'Discount',
+    values: [],
+    data: null,
+    model: '',
+    disabled: false,
+    class: 'is-12',
+    isLabel: true,
+    change: function () {},
+    filter: function (option) {
+      return `${option.name}`
+    },
+  },
+])
+
 export const subTotal = computed(() => {
   let suma = 0
   cart.value.forEach((e) => {
@@ -55,6 +73,7 @@ export const tax = computed(() => {
 })
 
 export const total = computed(() => {
+  console.log('que lala', getInput(discountInput, 'discount').model)
   return subTotal.value + tax.value
 })
 

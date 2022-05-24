@@ -25,6 +25,10 @@ const props = defineProps({
     type: String,
     default: '',
   },
+  slo: {
+    type: Boolean,
+    default: true,
+  },
 })
 
 const configClassCol = () => {
@@ -62,7 +66,7 @@ const takePhoto = (event) => {
   <!-- <p>{{ typeMember }}</p> -->
 
   <div class="columns is-multiline contentInputLayaut">
-    <div class="column is-12">
+    <div v-if="slo" class="column is-12">
       <slot> </slot>
     </div>
     <div
