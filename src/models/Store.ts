@@ -3,6 +3,7 @@ import { Api } from '/@src/services'
 import { notyf } from '/@src/models/Mixin.ts'
 import { locationsSelect } from '/@src/models/Companies.ts'
 import { getInput } from '/@src/models/Mixin.ts'
+import { validateCupon } from '/@src/models/Discounts.ts'
 
 export const cart = ref([])
 export const openModalCash = ref(false)
@@ -50,7 +51,24 @@ export const discountInput = reactive([
     disabled: false,
     class: 'is-12',
     isLabel: true,
-    change: function () {},
+    change: function () {
+      if (this.model != '') {
+        validateCupon(
+          this.values.find((e: any) => e.id == this.model).code,
+          'membership'
+        )
+          .then((response: any) => {
+            this.data = response.data
+            notyf.success('Discuount valid')
+          })
+          .catch((error: any) => {
+            notyf.error(error.response.data)
+            this.model = ''
+          })
+      } else {
+        this.data = null
+      }
+    },
     filter: function (option) {
       return `${option.name}`
     },
@@ -62,18 +80,33 @@ export const subTotal = computed(() => {
   cart.value.forEach((e) => {
     suma += e.products_amount * e.count
   })
-  return suma
+
+  let disc = 0
+  if (discount.value) {
+    if (discount.value.type == 'percentaje') {
+      disc = (suma * discount.value.value) / 100
+    } else {
+      disc = discount.value.value
+    }
+  }
+
+  return suma - disc
 })
 
 export const tax = computed(() => {
-  if (taxes.value && subTotal.value) {
-    return (subTotal.value / 100) * taxes.value.find((e) => e.id == 1).value
-  }
+  // if (taxes.value && subTotal.value) {
+  return (subTotal.value * 7) / 100
+  // }
   return 0
 })
 
+export const discount = computed(() => {
+  return getInput(discountInput, 'discount').data
+    ? getInput(discountInput, 'discount').data
+    : null
+})
+
 export const total = computed(() => {
-  console.log('que lala', getInput(discountInput, 'discount').model)
   return subTotal.value + tax.value
 })
 
@@ -127,6 +160,9 @@ export const payment = () => {
     change_back: changeBack.value,
     products: cart.value,
     locations_id: getInput(locationsSelect.value, 'locations_id').model,
+  }
+  if (discount.value) {
+    data.discount = discount.value.id
   }
   storeOrders(data)
     .then((response: any) => {

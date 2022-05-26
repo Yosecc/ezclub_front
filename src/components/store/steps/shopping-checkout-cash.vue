@@ -9,6 +9,7 @@ import {
   changeBack,
   addCash,
   openModalCash,
+  discount,
 } from '/@src/models/Store.ts'
 </script>
 

@@ -21,6 +21,7 @@ import {
   openModalRecibo,
   member,
   discountInput,
+  discount,
 } from '/@src/models/Store.ts'
 import { locationsSelect, terminales } from '/@src/models/Companies.ts'
 import swal from 'sweetalert'
@@ -75,11 +76,13 @@ const paymentSwipeCard = (id) => {
 
   if (confirm('Send Terminal')) {
     notyf.success('Enviando....')
+
     storeSwipeCard({
       cart: cart.value,
       total: total.value,
       locations_id: getInput(locationsSelect.value, 'locations_id').model,
       terminal_id: terminal_id.value,
+      discount: discount.value ? discount.value.id : null,
     })
       .then((response) => {
         // loadingOptionDebit.value = false
@@ -199,8 +202,17 @@ const limpiezaSwipeCard = () => {
         <slot></slot>
         <div>
           <p class="title is-6 mb-1"><b>Total</b></p>
-          <p v-if="order" class="title is-3">{{ moneda(order.total / 100) }}</p>
-          <p v-else class="title is-3">{{ moneda(total) }}</p>
+          <p v-if="order" class="title is-3 mb-0">
+            {{ moneda(order.total / 100) }}
+          </p>
+          <p v-else class="title is-3 mb-0">{{ moneda(total) }}</p>
+          <p v-if="discount" class="mb-0">
+            Discount: {{ discount.name }} (
+            <span v-if="discount.type == 'percentaje'"
+              >{{ discount.value }}% off</span
+            >
+            <span v-else>-{{ discount.value }}$</span>)
+          </p>
         </div>
       </VCard>
     </div>
@@ -364,7 +376,7 @@ const limpiezaSwipeCard = () => {
       <shopping-checkout-debit-automatic v-if="showOptionsDebit" />
     </div>
 
-    <div v-if="member" class="mb-4 column is-12">
+    <div class="mb-4 column is-12">
       <inputsLayaut :slo="false" class="w-100" :inputs-step="discountInput" />
     </div>
 
