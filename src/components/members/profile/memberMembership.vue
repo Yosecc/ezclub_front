@@ -190,7 +190,8 @@ const paymentCash = (obj) => {
         <div v-if="member && memberMermship" class="column is-12">
           <VCard color="info">
             <p><small>Membership</small></p>
-            <p class="title is-4">{{ memberMermship.membership.name }}</p>
+            <p class="title is-4 mb-0">{{ memberMermship.membership.name }}</p>
+            <p>{{ memberMermship.recurrence.descriptions }}</p>
           </VCard>
         </div>
 
@@ -249,7 +250,7 @@ const paymentCash = (obj) => {
               @click="itentPayment = !itentPayment"
               class="mr-4 btn-card text-center"
             >
-              <p><b>Retry Payment</b></p>
+              <p><b>Payment Now</b></p>
             </VCard>
           </VLoader>
         </div>
