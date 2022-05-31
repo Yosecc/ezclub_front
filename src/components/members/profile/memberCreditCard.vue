@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { paymentData, flipped } from '/@src/models/PaymentMethodsData.ts'
 import {
   notyf,
@@ -7,11 +7,16 @@ import {
   perpareDataInputs,
   setInputModelData,
   hasErrors,
+  cleanUpModelInputs,
 } from '/@src/models/Mixin.ts'
 import { member, storeCard } from '/@src/models/Members.ts'
 
 const isLoaderActive = ref(false)
 import swal from 'sweetalert'
+
+onMounted(() => {
+  cleanUpModelInputs(paymentData.value)
+})
 
 const save = () => {
   const data = perpareDataInputs(paymentData.value)
@@ -21,6 +26,7 @@ const save = () => {
       .then((response) => {
         notyf.success('Success')
         isLoaderActive.value = false
+        cleanUpModelInputs(paymentData.value)
       })
       .catch((error) => {
         if (typeof error.response.data == 'object') {

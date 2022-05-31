@@ -54,7 +54,7 @@ export const mismatarjeta = ref([
 
 export const inputsInformation = ref([
   {
-    typeInput: 'switchEventChange',
+    typeInput: 'switchEventChangeInput',
     name: 'select_type',
     values: ['Individual', 'Company'],
     model: false,
@@ -63,6 +63,13 @@ export const inputsInformation = ref([
     isLabel: true,
     categories: ['Adult'],
     typeMember: ['Individual', 'Company'],
+    change: function (inputs: any) {
+      if (this.model) {
+        getInput(inputs, 'company_name').typeInput = 'hidden'
+      } else {
+        getInput(inputs, 'company_name').typeInput = 'text'
+      }
+    },
   },
   {
     typeInput: 'file',
@@ -344,6 +351,17 @@ export const inputsInformation = ref([
     placeholder: 'LEO / VET / FR ID#',
     model: 1,
     class: 'is-6',
+    isLabel: true,
+    categories: ['Adult', 'Minor', 'Prospect'],
+    typeMember: ['Individual', 'Company'],
+  },
+  {
+    typeInput: 'textarea',
+    name: 'notes',
+    placeholder: 'Notes',
+    model: '',
+    disabled: false,
+    class: 'is-12',
     isLabel: true,
     categories: ['Adult', 'Minor', 'Prospect'],
     typeMember: ['Individual', 'Company'],
@@ -1236,6 +1254,9 @@ export const paymentInvoice = async (id: string, data: object) => {
 }
 
 export const memberMermship = computed(() => {
+  if (!member.value) {
+    return null
+  }
   return member.value.membership_members
 })
 
@@ -1550,22 +1571,24 @@ const Objectforthebudget = (inputs: any) => {
 }
 
 export const generaPresupuesto = async (membresia: any, member: any) => {
-  if (getInput(member, 'email').model == '') {
-    notyf.error('Email is required')
-    return
-  }
-
   const data = {
     ...Objectforthebudget(membresia),
   }
 
-  data.email = getInput(member, 'email')
-    ? getInput(member, 'email').model
-    : null
+  if (categorieActive.value == 'Minor') {
+    data.email = getInput(parentInsputs.value, 'parent_email')
+      ? getInput(parentInsputs.value, 'parent_email').model
+      : null
+  } else {
+    data.email = getInput(member, 'email')
+      ? getInput(member, 'email').model
+      : null
+  }
+
   data.leo_vet_fr = getInput(member, 'leo_vet_fr')
     ? getInput(member, 'leo_vet_fr').model
     : null
-
+  console.log(data)
   const response = await getPresupuesto(data)
     .then((response) => {
       presupuestos.value.push({
@@ -1575,10 +1598,10 @@ export const generaPresupuesto = async (membresia: any, member: any) => {
       })
     })
     .catch((error) => {
-      for (const e in error.response.data) {
-        if (typeof error.response.data == 'string') {
-          notyf.error(`${error.response.data[e]}`)
-        } else {
+      if (typeof error.response.data == 'string') {
+        notyf.error(`${error.response.data}`)
+      } else {
+        for (const e in error.response.data) {
           error.response.data[e].forEach((i) => {
             notyf.error(`${e}: ${i}`)
           })

@@ -30,6 +30,7 @@ import {
   notyf,
   getInput,
   monedaDecimal,
+  moneda,
 } from '/@src/models/Mixin.ts'
 import { Api, API_WEB_URL } from '/@src/services'
 import { recurrences } from '/@src/models/Recurrences.ts'
@@ -50,7 +51,7 @@ const mebershipMemberid = ref(null)
 
 const InputsDisponibles = computed(() => {
   if (member.value && memberMermship.value) {
-    let d = ['locations_id', 'diciplines', 'staff_id']
+    let d = ['locations_id', 'diciplines', 'staff_id', 'discount']
     return membershipsData.filter((e) => d.includes(e.name))
   }
   return membershipsData
@@ -162,9 +163,13 @@ const retryPayment = (payment_method, payment_type_id = 3, cash = {}) => {
     .catch((error) => {
       if (typeof error.response.data == 'object') {
         for (var i in error.response.data) {
-          error.response.data[i].forEach((e) => {
-            notyf.error(`${i} : ${e}`)
-          })
+          if (typeof error.response.data[i] == 'array') {
+            // error.response.data[i].forEach((e) => {
+            //   notyf.error(`${i} : ${e}`)
+            // })
+          } else {
+            notyf.error(error.response.data[i])
+          }
         }
       } else {
         notyf.error(error.response.data)
@@ -188,10 +193,35 @@ const paymentCash = (obj) => {
     <template #content>
       <div class="columns is-multiline justify-content-center">
         <div v-if="member && memberMermship" class="column is-12">
-          <VCard color="info">
-            <p><small>Membership</small></p>
-            <p class="title is-4 mb-0">{{ memberMermship.membership.name }}</p>
-            <p>{{ memberMermship.recurrence.descriptions }}</p>
+          <VCard class="d-flex justify-content-between" color="info">
+            <span>
+              <p><small>Membership</small></p>
+              <p class="title is-4 mb-0">
+                {{ memberMermship.membership.name }}
+              </p>
+              <p>{{ memberMermship.recurrence.descriptions }}</p>
+              <p v-if="memberMermship.discount">
+                {{ memberMermship.discount }}
+              </p>
+            </span>
+            <span class="text-right">
+              <p>
+                <small
+                  ><b>Payment Method:</b>
+                  {{ memberMermship.payment_type.name }}</small
+                >
+              </p>
+              <p>
+                <small>{{
+                  memberMermship.recurrence.is_recurrence
+                    ? 'Recurrence'
+                    : 'no recurrence'
+                }}</small>
+              </p>
+              <p class="title is-4">
+                {{ moneda(member.subscription.total_invoice / 100) }}
+              </p>
+            </span>
           </VCard>
         </div>
 
@@ -332,6 +362,120 @@ const paymentCash = (obj) => {
             <VButton @click="presupuestos = []" color="danger">Cancel</VButton>
           </div>
         </div>
+
+        <div
+          v-if="member && memberMermship"
+          class="columns is-multiline column mt-4 is-12"
+        >
+          <div>
+            <p>
+              <b>Contract Date:</b>
+              {{
+                moment(member.membership_members.created_at).format(
+                  'ddd - DD MMM yyyy'
+                )
+              }}
+            </p>
+          </div>
+
+          <div class="column is-12">
+            <signComponent
+              @onSign="onSign"
+              :is-sign="!memberMermship.sign"
+              :contract="`contract_${member.id}_${member.membership_members.id}_${member.personal_identifications}.pdf`"
+              :url-contract="`generateContract/${member.id}`"
+            />
+          </div>
+        </div>
+
+        <VCard class="mb-4" v-if="false">
+          <h1 class="title is-6">Inactive Contract Information</h1>
+          <table class="table is-hoverable is-fullwidth">
+            <thead>
+              <tr>
+                <th scope="col">Contract</th>
+                <th scope="col">Agreement Date</th>
+                <th scope="col">Sold By</th>
+                <th scope="col">Membership Type</th>
+                <th scope="col">Decipline</th>
+                <th scope="col">Start Date</th>
+                <th scope="col">End Date</th>
+                <th scope="col">Auto Renew</th>
+                <th scope="col">Discount Type</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                v-for="(item, key) in memberMembershipsHistory"
+                :key="`item-${key}`"
+              >
+                <td>
+                  <a :href="item.contract"
+                    ><img src="/public/images/pdf_icon.png" width="40" alt=""
+                  /></a>
+                </td>
+                <td>
+                  {{ moment(item.created_at).format('dd - DD MMM YYYY') }}
+                </td>
+                <td>{{ item.user.name }}</td>
+                <td>{{ item.membership.name }}</td>
+
+                <td>
+                  <span
+                    v-if="
+                      item.diciplines != '' ||
+                      item.diciplines != null ||
+                      item.diciplines != undefined
+                    "
+                  >
+                    <span
+                      v-for="(dicipline, ke) in item.diciplines"
+                      :key="`dicipline-${ke}`"
+                      ><span> {{ dicipline.dicipline.name }} </span>
+                    </span>
+                  </span>
+
+                  <span v-else>N/A</span>
+                </td>
+                <td>
+                  {{ moment(item.created_at).format('dd - DD MMM YYYY') }}
+                </td>
+                <td>
+                  {{ moment(item.cacelation_date).format('dd - DD MMM YYYY') }}
+                </td>
+                <td>
+                  <span>
+                    {{ item.is_recurrence ? 'Recurrence' : 'Not Recurrence' }}
+                  </span>
+                  <span v-if="item.is_recurrence">{{
+                    item.recurrence.recurrence
+                  }}</span>
+                </td>
+                <td>N/A</td>
+              </tr>
+            </tbody>
+          </table>
+        </VCard>
+
+        <VCard class="mb-4" v-if="member && memberMermship">
+          <h1 class="title is-6">Active Waiver Information</h1>
+          <div class="text-center">
+            <a
+              target="_blank"
+              :href="`${API_WEB_URL}generateWeiver/${member.id}`"
+            >
+              <img src="/public/images/pdf_icon.png" width="40" alt="" />
+              <p>
+                weiver_{{ member.id }}_{{ member.membership_members.id }}_{{
+                  member.personal_identifications
+                }}.pdf
+              </p>
+              <V-Button color="success" outlined class="mt-4 py-1">
+                View PDF
+              </V-Button>
+            </a>
+          </div>
+        </VCard>
       </div>
     </template>
   </VCardAdvanced>

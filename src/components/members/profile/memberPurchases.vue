@@ -60,8 +60,8 @@ const onMethodPayment = (MethodPayment) => {}
               <tr>
                 <th scope="col">Description</th>
                 <th scope="col">Created</th>
-                <th scope="col">Start Period</th>
-                <th scope="col">End Period</th>
+                <!-- <th scope="col">Start Period</th> -->
+                <!-- <th scope="col">End Period</th> -->
                 <th scope="col">Mount</th>
                 <th scope="col">Download</th>
                 <th scope="col">Status</th>
@@ -69,15 +69,15 @@ const onMethodPayment = (MethodPayment) => {}
             </thead>
             <tbody v-if="memberMermship">
               <tr
-                v-for="(invoice, key) in member.invoices"
+                v-for="(invoice, key) in memberMermship.payments"
                 :key="`invoice-${key}`"
               >
-                <td>{{ invoice.subscription ?? 'Others' }}</td>
-                <td>{{ moment(invoice.created).format('MM/DD/YYYY') }}</td>
-                <td>{{ moment(invoice.period_start).format('MM/DD/YYYY') }}</td>
-                <td>{{ moment(invoice.period_end).format('MM/DD/YYYY') }}</td>
+                <td>{{ 'Subscription' }}</td>
+                <td>{{ moment(invoice.created_at).format('MM/DD/YYYY') }}</td>
+                <!-- <td>{{ moment(invoice.period_start).format('MM/DD/YYYY') }}</td> -->
+                <!-- <td>{{ moment(invoice.period_end).format('MM/DD/YYYY') }}</td> -->
 
-                <td>{{ moneda(invoice.total / 100) }}</td>
+                <td>{{ moneda(invoice.amount / 100) }}</td>
                 <td>
                   <a :href="invoice.invoice_pdf" download>
                     <VButton>
@@ -86,7 +86,7 @@ const onMethodPayment = (MethodPayment) => {}
                   </a>
                 </td>
 
-                <td>{{ invoice.status == 'paid' ? 'Paid' : 'error' }}</td>
+                <td>{{ invoice.status ? 'Paid' : 'Error' }}</td>
               </tr>
             </tbody>
             <!-- <tbody

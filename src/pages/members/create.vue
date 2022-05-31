@@ -129,6 +129,7 @@ const steps = ref([
 
 const inputsInputsInformationStep = computed(() => {
   return inputsInformation.value.filter((input) =>
+    // console.log(input)
     input.categories.includes(categoriesMembers.value.model)
   )
 })

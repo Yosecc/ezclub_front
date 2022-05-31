@@ -24,13 +24,13 @@ const onSave = () => {
   let fd = new FormData()
 
   for (var i in data) {
-    if (i == 'id_leo_vet_fr') {
-      if (data[i] == null) {
-        fd.append(i, 0)
-      }
-    } else {
-      fd.append(i, data[i])
-    }
+    // if (i == 'id_leo_vet_fr') {
+    //   if (data[i] == null) {
+    //     fd.append(i, 0)
+    //   }
+    // } else {
+    fd.append(i, data[i])
+    // }
   }
 
   putInformation(fd)
@@ -61,18 +61,6 @@ const onSave = () => {
       </VLoader>
     </template>
     <template #content>
-      <!-- <div class="p-6">
-        <h1 class="title is-5 mb-0">Profile Picture</h1>
-        <p>This is how other will recognize the member</p>
-        <div class="d-flex justify-content-center">
-          <div class="text-center">
-            <VAvatar picture="https://picsum.photos/150/151" class="mb-4" size="xl"/>
-            <inputsLayaut
-              :inputs-step="input_image"
-            />
-          </div>
-        </div>
-      </div> -->
       <inputsLayaut :inputs-step="inputsInformation" />
     </template>
   </VCardAdvanced>

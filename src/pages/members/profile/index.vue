@@ -137,8 +137,10 @@ const mountMember = async () => {
       if (i == 'select_type') {
         if (response.data[i] == 'Individual') {
           getInput(inputsInformation.value, 'select_type').model = false
+          getInput(inputsInformation.value, 'company_name').typeInput = 'hidden'
         } else {
           getInput(inputsInformation.value, 'select_type').model = true
+          getInput(inputsInformation.value, 'company_name').typeInput = 'text'
         }
       } else if (i == 'membership_members') {
         if (!response.data[i]) {
@@ -260,11 +262,7 @@ const mountMember = async () => {
               <p>
                 <b>Membership Active:</b> {{ memberMermship.membership.name }}
               </p>
-              <p
-                v-if="
-                  member.subscription && member.membership_members.is_recurrence
-                "
-              >
+              <p>
                 <b>Due Date: </b>
                 {{
                   moment(member.subscription.proxima_factura).format(
