@@ -1,1 +1,0 @@
-import{_ as e}from"./MinimalLayout.vue_vue&type=script&setup=true&lang.bdb5d86e.js";import{i as t,o as r,h as o,j as s,k as a}from"./vendor.d0c8bc4f.js";const u={};u.render=function(u,n){const i=t("RouterView"),d=e;return r(),o(d,null,{default:s((()=>[a(i)])),_:1})};export default u;
