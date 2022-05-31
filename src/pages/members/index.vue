@@ -4,7 +4,7 @@ import { onMounted, watch, ref, computed } from 'vue'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
 import { useRoute, useRouter } from 'vue-router'
 import { Api } from '/@src/services'
-import { members } from '/@src/models/Members.ts'
+import { members, subscriptionsCreateStripe } from '/@src/models/Members.ts'
 pageTitle.value = 'Members'
 useHead({
   title: 'List Members',
@@ -189,6 +189,10 @@ const reloadForm = () => {
               </V-Button>
             </V-Control>
           </V-Field>
+        </div>
+
+        <div class="w-100 d-flex justify-content-end mb-4">
+          <membersOptionDropdown />
         </div>
         <MembersListV2
           :members="members"

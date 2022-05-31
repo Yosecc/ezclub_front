@@ -204,6 +204,10 @@ const paymentCash = (obj) => {
               <p>{{ memberMermship.recurrence.descriptions }}</p>
               <p v-if="memberMermship.discount">
                 {{ memberMermship.discount.value }}
+                <span v-if="memberMermship.discount.type == 'percentaje'"
+                  >%</span
+                >
+                <span v-else>$</span>
               </p>
             </span>
             <span class="text-right">
@@ -227,7 +231,7 @@ const paymentCash = (obj) => {
           </VCard>
         </div>
 
-        <div v-if="member && memberMermship" class="column is-4 mb-6 mt-4">
+        <div v-if="member && memberMermship" class="column is-3 mb-6 mt-4">
           <VLoader
             v-if="member.membership_members.is_recurrence"
             size="small"
@@ -243,15 +247,15 @@ const paymentCash = (obj) => {
               class="mr-4 btn-card text-center"
             >
               <p><b>HOLD Membership</b></p>
-              <!-- <span v-if="member.subscription.pause_collection != null"
+              <span v-if="member.subscription.pause_collection != null"
                 >Active until:
                 {{ member.subscription.pause_collection.resumes_at }}</span
-              > -->
+              >
             </VCard>
           </VLoader>
         </div>
 
-        <div v-if="member && memberMermship" class="column is-4 mb-6 mt-4">
+        <div v-if="member && memberMermship" class="column is-3 mb-6 mt-4">
           <VLoader
             v-if="member.membership_members.is_recurrence"
             size="small"
@@ -267,10 +271,10 @@ const paymentCash = (obj) => {
               class="mr-4 btn-card text-center"
             >
               <p><b>Pause Payment</b></p>
-              <!-- <span v-if="member.subscription.pause_collection != null"
+              <span v-if="member.subscription.pause_collection != null"
                 >Active until:
                 {{ member.subscription.pause_collection.resumes_at }}</span
-              > -->
+              >
             </VCard>
           </VLoader>
           <V-Modal
@@ -289,7 +293,7 @@ const paymentCash = (obj) => {
           </V-Modal>
         </div>
 
-        <div v-if="member && memberMermship" class="column is-4 mb-6 mt-4">
+        <div v-if="member && memberMermship" class="column is-3 mb-6 mt-4">
           <VLoader
             v-if="member.membership_members.is_recurrence"
             size="small"
@@ -307,7 +311,7 @@ const paymentCash = (obj) => {
           </VLoader>
         </div>
 
-        <div v-if="member && memberMermship" class="column is-4 mb-6 mt-4">
+        <div v-if="member && memberMermship" class="column is-3 mb-6 mt-4">
           <VLoader
             v-if="member.membership_members.is_recurrence"
             size="small"

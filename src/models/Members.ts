@@ -1238,7 +1238,7 @@ export const subscriptionsCreateStripe = async () => {
   const response = await Api.post(`members/subscriptions_create_stripe`, {
     members: membersSelected.value,
     trial_end: 1,
-    trial: true,
+    trial: false,
   })
   return response
 }

@@ -85,6 +85,7 @@ const props = defineProps({
     type: String,
   },
 })
+
 const colorCard = (member) => {
   if (member.membership_members == null) {
     return ''
@@ -222,7 +223,14 @@ watch(
                   </div>
                 </div>
 
-                <div class="flex-column d-flex">
+                <div class="align-items-center d-flex">
+                  <V-Checkbox
+                    class="p-0"
+                    v-model="membersSelected"
+                    color="primary"
+                    :label="' '"
+                    :value="item.id"
+                  />
                   <FlexTableDropdown :id-member="item.id" :member="item" />
                 </div>
               </div>
