@@ -116,17 +116,19 @@ const onSign = (base64) => {
 const PaymentAction = (data) => {
   // window.location.reload()
 }
-
+const centeredActionsOpen = ref(false)
+const fecha = ref(null)
 const onPause = () => {
   if (!confirm('Are you sure you want to perform this action?')) {
     return
   }
+
   isLoaderActive.value = true
-  pauseMembership(memberMermship.value.id)
+  pauseMembership(memberMermship.value.id, fecha.value)
     .then((response) => {
       notyf.success('Success Pause')
       isLoaderActive.value = false
-      window.location.reload()
+      // window.location.reload()
     })
     .catch((error) => {
       isLoaderActive.value = false
@@ -201,7 +203,7 @@ const paymentCash = (obj) => {
               </p>
               <p>{{ memberMermship.recurrence.descriptions }}</p>
               <p v-if="memberMermship.discount">
-                {{ memberMermship.discount }}
+                {{ memberMermship.discount.value }}
               </p>
             </span>
             <span class="text-right">
@@ -241,12 +243,50 @@ const paymentCash = (obj) => {
               class="mr-4 btn-card text-center"
             >
               <p><b>HOLD Membership</b></p>
-              <span v-if="member.subscription.pause_collection != null"
+              <!-- <span v-if="member.subscription.pause_collection != null"
                 >Active until:
                 {{ member.subscription.pause_collection.resumes_at }}</span
-              >
+              > -->
             </VCard>
           </VLoader>
+        </div>
+
+        <div v-if="member && memberMermship" class="column is-4 mb-6 mt-4">
+          <VLoader
+            v-if="member.membership_members.is_recurrence"
+            size="small"
+            :active="isLoaderActive"
+          >
+            <VCard
+              color="warning"
+              :outlined="
+                member.subscription.pause_collection != null ? false : true
+              "
+              v-if="memberMermship && member.subscription"
+              @click="centeredActionsOpen = true"
+              class="mr-4 btn-card text-center"
+            >
+              <p><b>Pause Payment</b></p>
+              <!-- <span v-if="member.subscription.pause_collection != null"
+                >Active until:
+                {{ member.subscription.pause_collection.resumes_at }}</span
+              > -->
+            </VCard>
+          </VLoader>
+          <V-Modal
+            :open="centeredActionsOpen"
+            actions="center"
+            @close="centeredActionsOpen = false"
+          >
+            <template #content>
+              <input type="date" v-model="fecha" class="input" />
+            </template>
+            <template #action>
+              <V-Button @click="onPause" color="primary" raised
+                >Confirm</V-Button
+              >
+            </template>
+          </V-Modal>
         </div>
 
         <div v-if="member && memberMermship" class="column is-4 mb-6 mt-4">

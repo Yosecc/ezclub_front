@@ -1150,9 +1150,9 @@ export const putMembership = async (data: any) => {
   return response
 }
 
-export const pauseMembership = async (id: any) => {
+export const pauseMembership = async (id: any, fecha: any = null) => {
   const response = await Api.get(
-    `members/pause_membership/${memberMermship.value.id}`
+    `members/pause_membership/${memberMermship.value.id}?fecha=${fecha}`
   )
   return response
 }
