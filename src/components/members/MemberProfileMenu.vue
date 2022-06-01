@@ -65,6 +65,10 @@ const itemsMenuAdult = [
     name: 'Purchases',
     component: 'memberPurchases',
   },
+  {
+    name: 'Credit',
+    component: 'memberCredit',
+  },
 ]
 
 const itemsMenuProspect = [
