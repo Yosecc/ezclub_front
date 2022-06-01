@@ -39,7 +39,6 @@ const onMethodPayment = (MethodPayment) => {}
     </template>
     <template #header-right> </template>
     <template #content>
-      <!-- <VCard class="mb-4"> -->
       <p class="title is-5">Card List</p>
       <MemberCards
         :show-option="true"
@@ -49,7 +48,6 @@ const onMethodPayment = (MethodPayment) => {}
         :method_default="member.user.pm_last_four"
         :show-new-card="false"
       />
-      <!-- </VCard> -->
 
       <memberCreditCard />
 
@@ -60,33 +58,45 @@ const onMethodPayment = (MethodPayment) => {}
               <tr>
                 <th scope="col">Description</th>
                 <th scope="col">Created</th>
-                <!-- <th scope="col">Start Period</th> -->
-                <!-- <th scope="col">End Period</th> -->
+                <th scope="col">Start Period</th>
+                <th scope="col">End Period</th>
                 <th scope="col">Mount</th>
+                <th scope="col">Method</th>
                 <th scope="col">Download</th>
                 <th scope="col">Status</th>
               </tr>
             </thead>
             <tbody v-if="memberMermship">
               <tr
-                v-for="(invoice, key) in memberMermship.payments"
+                v-for="(invoice, key) in member.invoices"
                 :key="`invoice-${key}`"
               >
-                <td>{{ 'Subscription' }}</td>
-                <td>{{ moment(invoice.created_at).format('MM/DD/YYYY') }}</td>
-                <!-- <td>{{ moment(invoice.period_start).format('MM/DD/YYYY') }}</td> -->
-                <!-- <td>{{ moment(invoice.period_end).format('MM/DD/YYYY') }}</td> -->
-
-                <td>{{ moneda(invoice.amount / 100) }}</td>
+                <td>{{ invoice.description }}</td>
                 <td>
-                  <a :href="invoice.invoice_pdf" download>
+                  {{ moment(invoice.created).format('MM/DD/YYYY') }}
+                </td>
+                <td>
+                  <span v-if="invoice.period_start">
+                    {{ moment(invoice.period_start).format('MM/DD/YYYY') }}
+                  </span>
+                  <span v-else></span>
+                </td>
+                <td>
+                  <span v-if="invoice.period_end">
+                    {{ moment(invoice.period_end).format('MM/DD/YYYY') }}
+                  </span>
+                  <span v-else></span>
+                </td>
+                <td>{{ moneda(invoice.total / 100) }}</td>
+                <td>{{ invoice.collection_method }}</td>
+                <td>
+                  <a :href="invoice.invoice_pdf" target="_blank" download>
                     <VButton>
                       <i class="fas fa-download" aria-hidden="true"></i>
                     </VButton>
                   </a>
                 </td>
-
-                <td>{{ invoice.status ? 'Paid' : 'Error' }}</td>
+                <td>{{ invoice.status }}</td>
               </tr>
             </tbody>
             <!-- <tbody
