@@ -90,7 +90,7 @@ const onMethodPayment = (MethodPayment) => {}
                 <td>{{ moneda(invoice.total / 100) }}</td>
                 <td>{{ invoice.collection_method }}</td>
                 <td>
-                  <a :href="invoice.invoice_pdf" target="_blank" download>
+                  <a :href="invoice.invoice_pdf" target="_blank">
                     <VButton>
                       <i class="fas fa-download" aria-hidden="true"></i>
                     </VButton>
