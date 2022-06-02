@@ -1230,7 +1230,9 @@ export const getCardsMembers = async (id: number) => {
 // Stripe
 export const getListInvoices = async (id: number) => {
   const response = await Api.get(`members/list_invoices/${id}`)
-  member.value.invoices = response.data
+  member.value.invoices = response.data.invoices
+  member.value.pagos = response.data.pagos
+  member.value.invoicesSistem = response.data.invoicesSistem
   return response
 }
 

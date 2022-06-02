@@ -51,69 +51,104 @@ const onMethodPayment = (MethodPayment) => {}
 
       <memberCreditCard />
 
-      <VCard class="p-">
-        <div class="mt-4">
-          <table class="table is-hoverable is-fullwidth">
-            <thead>
-              <tr>
-                <th scope="col">Description</th>
-                <th scope="col">Created</th>
-                <th scope="col">Start Period</th>
-                <th scope="col">End Period</th>
-                <th scope="col">Mount</th>
-                <th scope="col">Method</th>
-                <th scope="col">Download</th>
-                <th scope="col">Status</th>
-              </tr>
-            </thead>
-            <tbody v-if="memberMermship">
-              <tr
-                v-for="(invoice, key) in member.invoices"
-                :key="`invoice-${key}`"
-              >
-                <td>{{ invoice.description }}</td>
-                <td>
-                  {{ moment(invoice.created).format('MM/DD/YYYY') }}
-                </td>
-                <td>
-                  <span v-if="invoice.period_start">
-                    {{ moment(invoice.period_start).format('MM/DD/YYYY') }}
-                  </span>
-                  <span v-else></span>
-                </td>
-                <td>
-                  <span v-if="invoice.period_end">
-                    {{ moment(invoice.period_end).format('MM/DD/YYYY') }}
-                  </span>
-                  <span v-else></span>
-                </td>
-                <td>{{ moneda(invoice.total / 100) }}</td>
-                <td>{{ invoice.collection_method }}</td>
-                <td>
-                  <a :href="invoice.invoice_pdf" target="_blank">
-                    <VButton>
-                      <i class="fas fa-download" aria-hidden="true"></i>
-                    </VButton>
-                  </a>
-                </td>
-                <td>{{ invoice.status }}</td>
-              </tr>
-            </tbody>
-            <!-- <tbody
-              v-for="(payment, key) in paymentsMemberchipsHistory"
-              :key="`paymentHistory-${key}`"
+      <VCard class="mb-4">
+        <p>Invoices</p>
+        <table class="table is-hoverable is-fullwidth">
+          <thead>
+            <tr>
+              <th scope="col">Description</th>
+              <th scope="col">Created</th>
+              <th scope="col">Start Period</th>
+              <th scope="col">End Period</th>
+              <th scope="col">Mount</th>
+              <th scope="col">Method</th>
+              <th scope="col">Download</th>
+              <th scope="col">Status</th>
+            </tr>
+          </thead>
+          <tbody v-if="memberMermship">
+            <tr
+              v-for="(invoice, key) in member.invoices"
+              :key="`invoice-${key}`"
             >
-              <tr v-for="(p, k) in payment.payments" :key="`pay-${k}`">
-                <td>{{ moment(p.created_at).format('DD/MM/YYYY') }}</td>
-                <td>{{ moment(p.created_at).format('HH:mm:ss') }}</td>
-                <td>{{ moneda(p.amount) }}</td>
-                <td>{{ p.payment_type.name }}</td>
-                <td>{{ payment.membership }}</td>
-                <td>{{ p.status ? 'succeded' : 'error' }}</td>
-              </tr>
-            </tbody> -->
-          </table>
-        </div>
+              <td>{{ invoice.description }}</td>
+              <td>
+                {{ moment(invoice.created).format('MM/DD/YYYY') }}
+              </td>
+              <td>
+                <span v-if="invoice.period_start">
+                  {{ moment(invoice.period_start).format('MM/DD/YYYY') }}
+                </span>
+                <span v-else></span>
+              </td>
+              <td>
+                <span v-if="invoice.period_end">
+                  {{ moment(invoice.period_end).format('MM/DD/YYYY') }}
+                </span>
+                <span v-else></span>
+              </td>
+              <td>{{ moneda(invoice.total / 100) }}</td>
+              <td>{{ invoice.collection_method }}</td>
+              <td>
+                <a :href="invoice.invoice_pdf" target="_blank">
+                  <VButton>
+                    <i class="fas fa-download" aria-hidden="true"></i>
+                  </VButton>
+                </a>
+              </td>
+              <td>{{ invoice.status }}</td>
+            </tr>
+          </tbody>
+          <!-- <tbody
+            v-for="(payment, key) in paymentsMemberchipsHistory"
+            :key="`paymentHistory-${key}`"
+          >
+            <tr v-for="(p, k) in payment.payments" :key="`pay-${k}`">
+              <td>{{ moment(p.created_at).format('DD/MM/YYYY') }}</td>
+              <td>{{ moment(p.created_at).format('HH:mm:ss') }}</td>
+              <td>{{ moneda(p.amount) }}</td>
+              <td>{{ p.payment_type.name }}</td>
+              <td>{{ payment.membership }}</td>
+              <td>{{ p.status ? 'succeded' : 'error' }}</td>
+            </tr>
+          </tbody> -->
+        </table>
+      </VCard>
+      <VCard class="mb-4">
+        <p>Payments</p>
+        <table class="table is-hoverable is-fullwidth">
+          <thead>
+            <tr>
+              <th scope="col">Description</th>
+              <th scope="col">Created</th>
+              <!-- <th scope="col">Start Period</th> -->
+              <!-- <th scope="col">End Period</th> -->
+              <th scope="col">Mount</th>
+              <th scope="col">Method</th>
+              <th scope="col">Download</th>
+              <th scope="col">Status</th>
+            </tr>
+          </thead>
+          <tbody v-if="memberMermship">
+            <tr v-for="(invoice, key) in member.pagos" :key="`pagos-${key}`">
+              <td>{{ invoice.description }}</td>
+              <td>
+                {{ moment(invoice.created).format('MM/DD/YYYY') }}
+              </td>
+
+              <td>{{ moneda(invoice.total / 100) }}</td>
+              <td>{{ invoice.collection_method }}</td>
+              <td>
+                <a :href="invoice.invoice_pdf" target="_blank">
+                  <VButton>
+                    <i class="fas fa-download" aria-hidden="true"></i>
+                  </VButton>
+                </a>
+              </td>
+              <td>{{ invoice.status }}</td>
+            </tr>
+          </tbody>
+        </table>
       </VCard>
     </template>
   </VCardAdvanced>
