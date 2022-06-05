@@ -59,7 +59,7 @@ const InputsDisponibles = computed(() => {
 
 const onSave = () => {
   // isLoaderActive.value = true
-  console.log(membershipsData)
+  // console.log(membershipsData)
   getInput(membershipsData, 'amount').required = false
   getInput(membershipsData, 'initiation_fee').required = false
   getInput(membershipsData, 'diciplines').required = false
@@ -76,9 +76,7 @@ const onSave = () => {
 
 const onNew = async () => {
   isLoaderActive.value = true
-
   await generaPresupuesto(membershipsData, inputsInformation.value)
-
   isLoaderActive.value = false
 }
 
@@ -156,7 +154,7 @@ const retryPayment = (payment_method, payment_type_id = 3, cash = {}) => {
     data.changeBack = cash.changeBack
     data.cash = cash.cash
   }
-  console.log('llaj', data)
+  // console.log('llaj', data)
   paymentInvoice(memberMermship.value.id, data)
     .then((response) => {
       notyf.success('success')
@@ -378,6 +376,7 @@ const paymentCash = (obj) => {
           </VLoader>
         </VCard>
 
+        <!-- Presupuesto -->
         <div v-if="!memberMermship" class="column is-12 mb-6 mt-4">
           <VPlaceload height="300px" class="mb-4" v-if="isLoaderActive" />
           <div v-if="presupuestos.length">
@@ -407,6 +406,7 @@ const paymentCash = (obj) => {
           </div>
         </div>
 
+        <!-- Contract -->
         <div
           v-if="member && memberMermship"
           class="columns is-multiline column mt-4 is-12"
@@ -501,6 +501,7 @@ const paymentCash = (obj) => {
           </table>
         </VCard>
 
+        <!-- WAIVER -->
         <VCard class="mb-4" v-if="member && memberMermship">
           <h1 class="title is-6">Active Waiver Information</h1>
           <div class="text-center">

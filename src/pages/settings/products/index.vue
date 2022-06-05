@@ -4,7 +4,12 @@ import { onMounted, watch, ref, computed } from 'vue'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
 // import { useRoute, useRouter } from 'vue-router'
 import { Api, API_WEB_URL } from '/@src/services'
-import { getCompany, company, locationsSelect } from '/@src/models/Companies.ts'
+import {
+  getCompany,
+  company,
+  locationsSelect,
+  locationsActives,
+} from '/@src/models/Companies.ts'
 import { getProducts, products } from '/@src/models/Products.ts'
 import { moneda, setInputValuesData, getInput } from '/@src/models/Mixin.ts'
 import { locationInventory } from '/@src/models/Inventory.ts'
@@ -17,7 +22,7 @@ useHead({
 
 onMounted(() => {
   getCompany().then((response) => {
-    setInputValuesData(locationsSelect, 'locations_id', company.value.locations)
+    setInputValuesData(locationsSelect, 'locations_id', locationsActives.value)
     getInput(locationsSelect.value, 'locations_id').change = changeLocation
     if (cookies.get('locations_id') != null) {
       getInput(locationsSelect.value, 'locations_id').model =
