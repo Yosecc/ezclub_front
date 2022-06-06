@@ -79,6 +79,7 @@ app.directive('tooltip', tooltip)
 const vMaskV2 = VueMaskDirective
 const vMaskV3 = {
   beforeMount: vMaskV2.bind,
+  mounted: vMaskV2.componentUpdated,
   updated: vMaskV2.componentUpdated,
   unmounted: vMaskV2.unbind,
 }
