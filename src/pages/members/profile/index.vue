@@ -270,6 +270,10 @@ const mountMember = async () => {
                   )
                 }}
               </p>
+              <p v-if="member.membership_members?.discount">
+                <b>Discount: </b>
+                {{ member.membership_members.discount.name }}
+              </p>
             </div>
             <div v-if="member.subscription">
               <VTag color="info" :label="member.subscription.status" rounded />
