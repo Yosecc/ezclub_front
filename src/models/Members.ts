@@ -334,15 +334,16 @@ export const inputsInformation = ref([
     typeMember: ['Individual', 'Company'],
   },
   {
-    typeInput: 'number',
+    typeInput: 'tel',
     name: 'phone',
-    placeholder: 'Phone Number',
+    placeholder: 'Phone Numbers',
     model: '',
     required: true,
     class: 'is-6',
     isLabel: true,
     categories: ['Adult', 'Prospect'],
     typeMember: ['Individual', 'Company'],
+    mask: '###-###-####',
   },
   {
     typeInput: 'switch',

@@ -191,6 +191,7 @@ const takePhoto = (event) => {
         v-else-if="
           [
             'text',
+            'tel',
             'date',
             'number',
             'email',
@@ -220,6 +221,7 @@ const takePhoto = (event) => {
             :placeholder="input.placeholder"
             :disabled="input.disabled ?? false"
             :maxLength="input.maxLength ?? ''"
+            v-mask="input.mask ? input.mask : '*'"
             @keyup="input.keyUp ? input.keyUp($event, input) : null"
             @change="input.change ? input.change($event, input) : null"
             :max="
