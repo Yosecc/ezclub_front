@@ -286,6 +286,7 @@ const mountMember = async () => {
         <memberCheckins v-show="Component == 'memberCheckins'" />
         <memberPurchases v-show="Component == 'memberPurchases'" />
         <memberWaiver v-show="Component == 'memberWaiver'" />
+        <memberCredit v-show="Component == 'memberCredit'" />
       </div>
     </div>
   </SidebarLayout>
