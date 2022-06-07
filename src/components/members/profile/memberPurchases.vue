@@ -40,6 +40,7 @@ const onMethodPayment = (MethodPayment) => {}
     <template #header-right> </template>
     <template #content>
       <p class="title is-5">Card List</p>
+
       <MemberCards
         :show-option="true"
         class="mb-6"
