@@ -65,6 +65,7 @@ const onMethodPayment = (MethodPayment) => {}
                 <th scope="col">Mount</th>
                 <th scope="col">Download</th>
                 <th scope="col">Status</th>
+                <th scope="col">Description</th>
               </tr>
             </thead>
             <tbody v-if="memberMermship">
@@ -87,6 +88,7 @@ const onMethodPayment = (MethodPayment) => {}
                 </td>
 
                 <td>{{ invoice.status ? 'Paid' : 'Error' }}</td>
+                <td>{{ invoice.description }}</td>
               </tr>
             </tbody>
             <!-- <tbody

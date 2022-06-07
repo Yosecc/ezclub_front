@@ -343,7 +343,7 @@ export const inputsInformation = ref([
     isLabel: true,
     categories: ['Adult', 'Prospect'],
     typeMember: ['Individual', 'Company'],
-    mask: '###-###-####',
+    mask: '(###)-###-####',
   },
   {
     typeInput: 'switch',
@@ -1198,6 +1198,13 @@ export const getMemberAccess = async (barcode: any) => {
 export const cancelMembershipMembers = async () => {
   const response = await Api.post(
     `members/cancelMembershipMember/${memberMermship.value.id}`
+  )
+  return response
+}
+
+export const syncMembershipMembers = async () => {
+  const response = await Api.post(
+    `members/syncMembershipMember/${memberMermship.value.id}`
   )
   return response
 }
