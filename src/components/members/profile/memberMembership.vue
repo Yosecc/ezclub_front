@@ -334,24 +334,6 @@ const paymentCash = (obj) => {
           </VLoader>
         </div>
 
-        <div v-if="member && memberMermship" class="column is-3 mb-6 mt-4">
-          <VLoader
-            v-if="member.membership_members.is_recurrence"
-            size="small"
-            :active="isLoaderActive"
-          >
-            <VCard
-              color="secondary"
-              v-if="memberMermship"
-              outlined
-              @click="onSync"
-              class="mr-4 btn-card text-center"
-            >
-              <p><b>Sync Membership</b></p>
-            </VCard>
-          </VLoader>
-        </div>
-
         <div class="mb-4 column is-12" v-if="itentPayment">
           <MemberCards
             v-if="member.user"
