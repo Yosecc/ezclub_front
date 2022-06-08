@@ -92,6 +92,10 @@ const onCancel = () => {
   })
 }
 
+const onSync = () => {
+  notyf.success('Memberships Cancel')
+}
+
 const onSign = (base64) => {
   storeFirma(base64, memberMermship.value.id)
     .then((response) => {
@@ -154,7 +158,7 @@ const retryPayment = (payment_method, payment_type_id = 3, cash = {}) => {
     data.changeBack = cash.changeBack
     data.cash = cash.cash
   }
-  // console.log('llaj', data)
+  isLoaderActive.value = true
   paymentInvoice(memberMermship.value.id, data)
     .then((response) => {
       notyf.success('success')
@@ -174,6 +178,9 @@ const retryPayment = (payment_method, payment_type_id = 3, cash = {}) => {
       } else {
         notyf.error(error.response.data)
       }
+    })
+    .finally(() => {
+      isLoaderActive.value = false
     })
 }
 
@@ -323,6 +330,24 @@ const paymentCash = (obj) => {
               class="mr-4 btn-card text-center"
             >
               <p><b>Payment Now</b></p>
+            </VCard>
+          </VLoader>
+        </div>
+
+        <div v-if="member && memberMermship" class="column is-3 mb-6 mt-4">
+          <VLoader
+            v-if="member.membership_members.is_recurrence"
+            size="small"
+            :active="isLoaderActive"
+          >
+            <VCard
+              color="secondary"
+              v-if="memberMermship"
+              outlined
+              @click="onSync"
+              class="mr-4 btn-card text-center"
+            >
+              <p><b>Sync Membership</b></p>
             </VCard>
           </VLoader>
         </div>

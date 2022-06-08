@@ -40,6 +40,7 @@ const onMethodPayment = (MethodPayment) => {}
     <template #header-right> </template>
     <template #content>
       <p class="title is-5">Card List</p>
+
       <MemberCards
         :show-option="true"
         class="mb-6"
@@ -96,7 +97,11 @@ const onMethodPayment = (MethodPayment) => {}
                   </VButton>
                 </a>
               </td>
-              <td>{{ invoice.status }}</td>
+              <td>
+                {{ invoice.status }}
+                <br />
+                <small>{{ invoice.description_status }}</small>
+              </td>
             </tr>
           </tbody>
           <!-- <tbody
@@ -127,6 +132,7 @@ const onMethodPayment = (MethodPayment) => {}
               <th scope="col">Method</th>
               <th scope="col">Download</th>
               <th scope="col">Status</th>
+              <th scope="col">Status Description</th>
             </tr>
           </thead>
           <tbody v-if="memberMermship">
@@ -146,6 +152,7 @@ const onMethodPayment = (MethodPayment) => {}
                 </a>
               </td>
               <td>{{ invoice.status }}</td>
+              <td>{{ invoice.status_description }}</td>
             </tr>
           </tbody>
         </table>
