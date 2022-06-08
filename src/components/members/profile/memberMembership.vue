@@ -76,7 +76,7 @@ const onSave = () => {
 
 const onNew = async () => {
   isLoaderActive.value = true
-  await generaPresupuesto(membershipsData, inputsInformation.value)
+  await generaPresupuesto(InputsDisponibles.value, inputsInformation.value)
   isLoaderActive.value = false
 }
 
@@ -349,7 +349,7 @@ const paymentCash = (obj) => {
         <VCard class="mb-4 column is-12" v-if="!presupuestos.length">
           <inputsLayaut :inputs-step="InputsDisponibles" />
           <VAvatarStack
-            v-if="member.trainers"
+            v-if="member && member.trainers"
             :avatars="arregloTrainers(member.trainers)"
             size="small"
           />

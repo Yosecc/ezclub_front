@@ -1,1 +1,0 @@
-import{d as e,o as s,i as a,K as r}from"./vendor.1faf4f77.js";var t=e({expose:[],props:{theme:{type:String,default:"darker"}},setup(e){const t=e;return(e,o)=>(s(),a("div",{class:["minimal-wrapper",[t.theme]]},[r(e.$slots,"default")],2))}});export{t as _};

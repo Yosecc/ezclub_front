@@ -46,7 +46,7 @@ const getMembers = async (
     .then((response) => {
       members.value = response.data.members
       isLoading.value = false
-
+      paginationData.value = response.data.pagination
       if (reload) {
         reloadForm()
       }
@@ -118,16 +118,16 @@ watch(
               @click="getMembers('all')"
               rounded
             >
-              All
+              Today
             </V-Button>
           </V-Control>
           <V-Control>
             <V-Button
-              :color="filterDate == 'today' ? 'primary' : undefined"
-              @click="getMembers('today')"
+              :color="filterDate == 'yesterday' ? 'primary' : undefined"
+              @click="getMembers('yesterday')"
               rounded
             >
-              Today
+              Yesterday
             </V-Button>
           </V-Control>
           <V-Control>
@@ -136,16 +136,7 @@ watch(
               @click="getMembers('week')"
               rounded
             >
-              Last Week
-            </V-Button>
-          </V-Control>
-          <V-Control>
-            <V-Button
-              :color="filterDate == 'month' ? 'primary' : undefined"
-              @click="getMembers('month')"
-              rounded
-            >
-              Last Month
+              last 7 day
             </V-Button>
           </V-Control>
         </V-Field>

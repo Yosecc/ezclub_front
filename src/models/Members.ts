@@ -1564,7 +1564,7 @@ const Objectforthebudget = (inputs: any) => {
   return {
     memberships_id: getInput(inputs, 'memberships_id').model,
     recurrences_id: getInput(inputs, 'recurrences_id').model,
-    is_initiation_fee: getInput(inputs, 'is_initiation_fee').model,
+    is_initiation_fee: !getInput(inputs, 'is_initiation_fee').model,
     is_card_price: getInput(inputs, 'is_card_price').model,
     discount: getInput(inputs, 'discount').data
       ? getInput(inputs, 'discount').data.code
@@ -1590,7 +1590,7 @@ export const generaPresupuesto = async (membresia: any, member: any) => {
   data.leo_vet_fr = getInput(member, 'leo_vet_fr')
     ? getInput(member, 'leo_vet_fr').model
     : null
-  console.log('presupuesto', data)
+
   const response = await getPresupuesto(data)
     .then((response) => {
       presupuestos.value.push({
