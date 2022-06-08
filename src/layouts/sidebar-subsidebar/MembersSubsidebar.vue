@@ -25,7 +25,7 @@ const emit = defineEmit(['close'])
         <li v-has-nested-router-link class="has-children">
           <RouterLink :to="{ name: 'members-create' }" class="is-submenu">
             <i aria-hidden="true" class="fas fa-user mr-2"></i>
-            
+
             <span>New Members</span>
           </RouterLink>
         </li>
@@ -33,7 +33,7 @@ const emit = defineEmit(['close'])
           <RouterLink :to="{ name: 'members-create' }" class="is-submenu">
             <i aria-hidden="true" class="fas fa-user mr-2"></i>
             
-            <span>Prospect</span>
+            <span>Temporary Member</span>
           </RouterLink>
         </li> -->
         <!-- sub dropdown -->
@@ -84,8 +84,6 @@ const emit = defineEmit(['close'])
             </li>
           </ul>
         </li> -->
-        
-        
       </ul>
     </div>
   </div>

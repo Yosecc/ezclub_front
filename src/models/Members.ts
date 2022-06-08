@@ -167,7 +167,7 @@ export const inputsInformation = ref([
     required: true,
     class: 'is-6',
     isLabel: true,
-    categories: ['Adult', 'Minor'],
+    categories: ['Adult', 'Minor', 'Prospect'],
     typeMember: ['Individual', 'Company'],
     hasError: false,
     keyUp: async (event, input) => {
@@ -343,7 +343,8 @@ export const inputsInformation = ref([
     isLabel: true,
     categories: ['Adult', 'Prospect'],
     typeMember: ['Individual', 'Company'],
-    mask: '(###)-###-####',
+    mask: '(###) ###-####',
+
   },
   {
     typeInput: 'switch',
