@@ -36,6 +36,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  container: {
+    type: String,
+    default: 'page-content-wrapper',
+  },
 })
 
 const route = useRoute()
@@ -382,31 +386,12 @@ watch(
     <TaskPanel />
 
     <div class="view-wrapper">
-      <div class="page-content-wrapper">
+      <div :class="props.container">
         <template v-if="props.nowrap">
           <slot></slot>
         </template>
         <div v-else class="page-content is-relative">
           <div class="page-title has-text-centered">
-            <!-- Sidebar Trigger
-            <div
-              class="vuero-hamburger nav-trigger push-resize"
-              @click="isDesktopSidebarOpen = !isDesktopSidebarOpen"
-            >
-              <span class="menu-toggle has-chevron">
-                <span
-                  :class="[isDesktopSidebarOpen && 'active']"
-                  class="icon-box-toggle"
-                >
-                  <span class="rotate">
-                    <i aria-hidden="true" class="icon-line-top"></i>
-                    <i aria-hidden="true" class="icon-line-center"></i>
-                    <i aria-hidden="true" class="icon-line-bottom"></i>
-                  </span>
-                </span>
-              </span>
-            </div> -->
-
             <div class="title-wrap">
               <h1 class="title is-4">{{ pageTitle }}</h1>
             </div>

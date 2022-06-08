@@ -33,6 +33,7 @@ onMounted(() => {})
           Stock: {{ product.stock.current_stock }}
         </p>
         <p v-else class="is-7 title">Stock: 0</p>
+        <p>{{ product.category.name }}</p>
       </h3>
     </div>
     <div class="card-grid-item-footer">

@@ -1270,7 +1270,9 @@ export const getCardsMembers = async (id: number) => {
 // Stripe
 export const getListInvoices = async (id: number) => {
   const response = await Api.get(`members/list_invoices/${id}`)
-  member.value.invoices = response.data
+  member.value.invoices = response.data.invoices
+  member.value.pagos = response.data.pagos
+  member.value.invoicesSistem = response.data.invoicesSistem
   return response
 }
 
@@ -1632,7 +1634,7 @@ const Objectforthebudget = (inputs: any) => {
   return {
     memberships_id: getInput(inputs, 'memberships_id').model,
     recurrences_id: getInput(inputs, 'recurrences_id').model,
-    is_initiation_fee: !getInput(inputs, 'is_initiation_fee').model,
+    is_initiation_fee: getInput(inputs, 'is_initiation_fee').model,
     is_card_price: getInput(inputs, 'is_card_price').model,
     discount: getInput(inputs, 'discount').data
       ? getInput(inputs, 'discount').data.code
@@ -1658,7 +1660,7 @@ export const generaPresupuesto = async (membresia: any, member: any) => {
   data.leo_vet_fr = getInput(member, 'leo_vet_fr')
     ? getInput(member, 'leo_vet_fr').model
     : null
-  console.log(data)
+  console.log('presupuesto', data)
   const response = await getPresupuesto(data)
     .then((response) => {
       presupuestos.value.push({
