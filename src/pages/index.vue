@@ -26,20 +26,35 @@ const paginationData = ref([])
 const isLoading = ref(true)
 const defalA = ref('All')
 const categoryB = ref('All')
+
+watch(
+  () => route.query.page,
+  () => {
+    getMembers(
+      filterDate.value,
+      filters.value,
+      route.query.page,
+      defalA.value,
+      false
+    )
+  }
+)
+
 const getMembers = async (
   filter,
   value = '',
-  page = null,
+  page = 1,
   category = null,
   reload = true
 ) => {
   isLoading.value = true
   filterDate.value = filter
+
   await Api.get('accessday', {
     params: {
       [filterDate.value]: true,
       filter: value,
-      // page: page,
+      page: page,
       category: category,
     },
   })
@@ -53,8 +68,6 @@ const getMembers = async (
     })
     .catch((error) => {
       isLoading.value = false
-
-      console.log(error)
     })
 }
 
