@@ -77,6 +77,10 @@ watch(member, (to) => {
 
   if (!to.isSolvente && !to.sinMembresia) {
     mensaje.value = `Membership ${to.subscription.status}`
+    subMensaje.value =
+      to.subscription.status_payment.length > 0
+        ? `Last payment status : ${to.subscription.status_payment}`
+        : ''
   }
 })
 
