@@ -35,6 +35,7 @@ export const categoriesMembers = ref({
   model: 'Adult',
   required: true,
 })
+export const memberTransactions = ref([])
 
 export const categorieActive = computed(() => {
   return categoriesMembers.value.model
@@ -73,6 +74,37 @@ export const schedules = ref([
     required: false,
     class: 'is-4',
     isLabel: true,
+  },
+])
+
+export const inputsCredit = ref([
+  {
+    typeInput: 'text',
+    name: 'description',
+    placeholder: 'Transaction description',
+    model: '',
+    class: 'is-12',
+    required: true,
+    isLabel: true,
+  },
+  {
+    typeInput: 'select',
+    name: 'transaction_type',
+    placeholder: 'Transaction Type',
+    model: '',
+    class: 'is-12',
+    values: ['Add Credit', 'Remove Credit'],
+    isLabel: true,
+    required: true,
+  },
+  {
+    typeInput: 'number',
+    name: 'amount',
+    placeholder: 'Amount $',
+    model: '',
+    class: 'is-12',
+    isLabel: true,
+    required: true,
   },
 ])
 
@@ -159,7 +191,7 @@ export const inputsInformation = ref([
     required: true,
     class: 'is-6',
     isLabel: true,
-    categories: ['Adult', 'Minor'],
+    categories: ['Adult', 'Minor', 'Prospect'],
     typeMember: ['Individual', 'Company'],
     hasError: false,
     keyUp: async (event, input) => {
@@ -326,15 +358,16 @@ export const inputsInformation = ref([
     typeMember: ['Individual', 'Company'],
   },
   {
-    typeInput: 'number',
+    typeInput: 'tel',
     name: 'phone',
-    placeholder: 'Phone Number',
+    placeholder: 'Phone Numbers',
     model: '',
     required: true,
     class: 'is-6',
     isLabel: true,
     categories: ['Adult', 'Prospect'],
     typeMember: ['Individual', 'Company'],
+    mask: '(###) ###-####',
   },
   {
     typeInput: 'switch',
@@ -1193,6 +1226,13 @@ export const cancelMembershipMembers = async () => {
   return response
 }
 
+export const syncMembershipMembers = async () => {
+  const response = await Api.post(
+    `members/syncMembershipMember/${memberMermship.value.id}`
+  )
+  return response
+}
+
 export const storedeletePaymentMethod = async (
   id: number,
   paymentMethod: string
@@ -1260,6 +1300,29 @@ export const getListInvoices = async (id: number) => {
   return response
 }
 
+// Credit transactions
+
+export const getBalance = async (id: number) => {
+  const response = await Api.get(`credit/${id}/balance`)
+  return response
+}
+
+export const getTransactions = async (id: number) => {
+  const response = await Api.get(`credit/${id}`)
+  memberTransactions.value = response.data
+  return response
+}
+
+export const addCredit = async (id: number, data: object) => {
+  const response = await Api.post(`/credit/${id}/add`, data)
+  return response.data
+}
+
+export const removeCredit = async (id: number, data: object) => {
+  const response = await Api.post(`/credit/${id}/remove`, data)
+  return response.data
+}
+
 export const subscriptionsCreateStripe = async () => {
   const response = await Api.post(`members/subscriptions_create_stripe`, {
     members: membersSelected.value,
@@ -1284,6 +1347,13 @@ export const memberMermship = computed(() => {
     return null
   }
   return member.value.membership_members
+})
+
+export const transactions = computed(() => {
+  if (!memberTransactions.value) {
+    return null
+  }
+  return memberTransactions.value
 })
 
 export const memberMembershipsHistory = computed(() => {

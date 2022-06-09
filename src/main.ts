@@ -19,6 +19,7 @@ import VueSlider from '@vueform/slider'
 import VueApexCharts from 'vue3-apexcharts'
 import VueCKEditor from '@ckeditor/ckeditor5-vue'
 import VueTippy from 'vue-tippy'
+import { VueMaskDirective } from 'v-mask'
 
 import App from './App.vue'
 import i18n from './i18n'
@@ -27,7 +28,6 @@ import router from './router'
 import hasNestedRouterLink from './directives/has-nested-router-link'
 import background from './directives/background'
 import tooltip from './directives/tooltip'
-
 /**
  * Importing external libraries allow to compile them in our bundle
  * How files are interpreted is defined by ther extension.
@@ -75,6 +75,16 @@ app.component(VueSlider.name, VueSlider)
 app.directive('has-nested-router-link', hasNestedRouterLink)
 app.directive('background', background)
 app.directive('tooltip', tooltip)
+
+const vMaskV2 = VueMaskDirective
+const vMaskV3 = {
+  beforeMount: vMaskV2.bind,
+  mounted: vMaskV2.componentUpdated,
+  updated: vMaskV2.componentUpdated,
+  unmounted: vMaskV2.unbind,
+}
+
+app.directive('mask', vMaskV3)
 
 // Register a global custom directive called `v-focus`
 app.directive('focus', {

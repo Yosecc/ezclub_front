@@ -66,8 +66,23 @@ watch(
   }
 )
 
-const mensaje = ref('FAILED PAYMENT')
+const mensaje = ref('ERROR MEMBERSHIP')
 const subMensaje = ref('')
+
+watch(member, (to) => {
+  if (to.sinMembresia) {
+    mensaje.value = 'NO MEMBERSHIP'
+    subMensaje.value = 'Please, select a membership'
+  }
+
+  if (!to.isSolvente && !to.sinMembresia) {
+    mensaje.value = `Membership ${to.subscription.status}`
+    subMensaje.value =
+      to.subscription.status_payment.length > 0
+        ? `Last payment status : ${to.subscription.status_payment}`
+        : ''
+  }
+})
 
 watch(
   () => route.hash,
@@ -238,7 +253,9 @@ const mountMember = async () => {
           color="danger"
         >
           <div>
-            <h3 class="title is-5 mb-0">{{ mensaje }}</h3>
+            <h3 class="title is-5 mb-0">
+              {{ member.sinMembresia ? 'No Membership' : mensaje }}
+            </h3>
             <p>{{ subMensaje }}</p>
             <small v-if="member.subscription">
               <p>{{ member.subscription.status }}</p>
@@ -270,6 +287,10 @@ const mountMember = async () => {
                   )
                 }}
               </p>
+              <p v-if="member.membership_members?.discount">
+                <b>Discount: </b>
+                {{ member.membership_members.discount.name }}
+              </p>
             </div>
             <div v-if="member.subscription">
               <VTag color="info" :label="member.subscription.status" rounded />
@@ -286,6 +307,7 @@ const mountMember = async () => {
         <memberCheckins v-show="Component == 'memberCheckins'" />
         <memberPurchases v-show="Component == 'memberPurchases'" />
         <memberWaiver v-show="Component == 'memberWaiver'" />
+        <memberCredit v-show="Component == 'memberCredit'" />
       </div>
     </div>
   </SidebarLayout>

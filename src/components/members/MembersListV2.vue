@@ -87,17 +87,15 @@ const props = defineProps({
 })
 
 const colorCard = (member) => {
-  if (member.membership_members == null) {
+  if (member.sinMembresia) {
     return ''
   }
-  if (
-    member.membership_members != null &&
-    !member.membership_members.payments[0].status
-  ) {
+
+  if (!member.isSolvente) {
     return 'bg-danger'
-  } else {
-    return ''
   }
+
+  return ''
 }
 
 const users = [
@@ -168,7 +166,7 @@ watch(
             <div
               @click="openMemberCard(true, item)"
               class="tile-grid-item"
-              :class="item.isSolvente ? '' : 'bg-danger'"
+              :class="colorCard(item)"
             >
               <div
                 class="
