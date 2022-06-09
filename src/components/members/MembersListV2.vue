@@ -95,6 +95,10 @@ const colorCard = (member) => {
     return 'bg-danger'
   }
 
+  // if(member.cards.length){
+  //   return 'bg-success'
+  // }
+
   return ''
 }
 
@@ -243,7 +247,15 @@ watch(
                   {{ item.membership_members != null ? 'Active' : 'Inactive' }}
                 </span>
 
-                <span>
+                <span class="d-flex align-items-center">
+                  <div class="mr-3" v-if="item.cards">
+                    <VTag
+                      v-if="item.cards.length"
+                      :label="`Cards: ${item.cards.length}`"
+                      class="mr-1"
+                      color="purple"
+                    />
+                  </div>
                   <VAvatarStack
                     v-if="item.trainers"
                     :avatars="arregloTrainers(item.trainers)"

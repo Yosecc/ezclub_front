@@ -53,9 +53,7 @@ const mebershipMemberid = ref(null)
 
 const InputsDisponibles = computed(() => {
   membershipsData.unshift(prorrateo.value[0])
-
   membershipsData.push(schedules.value[0])
-
   getInput(membershipsData, 'prorrateo').change = function (inputs) {
     if (this.model) {
       getInput(inputs, 'schedules').disabled = true
