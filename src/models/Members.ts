@@ -1619,12 +1619,17 @@ export const generaPresupuesto = async (membresia: any, member: any) => {
     data.prorrateo = getInput(membresia, 'prorrateo').model
   }
 
+  if (getInput(membresia, 'schedules') != undefined) {
+    data.schedules = getInput(membresia, 'schedules').model
+  }
+
   const response = await getPresupuesto(data)
     .then((response) => {
       presupuestos.value.push({
         ...response.data,
         member: member,
         membresia: membresia,
+        schedules: data.schedules ? data.schedules : null,
       })
     })
     .catch((error) => {

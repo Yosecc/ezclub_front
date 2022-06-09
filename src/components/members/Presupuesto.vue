@@ -10,6 +10,7 @@ import {
 } from 'vue'
 
 import { moneda } from '/@src/models/Mixin.ts'
+import moment from 'moment'
 const props = defineProps({
   presupuesto: {
     type: Object,
@@ -82,11 +83,20 @@ const props = defineProps({
         </tr>
 
         <tr style="text-align: right">
-          <td colspan="4" style="text-align: right"><b>Total to pay</b></td>
+          <td colspan="4" style="text-align: right">
+            <p>
+              <small
+                >Scheduled Membership:
+                {{ moment(presupuesto.schedules).format('MM-DD-YYYY') }}</small
+              >
+            </p>
+            <b>Total to pay</b>
+          </td>
           <td>
             {{ moneda(presupuesto.totales.upfront.amount_total / 100) }}
           </td>
         </tr>
+
         <tr v-if="presupuesto.totales.recurring" style="text-align: right">
           <td colspan="4" style="text-align: right">Recurring total</td>
           <td>
