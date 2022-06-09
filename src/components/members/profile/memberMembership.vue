@@ -20,6 +20,8 @@ import {
   presupuestos,
   inputsInformation,
   paymentInvoice,
+  prorrateo,
+  schedules,
 } from '/@src/models/Members.ts'
 
 import { getLocationsDiciplines } from '/@src/models/Diciplines.ts'
@@ -50,6 +52,9 @@ const isLoaderActive = ref(false)
 const mebershipMemberid = ref(null)
 
 const InputsDisponibles = computed(() => {
+  membershipsData.unshift(prorrateo.value[0])
+  membershipsData.push(schedules.value[0])
+  getInput(membershipsData, 'recurrence').class = 'is-4'
   if (member.value && memberMermship.value) {
     let d = ['locations_id', 'diciplines', 'staff_id', 'discount']
     return membershipsData.filter((e) => d.includes(e.name))
@@ -348,6 +353,7 @@ const paymentCash = (obj) => {
 
         <VCard class="mb-4 column is-12" v-if="!presupuestos.length">
           <inputsLayaut :inputs-step="InputsDisponibles" />
+
           <VAvatarStack
             v-if="member && member.trainers"
             :avatars="arregloTrainers(member.trainers)"

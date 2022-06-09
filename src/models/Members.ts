@@ -52,6 +52,30 @@ export const mismatarjeta = ref([
   },
 ])
 
+export const prorrateo = ref([
+  {
+    typeInput: 'switchEventChangeInput',
+    name: 'prorrateo',
+    values: ['', 'Prorated Payment'],
+    model: true,
+    required: false,
+    class: 'is-4',
+    isLabel: true,
+  },
+])
+
+export const schedules = ref([
+  {
+    typeInput: 'date',
+    name: 'schedules',
+    placeholder: 'Subscription Schedules',
+    model: '',
+    required: false,
+    class: 'is-4',
+    isLabel: true,
+  },
+])
+
 export const inputsInformation = ref([
   {
     typeInput: 'switchEventChangeInput',
@@ -1590,6 +1614,10 @@ export const generaPresupuesto = async (membresia: any, member: any) => {
   data.leo_vet_fr = getInput(member, 'leo_vet_fr')
     ? getInput(member, 'leo_vet_fr').model
     : null
+
+  if (getInput(membresia, 'prorrateo') != undefined) {
+    data.prorrateo = getInput(membresia, 'prorrateo').model
+  }
 
   const response = await getPresupuesto(data)
     .then((response) => {

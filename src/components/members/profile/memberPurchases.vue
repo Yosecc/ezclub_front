@@ -116,7 +116,7 @@ const onMethodPayment = (MethodPayment) => {}
         </table>
       </VCard>
       <VCard class="mb-4">
-        <p>Payments</p>
+        <p>Payment Attempts</p>
         <table class="table is-hoverable is-fullwidth">
           <thead>
             <tr>
