@@ -253,9 +253,9 @@ const mountMember = async () => {
           color="danger"
         >
           <div>
-            <h3 class="title is-5 mb-0">
+            <!--  <h3 class="title is-5 mb-0">
               {{ member.sinMembresia ? 'No Membership' : mensaje }}
-            </h3>
+            </h3> -->
             <p>{{ subMensaje }}</p>
             <small v-if="member.subscription">
               <p>{{ member.subscription.status }}</p>

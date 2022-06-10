@@ -248,10 +248,25 @@ watch(
                 </span>
 
                 <span class="d-flex align-items-center">
+                  <VTag
+                    v-if="item.leo_vet_fr"
+                    :label="`LEO`"
+                    class="mr-1"
+                    color="green"
+                  />
+                  <div class="mr-1" v-if="item.membership_members != undefined">
+                    <VTag
+                      v-if="item.membership_members.discount"
+                      :label="`-${item.membership_members.discount.value}%`"
+                      class=""
+                      color="orange"
+                    />
+                  </div>
+
                   <div class="mr-3" v-if="item.cards">
                     <VTag
                       v-if="item.cards.length"
-                      :label="`Cards: ${item.cards.length}`"
+                      :label="`Cards`"
                       class="mr-1"
                       color="purple"
                     />
