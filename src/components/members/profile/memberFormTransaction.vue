@@ -1,12 +1,16 @@
 <script setup lang="ts">
-import { defineProps, watch, onMounted, defineEmit } from 'vue'
+import { defineProps, ref, defineEmit } from 'vue'
 import {
   member,
   inputsCredit,
   addCredit,
   removeCredit,
 } from '/@src/models/Members.ts'
-import { perpareDataInputs, notyf } from '/@src/models/Mixin.ts'
+import {
+  perpareDataInputs,
+  cleanUpModelInputs,
+  notyf,
+} from '/@src/models/Mixin.ts'
 
 const props = defineProps({
   openModal: {
@@ -15,24 +19,46 @@ const props = defineProps({
   },
 })
 
+// loading
+const loading = ref(false)
+
 const emit = defineEmit(['closeModal', 'refreshTransactions'])
 
 const submit = async () => {
-  console.log(member)
   const data = perpareDataInputs(inputsCredit.value)
   const body = {
     amount: data.amount,
     description: data.description,
   }
 
-  if (data.transaction_type === 'Add Credit') {
-    await addCredit(member.value.id, body)
-  } else {
-    await removeCredit(member.value.id, body)
+  loading.value = true
+
+  try {
+    if (data.transaction_type === 'Add Credit') {
+      await addCredit(member.value.id, body)
+    } else {
+      await removeCredit(member.value.id, body)
+    }
+
+    cleanUpModelInputs(inputsCredit.value)
+
+    notyf.success('Success')
+    emit('closeModal')
+    emit('refreshTransactions')
+  } catch (error) {
+    if (typeof error.response.data.message == 'string') {
+      notyf.error(error.response.data.message)
+    } else {
+      notyf.error(error)
+    }
+  } finally {
+    loading.value = false
   }
-  notyf.success('Success')
+}
+
+const closeModal = () => {
+  cleanUpModelInputs(inputsCredit.value)
   emit('closeModal')
-  emit('refreshTransactions')
 }
 </script>
 
@@ -42,17 +68,15 @@ const submit = async () => {
     title="Create a new transaction"
     size="small"
     actions="right"
-    @close="
-      () => {
-        emit('closeModal')
-      }
-    "
+    @close="closeModal"
   >
     <template #content>
       <inputsLayaut :inputs-step="inputsCredit" />
     </template>
     <template #action>
-      <VButton color="primary" raised @click="submit">Confirm</VButton>
+      <VButton color="primary" raised @click="submit" :loading="loading"
+        >Confirm</VButton
+      >
     </template>
   </VModal>
 </template>
