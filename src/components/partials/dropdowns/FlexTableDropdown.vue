@@ -35,7 +35,7 @@ const diasPasados = computed(() => {
     right
   >
     <template #content>
-      <div v-if="member">
+      <div v-if="false">
         <div
           class="text-center mb-4"
           v-if="
