@@ -334,7 +334,7 @@ export const inputsInformation = ref([
     typeInput: 'selectData',
     name: 'country_id',
     placeholder: 'Country',
-    model: '',
+    model: 'US',
     required: true,
     values: [''],
     class: 'is-3',
@@ -864,8 +864,8 @@ export const membershipsData = reactive([
   {
     typeInput: 'switchEventChangeInput',
     name: 'is_initiation_fee',
-    values: ['', 'No initiation fee'],
-    placeholder: 'No initiation fee',
+    values: ['NO', 'YES'],
+    placeholder: 'Initiation fee',
     default: false,
     model: false,
     disabled: false,
@@ -876,10 +876,12 @@ export const membershipsData = reactive([
     typeInput: 'switchEventChangeInput',
     default: false,
     name: 'is_card_price',
-    values: ['', 'Card'],
+    placeholder: 'Card',
+    values: ['NO', 'YES'],
     model: false,
     disabled: false,
     class: 'is-3',
+    isLabel: true,
   },
 
   {
