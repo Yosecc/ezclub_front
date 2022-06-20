@@ -228,13 +228,13 @@ watch(
                 </div>
 
                 <div class="align-items-center d-flex">
-                  <V-Checkbox
+                  <!-- <V-Checkbox
                     class="p-0"
                     v-model="membersSelected"
                     color="primary"
                     :label="' '"
                     :value="item.id"
-                  />
+                  /> -->
                   <FlexTableDropdown :id-member="item.id" :member="item" />
                 </div>
               </div>

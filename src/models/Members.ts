@@ -864,7 +864,7 @@ export const membershipsData = reactive([
   {
     typeInput: 'switchEventChangeInput',
     name: 'is_initiation_fee',
-    values: ['NO', 'YES'],
+    values: ['YES', 'NO'],
     placeholder: 'Initiation fee',
     default: false,
     model: false,
