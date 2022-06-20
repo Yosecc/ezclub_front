@@ -10,7 +10,12 @@ import {
   closeAndApplyInentory,
   locationInventory,
 } from '/@src/models/Inventory.ts'
-import { getCompany, company, locationsSelect } from '/@src/models/Companies.ts'
+import {
+  getCompany,
+  company,
+  locationsSelect,
+  locationsActives,
+} from '/@src/models/Companies.ts'
 import { notyf, setInputValuesData, getInput } from '/@src/models/Mixin.ts'
 import moment from 'moment'
 import { users } from '/@src/data/layouts/flex-list-v1'
@@ -48,7 +53,7 @@ const isLoaded = ref(false)
 
 onMounted(() => {
   getCompany().then((response) => {
-    setInputValuesData(locationsSelect, 'locations_id', company.value.locations)
+    setInputValuesData(locationsSelect, 'locations_id', locationsActives.value)
     getInput(locationsSelect.value, 'locations_id').change = changeLocation
     if (cookies.get('locations_id') != null) {
       getInput(locationsSelect.value, 'locations_id').model =

@@ -90,7 +90,7 @@ const payment = () => {
           bold
           class="m-3"
           style="font-size: 14px"
-          @click="cash = total / 100"
+          @click="cash = Number.parseFloat(total / 100).toFixed(2)"
         >
           Full Payment {{ moneda(total / 100) }}</VButton
         >
@@ -109,6 +109,7 @@ const payment = () => {
       <div class="d-flex justify-content-center">
         <VField>
           <VControl>
+            <!-- <p>{{ Number.parseFloat(cash).toFixed(2)  }}</p> -->
             <input
               v-model="cash"
               type="text"
@@ -126,7 +127,9 @@ const payment = () => {
       <VButton
         color="success"
         @click="payment"
-        :disabled="total / 100 > cash"
+        :disabled="
+          parseFloat(cash) < parseFloat(parseFloat(total / 100).toFixed(2))
+        "
         class="d-flex justify-content-center"
         raised
         >Confirm</VButton

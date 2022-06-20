@@ -1,7 +1,8 @@
 <script>
 import { onMounted, watch, ref, computed } from 'vue'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
-pageTitle.value = 'Classes / Schedule'
+
+import '@fullcalendar/core/vdom' // solves problem with Vite
 
 import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
@@ -13,7 +14,13 @@ import moment from 'moment'
 import { getSchedules } from '/@src/models/Schedule.ts'
 import { useCookies } from 'vue3-cookies'
 const { cookies } = useCookies()
-import { locations, getCompany, company } from '/@src/models/Companies.ts'
+import {
+  locations,
+  getCompany,
+  company,
+  locationsSelect,
+  locationsActives,
+} from '/@src/models/Companies.ts'
 import {
   notyf,
   perpareDataInputs,
@@ -25,7 +32,7 @@ import {
   setInputModelData,
   getValuesInput,
 } from '/@src/models/Mixin.ts'
-import { locationsSelect } from '/@src/models/Companies.ts'
+
 export default {
   components: {
     FullCalendar, // make the <FullCalendar> tag available
@@ -92,13 +99,14 @@ export default {
     },
   },
   mounted() {
+    pageTitle.value = 'Classes / Schedule'
     if (cookies.get('locations_id') != null) {
       getSchedules(parseFloat(cookies.get('locations_id'))).then((response) => {
         this.calendarOptions.events = response.data
       })
     } else {
-      notyf.error('require locations_id')
-      console.error('requiere locations_id')
+      // notyf.error('require locations_id')
+      // console.error('requiere locations_id')
     }
   },
   methods: {
@@ -135,7 +143,7 @@ export default {
       let index = this.calendarOptions.events.findIndex((e) => e.id == id)
 
       if (index > 0) {
-        console.log(index)
+        // console.log(index)
         this.calendarOptions.events.splice(index, 1)
       }
       this.centeredActionsOpen = false
@@ -158,6 +166,7 @@ export default {
           >New Schedule</V-Button
         >
       </div>
+      <!-- <p>{{ calendarOptions }}</p> -->
       <FullCalendar class="demo-app-calendar" :options="calendarOptions">
         <template #eventContent="arg">
           <p>
@@ -169,11 +178,10 @@ export default {
             class="ml-2"
             v-for="(i, k) in arg.event.extendedProps.trainers"
             :key="k"
+            style="font-size: 9px"
           >
             {{ i.name }}
           </p>
-
-          <!-- <b>{{ arg.timeText }}</b> -->
         </template>
       </FullCalendar>
       <V-Modal
@@ -190,9 +198,9 @@ export default {
             :id-event="idEvent"
           />
         </template>
-        <!-- <template #action>
-            <V-Button color="primary" raised>Confirm</V-Button>
-          </template> -->
+        <template #action>
+          <V-Button color="primary" raised>Confirm</V-Button>
+        </template>
       </V-Modal>
     </div>
   </SidebarLayout>

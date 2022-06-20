@@ -141,6 +141,12 @@ const takePhoto = (event) => {
       >
         <!-- <p>{{ typeof input.display }}</p> -->
         <V-Control :has-error="input.hasError ?? false">
+          <label class="label" v-if="input.isLabel" :for="input.name">
+            <p class="m-0 text-left">
+              {{ input.label ? input.label : input.placeholder }}
+              <span v-if="input.required" style="color: red">*</span>
+            </p>
+          </label>
           <V-SwitchSegment
             v-model="input.model"
             :label-true="input.values[1]"
@@ -191,6 +197,7 @@ const takePhoto = (event) => {
         v-else-if="
           [
             'text',
+            'tel',
             'date',
             'number',
             'email',
@@ -220,6 +227,7 @@ const takePhoto = (event) => {
             :placeholder="input.placeholder"
             :disabled="input.disabled ?? false"
             :maxLength="input.maxLength ?? ''"
+            v-mask="input.mask ? input.mask : ''"
             @keyup="input.keyUp ? input.keyUp($event, input) : null"
             @change="input.change ? input.change($event, input) : null"
             :max="

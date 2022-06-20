@@ -98,7 +98,7 @@ const filteredData = computed(() => {
       return (
         item.name.match(new RegExp(filters.value, 'i')) ||
         item.category.name.match(new RegExp(filters.value, 'i')) ||
-        item.product_categories_id == filters.value ||
+        //item.product_categories_id == filters.value ||
         item.var_code == filters.value
       )
     })
@@ -134,10 +134,7 @@ const searchCodeBar = () => {
 </script>
 
 <template>
-  <SidebarLayout>
-    <!-- <p>{{ filters }}</p> -->
-    <!-- Content Wrapper -->
-
+  <SidebarLayout container="px-5">
     <inputsLayaut :inputs-step="locationsSelect" />
     <div
       v-if="!inventoryStatus"
@@ -166,89 +163,98 @@ const searchCodeBar = () => {
         </div>
       </div>
 
-      <div class="column is-8">
-        <div class="card-grid-toolbar">
-          <div class="columns is-multiline w-100" v-if="categories">
-            <VCard
-              @click="filters = ''"
-              class="
-                column
-                p-1
-                py-3
-                is-1
-                d-flex
-                flex-column
-                align-items-center
-                justify-content-center
-                text-center
-                cursor-pointer
-              "
-            >
-              <p class="title is-7">View All</p>
-            </VCard>
-            <VCard
-              @click="filters = i.id"
-              v-for="(i, key) in categories"
-              :key="`categorie-${key}`"
-              class="
-                column
-                p-1
-                py-3
-                is-1.5
-                d-flex
-                flex-column
-                align-items-center
-                justify-content-center
-                text-center
-                cursor-pointer
-              "
-            >
-              <VAvatar
-                size="small"
-                :picture="`${API_WEB_URL}storage/${i.image}`"
-              />
-              <p class="title is-7 mt-4">{{ i.name }}</p>
-            </VCard>
+      <div class="column is-9 columns">
+        <div class="column is-2">
+          <div class="card-grid-toolbar">
+            <div class="columns is-multiline w-100" v-if="categories">
+              <VCard
+                @click="filters = ''"
+                class="
+                  column
+                  p-1
+                  mb-3
+                  py-5
+                  is-12
+                  d-flex
+                  flex-column
+                  align-items-center
+                  justify-content-center
+                  text-center
+                  cursor-pointer
+                "
+              >
+                <p class="title is-7">View All</p>
+              </VCard>
+              <VCard
+                @click="filters = i.name"
+                v-for="(i, key) in categories"
+                :key="`categorie-${key}`"
+                class="
+                  column
+                  p-1
+                  mb-3
+                  py-4
+                  is-12
+                  d-flex
+                  flex-column
+                  align-items-center
+                  justify-content-center
+                  text-center
+                  cursor-pointer
+                "
+              >
+                <VAvatar
+                  size="small"
+                  :picture="`${API_WEB_URL}storage/${i.image}`"
+                />
+                <p class="title is-7 mt-4">{{ i.name }}</p>
+              </VCard>
+            </div>
           </div>
         </div>
-
-        <div class="card-grid card-grid-v4">
-          <!--List Empty Search Placeholder -->
-          <V-PlaceholderPage
-            :class="[filteredData.length !== 0 && 'is-hidden']"
-            title="We couldn't find any matching results."
-            subtitle="Too bad. Looks like we couldn't find any matching results for the
-              search terms you've entered. Please try different search terms or
-              criteria."
-            larger
-          >
-            <template #image>
-              <img
-                class="light-image"
-                src="/@src/assets/illustrations/placeholders/search-4.svg"
-                alt=""
-              />
-              <img
-                class="dark-image"
-                src="/@src/assets/illustrations/placeholders/search-4-dark.svg"
-                alt=""
-              />
-            </template>
-          </V-PlaceholderPage>
-
-          <transition-group name="list" tag="div" class="columns is-multiline">
-            <!--Grid item-->
-            <div
-              v-for="item in filteredData"
-              :key="item.id"
-              class="column is-3 d-flex"
+        <div class="column is-10">
+          <div class="card-grid card-grid-v4">
+            <!--List Empty Search Placeholder -->
+            <V-PlaceholderPage
+              :class="[filteredData.length !== 0 && 'is-hidden']"
+              title="We couldn't find any matching results."
+              subtitle="Too bad. Looks like we couldn't find any matching results for the
+                search terms you've entered. Please try different search terms or
+                criteria."
+              larger
             >
-              <store-product-card :product="item" />
-            </div>
-          </transition-group>
+              <template #image>
+                <img
+                  class="light-image"
+                  src="/@src/assets/illustrations/placeholders/search-4.svg"
+                  alt=""
+                />
+                <img
+                  class="dark-image"
+                  src="/@src/assets/illustrations/placeholders/search-4-dark.svg"
+                  alt=""
+                />
+              </template>
+            </V-PlaceholderPage>
+
+            <transition-group
+              name="list"
+              tag="div"
+              class="columns is-multiline"
+            >
+              <!--Grid item-->
+              <div
+                v-for="item in filteredData"
+                :key="item.id"
+                class="column is-2 d-flex"
+              >
+                <store-product-card :product="item" />
+              </div>
+            </transition-group>
+          </div>
         </div>
       </div>
-      <div class="column is-4 card_counte">
+      <div class="column is-3 card_counte">
         <store-cart />
       </div>
     </div>

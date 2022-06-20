@@ -20,6 +20,8 @@ import {
   presupuestos,
   inputsInformation,
   paymentInvoice,
+  prorrateo,
+  schedules,
 } from '/@src/models/Members.ts'
 
 import { getLocationsDiciplines } from '/@src/models/Diciplines.ts'
@@ -50,6 +52,16 @@ const isLoaderActive = ref(false)
 const mebershipMemberid = ref(null)
 
 const InputsDisponibles = computed(() => {
+  membershipsData.unshift(prorrateo.value[0])
+  membershipsData.push(schedules.value[0])
+  getInput(membershipsData, 'prorrateo').change = function (inputs) {
+    if (this.model) {
+      getInput(inputs, 'schedules').disabled = true
+    } else {
+      getInput(inputs, 'schedules').disabled = false
+    }
+  }
+  getInput(membershipsData, 'recurrence').class = 'is-4'
   if (member.value && memberMermship.value) {
     let d = ['locations_id', 'diciplines', 'staff_id', 'discount']
     return membershipsData.filter((e) => d.includes(e.name))
@@ -59,7 +71,7 @@ const InputsDisponibles = computed(() => {
 
 const onSave = () => {
   // isLoaderActive.value = true
-  console.log(membershipsData)
+  // console.log(membershipsData)
   getInput(membershipsData, 'amount').required = false
   getInput(membershipsData, 'initiation_fee').required = false
   getInput(membershipsData, 'diciplines').required = false
@@ -76,9 +88,7 @@ const onSave = () => {
 
 const onNew = async () => {
   isLoaderActive.value = true
-
-  await generaPresupuesto(membershipsData, inputsInformation.value)
-
+  await generaPresupuesto(InputsDisponibles.value, inputsInformation.value)
   isLoaderActive.value = false
 }
 
@@ -92,6 +102,10 @@ const onCancel = () => {
     window.location.reload()
     isLoaderActive.value = false
   })
+}
+
+const onSync = () => {
+  notyf.success('Memberships Cancel')
 }
 
 const onSign = (base64) => {
@@ -156,7 +170,7 @@ const retryPayment = (payment_method, payment_type_id = 3, cash = {}) => {
     data.changeBack = cash.changeBack
     data.cash = cash.cash
   }
-  console.log('llaj', data)
+  isLoaderActive.value = true
   paymentInvoice(memberMermship.value.id, data)
     .then((response) => {
       notyf.success('success')
@@ -176,6 +190,9 @@ const retryPayment = (payment_method, payment_type_id = 3, cash = {}) => {
       } else {
         notyf.error(error.response.data)
       }
+    })
+    .finally(() => {
+      isLoaderActive.value = false
     })
 }
 
@@ -350,8 +367,9 @@ const paymentCash = (obj) => {
 
         <VCard class="mb-4 column is-12" v-if="!presupuestos.length">
           <inputsLayaut :inputs-step="InputsDisponibles" />
+
           <VAvatarStack
-            v-if="member.trainers"
+            v-if="member && member.trainers"
             :avatars="arregloTrainers(member.trainers)"
             size="small"
           />
@@ -378,6 +396,7 @@ const paymentCash = (obj) => {
           </VLoader>
         </VCard>
 
+        <!-- Presupuesto -->
         <div v-if="!memberMermship" class="column is-12 mb-6 mt-4">
           <VPlaceload height="300px" class="mb-4" v-if="isLoaderActive" />
           <div v-if="presupuestos.length">
@@ -407,6 +426,7 @@ const paymentCash = (obj) => {
           </div>
         </div>
 
+        <!-- Contract -->
         <div
           v-if="member && memberMermship"
           class="columns is-multiline column mt-4 is-12"
@@ -501,6 +521,7 @@ const paymentCash = (obj) => {
           </table>
         </VCard>
 
+        <!-- WAIVER -->
         <VCard class="mb-4" v-if="member && memberMermship">
           <h1 class="title is-6">Active Waiver Information</h1>
           <div class="text-center">

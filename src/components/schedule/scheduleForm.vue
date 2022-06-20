@@ -30,10 +30,16 @@ import {
   horario,
 } from '/@src/models/Schedule.ts'
 import { getDiciplines, diciplinesData } from '/@src/models/Diciplines.ts'
-import { locations, getCompany, company } from '/@src/models/Companies.ts'
+import {
+  locations,
+  getCompany,
+  company,
+  locationsActives,
+  locationsSelect,
+} from '/@src/models/Companies.ts'
 import { getTrainers, trainers } from '/@src/models/Staffs.ts'
 import { API_WEB_URL } from '/@src/services/index.ts'
-import { locationsSelect } from '/@src/models/Companies.ts'
+
 import moment from 'moment'
 const router = useRouter()
 import { useCookies } from 'vue3-cookies'
@@ -140,7 +146,7 @@ watch(
 
 onMounted(() => {
   getCompany().then((response) => {
-    setInputValuesData(locationsSelect, 'locations_id', company.value.locations)
+    setInputValuesData(locationsSelect, 'locations_id', locationsActives.value)
     getInput(locationsSelect.value, 'locations_id').change = changeLocation
     if (cookies.get('locations_id') != null) {
       getInput(locationsSelect.value, 'locations_id').model =

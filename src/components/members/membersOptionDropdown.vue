@@ -54,6 +54,7 @@ const proccessSubcritions = () => {
       .then((response) => {
         notyf.success('Finalizado')
         // window.location.reload()
+        membersSelected.value = []
         isLoaderActive.value = false
       })
       .catch((error) => {

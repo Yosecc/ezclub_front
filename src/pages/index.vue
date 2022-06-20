@@ -26,35 +26,48 @@ const paginationData = ref([])
 const isLoading = ref(true)
 const defalA = ref('All')
 const categoryB = ref('All')
+
+watch(
+  () => route.query.page,
+  () => {
+    getMembers(
+      filterDate.value,
+      filters.value,
+      route.query.page,
+      defalA.value,
+      false
+    )
+  }
+)
+
 const getMembers = async (
   filter,
   value = '',
-  page = null,
+  page = 1,
   category = null,
   reload = true
 ) => {
   isLoading.value = true
   filterDate.value = filter
+
   await Api.get('accessday', {
     params: {
       [filterDate.value]: true,
       filter: value,
-      // page: page,
+      page: page,
       category: category,
     },
   })
     .then((response) => {
       members.value = response.data.members
       isLoading.value = false
-
+      paginationData.value = response.data.pagination
       if (reload) {
         reloadForm()
       }
     })
     .catch((error) => {
       isLoading.value = false
-
-      console.log(error)
     })
 }
 
@@ -118,16 +131,16 @@ watch(
               @click="getMembers('all')"
               rounded
             >
-              All
+              Today
             </V-Button>
           </V-Control>
           <V-Control>
             <V-Button
-              :color="filterDate == 'today' ? 'primary' : undefined"
-              @click="getMembers('today')"
+              :color="filterDate == 'yesterday' ? 'primary' : undefined"
+              @click="getMembers('yesterday')"
               rounded
             >
-              Today
+              Yesterday
             </V-Button>
           </V-Control>
           <V-Control>
@@ -136,16 +149,7 @@ watch(
               @click="getMembers('week')"
               rounded
             >
-              Last Week
-            </V-Button>
-          </V-Control>
-          <V-Control>
-            <V-Button
-              :color="filterDate == 'month' ? 'primary' : undefined"
-              @click="getMembers('month')"
-              rounded
-            >
-              Last Month
+              last 7 day
             </V-Button>
           </V-Control>
         </V-Field>

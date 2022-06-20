@@ -76,7 +76,9 @@ onMounted(() => {})
           </tr>
           <tr>
             <td><b>Total</b></td>
-            <td class="text-right">{{ moneda(total) }}</td>
+            <td class="text-right">
+              <p class="title is-4">{{ moneda(total) }}</p>
+            </td>
           </tr>
         </tbody>
       </table>

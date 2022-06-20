@@ -35,6 +35,7 @@ export const categoriesMembers = ref({
   model: 'Adult',
   required: true,
 })
+export const memberTransactions = ref([])
 
 export const categorieActive = computed(() => {
   return categoriesMembers.value.model
@@ -49,6 +50,61 @@ export const mismatarjeta = ref([
     required: false,
     class: 'is-12',
     isLabel: true,
+  },
+])
+
+export const prorrateo = ref([
+  {
+    typeInput: 'switchEventChangeInput',
+    name: 'prorrateo',
+    values: ['', 'Prorated Payment'],
+    model: true,
+    required: false,
+    class: 'is-4',
+    isLabel: true,
+  },
+])
+
+export const schedules = ref([
+  {
+    typeInput: 'date',
+    name: 'schedules',
+    placeholder: 'Subscription Schedules',
+    model: '',
+    required: false,
+    class: 'is-4',
+    isLabel: true,
+  },
+])
+
+export const inputsCredit = ref([
+  {
+    typeInput: 'text',
+    name: 'description',
+    placeholder: 'Transaction description',
+    model: '',
+    class: 'is-12',
+    required: true,
+    isLabel: true,
+  },
+  {
+    typeInput: 'select',
+    name: 'transaction_type',
+    placeholder: 'Transaction Type',
+    model: '',
+    class: 'is-12',
+    values: ['Add Credit', 'Remove Credit'],
+    isLabel: true,
+    required: true,
+  },
+  {
+    typeInput: 'number',
+    name: 'amount',
+    placeholder: 'Amount $',
+    model: '',
+    class: 'is-12',
+    isLabel: true,
+    required: true,
   },
 ])
 
@@ -135,7 +191,7 @@ export const inputsInformation = ref([
     required: true,
     class: 'is-6',
     isLabel: true,
-    categories: ['Adult', 'Minor'],
+    categories: ['Adult', 'Minor', 'Prospect'],
     typeMember: ['Individual', 'Company'],
     hasError: false,
     keyUp: async (event, input) => {
@@ -278,7 +334,7 @@ export const inputsInformation = ref([
     typeInput: 'selectData',
     name: 'country_id',
     placeholder: 'Country',
-    model: '',
+    model: 'US',
     required: true,
     values: [''],
     class: 'is-3',
@@ -302,15 +358,16 @@ export const inputsInformation = ref([
     typeMember: ['Individual', 'Company'],
   },
   {
-    typeInput: 'number',
+    typeInput: 'tel',
     name: 'phone',
-    placeholder: 'Phone Number',
+    placeholder: 'Phone Numbers',
     model: '',
     required: true,
     class: 'is-6',
     isLabel: true,
     categories: ['Adult', 'Prospect'],
     typeMember: ['Individual', 'Company'],
+    mask: '(###) ###-####',
   },
   {
     typeInput: 'switch',
@@ -807,8 +864,8 @@ export const membershipsData = reactive([
   {
     typeInput: 'switchEventChangeInput',
     name: 'is_initiation_fee',
-    values: ['', 'No initiation fee'],
-    placeholder: 'No initiation fee',
+    values: ['YES', 'NO'],
+    placeholder: 'Initiation fee',
     default: false,
     model: false,
     disabled: false,
@@ -819,10 +876,12 @@ export const membershipsData = reactive([
     typeInput: 'switchEventChangeInput',
     default: false,
     name: 'is_card_price',
-    values: ['', 'Card'],
+    placeholder: 'Card',
+    values: ['NO', 'YES'],
     model: false,
     disabled: false,
     class: 'is-3',
+    isLabel: true,
   },
 
   {
@@ -1169,6 +1228,13 @@ export const cancelMembershipMembers = async () => {
   return response
 }
 
+export const syncMembershipMembers = async () => {
+  const response = await Api.post(
+    `members/syncMembershipMember/${memberMermship.value.id}`
+  )
+  return response
+}
+
 export const storedeletePaymentMethod = async (
   id: number,
   paymentMethod: string
@@ -1230,8 +1296,33 @@ export const getCardsMembers = async (id: number) => {
 // Stripe
 export const getListInvoices = async (id: number) => {
   const response = await Api.get(`members/list_invoices/${id}`)
-  member.value.invoices = response.data
+  member.value.invoices = response.data.invoices
+  member.value.pagos = response.data.pagos
+  member.value.invoicesSistem = response.data.invoicesSistem
   return response
+}
+
+// Credit transactions
+
+export const getBalance = async (id: number) => {
+  const response = await Api.get(`credit/${id}/balance`)
+  return response
+}
+
+export const getTransactions = async (id: number) => {
+  const response = await Api.get(`credit/${id}`)
+  memberTransactions.value = response.data
+  return response
+}
+
+export const addCredit = async (id: number, data: object) => {
+  const response = await Api.post(`/credit/${id}/add`, data)
+  return response.data
+}
+
+export const removeCredit = async (id: number, data: object) => {
+  const response = await Api.post(`/credit/${id}/remove`, data)
+  return response.data
 }
 
 export const subscriptionsCreateStripe = async () => {
@@ -1258,6 +1349,13 @@ export const memberMermship = computed(() => {
     return null
   }
   return member.value.membership_members
+})
+
+export const transactions = computed(() => {
+  if (!memberTransactions.value) {
+    return null
+  }
+  return memberTransactions.value
 })
 
 export const memberMembershipsHistory = computed(() => {
@@ -1588,13 +1686,22 @@ export const generaPresupuesto = async (membresia: any, member: any) => {
   data.leo_vet_fr = getInput(member, 'leo_vet_fr')
     ? getInput(member, 'leo_vet_fr').model
     : null
-  console.log(data)
+
+  if (getInput(membresia, 'prorrateo') != undefined) {
+    data.prorrateo = getInput(membresia, 'prorrateo').model
+  }
+
+  if (getInput(membresia, 'schedules') != undefined) {
+    data.schedules = getInput(membresia, 'schedules').model
+  }
+
   const response = await getPresupuesto(data)
     .then((response) => {
       presupuestos.value.push({
         ...response.data,
         member: member,
         membresia: membresia,
+        schedules: data.schedules ? data.schedules : null,
       })
     })
     .catch((error) => {

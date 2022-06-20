@@ -59,6 +59,7 @@ onMounted(() => {
     console.error('Member Not Found')
     return
   }
+
   isLoading.value = true
   getCardsMembers(miembro.value)
     .then((response) => {

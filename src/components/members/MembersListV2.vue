@@ -87,17 +87,19 @@ const props = defineProps({
 })
 
 const colorCard = (member) => {
-  if (member.membership_members == null) {
+  if (member.sinMembresia) {
     return ''
   }
-  if (
-    member.membership_members != null &&
-    !member.membership_members.payments[0].status
-  ) {
+
+  if (!member.isSolvente) {
     return 'bg-danger'
-  } else {
-    return ''
   }
+
+  // if(member.cards.length){
+  //   return 'bg-success'
+  // }
+
+  return ''
 }
 
 const users = [
@@ -168,7 +170,7 @@ watch(
             <div
               @click="openMemberCard(true, item)"
               class="tile-grid-item"
-              :class="item.isSolvente ? '' : 'bg-danger'"
+              :class="colorCard(item)"
             >
               <div
                 class="
@@ -216,7 +218,9 @@ watch(
                       <span v-if="props.name == 'checkin'">
                         <p style="font-color: grey">
                           Check In:
-                          {{ moment(item.timecheckin).format('H:m:s') }}
+                          {{
+                            moment(item.timecheckin).format('MM-DD-YYYY H:m:s')
+                          }}
                         </p>
                       </span>
                     </div>
@@ -224,13 +228,13 @@ watch(
                 </div>
 
                 <div class="align-items-center d-flex">
-                  <V-Checkbox
+                  <!-- <V-Checkbox
                     class="p-0"
                     v-model="membersSelected"
                     color="primary"
                     :label="' '"
                     :value="item.id"
-                  />
+                  /> -->
                   <FlexTableDropdown :id-member="item.id" :member="item" />
                 </div>
               </div>
@@ -243,7 +247,30 @@ watch(
                   {{ item.membership_members != null ? 'Active' : 'Inactive' }}
                 </span>
 
-                <span>
+                <span class="d-flex align-items-center">
+                  <VTag
+                    v-if="item.leo_vet_fr"
+                    :label="`LEO`"
+                    class="mr-1"
+                    color="green"
+                  />
+                  <div class="mr-1" v-if="item.membership_members != undefined">
+                    <VTag
+                      v-if="item.membership_members.discount"
+                      :label="`-${item.membership_members.discount.value}%`"
+                      class=""
+                      color="orange"
+                    />
+                  </div>
+
+                  <div class="mr-3" v-if="item.cards">
+                    <VTag
+                      v-if="item.cards.length"
+                      :label="`Cards`"
+                      class="mr-1"
+                      color="purple"
+                    />
+                  </div>
                   <VAvatarStack
                     v-if="item.trainers"
                     :avatars="arregloTrainers(item.trainers)"
