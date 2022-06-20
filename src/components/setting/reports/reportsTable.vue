@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue'
 import { getReports } from '/@src/models/Reports.ts'
 import moment from 'moment'
 import VLoader from '../../base/loader/V-Loader.vue'
+import { notyf } from '/@src/models/Mixin.ts'
 
 const reports = ref([])
 const loading = ref(false)
@@ -21,7 +22,7 @@ const handleReports = async (data: object = {}) => {
     const response = await getReports(data)
     reports.value = response.data
   } catch (error) {
-    console.log(error)
+    notyf.error(error.message)
   } finally {
     loading.value = false
   }
@@ -40,14 +41,14 @@ const handleReports = async (data: object = {}) => {
             <tr>
               <th scope="col">ID</th>
               <th scope="col">Name</th>
-              <th scope="col">Membership</th>
+              <th scope="col">Membership / Product</th>
               <th scope="col">Date</th>
               <th scope="col">Payment Type</th>
               <th scope="col">Amount</th>
             </tr>
           </thead>
-          <tbody v-if="reports.data && !loading">
-            <tr v-for="(report, key) in reports.data" :key="`report-${key}`">
+          <tbody v-if="reports && !loading">
+            <tr v-for="(report, key) in reports" :key="`report-${key}`">
               <td>{{ report.id }}</td>
               <td>{{ `${report.first_name} ${report.last_name}` }}</td>
               <td>{{ `${report.membership}` }}</td>
