@@ -52,7 +52,7 @@ const onMethodPayment = (MethodPayment) => {}
 
       <memberCreditCard />
 
-      <VCard class="mb-4">
+      <VCard class="my-4">
         <p>Invoices</p>
         <table class="table is-hoverable is-fullwidth">
           <thead>
@@ -67,12 +67,12 @@ const onMethodPayment = (MethodPayment) => {}
               <th scope="col">Status</th>
             </tr>
           </thead>
-          <tbody v-if="memberMermship">
+          <tbody v-if="member.subscription && member.subscription.invoices">
             <tr
-              v-for="(invoice, key) in member.invoices"
+              v-for="(invoice, key) in member.subscription.invoices"
               :key="`invoice-${key}`"
             >
-              <td>{{ invoice.description }}</td>
+              <td>{{ invoice.billing_reason }}</td>
               <td>
                 {{ moment(invoice.created).format('MM/DD/YYYY') }}
               </td>
@@ -88,7 +88,7 @@ const onMethodPayment = (MethodPayment) => {}
                 </span>
                 <span v-else></span>
               </td>
-              <td>{{ moneda(invoice.total / 100) }}</td>
+              <td>{{ moneda(invoice.amount_paid / 100) }}</td>
               <td>{{ invoice.collection_method }}</td>
               <td>
                 <a :href="invoice.invoice_pdf" target="_blank">
@@ -101,6 +101,48 @@ const onMethodPayment = (MethodPayment) => {}
                 {{ invoice.status }}
                 <br />
                 <small>{{ invoice.description_status }}</small>
+              </td>
+            </tr>
+          </tbody>
+          <tbody
+            v-else-if="
+              member.membership_members &&
+              member.membership_members.invoice_local
+            "
+          >
+            <tr
+              v-for="(invoice, key) in member.membership_members.invoice_local"
+              :key="`invoice-${key}`"
+            >
+              <td>Subscription</td>
+              <td>
+                {{ moment(invoice.created).format('MM/DD/YYYY') }}
+              </td>
+              <td>
+                <span v-if="invoice.period_start">
+                  {{ moment(invoice.period_start).format('MM/DD/YYYY') }}
+                </span>
+                <span v-else></span>
+              </td>
+              <td>
+                <span v-if="invoice.period_end">
+                  {{ moment(invoice.period_end).format('MM/DD/YYYY') }}
+                </span>
+                <span v-else></span>
+              </td>
+              <td>{{ moneda(invoice.amount / 100) }}</td>
+              <td></td>
+              <td>
+                <!-- <a :href="invoice.invoice_pdf" target="_blank">
+                  <VButton>
+                    <i class="fas fa-download" aria-hidden="true"></i>
+                  </VButton>
+                </a> -->
+              </td>
+              <td>
+                {{ invoice.status ? 'paid' : 'incomplete' }}
+                <!-- <br /> -->
+                <!-- <small>{{ invoice.description_status }}</small> -->
               </td>
             </tr>
           </tbody>
@@ -119,7 +161,7 @@ const onMethodPayment = (MethodPayment) => {}
           </tbody> -->
         </table>
       </VCard>
-      <VCard class="mb-4">
+      <VCard class="mb-4" v-if="false">
         <p>Payment Attempts</p>
         <table class="table is-hoverable is-fullwidth">
           <thead>

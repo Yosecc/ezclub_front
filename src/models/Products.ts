@@ -3,6 +3,7 @@ import { Api } from '/@src/services'
 // import { notyf } from '/@src/models/Mixin.ts'
 
 export const products = ref([])
+export const total = ref(0)
 
 export const getProducts = async (
   locations_id: number = null,
@@ -11,7 +12,8 @@ export const getProducts = async (
   const response = await Api.get(
     `products?locations_id=${locations_id}&status=${status}`
   )
-  products.value = response.data
+  products.value = response.data.products
+  total.value = response.data.total
   return response
 }
 

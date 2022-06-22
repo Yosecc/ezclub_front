@@ -308,7 +308,7 @@ watch(
       <template #bottom-links>
         <!-- Switch Sidebar  Layouts -->
         <li>
-          <LayoutSwitcher />
+          <!-- <LayoutSwitcher /> -->
         </li>
 
         <!-- Search -->
@@ -396,7 +396,7 @@ watch(
               <h1 class="title is-4">{{ pageTitle }}</h1>
             </div>
 
-            <Toolbar class="desktop-toolbar" />
+            <!-- <Toolbar class="desktop-toolbar" /> -->
           </div>
 
           <slot></slot>

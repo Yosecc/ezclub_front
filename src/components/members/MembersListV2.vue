@@ -87,19 +87,34 @@ const props = defineProps({
 })
 
 const colorCard = (member) => {
-  if (member.sinMembresia) {
-    return ''
+  // console.log(member)
+  let classs = ''
+  if (member.subscription) {
+    if (
+      member.subscription.subscription &&
+      member.subscription.subscription.status == 'active'
+    ) {
+      classs = 'active'
+    } else {
+      classs = member.subscription.status
+    }
+
+    if (member.subscription.status == 'active') {
+      // $activos++;
+    } else if (member.subscription.status == 'sincard') {
+      // $sinCard++;
+    }
+  } else if (member.sinMembresia) {
+    if (member.user && member.user.pm_last_four) {
+      // $nomembershipcontarjeta++;
+      classs = 'nomembershipcontarjeta'
+    } else {
+      classs = 'nomembership'
+      // $nomembership++;
+    }
   }
 
-  if (!member.isSolvente) {
-    return 'bg-danger'
-  }
-
-  // if(member.cards.length){
-  //   return 'bg-success'
-  // }
-
-  return ''
+  return classs
 }
 
 const users = [
@@ -169,7 +184,7 @@ watch(
           >
             <div
               @click="openMemberCard(true, item)"
-              class="tile-grid-item"
+              class="tile-grid-item cardprofile"
               :class="colorCard(item)"
             >
               <div
@@ -207,6 +222,10 @@ watch(
                         >
                           {{ item.name }} {{ item.second_name }}
                           {{ item.last_name }}
+                          <!-- <br> -->
+                          <!-- {{ colorCard(item) }} -->
+                          <!-- <br> -->
+                          <!-- {{ member.subscription ? member.subscription.status:'no subscription' }} -->
                         </router-link>
                       </span>
                     </div>
@@ -228,23 +247,37 @@ watch(
                 </div>
 
                 <div class="align-items-center d-flex">
-                  <V-Checkbox
+                  <!-- <V-Checkbox
                     class="p-0"
                     v-model="membersSelected"
                     color="primary"
                     :label="' '"
                     :value="item.id"
-                  />
+                  /> -->
                   <FlexTableDropdown :id-member="item.id" :member="item" />
                 </div>
               </div>
-              <div class="d-flex justify-content-between">
-                <span
-                  class="tag is-rounded py-0 d-flex align-items-center mt-3"
-                  style="font-size: 10px"
-                  :class="item.membership_members != null ? 'is-success' : ''"
-                >
-                  {{ item.membership_members != null ? 'Active' : 'Inactive' }}
+              <div class="d-flex justify-content-between mt-3">
+                <span class="d-flex align-items-center">
+                  <div class="mr-1">
+                    <VTag :label="`${colorCard(item)}`" class="mr-1" color="" />
+                  </div>
+                  <div
+                    class="mr-1"
+                    v-if="
+                      item.subscription &&
+                      item.subscription.subscription &&
+                      item.subscription.latest_invoice &&
+                      item.subscription.latest_invoice.payments_intents &&
+                      colorCard(item) == 'due'
+                    "
+                  >
+                    <VTag
+                      :label="`${item.subscription.latest_invoice.payments_intents[0].status}`"
+                      class="mr-1"
+                      color="danger"
+                    />
+                  </div>
                 </span>
 
                 <span class="d-flex align-items-center">
@@ -263,14 +296,16 @@ watch(
                     />
                   </div>
 
-                  <div class="mr-3" v-if="item.cards">
+                  <div class="mr-3" v-if="item.cards.length">
+                    <!-- <p>{{ item.cards[0] }}</p> -->
                     <VTag
-                      v-if="item.cards.length"
+                      v-if="item.cards[0].last4 != null"
                       :label="`Cards`"
                       class="mr-1"
                       color="purple"
                     />
                   </div>
+
                   <VAvatarStack
                     v-if="item.trainers"
                     :avatars="arregloTrainers(item.trainers)"

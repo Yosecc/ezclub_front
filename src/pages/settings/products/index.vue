@@ -10,7 +10,7 @@ import {
   locationsSelect,
   locationsActives,
 } from '/@src/models/Companies.ts'
-import { getProducts, products } from '/@src/models/Products.ts'
+import { getProducts, products, total } from '/@src/models/Products.ts'
 import { moneda, setInputValuesData, getInput } from '/@src/models/Mixin.ts'
 import { locationInventory } from '/@src/models/Inventory.ts'
 import { useCookies } from 'vue3-cookies'
@@ -57,7 +57,7 @@ const data = computed(() => {
         element.name,
         element.sku,
         element.price,
-        'stock',
+        element.stockactive,
         element.category.name,
         element.status,
         element.id,
@@ -83,10 +83,10 @@ function renderButton(data: any, cell: any, row: any) {
   return `<div class="has-text-right"><a href="/settings/products/edit?id=${data}" class="button v-button is-dark-outlined" data-row="${row.dataIndex}">Edit</a></div>`
 }
 
-const sumaTotalProducts = computed(() => {
+const sumaProducts = computed(() => {
   let suma = 0
   products.value.forEach((element) => {
-    suma += element.price
+    suma += element.stockactive
   })
   return suma
 })
@@ -101,7 +101,7 @@ const datatableV1 = computed(() => {
       // { select: 2, render: renderName },
       // { select: 3, render: renderPosition },
       { select: 4, render: moneda },
-      { select: 5, hidden: true },
+      { select: 5 },
 
       { select: 8, render: renderButton, sortable: false },
     ],
@@ -112,7 +112,7 @@ const datatableV1 = computed(() => {
         'Name',
         'SKU',
         'PRICE',
-        'STOCK',
+        'stock',
         'Category',
         'Status',
         'Actions',
@@ -159,7 +159,10 @@ const datatableV1 = computed(() => {
                 <p><i class="fas fa-list"></i></p>
               </div>
               <div class="text-right">
-                <p>Unique Items</p>
+                <p>
+                  Unique Items <br />
+                  <small>According to active products</small>
+                </p>
                 <h1 class="title is-2">{{ products.length }}</h1>
               </div>
             </div>
@@ -176,8 +179,12 @@ const datatableV1 = computed(() => {
                 <p><i class="fas fa-shopping-bag"></i></p>
               </div>
               <div class="text-right">
-                <p>Total Quantity</p>
-                <h1 class="title is-2">0</h1>
+                <p>
+                  Total Quantity <br /><small
+                    >According to latest inventory</small
+                  >
+                </p>
+                <h1 class="title is-2">{{ sumaProducts }}</h1>
               </div>
             </div>
           </VCard>
@@ -193,8 +200,9 @@ const datatableV1 = computed(() => {
                 <p><i class="fas fa-comment-dollar"></i></p>
               </div>
               <div class="text-right">
-                <p>Value</p>
-                <h1 class="title is-2">$0.00</h1>
+                <p>Value<br /><small>According to latest inventory</small></p>
+
+                <h1 class="title is-2">{{ moneda(total) }}</h1>
               </div>
             </div>
           </VCard>

@@ -110,7 +110,7 @@ const change = (key) => {
 </script>
 
 <template>
-  <VCard :color="isSolvente ? undefined : 'danger'" v-if="member">
+  <VCard class="cardprofile" v-if="member">
     <div
       class="d-flex justify-content-center align-items-center flex-column mb-4"
     >
