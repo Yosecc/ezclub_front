@@ -9,13 +9,17 @@ const props = defineProps({
     type: String,
     required: true,
   },
-  membership_member_id: {
+  member_id: {
     type: Number,
     required: true,
   },
+  isBack: {
+    type: Boolean,
+    default: true,
+  },
   pm_last_four: {
     type: String,
-    required: '',
+    default: '',
   },
 })
 
@@ -76,15 +80,15 @@ const initialize = async () => {
 
 const payment = async (payment_method) => {
   isLoaderActive.value = true
-  const { data } = await Api.post('paymentStripe', {
+  const { data } = await Api.post('addCardStripe', {
     payment_method,
-    membership_member_id: props.membership_member_id,
+    member_id: props.member_id,
   }).catch((e) => {
     buttonLoading.value = false
   })
   pagado.value = true
   isLoaderActive.value = false
-  window.location.reload()
+  // window.location.reload()
   return data
 }
 
@@ -122,7 +126,7 @@ const handleSubmit = async (e) => {
 onMounted(() => {
   buttonLoading.value = false
   formLoading.value = false
-  // initialize()
+  initialize()
 })
 const isLoaderActive = ref(false)
 const onMethodPayment = (paymentMethod) => {
@@ -131,42 +135,35 @@ const onMethodPayment = (paymentMethod) => {
 </script>
 
 <template>
-  <VPlaceload v-if="formLoading" height="500px" />
-  <V-Card v-show="!formLoading" class="mt-6">
-    <form v-if="newCard" @submit.prevent="handleSubmit" id="payment-form">
-      <div class="w-100 d-flex justify-content-end">
-        <VButton @click="newCard = false" class="mb-4">Back</VButton>
-      </div>
-      <input
-        id="card-holder-name"
-        class="input mb-3"
-        v-model="nameCard"
-        placeholder="Name"
-        type="text"
-      />
-      <div id="payment-element">
-        <!--Stripe.js injects the Payment Element-->
-      </div>
-      <VLoader size="small" :active="buttonLoading">
-        <VButton id="submit" class="mt-4" color="info">Pay now </VButton>
-      </VLoader>
+  <div>
+    <!-- <p> {{ PUBLIC_KEY_STRIPE }}</p> -->
 
-      <div id="payment-message" class="hidden"></div>
-    </form>
-    <div v-else>
-      <VLoader size="large" :active="isLoaderActive">
-        <MemberCards
-          v-if="!pagado"
-          @onMethodPayment="onMethodPayment"
-          @onNewCard="initialize()"
-          :method_default="pm_last_four"
+    <VPlaceload v-if="formLoading" height="500px" />
+    <V-Card v-show="!formLoading" class="mt-6">
+      <form v-if="newCard" @submit.prevent="handleSubmit" id="payment-form">
+        <div class="w-100 d-flex justify-content-end">
+          <VButton v-if="isBack" @click="newCard = false" class="mb-4"
+            >Back</VButton
+          >
+        </div>
+        <input
+          id="card-holder-name"
+          class="input mb-3"
+          v-model="nameCard"
+          placeholder="Name"
+          type="text"
         />
-        <VCard v-else color="success">
-          <h1 class="title is-4">Success</h1>
-        </VCard>
-      </VLoader>
-    </div>
-  </V-Card>
+        <div id="payment-element">
+          <!--Stripe.js injects the Payment Element-->
+        </div>
+        <VLoader size="small" :active="buttonLoading">
+          <VButton id="submit" class="mt-4" color="info">Add Card</VButton>
+        </VLoader>
+
+        <div id="payment-message" class="hidden"></div>
+      </form>
+    </V-Card>
+  </div>
 </template>
 
 <style lang="scss">

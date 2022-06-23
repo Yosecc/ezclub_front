@@ -37,7 +37,7 @@ const filteredData = computed(() => {
       let status = item.status == 1 ? 'Active' : 'Inactive'
       return (
         item.name.match(new RegExp(filters.value, 'i')) ||
-        item.second_name.match(new RegExp(filters.value, 'i')) ||
+        // item.second_name.match(new RegExp(filters.value, 'i')) ||
         item.last_name.match(new RegExp(filters.value, 'i')) ||
         // item.staff_roles.description.match(new RegExp(filters.value, 'i')) ||
         item.phone.toString().match(new RegExp(filters.value, 'i')) ||
