@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { getMemberReports } from '/@src/models/Reports'
+import { getMemberReports, downloadReports } from '/@src/models/Reports'
 import moment from 'moment'
 import VLoader from '../../../base/loader/V-Loader.vue'
 import { notyf } from '/@src/models/Mixin'
@@ -27,12 +27,33 @@ const handleReports = async (data: object = {}) => {
     loading.value = false
   }
 }
+
+const handleDownload = async (data: object = {}) => {
+  loading.value = true
+  try {
+    const response = await downloadReports(data)
+    const url = window.URL.createObjectURL(new Blob([response.data]))
+    const link = document.createElement('a')
+    link.href = url
+    link.setAttribute('download', 'reports.xlsx') //or any other extension
+    document.body.appendChild(link)
+    link.click()
+  } catch (error) {
+    notyf.error(error.message)
+  } finally {
+    loading.value = false
+  }
+}
 </script>
 
 <template>
   <VCard>
     <div>
-      <memberFilterReportsTable @search="handleSearch" :loading="loading" />
+      <memberFilterReportsTable
+        @search="handleSearch"
+        :loading="loading"
+        @download="handleDownload"
+      />
     </div>
     <div class="mt-4">
       <VLoader class="is-12" center size="small" :active="loading">

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { defineEmit, defineProps } from 'vue'
-import { filterInsputs } from '/@src/models/Reports.ts'
-import { perpareDataInputs } from '/@src/models/Mixin.ts'
+import { filterInsputsMembershipsCancelledReport } from '/@src/models/Reports'
+import { perpareDataInputs } from '/@src/models/Mixin'
 
 const props = defineProps({
   loading: {
@@ -19,12 +19,12 @@ const emit = defineEmit({
 })
 
 const handleDownload = () => {
-  const data = perpareDataInputs(filterInsputs.value)
+  const data = perpareDataInputs(filterInsputsMembershipsCancelledReport.value)
   emit('download', data)
 }
 
 const handleSearch = () => {
-  const data = perpareDataInputs(filterInsputs.value)
+  const data = perpareDataInputs(filterInsputsMembershipsCancelledReport.value)
   emit('search', data)
 }
 </script>
@@ -35,10 +35,10 @@ const handleSearch = () => {
       >Download Excel</V-Button
     >
   </div>
-  <inputsLayaut :inputs-step="filterInsputs" />
+  <inputsLayaut :inputs-step="filterInsputsMembershipsCancelledReport" />
   <div class="is-12 d-flex justify-content-end">
     <V-Button color="primary" :loading="props.loading" @click="handleSearch">
-      Search
+      Search Members
     </V-Button>
   </div>
 </template>

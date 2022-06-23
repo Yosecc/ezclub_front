@@ -8,6 +8,34 @@ export const getReports = async (data: object = {}) => {
   return response
 }
 
+export const downloadReports = async (data: object = {}) => {
+  const response = await Api.get(`reports/download`, {
+    params: data,
+    responseType: 'arraybuffer',
+  })
+  return response
+}
+
+export const getMemberShipsCancelled = async (data: object = {}) => {
+  const response = await Api.get(`reports/memberships-cancelled`, {
+    params: {
+      ...data,
+      status: true,
+    },
+  })
+  return response
+}
+
+export const getMemberWithoutPaymentMethod = async (data: object = {}) => {
+  const response = await Api.get(`reports/members-with-out-payment-method`, {
+    params: {
+      ...data,
+      no_payment_method: true,
+    },
+  })
+  return response
+}
+
 export const getMemberReports = async (data: object = {}) => {
   const response = await Api.get(`reports/members`, {
     params: data,
@@ -61,6 +89,25 @@ export const filterInsputsMemberReport = ref([
     class: 'is-4',
     isLabel: true,
   },
+  {
+    typeInput: 'date',
+    name: 'start_date',
+    placeholder: 'Start Date',
+    model: '',
+    class: 'is-3',
+    isLabel: true,
+  },
+  {
+    typeInput: 'date',
+    name: 'end_date',
+    placeholder: 'End Date',
+    model: '',
+    class: 'is-3',
+    isLabel: true,
+  },
+])
+
+export const filterInsputsMembershipsCancelledReport = ref([
   {
     typeInput: 'date',
     name: 'start_date',

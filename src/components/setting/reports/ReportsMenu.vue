@@ -14,6 +14,18 @@ const menu = ref([
     toName: 'settings-reports-members',
     icon: 'lnil lnil-gift-alt-1',
   },
+  {
+    name: 'Memebership Cancelled',
+    subname: 'Memebership Cancelled',
+    toName: 'settings-reports-memberships-cancelled',
+    icon: 'lnil lnil-gift-alt-1',
+  },
+  {
+    name: 'Members Without Payment Method',
+    subname: 'Members Without Payment Method',
+    toName: 'settings-reports-member-without-payment-method',
+    icon: 'lnil lnil-gift-alt-1',
+  },
 ])
 </script>
 <template>

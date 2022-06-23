@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { getReports, downloadReports } from '/@src/models/Reports.ts'
+import { getMemberShipsCancelled, downloadReports } from '/@src/models/Reports'
 import moment from 'moment'
-import VLoader from '../../base/loader/V-Loader.vue'
-import { notyf } from '/@src/models/Mixin.ts'
+import VLoader from '../../../base/loader/V-Loader.vue'
+import { notyf } from '/@src/models/Mixin'
 
 const reports = ref([])
 const loading = ref(false)
@@ -19,7 +19,7 @@ const handleSearch = async (data: object) => {
 const handleReports = async (data: object = {}) => {
   loading.value = true
   try {
-    const response = await getReports(data)
+    const response = await getMemberShipsCancelled(data)
     reports.value = response.data
   } catch (error) {
     notyf.error(error.message)
@@ -49,7 +49,7 @@ const handleDownload = async (data: object = {}) => {
 <template>
   <VCard>
     <div>
-      <filterReportsTable
+      <membershipsFilterReportsTable
         @search="handleSearch"
         :loading="loading"
         @download="handleDownload"
@@ -62,22 +62,37 @@ const handleDownload = async (data: object = {}) => {
             <tr>
               <th scope="col">ID</th>
               <th scope="col">Name</th>
-              <th scope="col">Membership / Product</th>
-              <th scope="col">Date</th>
+              <th scope="col">Memebership</th>
               <th scope="col">Payment Type</th>
-              <th scope="col">Amount</th>
+              <th scope="col">Created At</th>
+              <th scope="col">Update At</th>
             </tr>
           </thead>
           <tbody v-if="reports && !loading">
             <tr v-for="(report, key) in reports" :key="`report-${key}`">
               <td>{{ report.id }}</td>
-              <td>{{ `${report.first_name} ${report.last_name}` }}</td>
-              <td>{{ `${report.membership}` }}</td>
+              <td>
+                {{
+                  `${report.first_name} ${report.second_name ?? ''} ${
+                    report.last_name
+                  }`
+                }}
+              </td>
+              <td>{{ report.membership }}</td>
+              <td>{{ report.payment_type }}</td>
               <td>
                 {{ moment(report.created_at).format('MM/DD/YYYY') }}
               </td>
-              <td>{{ report.payment_type }}</td>
-              <td>{{ `${report.amount} $` }}</td>
+              <td>
+                {{ moment(report.updated_at).format('MM/DD/YYYY') }}
+              </td>
+            </tr>
+          </tbody>
+          <tbody v-if="reports.length < 1 && !loading">
+            <tr>
+              <td></td>
+              <td>No members</td>
+              <td></td>
             </tr>
           </tbody>
         </table>

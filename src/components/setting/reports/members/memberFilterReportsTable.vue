@@ -13,10 +13,14 @@ const emit = defineEmit({
   search(payload) {
     return payload
   },
+  download(payload) {
+    return payload
+  },
 })
 
 const handleDownload = () => {
-  console.log('handleDownload')
+  const data = perpareDataInputs(filterInsputsMemberReport.value)
+  emit('download', data)
 }
 
 const handleSearch = () => {
