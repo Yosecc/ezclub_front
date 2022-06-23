@@ -62,7 +62,7 @@ const onMethodPayment = (MethodPayment) => {}
               <th scope="col">Created</th>
               <th scope="col">Start Period</th>
               <th scope="col">End Period</th>
-              <th scope="col">Mount</th>
+              <th scope="col">Amount</th>
               <th scope="col">Method</th>
               <th scope="col">Download</th>
               <th scope="col">Status</th>
