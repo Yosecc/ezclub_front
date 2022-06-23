@@ -31,7 +31,10 @@ const handleReports = async (data: object = {}) => {
 const handleDownload = async (data: object = {}) => {
   loading.value = true
   try {
-    const response = await downloadReports(data)
+    const response = await downloadReports({
+      ...data,
+      report_export_type: 'memberships',
+    })
     const url = window.URL.createObjectURL(new Blob([response.data]))
     const link = document.createElement('a')
     link.href = url

@@ -48,7 +48,7 @@ export const filterInsputs = ref([
     typeInput: 'select',
     name: 'report_type',
     placeholder: 'Report Type',
-    values: ['Memberships', 'Orders'],
+    values: ['Memberships', 'Products'],
     model: '',
     class: 'is-3',
     isLabel: true,
