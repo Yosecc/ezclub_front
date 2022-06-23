@@ -47,10 +47,11 @@ const onMethodPayment = (MethodPayment) => {}
         v-if="member.user"
         @onMethodPayment="onMethodPayment"
         :method_default="member.user.pm_last_four"
-        :show-new-card="false"
+        :show-new-card="true"
+        :memberid="member.id"
       />
 
-      <memberCreditCard />
+      <!-- <memberCreditCard /> -->
 
       <VCard class="my-4">
         <p>Invoices</p>

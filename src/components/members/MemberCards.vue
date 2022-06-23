@@ -6,8 +6,9 @@ import {
   storedeletePaymentMethod,
   storedefaultPaymentMethod,
 } from '/@src/models/Members.ts'
+
 import moment from 'moment'
-import { API_WEB_URL } from '/@src/services'
+import { API_WEB_URL, Api } from '/@src/services'
 import { useRoute } from 'vue-router'
 import { notyf } from '/@src/models/Mixin.ts'
 const emit = defineEmit(['onMethodPayment', 'onNewCard'])
@@ -25,6 +26,10 @@ const props = defineProps({
   showNewCard: {
     type: Boolean,
     default: true,
+  },
+  member_mermship_id: {
+    type: Number,
+    default: null,
   },
   memberid: {
     type: Number,
@@ -92,6 +97,7 @@ const deletePaymentMethod = (payment_method) => {
       }
     })
 }
+
 const defaultPaymentMethod = (payment_method) => {
   storedefaultPaymentMethod(miembro.value, payment_method)
     .then((response) => {
@@ -111,6 +117,37 @@ const defaultPaymentMethod = (payment_method) => {
       //   }
     })
 }
+
+const clientSecret = ref(null)
+
+const onNewCard = async () => {
+  isLoading.value = true
+  const response = await Api.post('stripeSetup', {
+    member_id: props.memberid,
+  })
+    .then((res) => {
+      clientSecret.value = res.data.clientSecret
+      isLoading.value = false
+    })
+    .catch((error) => {
+      isLoading.value = false
+    })
+}
+
+const PaymentAction = () => {
+  console.log('listo')
+  isLoading.value = true
+
+  setTimeout(() => {
+    getCardsMembers(miembro.value)
+      .then((response) => {
+        console.log(response)
+        isLoading.value = false
+        cards.value = response.data
+      })
+      .catch((error) => {})
+  }, 5000)
+}
 </script>
 
 <template>
@@ -119,7 +156,7 @@ const defaultPaymentMethod = (payment_method) => {
       <div
         v-for="(card, key) in cards"
         :key="`card-${key}`"
-        class="column py-0"
+        class="column py-0 mb-2"
         :class="ancho"
       >
         <VCard @click="selectMethodPayment(card.id)" class="btn-card h-100">
@@ -152,7 +189,12 @@ const defaultPaymentMethod = (payment_method) => {
       </div>
       <slot></slot>
       <div v-if="showNewCard" class="column is-12">
-        <VCard @click="$emit('onNewCard')" color="success" class="btn-card">
+        <VCard
+          v-if="props.memberid"
+          @click="onNewCard"
+          color="success"
+          class="btn-card"
+        >
           <div class="d-flex align-items-center">
             <p class="title is-1 mb-0">
               <i class="fas fa-plus-circle" aria-hidden="true"></i>
@@ -162,6 +204,13 @@ const defaultPaymentMethod = (payment_method) => {
             </div>
           </div>
         </VCard>
+        <stripeAddCardComponent
+          v-if="clientSecret"
+          :client-secret="clientSecret"
+          :member_id="props.memberid"
+          :is-back="false"
+          @PaymentAction="PaymentAction"
+        />
       </div>
     </div>
   </VLoader>
