@@ -254,6 +254,12 @@ const status = computed(() => {
     } else if (member.value.subscription.status == 'sincard') {
       // $sinCard++;
     }
+    if (
+      member.value.subscription.status == 'canceled' &&
+      moment() <= moment(member.value.membership_members.cacelation_date)
+    ) {
+      classs = 'active'
+    }
   } else if (member.value.sinMembresia) {
     if (member.value.user && member.value.user.pm_last_four) {
       // $nomembershipcontarjeta++;

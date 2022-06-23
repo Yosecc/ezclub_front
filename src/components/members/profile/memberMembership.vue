@@ -62,7 +62,11 @@ const InputsDisponibles = computed(() => {
     }
   }
   getInput(membershipsData, 'recurrence').class = 'is-4'
-  if (member.value && memberMermship.value) {
+  if (
+    member.value &&
+    memberMermship.value &&
+    memberMermship.value.status == 1
+  ) {
     let d = ['locations_id', 'diciplines', 'staff_id', 'discount']
     return membershipsData.filter((e) => d.includes(e.name))
   }
@@ -211,7 +215,10 @@ const paymentCash = (obj) => {
     </template>
     <template #content>
       <div class="columns is-multiline justify-content-center">
-        <div v-if="member && memberMermship" class="column is-12">
+        <div
+          v-if="member && memberMermship && memberMermship.status == 1"
+          class="column is-12"
+        >
           <VCard class="d-flex justify-content-between" color="info">
             <span>
               <p><small>Membership</small></p>
@@ -248,7 +255,10 @@ const paymentCash = (obj) => {
           </VCard>
         </div>
 
-        <div v-if="member && memberMermship" class="column is-3 mb-6 mt-4">
+        <div
+          v-if="member && memberMermship && memberMermship.status == 1"
+          class="column is-3 mb-6 mt-4"
+        >
           <VLoader
             v-if="member.membership_members.is_recurrence"
             size="small"
@@ -272,7 +282,10 @@ const paymentCash = (obj) => {
           </VLoader>
         </div>
 
-        <div v-if="member && memberMermship" class="column is-3 mb-6 mt-4">
+        <div
+          v-if="member && memberMermship && memberMermship.status == 1"
+          class="column is-3 mb-6 mt-4"
+        >
           <VLoader
             v-if="member.membership_members.is_recurrence"
             size="small"
@@ -310,7 +323,10 @@ const paymentCash = (obj) => {
           </V-Modal>
         </div>
 
-        <div v-if="member && memberMermship" class="column is-3 mb-6 mt-4">
+        <div
+          v-if="member && memberMermship && memberMermship.status == 1"
+          class="column is-3 mb-6 mt-4"
+        >
           <VLoader
             v-if="member.membership_members.is_recurrence"
             size="small"
@@ -328,7 +344,10 @@ const paymentCash = (obj) => {
           </VLoader>
         </div>
 
-        <div v-if="member && memberMermship" class="column is-3 mb-6 mt-4">
+        <div
+          v-if="member && memberMermship && memberMermship.status == 1"
+          class="column is-3 mb-6 mt-4"
+        >
           <VLoader
             v-if="member.membership_members.is_recurrence"
             size="small"
@@ -375,7 +394,7 @@ const paymentCash = (obj) => {
           />
 
           <VLoader
-            v-if="member && memberMermship"
+            v-if="member && memberMermship && memberMermship.status == 1"
             size="small"
             :active="isLoaderActive"
           >
@@ -386,7 +405,7 @@ const paymentCash = (obj) => {
 
           <VLoader v-if="!pagado" size="small" :active="isLoaderActive">
             <VButton
-              v-if="!memberMermship"
+              v-if="!memberMermship || memberMermship.status == 2"
               class="mt-5"
               @click="onNew"
               color="primary"
@@ -397,7 +416,10 @@ const paymentCash = (obj) => {
         </VCard>
 
         <!-- Presupuesto -->
-        <div v-if="!memberMermship" class="column is-12 mb-6 mt-4">
+        <div
+          v-if="!memberMermship || memberMermship.status == 2"
+          class="column is-12 mb-6 mt-4"
+        >
           <VPlaceload height="300px" class="mb-4" v-if="isLoaderActive" />
           <div v-if="presupuestos.length">
             <Presupuesto

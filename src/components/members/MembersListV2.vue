@@ -104,6 +104,13 @@ const colorCard = (member) => {
     } else if (member.subscription.status == 'sincard') {
       // $sinCard++;
     }
+
+    if (
+      member.subscription.status == 'canceled' &&
+      moment() <= moment(member.membership_members.cacelation_date)
+    ) {
+      classs = 'active'
+    }
   } else if (member.sinMembresia) {
     if (member.user && member.user.pm_last_four) {
       // $nomembershipcontarjeta++;
@@ -262,6 +269,16 @@ watch(
                   <div class="mr-1">
                     <VTag :label="`${colorCard(item)}`" class="mr-1" color="" />
                   </div>
+
+                  <VTag
+                    v-if="item.membership_members.status == 2"
+                    :label="`Canceled ${moment(
+                      item.membership_members.cacelation_date
+                    ).format('MM-DD-YYYY')}`"
+                    class="mr-1"
+                    color="danger"
+                  />
+
                   <div
                     class="mr-1"
                     v-if="
@@ -273,6 +290,7 @@ watch(
                     "
                   >
                     <VTag
+                      v-if="item.membership_members.status != 2"
                       :label="`${item.subscription.latest_invoice.payments_intents[0].status}`"
                       class="mr-1"
                       color="danger"
