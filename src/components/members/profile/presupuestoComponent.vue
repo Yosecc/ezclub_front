@@ -40,7 +40,7 @@ const props = defineProps({
         <tr>
           <th scope="col">Membership Name</th>
           <th scope="col">Plan</th>
-          <th scope="col">Cost</th>
+          <th scope="col">Prorated Cost</th>
           <!-- <th scope="col">Initiation Fee</th> -->
           <!-- <th scope="col">Discount</th> -->
           <!-- <th scope="col">Taxes</th> -->
