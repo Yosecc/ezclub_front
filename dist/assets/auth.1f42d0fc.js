@@ -1,0 +1,1 @@
+import{o as r,i as t,L as e,h as s,j as a,k as n}from"./vendor.d343baf9.js";const o={},u={class:"auth-wrapper"};o.render=function(s,a){return r(),t("div",u,[e(s.$slots,"default")])};const d={};d.render=function(e,u){const d=s("RouterView"),f=o;return r(),t(f,null,{default:a((()=>[n(d)])),_:1})};export default d;
