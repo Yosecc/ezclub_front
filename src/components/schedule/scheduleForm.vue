@@ -308,6 +308,10 @@ const changeLocations = function (event, inputsStep) {
           inputsTrainersw.model.push(e.staffs_id)
         })
       }
+      inputsTrainersw.filter = function (option) {
+        return option.name + ' ' + option.last_name
+      }
+      console.log('inputsTrainersw', inputsTrainersw)
       inputsfechas.push(inputsTrainersw)
 
       class_locations.value.push({
@@ -518,7 +522,7 @@ const ondeleteEvent = () => {
     })
     .catch((error) => {
       if (error.response.status == 404) {
-        console.log('props.idEvent', id)
+        // console.log('props.idEvent', id)
         emit('deleteEvent', id)
       }
     })
@@ -563,61 +567,6 @@ const ondeleteEvent = () => {
     </div>
     <inputsLayaut :inputs-step="inputsMismasFechas" />
     <inputsLayaut :inputs-step="location.inputsfechas" />
-    <!--  <inputsLayaut
-          :inputs-step="inputsMismosHorariosTrainer"
-        /> -->
-    <!-- <VCard 
-      v-for="(trainer, key) in location.trainers"
-      :key="`trainer-${key}`"
-      class="mb-4"
-     >
-        <p>{{ trainer.name }}</p>
-        <inputsLayaut
-          :inputs-step="trainer.inputsDias"
-        />
-
-         
-        
-          <div 
-            v-for="(day, key) in trainer.days"
-            key="`day-${key}`"
-            class="mb-4">
-
-            <VCard
-            v-show="(trainer.days.All && key == 'All') || (!trainer.days.All && key != 'All')"
-            >
-   
-              <p v-show="!trainer.days.All" >{{ key }}</p>  
-              <div
-                v-for="(horario, keey) in day"
-                :key="`horario-${key}`"
-                
-              >
-
-                <div class="columns">
-                  <div class="column is-9">
-                    <inputsLayaut
-                      :inputs-step="horario.inputsHorarios"
-                    />
-
-                  </div>
-                  <div class="column is-3 mt-6 d-flex">
-                    <VButton 
-                      @click="addHorario(key, trainer)"
-                      color="info"  
-                      icon="fa fa-plus" 
-                      v-if="keey >= day.length-1"
-                      > Add</VButton>
-                    <VButton v-if="keey > 0" color="danger" class="ml-2"  icon="fa fa-minus" elevated> Remove</VButton>
-                  </div>
-                </div>
-              </div>
-            </VCard>
-          </div>
-        
-        
-        
-      </VCard> -->
   </VCard>
 </template>
 

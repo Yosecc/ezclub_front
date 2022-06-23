@@ -84,7 +84,7 @@ const props = defineProps({
 
         <tr style="text-align: right">
           <td colspan="4" style="text-align: right">
-            <p>
+            <p v-if="presupuesto.schedules">
               <small
                 >Scheduled Membership:
                 {{ moment(presupuesto.schedules).format('MM-DD-YYYY') }}</small
