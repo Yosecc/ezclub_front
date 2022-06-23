@@ -1,0 +1,1 @@
+import{d as a,a7 as s,I as e,o as r,i as d}from"./vendor.d343baf9.js";var o=a({expose:[],setup(a){const o=s();return e((()=>{o.push({name:"sidebar-dashboards"})})),(a,s)=>(r(),d("div"))}});export default o;

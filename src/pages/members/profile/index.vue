@@ -75,12 +75,28 @@ watch(member, (to) => {
     subMensaje.value = 'Please, select a membership'
   }
 
-  if (!to.isSolvente && !to.sinMembresia) {
+  if (!to.isSolvente && !to.sinMembresia && to.subscription) {
     mensaje.value = `Membership ${to.subscription.status}`
     subMensaje.value =
-      to.subscription.status_payment.length > 0
-        ? `Last payment status : ${to.subscription.status_payment}`
+      to.subscription.latest_invoice &&
+      to.subscription.latest_invoice.payments_intents.length > 0
+        ? `Last payment status : ${to.subscription.latest_invoice.payments_intents[0].status}`
         : ''
+  }
+  if (
+    to.subscription &&
+    to.subscription.subscription &&
+    !to.subscription.latest_invoice
+  ) {
+    subMensaje.value = `Last payment status : ${to.subscription.subscription.status}`
+  }
+
+  if (to.membership_members) {
+    if (to.membership_members.cacelation_date) {
+      subMensaje.value = `Cancel date : ${moment(
+        to.membership_members.cacelation_date
+      ).format('MM-DD-YYYY')}`
+    }
   }
 })
 
@@ -220,6 +236,42 @@ const mountMember = async () => {
     isLoading.value = false
   })
 }
+
+const status = computed(() => {
+  let classs = ''
+  if (member.value.subscription) {
+    if (
+      member.value.subscription.subscription &&
+      member.value.subscription.subscription.status == 'active'
+    ) {
+      classs = 'active'
+    } else {
+      classs = member.value.subscription.status
+    }
+
+    if (member.value.subscription.status == 'active') {
+      // $activos++;
+    } else if (member.value.subscription.status == 'sincard') {
+      // $sinCard++;
+    }
+    if (
+      member.value.subscription.status == 'canceled' &&
+      moment() <= moment(member.value.membership_members.cacelation_date)
+    ) {
+      classs = 'active'
+    }
+  } else if (member.value.sinMembresia) {
+    if (member.value.user && member.value.user.pm_last_four) {
+      // $nomembershipcontarjeta++;
+      classs = 'nomembershipcontarjeta'
+    } else {
+      classs = 'nomembership'
+      // $nomembership++;
+    }
+  }
+
+  return classs
+})
 </script>
 
 <template>
@@ -243,23 +295,27 @@ const mountMember = async () => {
         <MemberProfileMenu
           :category="route.query.category"
           @changeMenu="changeMenu"
+          :class="status"
         />
       </div>
       <!-- <p>{{ isSolvente }}</p> -->
       <div class="column is-9">
         <VCard
           v-if="!isSolvente"
-          class="mb-4 d-flex justify-content-between align-items-center"
-          color="danger"
+          class="
+            mb-4
+            d-flex
+            justify-content-between
+            align-items-center
+            cardprofile
+          "
+          :class="status"
         >
           <div>
-            <!--  <h3 class="title is-5 mb-0">
-              {{ member.sinMembresia ? 'No Membership' : mensaje }}
-            </h3> -->
             <p>{{ subMensaje }}</p>
-            <small v-if="member.subscription">
+            <!-- <small v-if="member.subscription">
               <p>{{ member.subscription.status }}</p>
-            </small>
+            </small> -->
           </div>
         </VCard>
         <memberPayment v-if="renewMembership" class="mb-4" />

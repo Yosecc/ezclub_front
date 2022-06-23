@@ -258,3 +258,35 @@ fieldset[disabled='false'] .checkbox,
 .modal {
   position: fixed !important;
 }
+
+.cardprofile {
+  &.active {
+    background: #323236 !important;
+  }
+  &.expired {
+    background: #7b241c !important;
+  }
+  &.nomembership {
+    background: #1b4f72 !important;
+  }
+  &.nomembershipcontarjeta {
+    background: #2e86c1 !important;
+  }
+  &.sin_factura {
+    background: yellowgreen !important;
+  }
+  &.due,
+  &.canceled,
+  &.cancel {
+    background: darkred !important;
+  }
+  &.con_stripe_sin_user {
+    background: lightcoral !important;
+  }
+  &.sin_stripe_con_user {
+    background: orangered !important;
+  }
+  &.sincard {
+    background: blueviolet !important;
+  }
+}
