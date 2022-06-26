@@ -279,12 +279,16 @@ const onsyncStripeResource = () => {
                 }}</small>
               </p>
               <p class="title is-4">
-                {{ moneda(member.subscription.total_invoice / 100) }}
-                <VTag
-                  v-if="!member.subscription.subscription.upcoming_total"
+                {{ moneda(member.subscription.total_invoice / 100) }}<br />
+                <small
+                  v-if="
+                    member.subscription &&
+                    member.subscription.subscription &&
+                    !member.subscription.subscription.upcoming_total
+                  "
                   class="mr-1 mb-1"
-                  :label="'No upcoming bill'"
-                />
+                  >No upcoming bill</small
+                >
               </p>
             </span>
           </VCard>

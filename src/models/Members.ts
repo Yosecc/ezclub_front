@@ -196,7 +196,7 @@ export const inputsInformation = ref([
     hasError: false,
     keyUp: async (event, input) => {
       if (input.model.length >= 9) {
-        await Api.get(`searchmember/${input.model}`)
+        await Api.get(`searchmember/${input.model}?type=validate`)
           .then((response) => {
             if (response.data.status) {
               input.hasError = true

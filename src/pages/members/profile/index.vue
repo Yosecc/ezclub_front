@@ -333,7 +333,10 @@ const reload = () => {
           <div class="d-flex justify-content-between">
             <div>
               <p>
-                <b>Member #{{ member.id }}</b>
+                <b
+                  >Member #{{ member.id }} -
+                  <small>{{ member.category }}</small></b
+                >
               </p>
 
               <p>
