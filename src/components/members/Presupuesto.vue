@@ -39,6 +39,8 @@ const props = defineProps({
         >
           <td>{{ membresia.description }}</td>
           <td class="text-capitalize">
+            {{ membresia.interval_count }}
+
             {{ membresia.type ? membresia.type : 'Initiation Fee' }}
           </td>
           <td>{{ membresia.quantity }}</td>

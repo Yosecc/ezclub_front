@@ -279,7 +279,10 @@ watch(
                   </div>
 
                   <VTag
-                    v-if="item.membership_members.status == 2"
+                    v-if="
+                      item.membership_members &&
+                      item.membership_members.status == 2
+                    "
                     :label="`Canceled ${moment(
                       item.membership_members.cacelation_date
                     ).format('MM-DD-YYYY')}`"

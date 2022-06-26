@@ -73,7 +73,7 @@ const change = (val) => {
 }
 
 onMounted(() => {
-  getMembers('all', filters.value, route.query.page, 'Adult')
+  getMembers('all', filters.value, route.query.page, 'All')
 })
 
 const filtersSearch = () => {
