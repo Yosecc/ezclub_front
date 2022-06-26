@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, defineProps, computed } from 'vue'
+import { ref, onMounted, defineProps, computed, defineEmit } from 'vue'
 import moment from 'moment'
 import {
   memberMermship,
@@ -22,6 +22,8 @@ import {
   paymentInvoice,
   prorrateo,
   schedules,
+  addPenalty,
+  syncStripeResource,
 } from '/@src/models/Members.ts'
 
 import { getLocationsDiciplines } from '/@src/models/Diciplines.ts'
@@ -36,6 +38,8 @@ import {
 } from '/@src/models/Mixin.ts'
 import { Api, API_WEB_URL } from '/@src/services'
 import { recurrences } from '/@src/models/Recurrences.ts'
+
+const emit = defineEmit(['reload'])
 
 const props = defineProps({})
 
@@ -203,6 +207,32 @@ const retryPayment = (payment_method, payment_type_id = 3, cash = {}) => {
 const paymentCash = (obj) => {
   retryPayment(null, 1, obj)
 }
+const onaddPenalty = () => {
+  isLoaderActive.value = true
+  addPenalty()
+    .then((response) => {
+      isLoaderActive.value = false
+      notyf.success('Success')
+      emit('reload')
+    })
+    .catch((error) => {
+      // notyf.error(error.response.data)
+      isLoaderActive.value = false
+    })
+}
+const onsyncStripeResource = () => {
+  isLoaderActive.value = true
+  syncStripeResource()
+    .then((response) => {
+      isLoaderActive.value = false
+      notyf.success('Success')
+      emit('reload')
+    })
+    .catch((error) => {
+      notyf.error(error.response.data)
+      isLoaderActive.value = false
+    })
+}
 </script>
 
 <template>
@@ -226,13 +256,13 @@ const paymentCash = (obj) => {
                 {{ memberMermship.membership.name }}
               </p>
               <p>{{ memberMermship.recurrence.descriptions }}</p>
-              <p v-if="memberMermship.discount">
+              <!-- <p v-if="memberMermship.discount">
                 {{ memberMermship.discount.value }}
                 <span v-if="memberMermship.discount.type == 'percentaje'"
                   >%</span
                 >
                 <span v-else>$</span>
-              </p>
+              </p> -->
             </span>
             <span class="text-right">
               <p>
@@ -257,7 +287,7 @@ const paymentCash = (obj) => {
 
         <div
           v-if="member && memberMermship && memberMermship.status == 1"
-          class="column is-3 mb-6 mt-4"
+          class="column is-2"
         >
           <VLoader
             v-if="member.membership_members.is_recurrence"
@@ -271,7 +301,8 @@ const paymentCash = (obj) => {
               "
               v-if="memberMermship && member.subscription"
               @click="onPause"
-              class="mr-4 btn-card text-center"
+              class="mr-4 btn-card text-center px-2"
+              style="font-size: 12px"
             >
               <p><b>HOLD Membership</b></p>
               <span v-if="member.subscription.pause_collection != null"
@@ -284,7 +315,7 @@ const paymentCash = (obj) => {
 
         <div
           v-if="member && memberMermship && memberMermship.status == 1"
-          class="column is-3 mb-6 mt-4"
+          class="column is-2"
         >
           <VLoader
             v-if="member.membership_members.is_recurrence"
@@ -298,7 +329,8 @@ const paymentCash = (obj) => {
               "
               v-if="memberMermship && member.subscription"
               @click="centeredActionsOpen = true"
-              class="mr-4 btn-card text-center"
+              class="mr-4 btn-card text-center px-2"
+              style="font-size: 12px"
             >
               <p><b>Pause Payment</b></p>
               <span v-if="member.subscription.pause_collection != null"
@@ -325,7 +357,7 @@ const paymentCash = (obj) => {
 
         <div
           v-if="member && memberMermship && memberMermship.status == 1"
-          class="column is-3 mb-6 mt-4"
+          class="column is-2"
         >
           <VLoader
             v-if="member.membership_members.is_recurrence"
@@ -337,7 +369,8 @@ const paymentCash = (obj) => {
               v-if="memberMermship"
               outlined
               @click="onCancel"
-              class="mr-4 btn-card text-center"
+              class="mr-4 btn-card text-center px-2"
+              style="font-size: 12px"
             >
               <p><b>Cancel Membership</b></p>
             </VCard>
@@ -346,7 +379,7 @@ const paymentCash = (obj) => {
 
         <div
           v-if="member && memberMermship && memberMermship.status == 1"
-          class="column is-3 mb-6 mt-4"
+          class="column is-2"
         >
           <VLoader
             v-if="member.membership_members.is_recurrence"
@@ -358,9 +391,48 @@ const paymentCash = (obj) => {
               v-if="memberMermship"
               outlined
               @click="itentPayment = !itentPayment"
-              class="mr-4 btn-card text-center"
+              class="mr-4 btn-card text-center px-2"
+              style="font-size: 12px"
             >
               <p><b>Payment Now</b></p>
+            </VCard>
+          </VLoader>
+        </div>
+
+        <div v-if="member && memberMermship" class="column is-2">
+          <VLoader
+            v-if="member.membership_members.is_recurrence"
+            size="small"
+            :active="isLoaderActive"
+          >
+            <VCard
+              color="secondary"
+              v-if="memberMermship"
+              outlined
+              @click="onaddPenalty"
+              class="mr-4 btn-card text-center px-2"
+              style="font-size: 12px"
+            >
+              <p><b>Pay Late Fee</b></p>
+            </VCard>
+          </VLoader>
+        </div>
+
+        <div v-if="member && memberMermship" class="column is-2">
+          <VLoader
+            v-if="member.membership_members.is_recurrence"
+            size="small"
+            :active="isLoaderActive"
+          >
+            <VCard
+              :color="undefined"
+              v-if="memberMermship"
+              outlined
+              @click="onsyncStripeResource"
+              class="mr-4 btn-card text-center px-2"
+              style="font-size: 12px"
+            >
+              <p><b>Sync Subscription</b></p>
             </VCard>
           </VLoader>
         </div>

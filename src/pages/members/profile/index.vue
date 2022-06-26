@@ -79,6 +79,7 @@ watch(member, (to) => {
     mensaje.value = `Membership ${to.subscription.status}`
     subMensaje.value =
       to.subscription.latest_invoice &&
+      to.subscription.latest_invoice.payments_intents &&
       to.subscription.latest_invoice.payments_intents.length > 0
         ? `Last payment status : ${to.subscription.latest_invoice.payments_intents[0].status}`
         : ''
@@ -202,6 +203,11 @@ const mountMember = async () => {
                 element.diciplines_id
               )
             })
+          } else if (e == 'discount') {
+            if (response.data[i][e]) {
+              getInput(membershipsData, 'discount').model =
+                response.data[i][e].id
+            }
           } else {
             if (getInput(membershipsData, e) != undefined) {
               setInputModelData(membershipsData, e, response.data[i][e])
@@ -272,6 +278,10 @@ const status = computed(() => {
 
   return classs
 })
+const reload = () => {
+  isLoading.value = true
+  mountMember()
+}
 </script>
 
 <template>
@@ -357,7 +367,10 @@ const status = computed(() => {
           :category="route.query.category"
           v-show="Component == 'personalInformation'"
         />
-        <memberMembership v-show="Component == 'memberMembership'" />
+        <memberMembership
+          @reload="reload"
+          v-show="Component == 'memberMembership'"
+        />
         <memberFamily v-show="Component == 'memberFamily'" />
         <memberEmergency v-show="Component == 'memberEmergency'" />
         <memberCheckins v-show="Component == 'memberCheckins'" />

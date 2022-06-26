@@ -15,7 +15,7 @@ import { accessDay, member } from '/@src/models/Members.ts'
     <template #header-right> </template>
     <template #content>
       <div class="p-6">
-        <div class="d-flex">
+        <!-- <div class="d-flex">
           <V-Field class="field mr-3">
             <V-Control>
               <input
@@ -35,7 +35,7 @@ import { accessDay, member } from '/@src/models/Members.ts'
             </V-Control>
           </V-Field>
           <VButton color="primary"> Export </VButton>
-        </div>
+        </div> -->
 
         <div class="mt-4">
           <table class="table is-hoverable is-fullwidth">
@@ -43,14 +43,14 @@ import { accessDay, member } from '/@src/models/Members.ts'
               <tr>
                 <th scope="col">DATE</th>
                 <th scope="col">TIME</th>
-                <th scope="col">STAFF</th>
+                <!-- <th scope="col">STAFF</th> -->
               </tr>
             </thead>
             <tbody>
               <tr v-for="(access, key) in accessDay" :key="`access-${key}`">
-                <td>{{ moment(access.created_at).format('DD/MM/YYYY') }}</td>
+                <td>{{ moment(access.created_at).format('MM/DD/YYYY') }}</td>
                 <td>{{ moment(access.created_at).format('HH:mm:ss') }}</td>
-                <td>{{ access.user.name }}</td>
+                <!-- <td>{{ access.user.name }}</td> -->
               </tr>
             </tbody>
           </table>

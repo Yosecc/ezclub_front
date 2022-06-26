@@ -267,7 +267,15 @@ watch(
               <div class="d-flex justify-content-between mt-3">
                 <span class="d-flex align-items-center">
                   <div class="mr-1">
-                    <VTag :label="`${colorCard(item)}`" class="mr-1" color="" />
+                    <VTag
+                      :label="`${
+                        colorCard(item) == 'sincard'
+                          ? 'no_card'
+                          : colorCard(item)
+                      }`"
+                      class="mr-1"
+                      color=""
+                    />
                   </div>
 
                   <VTag

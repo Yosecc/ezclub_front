@@ -1267,6 +1267,16 @@ export const storeContactEmergency = async (data: any) => {
   return response
 }
 
+export const addPenalty = async () => {
+  const response = await Api.post(`members/addPenalty/${member.value.id}`)
+  return response
+}
+
+export const syncStripeResource = async () => {
+  const response = await Api.post(`syncStripeResource/${member.value.id}`)
+  return response
+}
+
 export const storePaymentCash = async (id: number, data: object) => {
   const response = await Api.post(`paymentCash/${id}`, data)
   return response
@@ -1380,7 +1390,7 @@ export const contactEmergency = computed(() => {
 })
 
 export const accessDay = computed(() => {
-  return member.value.access_day
+  return member.value.accessDay
 })
 
 export const memberMembershipPayments = computed(() => {

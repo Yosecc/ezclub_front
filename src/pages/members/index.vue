@@ -18,7 +18,7 @@ const filterDate = ref('all')
 const paginationData = ref([])
 
 const isLoading = ref(true)
-const defalA = ref('Adult')
+const defalA = ref('all')
 
 watch(
   () => route.query.page,

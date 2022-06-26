@@ -73,7 +73,18 @@ const onMethodPayment = (MethodPayment) => {}
               v-for="(invoice, key) in member.subscription.invoices"
               :key="`invoice-${key}`"
             >
-              <td>{{ invoice.billing_reason }}</td>
+              <td v-if="invoice.billing_reason.includes('[')">
+                <span
+                  v-for="(item, key) in JSON.parse(invoice.billing_reason)"
+                  :key="`invo-${key}`"
+                >
+                  <VTag v-if="item" class="mr-1 mb-1" :label="item" />
+                </span>
+              </td>
+              <td v-else>
+                <VTag class="mr-2" :label="invoice.billing_reason" />
+              </td>
+
               <td>
                 {{ moment(invoice.created).format('MM/DD/YYYY') }}
               </td>
@@ -99,9 +110,12 @@ const onMethodPayment = (MethodPayment) => {}
                 </a>
               </td>
               <td>
-                {{ invoice.status }}
-                <br />
-                <small>{{ invoice.description_status }}</small>
+                <VTag class="mr-1 mb-1" :label="invoice.status" />
+
+                <VTag
+                  class="mr-1 mb-1"
+                  :label="invoice.payments_intents[0].status"
+                />
               </td>
             </tr>
           </tbody>
