@@ -56,7 +56,8 @@ export const filterInsputs = ref([
   {
     typeInput: 'select',
     name: 'payment_type',
-    placeholder: 'Payment Type',
+    label: 'Payment Type',
+    placeholder: 'All',
     values: ['Credit Card', 'Cash'],
     model: '',
     class: 'is-3',
