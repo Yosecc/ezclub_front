@@ -368,11 +368,7 @@ const onsyncStripeResource = () => {
           v-if="member && memberMermship && memberMermship.status == 1"
           class="column is-2"
         >
-          <VLoader
-            v-if="member.membership_members.is_recurrence"
-            size="small"
-            :active="isLoaderActive"
-          >
+          <VLoader size="small" :active="isLoaderActive">
             <VCard
               color="danger"
               v-if="memberMermship"
@@ -390,11 +386,7 @@ const onsyncStripeResource = () => {
           v-if="member && memberMermship && memberMermship.status == 1"
           class="column is-2"
         >
-          <VLoader
-            v-if="member.membership_members.is_recurrence"
-            size="small"
-            :active="isLoaderActive"
-          >
+          <VLoader size="small" :active="isLoaderActive">
             <VCard
               color="success"
               v-if="memberMermship"

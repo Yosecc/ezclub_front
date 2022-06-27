@@ -39,7 +39,8 @@ const getMembers = async (
   value = '',
   page = 1,
   category = null,
-  reload = true
+  reload = true,
+  estado = null
 ) => {
   filterDate.value = filter
   isLoading.value = true
@@ -49,6 +50,7 @@ const getMembers = async (
       filter: value,
       page: page,
       category: category,
+      estado: estado,
     },
   })
     .then((response) => {
@@ -87,14 +89,55 @@ const reloadForm = () => {
     isLoading.value = false
   }, 500)
 }
+
+const statusSelect = ref('All')
+const estados = ref([
+  'All',
+  'active',
+  'due',
+  'expired',
+  'sincard',
+  'sin_factura',
+  'nomembershipcontarjeta',
+  'cancel',
+  'nomembership',
+])
+
+const changeStado = () => {
+  getMembers(
+    'all',
+    filters.value,
+    1,
+    categoryB.value,
+    false,
+    statusSelect.value
+  )
+}
 </script>
 
 <template>
   <SidebarLayout>
     <!-- Content Wrapper -->
     <div class="page-content-inner">
-      <div class="d-flex mb-5">
-        <V-Field class="w-90 mx-6">
+      <div class="mb-5 columns is-multiline">
+        <div class="is-2 column">
+          <V-Field class="w-100">
+            <V-Control class="input-select">
+              <div class="select">
+                <select v-model="statusSelect" @change="changeStado">
+                  <option
+                    v-for="(item, key) in estados"
+                    :key="`estados-${key}`"
+                    :value="item"
+                  >
+                    {{ item }}
+                  </option>
+                </select>
+              </div>
+            </V-Control>
+          </V-Field>
+        </div>
+        <V-Field class="is-8 column">
           <V-Control icon="feather:search">
             <input
               v-model="filters"
@@ -104,16 +147,17 @@ const reloadForm = () => {
             />
           </V-Control>
         </V-Field>
-        <V-Buttons class="ml-0">
+        <div class="is-2 column">
           <V-Button
             :to="{ name: 'members-create' }"
             color="primary"
             icon="fas fa-plus"
             elevated
+            class="w-100"
           >
             Add Members
           </V-Button>
-        </V-Buttons>
+        </div>
       </div>
 
       <div class="columns is-multiline" v-if="isLoading">

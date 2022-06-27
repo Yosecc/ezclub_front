@@ -75,8 +75,8 @@ const onMethodPayment = (MethodPayment) => {}
             >
               <td v-if="invoice.billing_reason.includes('[')">
                 <span
-                  v-for="(item, key) in JSON.parse(invoice.billing_reason)"
-                  :key="`invo-${key}`"
+                  v-for="(item, keyy) in JSON.parse(invoice.billing_reason)"
+                  :key="`invo-${keyy}`"
                 >
                   <VTag v-if="item" class="mr-1 mb-1" :label="item" />
                 </span>
@@ -146,7 +146,7 @@ const onMethodPayment = (MethodPayment) => {}
                 <span v-else></span>
               </td>
               <td>{{ moneda(invoice.amount / 100) }}</td>
-              <td></td>
+              <td>Cash</td>
               <td>
                 <!-- <a :href="invoice.invoice_pdf" target="_blank">
                   <VButton>
