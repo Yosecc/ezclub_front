@@ -40,6 +40,7 @@ const diasPasados = computed(() => {
           class="text-center mb-4"
           v-if="
             member.membership_members != null &&
+            member.membership_members.payments.length > 0 &&
             !member.membership_members.payments[0].status
           "
         >

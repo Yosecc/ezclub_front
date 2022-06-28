@@ -8,6 +8,13 @@ export const getReports = async (data: object = {}) => {
   return response
 }
 
+export const getStripeReports = async (data: object = {}) => {
+  const response = await Api.get(`reports/stripe/transactions`, {
+    params: data,
+  })
+  return response
+}
+
 export const downloadReports = async (data: object = {}) => {
   const response = await Api.get(`reports/download`, {
     params: data,
@@ -63,6 +70,25 @@ export const filterInsputs = ref([
     class: 'is-3',
     isLabel: true,
   },
+  {
+    typeInput: 'date',
+    name: 'start_date',
+    placeholder: 'Start Date',
+    model: '',
+    class: 'is-3',
+    isLabel: true,
+  },
+  {
+    typeInput: 'date',
+    name: 'end_date',
+    placeholder: 'End Date',
+    model: '',
+    class: 'is-3',
+    isLabel: true,
+  },
+])
+
+export const filterStripeInsputs = ref([
   {
     typeInput: 'date',
     name: 'start_date',
