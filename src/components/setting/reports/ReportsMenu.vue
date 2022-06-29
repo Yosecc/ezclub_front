@@ -3,8 +3,8 @@ import { ref } from 'vue'
 
 const menu = ref([
   {
-    name: 'Reports By Date',
-    subname: 'Reports By Date',
+    name: 'Sales Report By Date',
+    subname: 'Sales Reports By Date',
     toName: 'settings-reports-date',
     icon: 'lnil lnil-gift-alt-1',
   },

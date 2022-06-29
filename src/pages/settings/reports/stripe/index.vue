@@ -2,9 +2,10 @@
 import { useHead } from '@vueuse/head'
 import { onMounted, watch, ref, computed } from 'vue'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
-pageTitle.value = 'Memberships Cacelled Reports'
+
+pageTitle.value = 'Stripe Transaction Reports'
 useHead({
-  title: 'Memberships Cacelled Reports',
+  title: 'Stripe Transaction Reports',
 })
 
 onMounted(() => {})
