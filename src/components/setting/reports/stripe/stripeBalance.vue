@@ -20,17 +20,21 @@ const props = defineProps({
           <!--Tile-->
           <div class="dashboard-tile">
             <span>Balance Available</span>
-            <span class="dark-inverted">$ {{ balance.balance_available }}</span>
+            <span class="dark-inverted"
+              >$ {{ balance.balance_available / 100 }}</span
+            >
           </div>
           <!--Tile-->
           <div class="dashboard-tile">
             <span>Balance Instant</span>
-            <span class="dark-inverted">$ {{ balance.instant_available }}</span>
+            <span class="dark-inverted"
+              >$ {{ balance.instant_available / 100 }}</span
+            >
           </div>
           <!--Tile-->
           <div class="dashboard-tile">
             <span>Balance Pending</span>
-            <span class="dark-inverted">$ {{ balance.pending }}</span>
+            <span class="dark-inverted">$ {{ balance.pending / 100 }}</span>
           </div>
         </div>
       </div>
