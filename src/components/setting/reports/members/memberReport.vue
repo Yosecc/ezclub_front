@@ -65,7 +65,9 @@ const handleDownload = async (data: object = {}) => {
             <tr>
               <th scope="col">ID</th>
               <th scope="col">Name</th>
+              <th scope="col">Membership</th>
               <th scope="col">Date</th>
+              <th scope="col">Profile</th>
             </tr>
           </thead>
           <tbody v-if="reports && !loading">
@@ -79,7 +81,18 @@ const handleDownload = async (data: object = {}) => {
                 }}
               </td>
               <td>
+                {{ report.membership }}
+              </td>
+              <td>
                 {{ moment(report.created_at).format('MM/DD/YYYY') }}
+              </td>
+              <td>
+                <router-link
+                  :to="{ name: 'members-profile', query: { id: report.id } }"
+                  class="btn btn-primary"
+                >
+                  <VButton color="primary" outlined> Profile </VButton>
+                </router-link>
               </td>
             </tr>
           </tbody>

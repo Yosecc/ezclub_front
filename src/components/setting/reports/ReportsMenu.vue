@@ -26,6 +26,12 @@ const menu = ref([
     toName: 'settings-reports-member-without-payment-method',
     icon: 'lnil lnil-gift-alt-1',
   },
+  {
+    name: 'Stripe Transactions',
+    subname: 'Stripe Transactions',
+    toName: 'settings-reports-stripe',
+    icon: 'lnil lnil-gift-alt-1',
+  },
 ])
 </script>
 <template>
