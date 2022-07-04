@@ -43,8 +43,7 @@ const handleReports = async (data: object = {}) => {
               <th scope="col">ID</th>
               <th scope="col">Description</th>
               <th scope="col">Amount</th>
-              <th scope="col">Fee</th>
-              <th scope="col">Net</th>
+              <th scope="col">Customer</th>
               <th scope="col">Status</th>
               <th scope="col">Created At</th>
             </tr>
@@ -57,8 +56,7 @@ const handleReports = async (data: object = {}) => {
               <td>{{ transaction.id }}</td>
               <td>{{ transaction.description }}</td>
               <td>{{ transaction.amount / 100 }}</td>
-              <td>{{ transaction.fee / 100 }}</td>
-              <td>{{ transaction.net / 100 }}</td>
+              <td>{{ transaction.customer }}</td>
               <td>{{ transaction.status }}</td>
               <td>
                 {{ moment(transaction.created_at).format('MM/DD/YYYY') }}
