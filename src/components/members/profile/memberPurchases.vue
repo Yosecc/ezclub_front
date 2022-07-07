@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, computed } from 'vue'
+import { onMounted, computed, ref } from 'vue'
 import moment from 'moment'
 import {
   memberMermship,
@@ -8,6 +8,9 @@ import {
   getListInvoices,
 } from '/@src/models/Members.ts'
 import { moneda } from '/@src/models/Mixin.ts'
+
+const paymentMethodId = ref(null)
+const openModalMakeAPayment = ref(false)
 
 const paymentsMemberchipMember = computed(() => {
   return memberMermship.value.payments
@@ -26,7 +29,17 @@ const paymentsMemberchipsHistory = computed(() => {
 onMounted(async () => {
   await getListInvoices(member.value.id)
 })
-const onMethodPayment = (MethodPayment) => {}
+
+const onMethodPayment = () => {}
+
+const makePayment = (MethodPayment) => {
+  paymentMethodId.value = MethodPayment
+  openModalMakeAPayment.value = true
+}
+
+const closeModal = () => {
+  openModalMakeAPayment.value = false
+}
 </script>
 
 <template>
@@ -40,11 +53,16 @@ const onMethodPayment = (MethodPayment) => {}
     <template #header-right> </template>
     <template #content>
       <p class="title is-5">Card List</p>
-
+      <makeAPaymentModal
+        :payment-method-id="paymentMethodId"
+        :open-modal="openModalMakeAPayment"
+        @close-modal="closeModal"
+      />
       <MemberCards
         :show-option="true"
         class="mb-6"
         v-if="member.user"
+        @makePayment="makePayment"
         @onMethodPayment="onMethodPayment"
         :method_default="member.user.pm_last_four"
         :show-new-card="true"
