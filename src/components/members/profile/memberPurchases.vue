@@ -1,5 +1,8 @@
 <script setup lang="ts">
+
 import { onMounted, computed, ref } from 'vue'
+=======
+
 import moment from 'moment'
 import {
   memberMermship,
@@ -9,8 +12,10 @@ import {
 } from '/@src/models/Members.ts'
 import { moneda } from '/@src/models/Mixin.ts'
 
+
 const paymentMethodId = ref(null)
 const openModalMakeAPayment = ref(false)
+=======
 
 const paymentsMemberchipMember = computed(() => {
   return memberMermship.value.payments
@@ -27,7 +32,9 @@ const paymentsMemberchipsHistory = computed(() => {
 })
 
 onMounted(async () => {
-  await getListInvoices(member.value.id)
+  const { data } = await getListInvoices(member.value.id)
+  console.log('TEST: ', data.invoices)
+  invoices.data = data.invoices
 })
 
 const onMethodPayment = () => {}
@@ -86,22 +93,20 @@ const closeModal = () => {
               <th scope="col">Status</th>
             </tr>
           </thead>
-          <tbody v-if="member.subscription && member.subscription.invoices">
-            <tr
-              v-for="(invoice, key) in member.subscription.invoices"
-              :key="`invoice-${key}`"
-            >
-              <td v-if="invoice.billing_reason.includes('[')">
-                <span
+          <tbody v-if="member.subscription && invoices.data">
+            <tr v-for="(invoice, key) in invoices.data" :key="`invoice-${key}`">
+              <td>
+                <p>{{ invoice.description }}</p>
+                <!-- <span
                   v-for="(item, keyy) in JSON.parse(invoice.billing_reason)"
                   :key="`invo-${keyy}`"
                 >
                   <VTag v-if="item" class="mr-1 mb-1" :label="item" />
-                </span>
+                </span> -->
               </td>
-              <td v-else>
-                <VTag class="mr-2" :label="invoice.billing_reason" />
-              </td>
+              <!-- <td> -->
+              <!-- <VTag class="mr-2" :label="invoice.billing_reason" /> -->
+              <!-- </td> -->
 
               <td>
                 {{ moment(invoice.created).format('MM/DD/YYYY') }}
@@ -118,7 +123,7 @@ const closeModal = () => {
                 </span>
                 <span v-else></span>
               </td>
-              <td>{{ moneda(invoice.amount_paid / 100) }}</td>
+              <td>{{ moneda(invoice.total / 100) }}</td>
               <td>{{ invoice.collection_method }}</td>
               <td>
                 <a :href="invoice.invoice_pdf" target="_blank">
@@ -130,10 +135,10 @@ const closeModal = () => {
               <td>
                 <VTag class="mr-1 mb-1" :label="invoice.status" />
 
-                <VTag
+                <!-- <VTag
                   class="mr-1 mb-1"
                   :label="invoice.payments_intents[0].status"
-                />
+                /> -->
               </td>
             </tr>
           </tbody>

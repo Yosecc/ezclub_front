@@ -4,6 +4,7 @@ import { getStripeReports, downloadReports } from '/@src/models/Reports'
 import moment from 'moment'
 import VLoader from '../../../base/loader/V-Loader.vue'
 import { notyf } from '/@src/models/Mixin'
+import VButton from '/@src/components/base/button/V-Button.vue'
 
 const reports = ref([])
 const loading = ref(false)
@@ -40,13 +41,12 @@ const handleReports = async (data: object = {}) => {
         <table class="table is-hoverable is-fullwidth">
           <thead>
             <tr>
-              <th scope="col">ID</th>
               <th scope="col">Description</th>
               <th scope="col">Amount</th>
-              <th scope="col">Fee</th>
-              <th scope="col">Net</th>
+              <th scope="col">Customer</th>
               <th scope="col">Status</th>
               <th scope="col">Created At</th>
+              <th scope="col">Action</th>
             </tr>
           </thead>
           <tbody v-if="reports && !loading">
@@ -54,14 +54,24 @@ const handleReports = async (data: object = {}) => {
               v-for="(transaction, key) in reports.transactions"
               :key="`transaction-${key}`"
             >
-              <td>{{ transaction.id }}</td>
               <td>{{ transaction.description }}</td>
               <td>{{ transaction.amount / 100 }}</td>
-              <td>{{ transaction.fee / 100 }}</td>
-              <td>{{ transaction.net / 100 }}</td>
+              <td>{{ transaction.customer }}</td>
               <td>{{ transaction.status }}</td>
               <td>
                 {{ moment(transaction.created_at).format('MM/DD/YYYY') }}
+              </td>
+              <td>
+                <router-link
+                  :to="{
+                    name: 'members-profile',
+                    query: { id: transaction.customer },
+                  }"
+                  class="btn btn-primary"
+                  v-if="transaction.customer"
+                >
+                  <VButton color="primary" outlined> Profile </VButton>
+                </router-link>
               </td>
             </tr>
           </tbody>
