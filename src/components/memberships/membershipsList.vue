@@ -14,13 +14,10 @@ const filteredData = computed(() => {
   if (!filters.value) {
     return props.memberships
   } else {
-    // return projects.filter((item) => {
-    //   return (
-    //     item.name.match(new RegExp(filters.value, 'i')) ||
-    //     item.remaining.match(new RegExp(filters.value, 'i'))
-    //   )
-    // })
-    return []
+    return props.memberships.filter((item) => {
+      return item.name.match(new RegExp(filters.value, 'i'))
+    })
+    // return []
   }
 })
 

@@ -154,18 +154,18 @@ watch(data, (to) => {
             </div>
             <inputsLayaut :inputs-step="locationsSelect" />
           </div>
-          <!-- <V-Button
+          <V-Button
             v-if="!isLoaded && locationInventory"
             color="primary"
             @click="modalNewInventory = true"
             raised
             class="mb-4"
             >New Inventory</V-Button
-          > -->
+          >
         </div>
       </VCard>
 
-      <!-- <V-Modal
+      <V-Modal
         :open="centeredActionsOpen"
         actions="center"
         @close="centeredActionsOpen = false"
@@ -199,9 +199,9 @@ watch(data, (to) => {
             >Confirm</V-Button
           >
         </template>
-      </V-Modal> -->
+      </V-Modal>
 
-      <!-- <h1 v-if="isLoaded" class="title is-4">{{ text }}</h1> -->
+      <h1 v-if="isLoaded" class="title is-4">{{ text }}</h1>
 
       <VLoader size="large" :active="isLoaded">
         <div class="flex-list-wrapper flex-list-v1">
@@ -252,12 +252,12 @@ watch(data, (to) => {
                 >
                   <div data-th="ID" class="flex-table-cell">
                     <div>
-                      <!-- <span class="item-name dark-inverted">{{ item.id }}</span> -->
+                      <span class="item-name dark-inverted">{{ item.id }}</span>
                     </div>
                   </div>
 
                   <div class="flex-table-cell" data-th="Status">
-                    <!-- <span
+                    <span
                       v-if="item.status === 1"
                       class="tag is-success is-rounded"
                       >Active</span
@@ -269,25 +269,25 @@ watch(data, (to) => {
                       v-if="item.status === 2"
                       class="tag is-info is-rounded"
                       >Process</span
-                    > -->
+                    >
                   </div>
 
                   <div class="flex-table-cell" data-th="Date Open">
-                    <!-- <span class="light-text">{{
+                    <span class="light-text">{{
                       moment(item.created_at).format('dd - DD/MM/YYYY')
-                    }}</span> -->
+                    }}</span>
                   </div>
                   <div class="flex-table-cell" data-th="Date Close">
-                    <!-- <span v-if="item.close" class="light-text">{{
+                    <span v-if="item.close" class="light-text">{{
                       moment(item.close).format('dd - DD/MM/YYYY')
                     }}</span>
-                    <span v-else>-</span> -->
+                    <span v-else>-</span>
                   </div>
                   <div class="flex-table-cell" data-th="Products Total">
-                    <!-- <span class="light-text">{{ item.products.length }}</span> -->
+                    <span class="light-text">{{ item.products.length }}</span>
                   </div>
                   <div class="flex-table-cell" data-th="Actions">
-                    <!--  <V-Button
+                    <V-Button
                       color="success"
                       @click="
                         ;(centeredActionsOpen = true), (idInventory = item.id)
@@ -303,7 +303,8 @@ watch(data, (to) => {
                         name: 'settings-inventory-create',
                         query: { id: item.id, locations_id: locationInventory },
                       }"
-                      >View</V-Button> -->
+                      >View</V-Button
+                    >
                   </div>
                 </div>
               </transition-group>
@@ -311,13 +312,13 @@ watch(data, (to) => {
           </div>
 
           <!--Table Pagination-->
-          <!-- <V-FlexPagination
+          <V-FlexPagination
             v-if="filteredData.length > 5"
             :item-per-page="10"
             :total-items="873"
             :current-page="42"
             :max-links-displayed="7"
-          /> -->
+          />
         </div>
       </VLoader>
     </div>
