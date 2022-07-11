@@ -382,7 +382,7 @@ const onsyncStripeResource = () => {
           </VLoader>
         </div>
 
-        <div
+        <!-- <div
           v-if="member && memberMermship && memberMermship.status == 1"
           class="column is-2"
         >
@@ -398,7 +398,7 @@ const onsyncStripeResource = () => {
               <p><b>Payment Now</b></p>
             </VCard>
           </VLoader>
-        </div>
+        </div> -->
 
         <div v-if="member && memberMermship" class="column is-2">
           <VLoader
