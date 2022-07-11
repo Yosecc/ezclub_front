@@ -133,6 +133,7 @@ export const viewInput = (inputs, name) => {
 }
 
 export const getInput = (inputs: any, name: any) => {
+  // console.log(inputs)
   return inputs.find((e) => e.name == name)
 }
 

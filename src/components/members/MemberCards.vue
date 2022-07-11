@@ -135,7 +135,6 @@ const onNewCard = async () => {
 }
 
 const PaymentAction = () => {
-  console.log('listo')
   isLoading.value = true
 
   setTimeout(() => {

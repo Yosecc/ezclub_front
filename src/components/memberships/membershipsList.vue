@@ -2,10 +2,10 @@
 import { computed, ref, defineProps } from 'vue'
 
 const props = defineProps({
-  memberships:{
+  memberships: {
     type: Array,
-    default: []
-  }
+    default: [],
+  },
 })
 
 const filters = ref('')
@@ -14,15 +14,16 @@ const filteredData = computed(() => {
   if (!filters.value) {
     return props.memberships
   } else {
-    // return projects.filter((item) => {
-    //   return (
-    //     item.name.match(new RegExp(filters.value, 'i')) ||
-    //     item.remaining.match(new RegExp(filters.value, 'i'))
-    //   )
-    // })
+    return projects.filter((item) => {
+      return (
+        item.name.match(new RegExp(filters.value, 'i')) ||
+        item.remaining.match(new RegExp(filters.value, 'i'))
+      )
+    })
   }
 })
 
+const dayPass = ref({})
 </script>
 
 <template>
@@ -37,8 +38,11 @@ const filteredData = computed(() => {
       </V-Control>
 
       <div class="buttons">
-        
-        <V-Button :to="{ name:'settings-memberships-create' }" color="primary" raised>
+        <V-Button
+          :to="{ name: 'settings-memberships-create' }"
+          color="primary"
+          raised
+        >
           <span class="icon">
             <i aria-hidden="true" class="fas fa-plus"></i>
           </span>
@@ -48,7 +52,7 @@ const filteredData = computed(() => {
     </div>
 
     <div class="card-grid card-grid-v3">
-       <!--List Empty Search Placeholder -->
+      <!--List Empty Search Placeholder -->
       <V-PlaceholderPage
         :class="[filteredData.length !== 0 && 'is-hidden']"
         title="We couldn't find any matching results."
@@ -77,15 +81,33 @@ const filteredData = computed(() => {
         tag="div"
         class="columns is-multiline is-flex-tablet-p is-half-tablet-p"
       >
-        <div v-for="item in filteredData" :key="item.id" class="column is-4">
-          <membershipCard
-            class="card-grid-item"
-            :membership="item"
-          />
+        <div class="column">
+          <VCard color="info">
+            <div class="d-flex align-items-center w-100">
+              <div class="mb-3">
+                <h1 class="title is-4 mb-0">Day Pass</h1>
+              </div>
+
+              <div class="d-flex justify-content-end ml-auto pl-4">
+                <V-Button
+                  :to="{
+                    name: 'settings-memberships-day_pass',
+                  }"
+                  raised
+                >
+                  <span class="icon">
+                    <i class="fas fa-edit"></i>
+                  </span>
+                </V-Button>
+              </div>
+            </div>
+          </VCard>
+        </div>
+        <div v-for="item in filteredData" :key="item.id" class="column is-6">
+          <membershipCard :membership="item" />
         </div>
       </transition-group>
     </div>
-    
   </div>
 </template>
 
@@ -188,19 +210,19 @@ const filteredData = computed(() => {
   }
 }
 
-.cardBox{
+.cardBox {
   background: white;
   height: 70px;
   width: 70px;
   border-radius: 8px;
   display: flex;
-  justify-content: center;
+  // justify-content: center;
   flex-direction: column;
   margin-left: auto;
   margin-right: auto;
-  text-align: center;
+  // text-align: center;
   font-size: 20px;
-  box-shadow: 2px 2px 10px rgba(0,0,0,.3);
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
 }
 
 @media only screen and (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {

@@ -77,6 +77,7 @@ export const discountInput = reactive([
 
 export const subTotal = computed(() => {
   let suma = 0
+  // console.log('cart.value', cart.value)
   cart.value.forEach((e) => {
     suma += e.products_amount * e.count
   })
@@ -166,7 +167,7 @@ export const payment = () => {
   }
   storeOrders(data)
     .then((response: any) => {
-      console.log(response.data)
+      // console.log(response.data)
       if (typePayment.value == 1) {
         typePayment.value = null
         client.value.email = null

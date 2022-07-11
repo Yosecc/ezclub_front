@@ -32,6 +32,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  isCard: {
+    type: Boolean,
+    default: true,
+  },
 })
 
 const emit = defineEmit(['changeStep', 'saveData'])
@@ -39,7 +43,10 @@ const emit = defineEmit(['changeStep', 'saveData'])
 
 <template>
   <VPlaceload v-if="isLoading" height="500px" />
-  <VCardAdvanced v-else>
+  <VCardAdvanced
+    :style="!isCard ? { backgroundColor: 'transparent', border: '0px' } : {}"
+    v-else
+  >
     <template #header-left>
       <div>
         <h1 class="title is-4 mb-0">

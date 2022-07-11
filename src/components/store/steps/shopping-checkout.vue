@@ -371,7 +371,9 @@ const limpiezaSwipeCard = () => {
         </div>
       </div>
 
+      <!-- MODAL -->
       <shopping-checkout-cash />
+      <!-- // -->
 
       <shopping-checkout-debit-automatic v-if="showOptionsDebit" />
     </div>
