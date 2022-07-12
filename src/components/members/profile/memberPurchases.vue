@@ -1,7 +1,5 @@
 <script setup lang="ts">
-
-import { onMounted, computed, ref } from 'vue'
-=======
+import { onMounted, computed, ref, reactive } from 'vue'
 
 import moment from 'moment'
 import {
@@ -12,10 +10,12 @@ import {
 } from '/@src/models/Members.ts'
 import { moneda } from '/@src/models/Mixin.ts'
 
-
 const paymentMethodId = ref(null)
 const openModalMakeAPayment = ref(false)
-=======
+
+const invoices = reactive({
+  data: [],
+})
 
 const paymentsMemberchipMember = computed(() => {
   return memberMermship.value.payments
