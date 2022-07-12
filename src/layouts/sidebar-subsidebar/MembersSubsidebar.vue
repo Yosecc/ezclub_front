@@ -35,13 +35,13 @@ const emit = defineEmit(['close'])
             <span>New Day Pass</span>
           </RouterLink>
         </li>
-        <li v-has-nested-router-link class="has-children">
+        <!-- <li v-has-nested-router-link class="has-children">
           <RouterLink :to="{ name: 'members-create' }" class="is-submenu">
             <i aria-hidden="true" class="fas fa-user mr-2"></i>
 
             <span>Temporary Member</span>
           </RouterLink>
-        </li>
+        </li> -->
         <!-- sub dropdown -->
         <!-- <li v-has-nested-router-link class="has-children">
           <div class="collapse-wrap">
