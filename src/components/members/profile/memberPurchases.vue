@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { onMounted, computed, reactive } from 'vue'
+import { onMounted, computed, ref, reactive } from 'vue'
+
 import moment from 'moment'
 import {
   memberMermship,
@@ -8,6 +9,9 @@ import {
   getListInvoices,
 } from '/@src/models/Members.ts'
 import { moneda } from '/@src/models/Mixin.ts'
+
+const paymentMethodId = ref(null)
+const openModalMakeAPayment = ref(false)
 
 const invoices = reactive({
   data: [],
@@ -32,7 +36,17 @@ onMounted(async () => {
   console.log('TEST: ', data.invoices)
   invoices.data = data.invoices
 })
-const onMethodPayment = (MethodPayment) => {}
+
+const onMethodPayment = () => {}
+
+const makePayment = (MethodPayment) => {
+  paymentMethodId.value = MethodPayment
+  openModalMakeAPayment.value = true
+}
+
+const closeModal = () => {
+  openModalMakeAPayment.value = false
+}
 </script>
 
 <template>
@@ -46,11 +60,16 @@ const onMethodPayment = (MethodPayment) => {}
     <template #header-right> </template>
     <template #content>
       <p class="title is-5">Card List</p>
-
+      <makeAPaymentModal
+        :payment-method-id="paymentMethodId"
+        :open-modal="openModalMakeAPayment"
+        @close-modal="closeModal"
+      />
       <MemberCards
         :show-option="true"
         class="mb-6"
         v-if="member.user"
+        @makePayment="makePayment"
         @onMethodPayment="onMethodPayment"
         :method_default="member.user.pm_last_four"
         :show-new-card="true"

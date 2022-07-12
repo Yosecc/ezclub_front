@@ -11,7 +11,7 @@ import moment from 'moment'
 import { API_WEB_URL, Api } from '/@src/services'
 import { useRoute } from 'vue-router'
 import { notyf } from '/@src/models/Mixin.ts'
-const emit = defineEmit(['onMethodPayment', 'onNewCard'])
+const emit = defineEmit(['onMethodPayment', 'onNewCard', 'makePayment'])
 
 const route = useRoute()
 const cards = ref([])
@@ -147,6 +147,10 @@ const PaymentAction = () => {
       .catch((error) => {})
   }, 5000)
 }
+
+const makePayment = (id) => {
+  emit('makePayment', id)
+}
 </script>
 
 <template>
@@ -181,6 +185,9 @@ const PaymentAction = () => {
                 class="mb-2"
               >
                 <i class="fas fa-check" aria-hidden="true"></i>
+              </VButton>
+              <VButton @click.stop="makePayment(card.id)" class="mb-2">
+                <i class="fa fa-shopping-bag" aria-hidden="true"></i>
               </VButton>
             </div>
           </div>
