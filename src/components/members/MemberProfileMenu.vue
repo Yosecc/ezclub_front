@@ -66,6 +66,10 @@ const itemsMenuAdult = [
     component: 'memberPurchases',
   },
   {
+    name: 'Invoices',
+    component: 'memberInvoices',
+  },
+  {
     name: 'Credit',
     component: 'memberCredit',
   },

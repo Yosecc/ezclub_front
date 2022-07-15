@@ -388,6 +388,7 @@ const reload = () => {
         <memberEmergency v-show="Component == 'memberEmergency'" />
         <memberCheckins v-show="Component == 'memberCheckins'" />
         <memberPurchases v-show="Component == 'memberPurchases'" />
+        <memberInvoices v-show="Component == 'memberInvoices'" />
         <memberWaiver v-show="Component == 'memberWaiver'" />
         <memberCredit v-show="Component == 'memberCredit'" />
       </div>
