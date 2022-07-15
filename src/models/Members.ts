@@ -132,7 +132,7 @@ export const inputsInformation = ref([
     name: 'photo',
     placeholder: 'Member Picture',
     model: '',
-    required: false,
+    required: true,
     class: 'is-12 d-flex justify-content-end',
     isLabel: true,
     categories: ['Adult', 'Minor'],
