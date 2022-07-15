@@ -19,6 +19,10 @@ const makePayment = (MethodPayment) => {
   openModalMakeAPayment.value = true
 }
 
+const makeAPaymentWithCash = () => {
+  openModalMakeAPayment.value = true
+}
+
 const closeModal = () => {
   openModalMakeAPayment.value = false
 }
@@ -50,6 +54,17 @@ const closeModal = () => {
         :show-new-card="true"
         :memberid="member.id"
       />
+
+      <VCard @click="makeAPaymentWithCash" color="success" class="btn-card">
+        <div class="d-flex align-items-center">
+          <p class="title is-1 mb-0">
+            <i class="fas fa-shopping-bag" aria-hidden="true"></i>
+          </p>
+          <div class="ml-4">
+            <p class="title is-4 mb-2">Make a new payment with cash</p>
+          </div>
+        </div>
+      </VCard>
     </template>
   </VCardAdvanced>
 </template>
