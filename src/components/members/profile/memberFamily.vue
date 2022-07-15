@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 
 import {
   memberFamilies,
@@ -7,9 +7,10 @@ import {
   memberParent,
   parentInsputs,
   putMemberGuardian,
+  inputsInformation,
 } from '/@src/models/Members.ts'
 import { API_WEB_URL } from '/@src/services'
-import { viewInput, notyf } from '/@src/models/Mixin.ts'
+import { viewInput, notyf, getInput } from '/@src/models/Mixin.ts'
 const families = ref([
   {
     id: 1,
@@ -31,6 +32,29 @@ const onSave = () => {
     notyf.success('Success')
   })
 }
+
+const inputsFiltrados = computed(() => {
+  console.log('info', inputsInformation.value)
+
+  getInput(parentInsputs.value, 'city_id').model = getInput(
+    inputsInformation.value,
+    'city_id'
+  ).model
+  getInput(parentInsputs.value, 'state_id').model = getInput(
+    inputsInformation.value,
+    'state_id'
+  ).model
+  getInput(parentInsputs.value, 'postal_code').model = getInput(
+    inputsInformation.value,
+    'postal_code'
+  ).model
+  getInput(parentInsputs.value, 'country_id').model = getInput(
+    inputsInformation.value,
+    'country_id'
+  ).model
+
+  return parentInsputs.value
+})
 </script>
 
 <template>
@@ -112,7 +136,7 @@ const onSave = () => {
               size="large"
             />
           </div>
-          <inputsLayaut :inputs-step="parentInsputs" />
+          <inputsLayaut :inputs-step="inputsFiltrados" />
         </div>
       </template>
     </VCardAdvanced>

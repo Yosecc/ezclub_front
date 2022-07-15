@@ -140,6 +140,10 @@ onMounted(() => {
     setInputValuesData(inputsFamily, 'city_id', response.cities)
     setInputValuesData(inputsFamily, 'state_id', response.states)
     setInputValuesData(inputsFamily, 'country_id', response.contries)
+
+    setInputValuesData(parentInsputs.value, 'city_id', response.cities)
+    setInputValuesData(parentInsputs.value, 'state_id', response.states)
+    setInputValuesData(parentInsputs.value, 'country_id', response.contries)
   })
   getMeberships().then((response) => {
     setInputValuesData(
@@ -227,8 +231,14 @@ const mountMember = async () => {
         }
       } else if (i == 'guardian') {
         for (e in response.data[i]) {
-          setInputModelData(parentInsputs, e, response.data[i][e])
+          if (e == 'parent_address') {
+            getInput(parentInsputs.value, 'address').model = response.data[i][e]
+          } else {
+            setInputModelData(parentInsputs, e, response.data[i][e])
+          }
         }
+        // console.log('skdj', inputsInformation.value)
+        // // setInputModelData(parentInsputs, e, response.data[i][e])
       } else if (i == 'leo_vet_fr') {
         setInputModelData(
           inputsInformation,
@@ -303,7 +313,7 @@ const reload = () => {
     <div v-if="!isLoading && member" class="columns is-multiline">
       <div class="column is-3">
         <MemberProfileMenu
-          :category="route.query.category"
+          :category="member.category"
           @changeMenu="changeMenu"
           :class="status"
         />
@@ -367,7 +377,7 @@ const reload = () => {
           </div>
         </VCard>
         <personalInformation
-          :category="route.query.category"
+          :category="member.category"
           v-show="Component == 'personalInformation'"
         />
         <memberMembership
