@@ -66,9 +66,10 @@ const handleDownload = async (data: object = {}) => {
             <tr>
               <th scope="col">ID</th>
               <th scope="col">Name</th>
-              <th scope="col">Membership / Product</th>
+              <th scope="col">Description</th>
               <th scope="col">Date</th>
               <th scope="col">Payment Type</th>
+              <th scope="col">Invoice Type</th>
               <th scope="col">Amount</th>
             </tr>
           </thead>
@@ -76,12 +77,13 @@ const handleDownload = async (data: object = {}) => {
             <tr v-for="(report, key) in reports" :key="`report-${key}`">
               <td>{{ report.id }}</td>
               <td>{{ `${report.first_name} ${report.last_name}` }}</td>
-              <td>{{ `${report.membership}` }}</td>
+              <td>{{ `${report.description}` }}</td>
               <td>
                 {{ moment(report.created_at).format('MM/DD/YYYY') }}
               </td>
               <td>{{ report.payment_type }}</td>
-              <td>{{ `${report.amount} $` }}</td>
+              <td>{{ report.invoice_type }}</td>
+              <td>{{ `$ ${report.amount}` }}</td>
             </tr>
           </tbody>
         </table>

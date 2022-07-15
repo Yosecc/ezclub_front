@@ -65,7 +65,7 @@ const handleDownload = async (data: object = {}) => {
             <tr>
               <th scope="col">ID</th>
               <th scope="col">Name</th>
-              <th scope="col">Memebership</th>
+              <th scope="col">Description</th>
               <th scope="col">Payment Type</th>
               <th scope="col">Created At</th>
               <th scope="col">Update At</th>
@@ -81,7 +81,7 @@ const handleDownload = async (data: object = {}) => {
                   }`
                 }}
               </td>
-              <td>{{ report.membership }}</td>
+              <td>{{ report.description }}</td>
               <td>{{ report.payment_type }}</td>
               <td>
                 {{ moment(report.created_at).format('MM/DD/YYYY') }}

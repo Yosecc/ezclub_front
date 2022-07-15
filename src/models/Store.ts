@@ -160,6 +160,7 @@ export const payment = () => {
     change_back: changeBack.value,
     products: cart.value,
     locations_id: getInput(locationsSelect.value, 'locations_id').model,
+    member_id: member.value.id,
   }
   if (discount.value) {
     data.discount = discount.value.id
