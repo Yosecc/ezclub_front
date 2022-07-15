@@ -168,7 +168,7 @@ const retryPayment = (payment_method, payment_type_id = 3, cash = {}) => {
     return
   }
   let data = {
-    invoice_id: member.value.subscription.latest_invoice,
+    // invoice_id: member.value.subscription.latest_invoice.,
     payment_type_id: payment_type_id,
     payment_method: payment_method,
     total: member.value.subscription.total_invoice,
@@ -382,7 +382,7 @@ const onsyncStripeResource = () => {
           </VLoader>
         </div>
 
-        <!-- <div
+        <div
           v-if="member && memberMermship && memberMermship.status == 1"
           class="column is-2"
         >
@@ -398,7 +398,7 @@ const onsyncStripeResource = () => {
               <p><b>Payment Now</b></p>
             </VCard>
           </VLoader>
-        </div> -->
+        </div>
 
         <div v-if="member && memberMermship" class="column is-2">
           <VLoader
