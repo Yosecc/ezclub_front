@@ -27,6 +27,12 @@ const menu = ref([
     icon: 'lnil lnil-gift-alt-1',
   },
   {
+    name: 'Due invoices',
+    subname: 'Due invoices',
+    toName: 'settings-reports-due',
+    icon: 'lnil lnil-gift-alt-1',
+  },
+  {
     name: 'Stripe Transactions',
     subname: 'Stripe Transactions',
     toName: 'settings-reports-stripe',
