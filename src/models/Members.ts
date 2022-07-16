@@ -290,18 +290,48 @@ export const inputsInformation = ref([
     typeMember: ['Individual', 'Company'],
   },
   {
-    typeInput: 'selectData',
+    typeInput: 'keyInput',
     name: 'city_id',
     placeholder: 'City',
+    value: '',
     model: '',
     required: true,
-    values: [''],
+    values: [],
+    valuesCalculated: [],
     class: 'is-3',
+    showList: false,
     isLabel: true,
     categories: ['Adult', 'Prospect'],
     typeMember: ['Individual', 'Company'],
-    filterOptionText: function (option) {
-      return option.name
+    keyUp: function (event, input) {
+      if (input.values.length) {
+        input.valuesCalculated = input.values.filter((e) =>
+          e.name.match(new RegExp(input.value, 'i'))
+        )
+      }
+      if (input.valuesCalculated.length && input.value != '') {
+        input.showList = true
+      } else {
+        input.showList = false
+      }
+      if (event.keyCode == 40 && input.values.length) {
+        input.showList = true
+        document[`form-list-${input.name}`][`form-select-${input.name}`].focus()
+      }
+      if (input.value == '') {
+        input.showList = false
+        input.model = ''
+      }
+    },
+    selectOption: function (event, input) {
+      // if(event.code == 'Enter'){
+      input.value = input.values.find((e) => e.id == event.target.value).name
+      input.model = event.target.value
+      input.showList = false
+      // }
+    },
+    keyUpEnter: function (event, input) {
+      input.showList = true
     },
   },
   {
