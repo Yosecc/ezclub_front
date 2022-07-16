@@ -52,8 +52,6 @@ onMounted(async () => {
             <tr>
               <th scope="col">Description</th>
               <th scope="col">Created</th>
-              <th scope="col">Start Period</th>
-              <th scope="col">End Period</th>
               <th scope="col">Amount</th>
               <th scope="col">Method</th>
               <th scope="col">Download</th>
@@ -77,18 +75,6 @@ onMounted(async () => {
 
               <td>
                 {{ moment(invoice.created).format('MM/DD/YYYY') }}
-              </td>
-              <td>
-                <span v-if="invoice.period_start">
-                  {{ moment(invoice.period_start).format('MM/DD/YYYY') }}
-                </span>
-                <span v-else></span>
-              </td>
-              <td>
-                <span v-if="invoice.period_end">
-                  {{ moment(invoice.period_end).format('MM/DD/YYYY') }}
-                </span>
-                <span v-else></span>
               </td>
               <td>{{ moneda(invoice.total / 100) }}</td>
               <td>{{ invoice.collection_method }}</td>
