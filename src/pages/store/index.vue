@@ -13,6 +13,7 @@ import {
   activateOrders,
   getTaxes,
   addProduct,
+  cart,
 } from '/@src/models/Store.ts'
 import { Api } from '/@src/services'
 import { notyf, setInputValuesData, getInput } from '/@src/models/Mixin.ts'
@@ -72,6 +73,7 @@ const route = useRoute()
 const router = useRouter()
 
 onMounted(() => {
+  cart.value = []
   if (route.query.payment_intent_client_secret != undefined) {
     if (route.query.redirect_status == 'succeeded') {
       activateOrders(route.query.payment_intent_client_secret).then(

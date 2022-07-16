@@ -33,6 +33,7 @@ const route = useRoute()
 const loadingButtons = ref(false)
 
 onMounted(() => {
+  cart.value = []
   getDayPass().then((response) => {
     cart.value.push({
       product_id: 1,
