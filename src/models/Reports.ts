@@ -15,6 +15,13 @@ export const getStripeReports = async (data: object = {}) => {
   return response
 }
 
+export const getStripeReportsDue = async (data: object = {}) => {
+  const response = await Api.get(`reports/stripe/transactions/due`, {
+    params: data,
+  })
+  return response
+}
+
 export const downloadReports = async (data: object = {}) => {
   const response = await Api.get(`reports/download`, {
     params: data,
