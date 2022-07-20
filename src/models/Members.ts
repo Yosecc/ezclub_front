@@ -1336,8 +1336,10 @@ export const getCardsMembers = async (id: number) => {
 }
 
 // Stripe
-export const getListInvoices = async (id: number) => {
-  const response = await Api.get(`members/list_invoices/${id}`)
+export const getListInvoices = async (id: number, filter: object) => {
+  const response = await Api.get(`members/list_invoices/${id}`, {
+    params: filter,
+  })
   member.value.invoices = response.data.invoices
   member.value.pagos = response.data.pagos
   member.value.invoicesSistem = response.data.invoicesSistem
