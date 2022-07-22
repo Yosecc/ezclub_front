@@ -1248,6 +1248,14 @@ export const pauseMembership = async (id: any, fecha: any = null) => {
   return response
 }
 
+export const holdMembership = async (id: any, fecha: any = null) => {
+  const response = await Api.post(
+    `members/hold_membership/${memberMermship.value.id}`,
+    { fecha: fecha }
+  )
+  return response
+}
+
 export const getMemberAccess = async (barcode: any) => {
   const response = Api.get(`searchmember/${barcode}`)
   return response

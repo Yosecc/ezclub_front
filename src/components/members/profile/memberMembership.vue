@@ -24,6 +24,7 @@ import {
   schedules,
   addPenalty,
   syncStripeResource,
+  holdMembership,
 } from '/@src/models/Members.ts'
 
 import { getLocationsDiciplines } from '/@src/models/Diciplines.ts'
@@ -54,6 +55,7 @@ const clientSecret = ref(null)
 const presupuesto = ref(null)
 const isLoaderActive = ref(false)
 const mebershipMemberid = ref(null)
+const modalShowHold = ref(false)
 
 const InputsDisponibles = computed(() => {
   membershipsData.unshift(prorrateo.value[0])
@@ -162,6 +164,29 @@ const onPause = () => {
     })
 }
 
+const onHold = () => {
+  if (!confirm('Are you sure you want to perform this action?')) {
+    return
+  }
+
+  isLoaderActive.value = true
+  holdMembership(memberMermship.value.id, fecha.value)
+    .then((response) => {
+      notyf.success('Success Hold')
+      isLoaderActive.value = false
+      fecha.value = null
+      emit('reload')
+    })
+    .catch((error) => {
+      isLoaderActive.value = false
+      for (var i in error.response.data) {
+        error.response.data[i].forEach((e) => {
+          notyf.error(`${i}: ${e}`)
+        })
+      }
+    })
+}
+
 const itentPayment = ref(false)
 const retryPayment = (payment_method, payment_type_id = 3, cash = {}) => {
   if (!confirm('Do you want to try the payment?')) {
@@ -233,6 +258,14 @@ const onsyncStripeResource = () => {
       isLoaderActive.value = false
     })
 }
+
+const onClickHold = () => {
+  if (memberMermship.value.hold_date_finish == null) {
+    modalShowHold.value = true
+  } else {
+    onHold()
+  }
+}
 </script>
 
 <template>
@@ -249,20 +282,18 @@ const onsyncStripeResource = () => {
           v-if="member && memberMermship && memberMermship.status == 1"
           class="column is-12"
         >
-          <VCard class="d-flex justify-content-between" color="info">
+          <VCard
+            class="d-flex justify-content-between"
+            :color="
+              memberMermship.hold_date_finish != null ? 'warning' : 'info'
+            "
+          >
             <span>
               <p><small>Membership</small></p>
               <p class="title is-4 mb-0">
                 {{ memberMermship.membership.name }}
               </p>
               <p>{{ memberMermship.recurrence.descriptions }}</p>
-              <!-- <p v-if="memberMermship.discount">
-                {{ memberMermship.discount.value }}
-                <span v-if="memberMermship.discount.type == 'percentaje'"
-                  >%</span
-                >
-                <span v-else>$</span>
-              </p> -->
             </span>
             <span class="text-right">
               <p>
@@ -304,22 +335,38 @@ const onsyncStripeResource = () => {
             :active="isLoaderActive"
           >
             <VCard
-              color="info"
-              :outlined="
-                member.subscription.pause_collection != null ? false : true
-              "
+              color="warning"
+              :outlined="memberMermship.hold_date_finish != null ? false : true"
               v-if="memberMermship && member.subscription"
-              @click="onPause"
+              @click="onClickHold"
               class="mr-4 btn-card text-center px-2"
               style="font-size: 12px"
             >
               <p><b>HOLD Membership</b></p>
-              <span v-if="member.subscription.pause_collection != null"
-                >Active until:
-                {{ member.subscription.pause_collection.resumes_at }}</span
-              >
+              <p>
+                <span v-if="memberMermship.hold_date_finish != null"
+                  >Active until:
+                  {{
+                    moment(memberMermship.hold_date_finish).format('MM/DD/YYYY')
+                  }}</span
+                >
+              </p>
             </VCard>
           </VLoader>
+          <V-Modal
+            :open="modalShowHold"
+            actions="center"
+            @close="modalShowHold = false"
+          >
+            <template #content>
+              <input type="date" v-model="fecha" class="input" />
+            </template>
+            <template #action>
+              <V-Button @click="onHold" color="primary" raised
+                >Confirm</V-Button
+              >
+            </template>
+          </V-Modal>
         </div>
 
         <div
@@ -332,7 +379,7 @@ const onsyncStripeResource = () => {
             :active="isLoaderActive"
           >
             <VCard
-              color="warning"
+              color="undefined"
               :outlined="
                 member.subscription.pause_collection != null ? false : true
               "

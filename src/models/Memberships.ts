@@ -292,6 +292,15 @@ export const inputsConfig = reactive([
     isLabel: true,
   },
   {
+    typeInput: 'number',
+    name: 'hold_price',
+    placeholder: 'Hold Price',
+    model: '',
+    class: 'is-3',
+    required: true,
+    isLabel: true,
+  },
+  {
     typeInput: 'selectData',
     name: 'descuento_vet',
     placeholder: 'Discount % LEO / VET / FR',
