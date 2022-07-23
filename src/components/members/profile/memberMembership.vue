@@ -152,11 +152,11 @@ const onPause = () => {
     .then((response) => {
       notyf.success('Success Pause')
       isLoaderActive.value = false
-      // window.location.reload()
+      emit('reload')
     })
     .catch((error) => {
       isLoaderActive.value = false
-      for (var i in error.response.data.errores) {
+      for (var i in error.response.data) {
         error.response.data.errores[i].forEach((e) => {
           notyf.error(`${i}: ${e}`)
         })
@@ -258,12 +258,31 @@ const onsyncStripeResource = () => {
       isLoaderActive.value = false
     })
 }
-
 const onClickHold = () => {
-  if (memberMermship.value.hold_date_finish == null) {
+  if (
+    memberMermship.value.hold_date_finish == null &&
+    memberMermship.value.date_finish_pause == null
+  ) {
     modalShowHold.value = true
   } else {
+    if (memberMermship.value.date_finish_pause != null) {
+      notyf.error(
+        'This membership is on pause. Activation is required to continue'
+      )
+      return
+    }
     onHold()
+  }
+}
+const onClickPause = () => {
+  if (member.value.subscription.pause_collection == null) {
+    centeredActionsOpen.value = true
+  } else {
+    if (memberMermship.value.hold_date_finish != null) {
+      notyf.error('This membership is on pause.')
+      return
+    }
+    onPause()
   }
 }
 </script>
@@ -286,6 +305,11 @@ const onClickHold = () => {
             class="d-flex justify-content-between"
             :color="
               memberMermship.hold_date_finish != null ? 'warning' : 'info'
+            "
+            :style="
+              member.subscription.pause_collection == null
+                ? {}
+                : { backgroundColor: '#404046 !important' }
             "
           >
             <span>
@@ -380,19 +404,30 @@ const onClickHold = () => {
           >
             <VCard
               color="undefined"
+              style="font-size: 12px"
+              :style="
+                member.subscription.pause_collection == null
+                  ? {}
+                  : { backgroundColor: '#404046' }
+              "
               :outlined="
                 member.subscription.pause_collection != null ? false : true
               "
               v-if="memberMermship && member.subscription"
-              @click="centeredActionsOpen = true"
+              @click="onClickPause"
               class="mr-4 btn-card text-center px-2"
-              style="font-size: 12px"
             >
               <p><b>Pause Payment</b></p>
-              <span v-if="member.subscription.pause_collection != null"
-                >Active until:
-                {{ member.subscription.pause_collection.resumes_at }}</span
-              >
+              <p>
+                <span v-if="member.subscription.pause_collection != null"
+                  >Active until:
+                  {{
+                    moment(member.subscription.pause_collection).format(
+                      'MM-DD-YYYY'
+                    )
+                  }}</span
+                >
+              </p>
             </VCard>
           </VLoader>
           <V-Modal
