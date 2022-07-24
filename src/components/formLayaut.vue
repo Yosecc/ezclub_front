@@ -9,6 +9,10 @@ const props = defineProps({
     type: Array,
     default: ['save', 'back'],
   },
+  buttonsDisabled: {
+    type: Array,
+    default: [],
+  },
   step: {
     type: Number,
     default: 1,
@@ -59,6 +63,7 @@ const emit = defineEmit(['changeStep', 'saveData'])
       <VLoader size="small" :active="isLoaderActive">
         <VButton
           v-if="buttons.includes('back')"
+          :disabled="buttonsDisabled.includes('back') ? true : false"
           @click="router.back()"
           class="mr-3"
         >
@@ -67,6 +72,7 @@ const emit = defineEmit(['changeStep', 'saveData'])
 
         <VButton
           v-if="buttons.includes('prev')"
+          :disabled="buttonsDisabled.includes('prev') ? true : false"
           @click="$emit('changeStep', step - 1)"
           class="mr-3"
         >
@@ -75,6 +81,7 @@ const emit = defineEmit(['changeStep', 'saveData'])
 
         <VButton
           v-if="buttons.includes('next')"
+          :disabled="buttonsDisabled.includes('next') ? true : false"
           color="primary"
           @click="$emit('changeStep', step + 1)"
         >

@@ -30,6 +30,21 @@ export const getstaffRoles = async (id: any) => {
   return response
 }
 
+export const getUserStaff = async (id: any) => {
+  const response = await Api.get(`staff/user/${id}`)
+  return response
+}
+
+export const storeUserStaff = async (data: any) => {
+  const response = await Api.post(`staff/user/store/${staff.value.id}`, data)
+  return response
+}
+
+export const updateUserStaff = async (id: any) => {
+  const response = await Api.get(`staff/user/update/${id}`)
+  return response
+}
+
 export const putStaff = async (id: any, obj: any) => {
   const response = await Api.post(`staffs/update/${id}`, obj)
   return response
@@ -362,3 +377,24 @@ export const inputsSign = ref({
   required: false,
   class: 'is-4',
 })
+
+export const inputsUser = ref([
+  {
+    typeInput: 'email',
+    name: 'email',
+    placeholder: 'Email',
+    model: '',
+    required: true,
+    isLabel: true,
+    class: 'is-4',
+  },
+  {
+    typeInput: 'password',
+    name: 'password',
+    placeholder: 'Password',
+    model: '',
+    required: true,
+    isLabel: true,
+    class: 'is-4',
+  },
+])

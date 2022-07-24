@@ -108,6 +108,57 @@ export const inputsCredit = ref([
   },
 ])
 
+export const buttonsDisabled = ref([])
+
+export const validateEmail = async (email) => {
+  const response = await Api.get(`validateEmail?email=${email}`)
+  return response
+}
+
+export const validateNames = async (name, lastname) => {
+  const response = await Api.get(
+    `validateNames?name=${name}&last_name=${lastname}`
+  )
+  return response
+}
+
+export const emailValidate = function (event, input) {
+  const email = input.model
+  const emailRegex = /^[-\w.%+]{1,64}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/i
+  if (emailRegex.test(email)) {
+    validateEmail(email)
+      .then((response) => {
+        buttonsDisabled.value = []
+      })
+      .catch((error) => {
+        buttonsDisabled.value.push('next')
+        for (const i in error.response.data) {
+          notyf.error(`${i} : ${error.response.data[i]}`)
+        }
+      })
+  } else {
+    return notyf.error('email not valid')
+  }
+}
+
+export const namesValidate = function (event, input) {
+  if (
+    getInput(inputsInformation.value, 'name').model != '' &&
+    getInput(inputsInformation.value, 'last_name').model != ''
+  ) {
+    validateNames(
+      getInput(inputsInformation.value, 'name').model,
+      getInput(inputsInformation.value, 'last_name').model
+    )
+      .then((response) => {})
+      .catch((error) => {
+        for (const i in error.response.data) {
+          notyf.error(`${i} : ${error.response.data[i]}`)
+        }
+      })
+  }
+}
+
 export const inputsInformation = ref([
   {
     typeInput: 'switchEventChangeInput',
@@ -160,6 +211,8 @@ export const inputsInformation = ref([
     isLabel: true,
     categories: ['Adult', 'Minor', 'Prospect'],
     typeMember: ['Individual', 'Company'],
+    keyUp: function (event, input) {},
+    change: namesValidate,
   },
   {
     typeInput: 'text',
@@ -182,6 +235,7 @@ export const inputsInformation = ref([
     isLabel: true,
     categories: ['Adult', 'Minor', 'Prospect'],
     typeMember: ['Individual', 'Company'],
+    change: namesValidate,
   },
   {
     typeInput: 'text',
@@ -386,6 +440,8 @@ export const inputsInformation = ref([
     isLabel: true,
     categories: ['Adult', 'Prospect'],
     typeMember: ['Individual', 'Company'],
+    keyUp: function (event, input) {},
+    change: emailValidate,
   },
   {
     typeInput: 'tel',

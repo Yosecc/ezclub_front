@@ -153,6 +153,11 @@ const saveData = () => {
               :step="2"
               class="mb-3"
             />
+            <!--  <staffUser 
+            type="create"
+            :buttons="[]"
+            class="mb-3"
+          /> -->
           </div>
           <!-- <staffWaiver
             type="create"
