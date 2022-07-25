@@ -374,13 +374,13 @@ const reload = () => {
           @reload="reload"
           v-show="Component == 'memberMembership'"
         />
-        <memberFamily v-show="Component == 'memberFamily'" />
-        <memberEmergency v-show="Component == 'memberEmergency'" />
-        <memberCheckins v-show="Component == 'memberCheckins'" />
-        <memberPurchases v-show="Component == 'memberPurchases'" />
-        <memberInvoices v-show="Component == 'memberInvoices'" />
-        <memberWaiver v-show="Component == 'memberWaiver'" />
-        <memberCredit v-show="Component == 'memberCredit'" />
+        <memberFamily v-if="Component == 'memberFamily'" />
+        <memberEmergency v-if="Component == 'memberEmergency'" />
+        <memberCheckins v-if="Component == 'memberCheckins'" />
+        <memberPurchases v-if="Component == 'memberPurchases'" />
+        <memberInvoices v-if="Component == 'memberInvoices'" />
+        <memberWaiver v-if="Component == 'memberWaiver'" />
+        <memberCredit v-if="Component == 'memberCredit'" />
       </div>
     </div>
   </SidebarLayout>
