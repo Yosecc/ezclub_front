@@ -10,7 +10,12 @@ import {
   inputsInformation,
 } from '/@src/models/Members.ts'
 import { API_WEB_URL } from '/@src/services'
-import { viewInput, notyf, getInput } from '/@src/models/Mixin.ts'
+import {
+  viewInput,
+  notyf,
+  getInput,
+  perpareDataInputs,
+} from '/@src/models/Mixin.ts'
 const families = ref([
   {
     id: 1,
