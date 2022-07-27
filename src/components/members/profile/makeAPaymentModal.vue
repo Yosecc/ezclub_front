@@ -22,6 +22,10 @@ const props = defineProps({
     type: String,
     default: '',
   },
+  paymentGateway: {
+    type: Number,
+    default: 1,
+  },
 })
 
 // loading
@@ -35,7 +39,7 @@ const submit = async () => {
   const body = {
     amount: data.amount,
     description: data.description,
-    payment_method_id: 1,
+    payment_method_id: props.paymentGateway,
     payment_method_stripe_id: props.paymentMethodId,
     member_id: member.value.id,
   }

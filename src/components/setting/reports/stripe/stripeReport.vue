@@ -17,6 +17,12 @@ const handleSearch = async (data: object) => {
   handleReports(data)
 }
 
+const changePage = (change: object) => {
+  handleReports({
+    next_page: change.page,
+  })
+}
+
 const handleReports = async (data: object = {}) => {
   loading.value = true
   try {
@@ -82,6 +88,11 @@ const handleReports = async (data: object = {}) => {
               <td></td>
             </tr>
           </tbody>
+          <stripePaginator
+            v-if="reports"
+            :reports="reports"
+            @changePage="changePage"
+          />
         </table>
       </VLoader>
     </div>
