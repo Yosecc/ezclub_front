@@ -233,6 +233,14 @@ const mountMember = async () => {
         for (e in response.data[i]) {
           if (e == 'parent_address') {
             getInput(parentInsputs.value, 'address').model = response.data[i][e]
+          } else if (e == 'parent_photo') {
+            if (response.data[i][e] != '' || response.data[i][e] != null) {
+              getInput(parentInsputs.value, 'parent_photo').required = false
+            } else {
+              getInput(parentInsputs.value, 'parent_photo').required = true
+            }
+            getInput(parentInsputs.value, 'parent_photo').data =
+              response.data[i][e]
           } else {
             setInputModelData(parentInsputs, e, response.data[i][e])
           }

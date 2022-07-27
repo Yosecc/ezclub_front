@@ -30,8 +30,13 @@ const paymentsMemberchipsHistory = computed(() => {
 
 onMounted(async () => {
   const filter = { invoice_type: 1 }
-  const { data } = await getListInvoices(member.value.id, filter)
-  invoices.data = data.invoices
+  await getListInvoices(member.value.id, filter)
+    .then((response) => {
+      invoices.data = response.data.invoices
+    })
+    .catch((error) => {
+      // alert(error.response.data)
+    })
 })
 </script>
 <template>

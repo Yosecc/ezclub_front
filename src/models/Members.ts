@@ -1377,7 +1377,7 @@ export const storePaymentCash = async (id: number, data: object) => {
 }
 
 export const putMemberGuardian = async (data: any) => {
-  const response = await Api.put(`members/guardian/${member.value.id}`, data)
+  const response = await Api.post(`members/guardian/${member.value.id}`, data)
   return response
 }
 

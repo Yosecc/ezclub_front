@@ -15,6 +15,7 @@ import {
   notyf,
   getInput,
   perpareDataInputs,
+  hasErrors,
 } from '/@src/models/Mixin.ts'
 const families = ref([
   {
@@ -33,9 +34,17 @@ const families = ref([
 
 const onSave = () => {
   const data = perpareDataInputs(parentInsputs.value)
-  putMemberGuardian(data).then((response) => {
-    notyf.success('Success')
-  })
+
+  const fd = new FormData()
+
+  for (var i in data) {
+    fd.append(i, data[i])
+  }
+  if (!hasErrors.value) {
+    putMemberGuardian(fd).then((response) => {
+      notyf.success('Success')
+    })
+  }
 }
 
 const inputsFiltrados = computed(() => {
@@ -132,12 +141,12 @@ const inputsFiltrados = computed(() => {
       <template #content>
         <div class="">
           <h1 class="title is-5">Parent Contact Information</h1>
+
           <div class="d-flex justify-content-end mr-6">
             <VAvatar
-              :picture="`${API_WEB_URL}storage/${viewInput(
-                parentInsputs,
-                'parent_photo'
-              )}`"
+              :picture="`${API_WEB_URL}storage/${
+                getInput(parentInsputs, 'parent_photo').data
+              }`"
               size="large"
             />
           </div>
