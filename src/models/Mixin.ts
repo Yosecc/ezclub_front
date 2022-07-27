@@ -3,7 +3,7 @@ import moment from 'moment'
 import { Notyf } from 'notyf'
 
 export const notyf = new Notyf({
-  duration: 3000,
+  duration: 5000,
   position: {
     x: 'right',
     y: 'top',
@@ -133,6 +133,7 @@ export const viewInput = (inputs, name) => {
 }
 
 export const getInput = (inputs: any, name: any) => {
+  // console.log(inputs)
   return inputs.find((e) => e.name == name)
 }
 

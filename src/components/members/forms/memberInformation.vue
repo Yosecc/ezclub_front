@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, defineProps, defineEmit, onMounted, watch } from 'vue'
 import { perpareDataInputs, hasErrors } from '/@src/models/Mixin.ts'
-import { dataInformationMember } from '/@src/models/Members.ts'
+import { dataInformationMember, buttonsDisabled } from '/@src/models/Members.ts'
 
 const props = defineProps({
   type: {
@@ -69,6 +69,7 @@ const emit = defineEmit(['changeStep', 'returData'])
     :titles="{ title: title }"
     :is-loading="isLoading"
     :buttons="['next', 'back']"
+    :buttons-disabled="buttonsDisabled"
     :step="1"
     @changeStep="change"
   >

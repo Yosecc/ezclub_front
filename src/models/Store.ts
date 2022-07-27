@@ -18,18 +18,18 @@ export const modalCheckout = ref(false)
 
 export const addProduct = (product: any) => {
   const index = cart.value.findIndex((e) => e.product_id == product.id)
-  // if (product.stock && product.stock.current_stock > 0) {
+  // if (product.stock && product.stock > 0) {
   if (index == -1) {
     cart.value.push({
       product_id: product.id,
       count: 1,
       products_amount: product.price,
       name: product.name,
-      stock: product.stock.current_stock,
+      stock: product.stock,
     })
   } else {
     const cou = cart.value.find((e) => e.product_id == product.id).count + 1
-    //   if (cou <= product.stock.current_stock) {
+    //   if (cou <= product.stock) {
     cart.value.find((e) => e.product_id == product.id).count++
     //   } else {
     //     notyf.error('Sin Stock')
@@ -77,6 +77,7 @@ export const discountInput = reactive([
 
 export const subTotal = computed(() => {
   let suma = 0
+  // console.log('cart.value', cart.value)
   cart.value.forEach((e) => {
     suma += e.products_amount * e.count
   })
@@ -160,14 +161,14 @@ export const payment = () => {
     change_back: changeBack.value,
     products: cart.value,
     locations_id: getInput(locationsSelect.value, 'locations_id').model,
-    member_id: member.value.id,
+    member_id: member.value ? member.value.id : null,
   }
   if (discount.value) {
     data.discount = discount.value.id
   }
   storeOrders(data)
     .then((response: any) => {
-      console.log(response.data)
+      // console.log(response.data)
       if (typePayment.value == 1) {
         typePayment.value = null
         client.value.email = null

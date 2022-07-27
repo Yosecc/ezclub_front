@@ -75,6 +75,37 @@ const itemsMenuAdult = [
   },
 ]
 
+const itemsMenuMinor = [
+  {
+    name: 'Personal Information',
+    component: 'personalInformation',
+  },
+  {
+    name: 'Membership/Contract',
+    component: 'memberMembership',
+  },
+  {
+    name: 'Parent / Guardian',
+    component: 'memberFamily',
+  },
+  {
+    name: 'Emergency',
+    component: 'memberEmergency',
+  },
+  {
+    name: 'Check-ins',
+    component: 'memberCheckins',
+  },
+  {
+    name: 'Purchases',
+    component: 'memberPurchases',
+  },
+  {
+    name: 'Credit',
+    component: 'memberCredit',
+  },
+]
+
 const itemsMenuProspect = [
   {
     name: 'Personal Information',
@@ -87,8 +118,10 @@ const itemsMenuProspect = [
 ]
 
 const menuMemberProfile = computed(() => {
-  if (['Adult', 'Minor'].includes(props.category)) {
+  if (props.category == 'Adult') {
     return itemsMenuAdult
+  } else if (props.category == 'Minor') {
+    return itemsMenuMinor
   } else {
     return itemsMenuProspect
   }

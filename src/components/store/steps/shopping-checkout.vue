@@ -83,7 +83,7 @@ const paymentSwipeCard = (id) => {
       locations_id: getInput(locationsSelect.value, 'locations_id').model,
       terminal_id: terminal_id.value,
       discount: discount.value ? discount.value.id : null,
-      member_id: member.value.id,
+      member_id: member.value ? member.value.id : null,
     })
       .then((response) => {
         // loadingOptionDebit.value = false
@@ -372,7 +372,9 @@ const limpiezaSwipeCard = () => {
         </div>
       </div>
 
+      <!-- MODAL -->
       <shopping-checkout-cash />
+      <!-- // -->
 
       <shopping-checkout-debit-automatic v-if="showOptionsDebit" />
     </div>

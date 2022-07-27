@@ -11,6 +11,14 @@ import {
   openModalCash,
   discount,
 } from '/@src/models/Store.ts'
+const emit = defineEmit(['onPayment'])
+
+const props = defineProps({
+  isEvent: {
+    type: Boolean,
+    default: false,
+  },
+})
 </script>
 
 <template>
@@ -79,12 +87,22 @@ import {
         >Reset</VButton
       >
       <VButton
+        v-if="!isEvent"
         color="success"
         @click="payment"
         :disabled="total > cash"
         class="d-flex justify-content-center"
         raised
         >Confirm</VButton
+      >
+      <VButton
+        v-if="isEvent"
+        color="success"
+        @click="$emit('onPayment')"
+        :disabled="total > cash"
+        class="d-flex justify-content-center"
+        raised
+        >Confirm.</VButton
       >
     </template>
   </VModal>

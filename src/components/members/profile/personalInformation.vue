@@ -42,6 +42,15 @@ const onSave = () => {
       isLoaderActive.value = false
     })
 }
+
+// const camposMenor = [ '','','','','','','','' ]
+
+const inputsFiltrados = computed(() => {
+  // console.log('personal',inputsInformation.value)
+  return inputsInformation.value.filter((input) =>
+    input.categories.includes(props.category)
+  )
+})
 </script>
 
 <template>
@@ -61,7 +70,12 @@ const onSave = () => {
       </VLoader>
     </template>
     <template #content>
-      <inputsLayaut :inputs-step="inputsInformation" />
+      <inputsLayaut
+        v-if="props.category == 'Minor'"
+        :inputs-step="inputsFiltrados"
+      />
+
+      <inputsLayaut v-else :inputs-step="inputsInformation" />
     </template>
   </VCardAdvanced>
 </template>

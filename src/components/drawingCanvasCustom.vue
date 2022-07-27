@@ -3,7 +3,7 @@ import { useHead } from '@vueuse/head'
 import { onMounted, watch, ref, computed, defineEmit } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { Api } from '/@src/services'
-
+import { notyf } from '/@src/models/Mixin.ts'
 const emit = defineEmit(['onSignYes', 'sinFirmar'])
 
 var tmr
@@ -76,9 +76,12 @@ onMounted(() => {
       note.appendChild(sigweb_link)
     }
   } else {
-    alert(
+    notyf.error(
       'Unable to communicate with SigWeb. Please confirm that SigWeb is installed and running on this PC.'
     )
+    // alert(
+
+    // )
   }
 
   //Perform the following actions on

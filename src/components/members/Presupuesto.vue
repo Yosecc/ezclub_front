@@ -40,8 +40,10 @@ const props = defineProps({
           <td>{{ membresia.description }}</td>
           <td class="text-capitalize">
             {{ membresia.interval_count }}
-
             {{ membresia.type ? membresia.type : 'Initiation Fee' }}
+            <!-- <span v-if="membresia.type != 'Initiation Fee'">
+             Membership
+            </span> -->
           </td>
           <td>{{ membresia.quantity }}</td>
           <td style="text-align: right">
@@ -92,7 +94,7 @@ const props = defineProps({
                 {{ moment(presupuesto.schedules).format('MM-DD-YYYY') }}</small
               >
             </p>
-            <b>Total to pay</b>
+            <b>Total to pay today</b>
           </td>
           <td>
             {{ moneda(presupuesto.totales.upfront.amount_total / 100) }}
@@ -100,7 +102,7 @@ const props = defineProps({
         </tr>
 
         <tr v-if="presupuesto.totales.recurring" style="text-align: right">
-          <td colspan="4" style="text-align: right">Recurring total</td>
+          <td colspan="4" style="text-align: right">Recurring Payment</td>
           <td>
             {{ moneda(presupuesto.totales.recurring.amount_total / 100) }}
           </td>

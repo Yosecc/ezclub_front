@@ -12,59 +12,53 @@ const props = defineProps({
 </script>
 
 <template>
-  <div>
-    <div class="d-flex justify-content-between">
-      <label class="h-toggle">
-        <input
-          type="checkbox"
-          @change="putStatus(membership)"
-          :checked="!membership.status"
-        />
-        <span class="toggler">
-          <span class="active">
-            <i aria-hidden="true" class="iconify" data-icon="feather:lock"></i>
+  <VCard>
+    <div class="d-flex align-items-center w-100">
+      <div class="d-flex justify-content-between">
+        <label class="h-toggle">
+          <input
+            type="checkbox"
+            @change="putStatus(membership)"
+            :checked="!membership.status"
+          />
+          <span class="toggler">
+            <span class="active">
+              <i
+                aria-hidden="true"
+                class="iconify"
+                data-icon="feather:lock"
+              ></i>
+            </span>
+            <span class="inactive">
+              <i
+                aria-hidden="true"
+                class="iconify"
+                data-icon="feather:check"
+              ></i>
+            </span>
           </span>
-          <span class="inactive">
-            <i aria-hidden="true" class="iconify" data-icon="feather:check"></i>
+        </label>
+      </div>
+
+      <div class="mb-3">
+        <h1 class="title is-4 mb-0">{{ membership.name }}</h1>
+      </div>
+
+      <div class="d-flex justify-content-end ml-auto pl-4">
+        <V-Button
+          :to="{
+            name: 'settings-memberships-edit',
+            query: { id: membership.id },
+          }"
+          raised
+        >
+          <span class="icon">
+            <i class="fas fa-edit"></i>
           </span>
-        </span>
-      </label>
+        </V-Button>
+      </div>
     </div>
-
-    <div class="cardBox mb-4">
-      <i class="fas fa-dumbbell"></i>
-    </div>
-
-    <div class="mb-3">
-      <h1 class="title is-4 mb-0">{{ membership.name }}</h1>
-      <!-- <p>{{ membership.description }}</p> -->
-    </div>
-
-    <!-- <div class="d-flex">
-      <VAvatar
-        v-tooltip="location.company_locations.name"
-        v-for="(location, key) in membership.locations"
-        :key="`membership_location-${key}`"
-        class="mr-3"
-        :picture="`${API_WEB_URL}storage/${location.company_locations.image}`"
-      />
-    </div> -->
-
-    <div class="d-flex justify-content-end mt-5">
-      <V-Button
-        :to="{
-          name: 'settings-memberships-edit',
-          query: { id: membership.id },
-        }"
-        raised
-      >
-        <span class="icon">
-          <i class="fas fa-edit"></i>
-        </span>
-        <span>Edit Membership</span>
-      </V-Button>
-    </div>
-  </div>
+  </VCard>
 </template>
 
 <style lang="scss">

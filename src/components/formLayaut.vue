@@ -9,6 +9,10 @@ const props = defineProps({
     type: Array,
     default: ['save', 'back'],
   },
+  buttonsDisabled: {
+    type: Array,
+    default: [],
+  },
   step: {
     type: Number,
     default: 1,
@@ -32,6 +36,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  isCard: {
+    type: Boolean,
+    default: true,
+  },
 })
 
 const emit = defineEmit(['changeStep', 'saveData'])
@@ -39,7 +47,10 @@ const emit = defineEmit(['changeStep', 'saveData'])
 
 <template>
   <VPlaceload v-if="isLoading" height="500px" />
-  <VCardAdvanced v-else>
+  <VCardAdvanced
+    :style="!isCard ? { backgroundColor: 'transparent', border: '0px' } : {}"
+    v-else
+  >
     <template #header-left>
       <div>
         <h1 class="title is-4 mb-0">
@@ -52,6 +63,7 @@ const emit = defineEmit(['changeStep', 'saveData'])
       <VLoader size="small" :active="isLoaderActive">
         <VButton
           v-if="buttons.includes('back')"
+          :disabled="buttonsDisabled.includes('back') ? true : false"
           @click="router.back()"
           class="mr-3"
         >
@@ -60,6 +72,7 @@ const emit = defineEmit(['changeStep', 'saveData'])
 
         <VButton
           v-if="buttons.includes('prev')"
+          :disabled="buttonsDisabled.includes('prev') ? true : false"
           @click="$emit('changeStep', step - 1)"
           class="mr-3"
         >
@@ -68,6 +81,7 @@ const emit = defineEmit(['changeStep', 'saveData'])
 
         <VButton
           v-if="buttons.includes('next')"
+          :disabled="buttonsDisabled.includes('next') ? true : false"
           color="primary"
           @click="$emit('changeStep', step + 1)"
         >

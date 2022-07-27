@@ -11,6 +11,8 @@ import {
   inputsSign,
   getstaffRoles,
   storeStaff,
+  inputsUser,
+  getUserStaff,
 } from '/@src/models/Staffs'
 import { useRoute, useRouter } from 'vue-router'
 const router = useRouter()
@@ -20,6 +22,7 @@ import {
   perpareDataInputs,
   notyf,
   hasErrors,
+  getInput,
 } from '/@src/models/Mixin.ts'
 
 import { getCompany } from '/@src/models/Companies.ts'
@@ -87,6 +90,10 @@ onMounted(() => {
         setInputModelData(inputsPermitions, i, response.data[i])
       }
     }
+    getInput(inputsUser.value, 'email').model = getInput(
+      inputsInformation.value,
+      'email'
+    ).model
   })
   getCompany().then((response) => {
     setInputValuesData(inputsPermitions, 'locations', response.data.locations)
@@ -108,6 +115,19 @@ onMounted(() => {
     )
   })
 })
+
+watch(
+  () => staff.value,
+  () => {
+    getUserStaff(staff.value.id).then((response) => {
+      if (response.data) {
+        getInput(inputsUser.value, 'email').model = response.data.email
+      }
+
+      // getInput(inputsUser.value, 'password').model = response.data.password
+    })
+  }
+)
 
 const saveData = () => {
   let obj = {
@@ -171,6 +191,8 @@ const saveData = () => {
             :step="2"
             class="mb-3"
           />
+
+          <staffUser type="edit" :buttons="['save']" class="mb-3" />
 
           <staffWaiver
             class="mb-4"

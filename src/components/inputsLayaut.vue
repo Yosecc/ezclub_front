@@ -699,7 +699,65 @@ const takePhoto = (event) => {
           </div>
         </div>
       </form>
-      <!--  -->
+      <!-- keyInput -->
+      <div class="position-relative" v-else-if="input.typeInput == 'keyInput'">
+        <V-Field
+          class="px-0 field"
+          :data-class="input.class"
+          v-show="input.typeInput != 'hidden'"
+        >
+          <label class="label" v-if="input.isLabel" :for="input.name">
+            <p class="m-0 text-left">
+              {{ input.label ? input.label : input.placeholder }}
+              <span v-if="input.required" style="color: red">* </span>
+              <small v-if="input.values.length && input.model.length">
+                {{ input.values.find((e) => e.id == input.model).name }}</small
+              >
+            </p>
+          </label>
+          <V-Control :has-error="input.hasError ?? false">
+            <input
+              v-model="input.value"
+              :name="input.name"
+              :type="text"
+              class="input"
+              autocomplete="off"
+              :placeholder="input.placeholder"
+              :disabled="input.disabled ?? false"
+              :maxLength="input.maxLength ?? ''"
+              @keyup="input.keyUp ? input.keyUp($event, input) : null"
+              @change="input.change ? input.change($event, input) : null"
+              @keyup.enter="
+                input.keyUpEnter ? input.keyUpEnter($event, input) : null
+              "
+            />
+          </V-Control>
+        </V-Field>
+        <!-- <p>{{ input.model }}</p> -->
+        <VCard v-if="input.showList" class="position-absolute p-0 card_float">
+          <form :name="`form-list-${input.name}`">
+            <select
+              :name="`form-select-${input.name}`"
+              @click="
+                input.selectOption ? input.selectOption($event, input) : null
+              "
+              @keyup.enter="
+                input.selectOption ? input.selectOption($event, input) : null
+              "
+              class="list"
+              multiple="multiple"
+            >
+              <option
+                :value="item.id"
+                v-for="(item, opkey) in input.valuesCalculated"
+                :key="`city-${opkey}`"
+              >
+                <p>{{ item.name }}</p>
+              </option>
+            </select>
+          </form>
+        </VCard>
+      </div>
     </div>
   </div>
 </template>
@@ -747,6 +805,34 @@ select[disabled] {
     overflow-y: scroll;
     box-shadow: 2px 2px 9px rgba(0, 0, 0, 0.3);
     border-radius: 4px;
+  }
+}
+.position-absolute {
+  position: absolute;
+  z-index: 9;
+  // margin-top: -10px;
+}
+.card_float {
+  max-height: 300px;
+  overflow-y: scroll;
+  margin-top: -10px;
+  border-radius-left-top: 0px;
+  .list {
+    height: 300px;
+    background: transparent;
+    border: 0px;
+    option {
+      border-bottom: 1px solid grey;
+      padding: 8px;
+      padding-left: 16px;
+      cursor: pointer;
+      &:hover {
+        background: rgba(0, 0, 0, 0.3);
+      }
+      &:selected {
+        background: red;
+      }
+    }
   }
 }
 </style>

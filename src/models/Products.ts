@@ -198,3 +198,8 @@ export const inputsProducts = ref([
 ])
 
 export const input_image = ref([])
+
+export const putStockProduct = async (data: any) => {
+  const response = await Api.post(`products/product_updated_stock`, data)
+  return response
+}
