@@ -520,6 +520,12 @@ const onClickPause = () => {
           </VLoader>
         </div>
 
+        <UpdateSubscription
+          :member="member"
+          :member-mermship="memberMermship"
+          :is-loader-active="isLoaderActive"
+        />
+
         <div class="mb-4 column is-12" v-if="itentPayment">
           <MemberCards
             v-if="member.user"

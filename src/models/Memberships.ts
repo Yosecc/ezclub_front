@@ -311,3 +311,16 @@ export const inputsConfig = reactive([
     class: 'is-3',
   },
 ])
+
+export const inputsUpgradeSubscription = reactive([
+  {
+    typeInput: 'selectData',
+    name: 'upgrade_subscription',
+    placeholder: 'Select Subscription',
+    model: '',
+    values: [],
+    required: true,
+    isLabel: true,
+    class: 'is-12',
+  },
+])
