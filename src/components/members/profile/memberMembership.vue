@@ -383,7 +383,10 @@ const onClickPause = () => {
             @close="modalShowHold = false"
           >
             <template #content>
-              <input type="date" v-model="fecha" class="input" />
+              <p>
+                Hold end date last day of the month prior to the end of the hold
+              </p>
+              <input type="date" v-model="fecha" class="input mt-4" />
             </template>
             <template #action>
               <V-Button @click="onHold" color="primary" raised
