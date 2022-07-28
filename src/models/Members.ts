@@ -1304,10 +1304,14 @@ export const pauseMembership = async (id: any, fecha: any = null) => {
   return response
 }
 
-export const holdMembership = async (id: any, fecha: any = null) => {
+export const holdMembership = async (
+  id: any,
+  fecha: any = null,
+  prorrateo = true
+) => {
   const response = await Api.post(
     `members/hold_membership/${memberMermship.value.id}`,
-    { fecha: fecha }
+    { fecha: fecha, prorrateo: prorrateo }
   )
   return response
 }
@@ -1328,6 +1332,11 @@ export const syncMembershipMembers = async () => {
   const response = await Api.post(
     `members/syncMembershipMember/${memberMermship.value.id}`
   )
+  return response
+}
+
+export const getPresupuestoMembresia = async (id: any) => {
+  const response = await Api.get(`get_presupuesto_membresia/${id}`)
   return response
 }
 

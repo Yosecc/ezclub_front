@@ -25,6 +25,7 @@ import {
   addPenalty,
   syncStripeResource,
   holdMembership,
+  getPresupuestoMembresia,
 } from '/@src/models/Members.ts'
 
 import { getLocationsDiciplines } from '/@src/models/Diciplines.ts'
@@ -56,6 +57,20 @@ const presupuesto = ref(null)
 const isLoaderActive = ref(false)
 const mebershipMemberid = ref(null)
 const modalShowHold = ref(false)
+const modalShowProrratedHold = ref(false)
+const presupuestoProrrateo = ref({ total: null })
+
+const isProrrateoHold = ref([
+  {
+    typeInput: 'switchEventChangeInput',
+    name: 'prorrateo',
+    values: ['NO', 'Yes'],
+    model: true,
+    required: false,
+    class: 'is-12',
+    isLabel: true,
+  },
+])
 
 const InputsDisponibles = computed(() => {
   membershipsData.unshift(prorrateo.value[0])
@@ -170,7 +185,11 @@ const onHold = () => {
   }
 
   isLoaderActive.value = true
-  holdMembership(memberMermship.value.id, fecha.value)
+  holdMembership(
+    memberMermship.value.id,
+    fecha.value,
+    getInput(isProrrateoHold.value, 'prorrateo').model
+  )
     .then((response) => {
       notyf.success('Success Hold')
       isLoaderActive.value = false
@@ -271,7 +290,18 @@ const onClickHold = () => {
       )
       return
     }
-    onHold()
+
+    getPresupuestoMembresia(memberMermship.value.id)
+      .then((response) => {
+        console.log(response.data)
+        presupuestoProrrateo.value = response.data
+        modalShowProrratedHold.value = true
+      })
+      .catch((error) => {
+        console.log(error.response.data)
+      })
+
+    // onHold()
   }
 }
 const onClickPause = () => {
@@ -387,6 +417,38 @@ const onClickPause = () => {
                 Hold end date last day of the month prior to the end of the hold
               </p>
               <input type="date" v-model="fecha" class="input mt-4" />
+            </template>
+            <template #action>
+              <V-Button @click="onHold" color="primary" raised
+                >Confirm</V-Button
+              >
+            </template>
+          </V-Modal>
+          <V-Modal
+            :open="modalShowProrratedHold"
+            actions="center"
+            @close="modalShowProrratedHold = false"
+          >
+            <template #content>
+              <p>Do you want to create an invoice with the prorated amount?</p>
+              <inputsLayaut :inputs-step="isProrrateoHold" />
+
+              <table class="table w-100" v-if="presupuestoProrrateo.total">
+                <tr>
+                  <td>
+                    Subtotal ({{ presupuestoProrrateo.dias_restantes }} days)
+                  </td>
+                  <td>{{ moneda(presupuestoProrrateo.subtotal) }}</td>
+                </tr>
+                <tr>
+                  <td>Tax</td>
+                  <td>{{ moneda(presupuestoProrrateo.tax) }}</td>
+                </tr>
+                <tr>
+                  <td>Total</td>
+                  <td>{{ moneda(presupuestoProrrateo.total) }}</td>
+                </tr>
+              </table>
             </template>
             <template #action>
               <V-Button @click="onHold" color="primary" raised
