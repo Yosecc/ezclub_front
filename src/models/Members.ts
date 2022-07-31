@@ -1821,7 +1821,7 @@ export const generaPresupuesto = async (membresia: any, member: any) => {
   if (getInput(membresia, 'schedules') != undefined) {
     data.schedules = getInput(membresia, 'schedules').model
   }
-
+  console.log(data)
   const response = await getPresupuesto(data)
     .then((response) => {
       presupuestos.value.push({
