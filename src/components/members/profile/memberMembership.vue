@@ -72,17 +72,29 @@ const isProrrateoHold = ref([
   },
 ])
 
+import { useRoute, useRouter } from 'vue-router'
+const router = useRouter()
+const route = useRoute()
+
 const InputsDisponibles = computed(() => {
-  membershipsData.unshift(prorrateo.value[0])
-  membershipsData.push(schedules.value[0])
-  getInput(membershipsData, 'prorrateo').change = function (inputs) {
-    if (this.model) {
-      getInput(inputs, 'schedules').disabled = true
-    } else {
-      getInput(inputs, 'schedules').disabled = false
+  let index = membershipsData.findIndex((e) => e.name == 'prorrateo')
+  let index1 = membershipsData.findIndex((e) => e.name == 'schedules')
+
+  if (index == -1) {
+    membershipsData.unshift(prorrateo.value[0])
+    getInput(membershipsData, 'recurrence').class = 'is-4'
+  }
+  if (index1 == -1) {
+    membershipsData.push(schedules.value[0])
+    getInput(membershipsData, 'prorrateo').change = function (inputs) {
+      if (this.model) {
+        getInput(inputs, 'schedules').disabled = true
+      } else {
+        getInput(inputs, 'schedules').disabled = false
+      }
     }
   }
-  getInput(membershipsData, 'recurrence').class = 'is-4'
+
   if (
     member.value &&
     memberMermship.value &&
@@ -91,6 +103,11 @@ const InputsDisponibles = computed(() => {
     let d = ['locations_id', 'diciplines', 'staff_id', 'discount']
     return membershipsData.filter((e) => d.includes(e.name))
   }
+
+  console.log(
+    'membershipsData2',
+    membershipsData.findIndex((e) => e.name == 'prorrateo')
+  )
   return membershipsData
 })
 
