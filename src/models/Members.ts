@@ -1177,7 +1177,7 @@ export const parentInsputs = ref([
     required: true,
   },
   {
-    typeInput: 'number',
+    typeInput: 'text',
     name: 'parent_phone',
     placeholder: 'Phone Number',
     model: '',

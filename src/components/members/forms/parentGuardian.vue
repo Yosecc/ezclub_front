@@ -3,7 +3,7 @@ import { computed, defineProps, defineEmit, watch } from 'vue'
 
 import { parentInsputs, member, memberGuardian } from '/@src/models/Members.ts'
 
-import { getInput, notyf } from '/@src/models/Mixin.ts'
+import { getInput, notyf, cleanUpModelInputs } from '/@src/models/Mixin.ts'
 
 const props = defineProps({
   type: {
@@ -43,16 +43,31 @@ watch(
         memberGuardian.value.country_id
       getInput(parentInsputs.value, 'state_id').model =
         memberGuardian.value.state_id
+
+      getInput(parentInsputs.value, 'parent_name').model =
+        memberGuardian.value.name
+      getInput(parentInsputs.value, 'address').model =
+        memberGuardian.value.address
+
+      getInput(parentInsputs.value, 'parent_second_name').model =
+        memberGuardian.value.second_name
+      getInput(parentInsputs.value, 'parent_last_name').model =
+        memberGuardian.value.last_name
+
+      getInput(parentInsputs.value, 'parent_goverment_id').model =
+        memberGuardian.value.goverment_id
+
+      getInput(parentInsputs.value, 'parent_personal_identifications').model =
+        memberGuardian.value.personal_identifications
+      getInput(parentInsputs.value, 'parent_phone').model =
+        memberGuardian.value.phone
+
       parentInsputs.value.forEach((e) => {
         e.required = false
       })
     } else {
-      getInput(parentInsputs.value, 'member_id').model = ''
-      getInput(parentInsputs.value, 'parent_email').model = ''
-      getInput(parentInsputs.value, 'postal_code').model = ''
-      getInput(parentInsputs.value, 'city_id').model = ''
-      getInput(parentInsputs.value, 'country_id').model = ''
-      getInput(parentInsputs.value, 'state_id').model = ''
+      cleanUpModelInputs(parentInsputs.value)
+
       parentInsputs.value.forEach((e) => {
         e.required = true
       })
@@ -70,14 +85,14 @@ watch(
   >
     <SearchBar class="" v-model="memberGuardian" />
 
-    <div
+    <!-- <div
       v-if="!memberGuardian"
       class="d-flex justify-content-center mt-5 w-100"
       style="border-bottom: 1px solid rgba(0, 0, 0, 0.05)"
     >
       <p>Or</p>
-    </div>
+    </div> -->
 
-    <inputsLayaut v-if="!memberGuardian" :inputs-step="parentInsputs" />
+    <inputsLayaut :inputs-step="parentInsputs" />
   </formLayaut>
 </template>
