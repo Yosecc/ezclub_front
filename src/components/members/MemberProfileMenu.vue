@@ -104,6 +104,10 @@ const itemsMenuMinor = [
     name: 'Credit',
     component: 'memberCredit',
   },
+  {
+    name: 'Invoices',
+    component: 'memberInvoices',
+  },
 ]
 
 const itemsMenuProspect = [
