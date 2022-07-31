@@ -6,13 +6,16 @@ import { notyf } from '/@src/models/Mixin.ts'
 
 const props = defineProps({
   modelValue: {
+    //#modelo
     default: null,
   },
   dato: {
+    //#
     type: String,
     default: 'name',
   },
   valor: {
+    //#
     default: null,
   },
 })
@@ -47,9 +50,11 @@ const searchMember = async () => {
   memberSelect.value = null
   emit('update:modelValue', null)
 
-  const response = await Api.get(`search_member?value=${value.value}`)
-  showMembers.value = true
-  members.value = response.data
+  if (value.value.length) {
+    const response = await Api.get(`search_member?value=${value.value}`)
+    showMembers.value = true
+    members.value = response.data
+  }
 }
 
 const selectMember = (member) => {

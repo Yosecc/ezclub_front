@@ -43,9 +43,15 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  memberGuardianId: {
+    type: Number,
+    default: null,
+  },
 })
 
 const miembro = computed(() => {
+  // console.log('member',member.value)
+  // console.log('props.memberid',props.memberid)
   let miembro = null
   if (member.value) {
     miembro = member.value.id
@@ -53,6 +59,10 @@ const miembro = computed(() => {
 
   if (props.memberid) {
     miembro = props.memberid
+  }
+
+  if (props.memberGuardianId) {
+    miembro = props.memberGuardianId
   }
 
   return miembro

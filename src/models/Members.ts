@@ -17,6 +17,7 @@ import { getMembershipDiciplines } from '/@src/models/Memberships.ts'
 
 import moment from 'moment'
 export const members = ref([])
+export const memberGuardian = ref(null)
 export const membersSelected = ref([])
 export const idMember = ref(null)
 export const idMemberMembership = ref(null)
@@ -1008,6 +1009,15 @@ export const notasInput = ref([
 
 export const parentInsputs = ref([
   {
+    typeInput: 'hidden',
+    name: 'member_id',
+    placeholder: '',
+    model: '',
+    class: 'is-12 d-flex justify-content-end',
+    isLabel: true,
+    required: false,
+  },
+  {
     typeInput: 'file',
     name: 'parent_photo',
     placeholder: 'Parent/Guardian Picture',
@@ -1719,7 +1729,7 @@ export const proccessMembership = async (props: object) => {
     array: false,
   })
 
-  console.log(categoriesMembersFD)
+  // console.log(categoriesMembersFD)
 
   if (categoriesMembersFD.category == 'Minor') {
     fd.append('address', getInput(parentInsputs.value, 'address').model)
