@@ -83,8 +83,11 @@ const paymentSwipeCard = (id) => {
 
     var channel = pusher.subscribe('payment_stripe_channel')
     channel.bind('payment_stripe_event', function (data) {
-      // notyf.error('ALERT PAYMENT: ' + data.member + ' ' + data.message)
-      alert(JSON.stringify(data))
+      if (data.error) {
+        notyf.error('ALERT PAYMENT: ' + data.message)
+      } else {
+        notyf.success('PAYMENT: ' + data.message)
+      }
     })
 
     storeSwipeCard({
