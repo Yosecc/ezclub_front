@@ -165,6 +165,17 @@ const handleSubmit = async (e) => {
 onMounted(() => {
   setLoading.value = false
   initialize()
+  // Pusher.logToConsole = true;
+  var pusher = new Pusher(import.meta.env.VITE_KEY_PUSHER, {
+    cluster: 'us2',
+  })
+
+  // console.log('pusher', pusher)
+  var channel = pusher.subscribe('payment_stripe_channel')
+  channel.bind('payment_stripe_event', function (data) {
+    // app.messages.push();
+    alert(JSON.stringify(data))
+  })
 })
 </script>
 
