@@ -77,6 +77,16 @@ const paymentSwipeCard = (id) => {
   if (confirm('Send Terminal')) {
     notyf.success('Enviando....')
 
+    var pusher = new Pusher(import.meta.env.VITE_KEY_PUSHER, {
+      cluster: 'us2',
+    })
+
+    var channel = pusher.subscribe('payment_stripe_channel')
+    channel.bind('payment_stripe_event', function (data) {
+      // notyf.error('ALERT PAYMENT: ' + data.member + ' ' + data.message)
+      alert(JSON.stringify(data))
+    })
+
     storeSwipeCard({
       cart: cart.value,
       total: total.value,
@@ -188,7 +198,6 @@ const onfinishPayment = () => {
       }
     })
 }
-
 const limpiezaSwipeCard = () => {
   paymentIntent.value = null
   terminal_id.value = null

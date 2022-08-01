@@ -175,7 +175,7 @@ onMounted(() => {
   channel.bind('payment_stripe_event', function (data) {
     // app.messages.push();
     notyf.error('ALERT PAYMENT: ' + data.member + ' ' + data.message)
-    alert(JSON.stringify(data))
+    // alert(JSON.stringify(data))
   })
 })
 </script>
