@@ -44,6 +44,14 @@ const filteredData = computed(() => {
         <VField addons>
           <VControl>
             <VButton
+              @click="filter = 'All'"
+              :color="filter == 'All' ? 'primary' : ''"
+            >
+              All
+            </VButton>
+          </VControl>
+          <VControl>
+            <VButton
               @click="filter = 'today'"
               :color="filter == 'today' ? 'primary' : ''"
             >

@@ -13,7 +13,7 @@ export const user = ref({ id: null })
 
 export const membersDayPass = ref([])
 
-export const filter = ref('today') //today|yesterday|last_7_day
+export const filter = ref('today') //All|today|yesterday|last_7_day
 
 export const inputsMember = ref([
   {
