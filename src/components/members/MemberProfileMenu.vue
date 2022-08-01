@@ -115,9 +115,37 @@ const itemsMenuProspect = [
     name: 'Personal Information',
     component: 'personalInformation',
   },
+  // {
+  //   name:'Credit Card',
+  //   component: 'memberCreditCard'
+  // },
   {
-    name: 'Waiver',
-    component: 'memberWaiver',
+    name: 'Membership/Contract',
+    component: 'memberMembership',
+  },
+  // {
+  //   name: 'Family Members',
+  //   component: 'memberFamily',
+  // },
+  {
+    name: 'Emergency',
+    component: 'memberEmergency',
+  },
+  {
+    name: 'Check-ins',
+    component: 'memberCheckins',
+  },
+  {
+    name: 'Purchases',
+    component: 'memberPurchases',
+  },
+  {
+    name: 'Invoices',
+    component: 'memberInvoices',
+  },
+  {
+    name: 'Credit',
+    component: 'memberCredit',
   },
 ]
 
