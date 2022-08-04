@@ -23,7 +23,11 @@ const emit = defineEmit(['close'])
           </RouterLink>
         </li>
         <li v-has-nested-router-link class="has-children">
-          <RouterLink :to="{ name: 'members-create' }" class="is-submenu">
+          <RouterLink
+            target="_blank"
+            :to="{ name: 'members-create' }"
+            class="is-submenu"
+          >
             <i aria-hidden="true" class="fas fa-user mr-2"></i>
 
             <span>New Members</span>

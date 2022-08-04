@@ -77,20 +77,23 @@ const router = useRouter()
 const route = useRoute()
 
 const InputsDisponibles = computed(() => {
-  let index = membershipsData.findIndex((e) => e.name == 'prorrateo')
-  let index1 = membershipsData.findIndex((e) => e.name == 'schedules')
+  if (route.fullPath.includes('/members/profile')) {
+    let index = membershipsData.findIndex((e) => e.name == 'prorrateo')
+    let index1 = membershipsData.findIndex((e) => e.name == 'schedules')
 
-  if (index == -1) {
-    membershipsData.unshift(prorrateo.value[0])
-    getInput(membershipsData, 'recurrence').class = 'is-4'
-  }
-  if (index1 == -1) {
-    membershipsData.push(schedules.value[0])
-    getInput(membershipsData, 'prorrateo').change = function (inputs) {
-      if (this.model) {
-        getInput(inputs, 'schedules').disabled = true
-      } else {
-        getInput(inputs, 'schedules').disabled = false
+    if (index == -1) {
+      membershipsData.unshift(prorrateo.value[0])
+      getInput(membershipsData, 'recurrence').class = 'is-4'
+    }
+
+    if (index1 == -1) {
+      membershipsData.push(schedules.value[0])
+      getInput(membershipsData, 'prorrateo').change = function (inputs) {
+        if (this.model) {
+          getInput(inputs, 'schedules').disabled = true
+        } else {
+          getInput(inputs, 'schedules').disabled = false
+        }
       }
     }
   }
