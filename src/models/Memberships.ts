@@ -314,13 +314,27 @@ export const inputsConfig = reactive([
 
 export const inputsUpgradeSubscription = reactive([
   {
-    typeInput: 'selectData',
-    name: 'upgrade_subscription',
-    placeholder: 'Select Subscription',
-    model: '',
+    typeInput: 'selectDataActionChangeInput',
+    name: 'memberships_id',
+    placeholder: 'Membership Type',
     values: [],
+    model: '',
+    disabled: false,
     required: true,
-    isLabel: true,
     class: 'is-12',
+    isLabel: true,
+  },
+  {
+    typeInput: 'radioBoxsInput',
+    name: 'recurrences_id',
+    placeholder: 'Recurrence & Amount',
+    values: [],
+    model: '',
+    disabled: false,
+    required: true,
+    class: 'is-12',
+    isLabel: true,
+    filterName: 'descriptions',
+    otros: 'amount',
   },
 ])

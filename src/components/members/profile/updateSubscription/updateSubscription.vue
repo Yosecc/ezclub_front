@@ -3,8 +3,6 @@
 import { defineProps, ref } from 'vue'
 
 const props = defineProps({
-  member: Object,
-  memberMermship: Object,
   isLoaderActive: Boolean,
 })
 
@@ -15,15 +13,10 @@ const handleModal = () => {
 }
 </script>
 <template>
-  <div v-if="member && memberMermship" class="column is-2">
-    <VLoader
-      v-if="member.membership_members.is_recurrence"
-      size="small"
-      :active="isLoaderActive"
-    >
+  <div class="column is-2">
+    <VLoader size="small" :active="isLoaderActive">
       <VCard
         :color="undefined"
-        v-if="memberMermship"
         outlined
         @click="handleModal"
         class="mr-4 btn-card text-center px-2"

@@ -1331,6 +1331,11 @@ export const syncMembershipMembers = async () => {
   return response
 }
 
+export const updateMembershipMembers = async (id: number, data: any) => {
+  const response = await Api.post(`members/updateMembershipMember/${id}`, data)
+  return response
+}
+
 export const storedeletePaymentMethod = async (
   id: number,
   paymentMethod: string
