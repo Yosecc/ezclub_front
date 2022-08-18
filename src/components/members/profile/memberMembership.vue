@@ -403,7 +403,7 @@ const onClickSubscribeDebitAutomatic = () => {
                   {{ memberMermship.payment_type.name }}</small
                 >
               </p>
-              <p>
+              <p v-if="memberMermship">
                 <small>{{
                   memberMermship.recurrence.is_recurrence
                     ? 'Recurrence'
@@ -426,7 +426,10 @@ const onClickSubscribeDebitAutomatic = () => {
           </VCard>
         </div>
 
-        <div class="column is-8">
+        <div
+          class="column is-8"
+          :class="member.membership_members ? 'is-8' : 'is-12'"
+        >
           <VCard
             style="position: sticky; top: 10px"
             class="mb-4 column is-12"
@@ -497,14 +500,17 @@ const onClickSubscribeDebitAutomatic = () => {
             </div>
           </div>
         </div>
-        <div class="column is-4">
+        <div class="column is-4" v-if="member.membership_members">
           <div style="position: sticky; top: 10px" class="columns is-multiline">
             <div
               v-if="member && memberMermship && memberMermship.status == 1"
               class="column is-6"
             >
               <VLoader
-                v-if="member.membership_members.is_recurrence"
+                v-if="
+                  member.membership_members &&
+                  member.membership_members.is_recurrence
+                "
                 size="small"
                 class="h-100"
                 :active="isLoaderActive"
@@ -601,7 +607,10 @@ const onClickSubscribeDebitAutomatic = () => {
               class="column is-6"
             >
               <VLoader
-                v-if="member.membership_members.is_recurrence"
+                v-if="
+                  member.membership_members &&
+                  member.membership_members.is_recurrence
+                "
                 size="small"
                 class="h-100"
                 :active="isLoaderActive"
@@ -715,7 +724,10 @@ const onClickSubscribeDebitAutomatic = () => {
 
             <div v-if="member && memberMermship" class="column is-6">
               <VLoader
-                v-if="member.membership_members.is_recurrence"
+                v-if="
+                  member.membership_members &&
+                  member.membership_members.is_recurrence
+                "
                 size="small"
                 :active="isLoaderActive"
                 class="h-100"
@@ -744,7 +756,10 @@ const onClickSubscribeDebitAutomatic = () => {
 
             <div v-if="member && memberMermship" class="column is-6">
               <VLoader
-                v-if="member.membership_members.is_recurrence"
+                v-if="
+                  member.membership_members &&
+                  member.membership_members.is_recurrence
+                "
                 size="small"
                 :active="isLoaderActive"
                 class="h-100"
@@ -774,7 +789,10 @@ const onClickSubscribeDebitAutomatic = () => {
             <div class="column is-6">
               <VLoader
                 class="w-100 h-100"
-                v-if="member.membership_members.is_recurrence"
+                v-if="
+                  member.membership_members &&
+                  member.membership_members.is_recurrence
+                "
                 size="small"
                 :active="isLoaderActive"
               >
@@ -803,7 +821,10 @@ const onClickSubscribeDebitAutomatic = () => {
             <div class="column is-6">
               <VLoader
                 class="w-100 h-100"
-                v-if="member.membership_members.is_recurrence"
+                v-if="
+                  member.membership_members &&
+                  member.membership_members.is_recurrence
+                "
                 size="small"
                 :active="isLoaderActive"
               >
