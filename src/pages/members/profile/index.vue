@@ -233,6 +233,14 @@ const mountMember = async () => {
         for (e in response.data[i]) {
           if (e == 'parent_address') {
             getInput(parentInsputs.value, 'address').model = response.data[i][e]
+          } else if (e == 'parent_photo') {
+            if (response.data[i][e] != '' || response.data[i][e] != null) {
+              getInput(parentInsputs.value, 'parent_photo').required = false
+            } else {
+              getInput(parentInsputs.value, 'parent_photo').required = true
+            }
+            getInput(parentInsputs.value, 'parent_photo').data =
+              response.data[i][e]
           } else {
             setInputModelData(parentInsputs, e, response.data[i][e])
           }
@@ -305,7 +313,7 @@ const reload = () => {
           <VPlaceload height="150px" />
         </div>
         <div class="columns is-multiline column is-12">
-          <VPlaceload height="420px" />
+          <VPlaceload height="530px" />
         </div>
       </div>
     </div>
@@ -313,6 +321,7 @@ const reload = () => {
     <div v-if="!isLoading && member" class="columns is-multiline">
       <div class="column is-3">
         <MemberProfileMenu
+          style="position: sticky; top: 10px"
           :category="member.category"
           @changeMenu="changeMenu"
           :class="status"
@@ -384,13 +393,13 @@ const reload = () => {
           @reload="reload"
           v-show="Component == 'memberMembership'"
         />
-        <memberFamily v-show="Component == 'memberFamily'" />
-        <memberEmergency v-show="Component == 'memberEmergency'" />
-        <memberCheckins v-show="Component == 'memberCheckins'" />
-        <memberPurchases v-show="Component == 'memberPurchases'" />
-        <memberInvoices v-show="Component == 'memberInvoices'" />
-        <memberWaiver v-show="Component == 'memberWaiver'" />
-        <memberCredit v-show="Component == 'memberCredit'" />
+        <memberFamily v-if="Component == 'memberFamily'" />
+        <memberEmergency v-if="Component == 'memberEmergency'" />
+        <memberCheckins v-if="Component == 'memberCheckins'" />
+        <memberPurchases v-if="Component == 'memberPurchases'" />
+        <memberInvoices v-if="Component == 'memberInvoices'" />
+        <memberWaiver v-if="Component == 'memberWaiver'" />
+        <memberCredit v-if="Component == 'memberCredit'" />
       </div>
     </div>
   </SidebarLayout>

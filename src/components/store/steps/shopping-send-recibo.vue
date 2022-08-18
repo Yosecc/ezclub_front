@@ -52,6 +52,8 @@ const close = () => {
   showSendMail.value = false
   // modelValue = false
   emit('update:modelValue', false)
+
+  window.location.reload()
 }
 
 const switchType = (type) => {

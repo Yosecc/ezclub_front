@@ -11,16 +11,19 @@ import { moneda } from '/@src/models/Mixin.ts'
 
 const paymentMethodId = ref(null)
 const openModalMakeAPayment = ref(false)
+const paymentGateway = ref(1)
 
 const onMethodPayment = () => {}
 
 const makePayment = (MethodPayment) => {
   paymentMethodId.value = MethodPayment
+  paymentGateway.value = 1
   openModalMakeAPayment.value = true
 }
 
 const makeAPaymentWithCash = () => {
   openModalMakeAPayment.value = true
+  paymentGateway.value = 2
 }
 
 const closeModal = () => {
@@ -42,6 +45,7 @@ const closeModal = () => {
       <makeAPaymentModal
         :payment-method-id="paymentMethodId"
         :open-modal="openModalMakeAPayment"
+        :payment-gateway="paymentGateway"
         @close-modal="closeModal"
       />
       <MemberCards

@@ -1,7 +1,12 @@
 <script setup lang="ts">
-import { defineProps, defineEmit, ref } from 'vue'
+import { defineProps, defineEmit, ref, watch } from 'vue'
 
-const current_page = ref(1)
+const current_page = ref(null)
+
+const previus_page = ref(null)
+const next_page = ref(null)
+const previus_page_history = ref([])
+const first_render_with_data = ref(false)
 
 const emit = defineEmit({
   changePage(payload) {
@@ -10,27 +15,64 @@ const emit = defineEmit({
 })
 
 const props = defineProps({
-  loading: {
-    type: Boolean,
-  },
-  pagination: {
-    type: Array,
+  reports: {
+    type: Object,
   },
 })
 
-console.log(props.pagination)
+watch(
+  () => props.reports,
+  () => {
+    if (!first_render_with_data.value) {
+      previus_page_history.value.push({
+        index: props.reports.next_page,
+        value: current_page.value,
+      })
 
-const changePage = (page) => {
-  current_page.value = page
-  emit('changePage', page)
+      first_render_with_data.value = true
+    }
+
+    if (first_render_with_data.value) {
+      previus_page_history.value.push({
+        index: next_page.value,
+        value: current_page.value,
+      })
+    }
+
+    console.log(previus_page_history.value)
+  }
+)
+
+watch(
+  () => props.reports,
+  () => {
+    if (props.reports && props.reports.transactions.length > 0) {
+      const filtered = previus_page_history.value.filter((item: Object) => {
+        return item.index == current_page.value
+      })
+
+      previus_page.value = filtered.length > 0 ? filtered[0].value : null
+
+      next_page.value = props.reports.next_page
+    }
+  }
+)
+
+const changePage = (action: string) => {
+  const change = {
+    page: action === 'next' ? next_page.value : previus_page.value,
+  }
+  current_page.value = change.page
+
+  emit('changePage', change)
 }
 </script>
 
 <template>
-  <V-FlexPagination
-    v-if="pagination.length != 0"
-    :item-per-page="100"
-    :total-items="pagination.length * 100"
-    :current-page="current_page"
-  />
+  <V-Button :disabled="!previus_page" @click="changePage('prev')"
+    >Previus</V-Button
+  >
+  <V-Button :disabled="!reports.has_more" @click="changePage('next')"
+    >Next</V-Button
+  >
 </template>

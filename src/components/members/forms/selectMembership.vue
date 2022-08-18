@@ -77,6 +77,20 @@ watch(
   }
 )
 
+onMounted(() => {
+  let index = membershipsData.findIndex((e) => e.name == 'prorrateo')
+  let index1 = membershipsData.findIndex((e) => e.name == 'schedules')
+  getInput(membershipsData, 'recurrence').class = 'is-12'
+  if (index != -1) {
+    membershipsData.splice(index, 1)
+    reloadForm()
+  }
+  if (index1 != -1) {
+    membershipsData.splice(index1, 1)
+    reloadForm()
+  }
+})
+
 const reloadForm = () => {
   isLoading.value = true
   setTimeout(() => {

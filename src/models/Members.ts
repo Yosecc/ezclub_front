@@ -17,6 +17,7 @@ import { getMembershipDiciplines } from '/@src/models/Memberships.ts'
 
 import moment from 'moment'
 export const members = ref([])
+export const memberGuardian = ref(null)
 export const membersSelected = ref([])
 export const idMember = ref(null)
 export const idMemberMembership = ref(null)
@@ -1008,6 +1009,15 @@ export const notasInput = ref([
 
 export const parentInsputs = ref([
   {
+    typeInput: 'hidden',
+    name: 'member_id',
+    placeholder: '',
+    model: '',
+    class: 'is-12 d-flex justify-content-end',
+    isLabel: true,
+    required: false,
+  },
+  {
     typeInput: 'file',
     name: 'parent_photo',
     placeholder: 'Parent/Guardian Picture',
@@ -1167,7 +1177,7 @@ export const parentInsputs = ref([
     required: true,
   },
   {
-    typeInput: 'number',
+    typeInput: 'text',
     name: 'parent_phone',
     placeholder: 'Phone Number',
     model: '',
@@ -1289,6 +1299,16 @@ export const putInformation = async (data: any) => {
   return response
 }
 
+export const subscribeDebitAutomatic = async (id) => {
+  const response = await Api.post(`members/subscribeDebitAutomatic/${id}`)
+  return response
+}
+
+export const sendEmailContractAndWaiver = async (id) => {
+  const response = await Api.post(`members/sendEmailContractAndWaiver/${id}`)
+  return response
+}
+
 export const putMembership = async (data: any) => {
   const response = await Api.post(
     `members/updateMembershipMember/${memberMermship.value.id}`,
@@ -1304,10 +1324,14 @@ export const pauseMembership = async (id: any, fecha: any = null) => {
   return response
 }
 
-export const holdMembership = async (id: any, fecha: any = null) => {
+export const holdMembership = async (
+  id: any,
+  fecha: any = null,
+  prorrateo = true
+) => {
   const response = await Api.post(
     `members/hold_membership/${memberMermship.value.id}`,
-    { fecha: fecha }
+    { fecha: fecha, prorrateo: prorrateo }
   )
   return response
 }
@@ -1331,8 +1355,14 @@ export const syncMembershipMembers = async () => {
   return response
 }
 
+
 export const updateMembershipMembers = async (id: number, data: any) => {
   const response = await Api.post(`members/updateMembershipMember/${id}`, data)
+  return response
+}
+
+export const getPresupuestoMembresia = async (id: any) => {
+  const response = await Api.get(`get_presupuesto_membresia/${id}`)
   return response
 }
 
@@ -1382,7 +1412,7 @@ export const storePaymentCash = async (id: number, data: object) => {
 }
 
 export const putMemberGuardian = async (data: any) => {
-  const response = await Api.put(`members/guardian/${member.value.id}`, data)
+  const response = await Api.post(`members/guardian/${member.value.id}`, data)
   return response
 }
 
@@ -1715,7 +1745,7 @@ export const proccessMembership = async (props: object) => {
     array: false,
   })
 
-  console.log(categoriesMembersFD)
+  // console.log(categoriesMembersFD)
 
   if (categoriesMembersFD.category == 'Minor') {
     fd.append('address', getInput(parentInsputs.value, 'address').model)
@@ -1807,7 +1837,7 @@ export const generaPresupuesto = async (membresia: any, member: any) => {
   if (getInput(membresia, 'schedules') != undefined) {
     data.schedules = getInput(membresia, 'schedules').model
   }
-
+  console.log(data)
   const response = await getPresupuesto(data)
     .then((response) => {
       presupuestos.value.push({

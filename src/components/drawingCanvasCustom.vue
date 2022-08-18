@@ -239,7 +239,7 @@ const close = () => {
           type="button"
           value="Clear"
           class="button v-button is-warning text-center mx-auto"
-          @@click="onClear()"
+          @click="onClear()"
         />
         <input
           id="button2"

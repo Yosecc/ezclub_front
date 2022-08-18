@@ -24,6 +24,7 @@ import {
   FormaLizar,
   storePaymentCash,
   storeNewMembership,
+  memberGuardian,
 } from '/@src/models/Members.ts'
 
 const emit = defineEmit(['PaymentAction'])
@@ -287,6 +288,7 @@ const subscribir = (payment_method) => {
       v-if="paymentMethod == 3 && !isMemberPayment"
       :show-new-card="false"
       :memberid="idMember"
+      :member-guardian-id="memberGuardian ? memberGuardian.id : null"
       @onMethodPayment="subscribir"
     />
 

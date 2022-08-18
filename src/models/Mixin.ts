@@ -3,7 +3,7 @@ import moment from 'moment'
 import { Notyf } from 'notyf'
 
 export const notyf = new Notyf({
-  duration: 5000,
+  duration: 8000,
   position: {
     x: 'right',
     y: 'top',

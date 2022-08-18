@@ -301,7 +301,11 @@ watch(
                     "
                   >
                     <VTag
-                      v-if="item.membership_members.status != 2"
+                      v-if="
+                        item.membership_members.status != 2 &&
+                        item.subscription.latest_invoice &&
+                        item.subscription.latest_invoice.payments_intents.length
+                      "
                       :label="`${item.subscription.latest_invoice.payments_intents[0].status}`"
                       class="mr-1"
                       color="danger"
