@@ -426,8 +426,79 @@ const onClickSubscribeDebitAutomatic = () => {
           </VCard>
         </div>
 
+        <div class="column is-8">
+          <VCard
+            style="position: sticky; top: 10px"
+            class="mb-4 column is-12"
+            v-if="!presupuestos.length"
+          >
+            <inputsLayaut :inputs-step="InputsDisponibles" />
+
+            <VAvatarStack
+              v-if="member && member.trainers"
+              :avatars="arregloTrainers(member.trainers)"
+              size="small"
+            />
+
+            <VLoader
+              v-if="member && memberMermship && memberMermship.status == 1"
+              size="small"
+              :active="isLoaderActive"
+            >
+              <VButton class="mt-5" @click="onSave" color="primary"
+                >Save Changes</VButton
+              >
+            </VLoader>
+
+            <VLoader v-if="!pagado" size="small" :active="isLoaderActive">
+              <VButton
+                v-if="!memberMermship || memberMermship.status == 2"
+                class="mt-5"
+                @click="onNew"
+                color="primary"
+              >
+                New Membership
+              </VButton>
+            </VLoader>
+          </VCard>
+
+          <!-- Presupuesto -->
+          <div
+            v-if="!memberMermship || memberMermship.status == 2"
+            class="column is-12 mb-6 mt-4"
+          >
+            <VPlaceload height="300px" class="mb-4" v-if="isLoaderActive" />
+            <div v-if="presupuestos.length">
+              <Presupuesto
+                v-for="(presupuesto, key) in presupuestos"
+                :key="`presupuesto-${key}`"
+                class="mb-4"
+                :presupuesto="presupuesto"
+              >
+                <div class="d-flex justify-content-end w-100">
+                  <generateMember
+                    :member="presupuesto.member"
+                    :member_id="member.id"
+                    :membresia="presupuesto.membresia"
+                    :contact="dataContact"
+                    :presupuesto_id="presupuesto.presupuesto_id"
+                    :categories-members="categoriesMembers"
+                    :notas-input="notasInput"
+                    :total="presupuesto.totales.upfront.amount_total"
+                    @PaymentAction="PaymentAction"
+                    :type="'edit'"
+                  />
+                </div>
+              </Presupuesto>
+
+              <VButton @click="presupuestos = []" color="danger"
+                >Cancel</VButton
+              >
+            </div>
+          </div>
+        </div>
         <div class="column is-4">
-          <div class="columns is-multiline">
+          <div style="position: sticky; top: 10px" class="columns is-multiline">
             <div
               v-if="member && memberMermship && memberMermship.status == 1"
               class="column is-6"
@@ -502,9 +573,7 @@ const onClickSubscribeDebitAutomatic = () => {
                   <table class="table w-100" v-if="presupuestoProrrateo.total">
                     <tr>
                       <td>
-                        Subtotal ({{
-                          presupuestoProrrateo.dias_restantes
-                        }}
+                        Subtotal ({{ presupuestoProrrateo.dias_restantes }}
                         days)
                       </td>
                       <td>{{ moneda(presupuestoProrrateo.subtotal) }}</td>
@@ -760,7 +829,7 @@ const onClickSubscribeDebitAutomatic = () => {
               </VLoader>
             </div>
 
-            <div class="column is-6">
+            <div class="column is-6 mb-6">
               <UpdateSubscription
                 v-if="member && memberMermship"
                 :member="member"
@@ -768,40 +837,65 @@ const onClickSubscribeDebitAutomatic = () => {
                 :is-loader-active="isLoaderActive"
               />
             </div>
+
+            <!-- WAIVER -->
+            <div class="column is-12">
+              <VCard class="mb-4 w-100" v-if="member && memberMermship">
+                <h1 class="title is-6">Active Waiver Information</h1>
+                <div class="text-center">
+                  <a
+                    target="_blank"
+                    :href="`${API_WEB_URL}generateWeiver/${member.id}`"
+                    class="d-flex justify-content-start align-items-center"
+                  >
+                    <img
+                      src="/public/images/pdf_icon.png"
+                      class="mr-3"
+                      width="40"
+                      alt=""
+                    />
+                    <p>
+                      weiver_{{ member.id }}_{{
+                        member.membership_members.id
+                      }}_{{ member.personal_identifications }}.pdf
+                    </p>
+                    <!-- <V-Button color="success" outlined class="mt-4 py-1">
+                      View PDF
+                    </V-Button> -->
+                  </a>
+                </div>
+              </VCard>
+            </div>
+
+            <!-- Contract -->
+            <div class="column is-12">
+              <VCard class="mb-4 w-100" v-if="member && memberMermship">
+                <h1 class="title is-6">Active Contract Information</h1>
+                <div class="text-center">
+                  <a
+                    target="_blank"
+                    :href="`${API_WEB_URL}generateContract/${member.id}`"
+                    class="d-flex justify-content-start align-items-center"
+                  >
+                    <img
+                      src="/public/images/pdf_icon.png"
+                      class="mr-3"
+                      width="40"
+                      alt=""
+                    />
+                    <p>
+                      contract_{{ member.id }}_{{
+                        member.membership_members.id
+                      }}_{{ member.personal_identifications }}.pdf
+                    </p>
+                    <!--  <V-Button color="success" outlined class="mt-4 py-1">
+                      View PDF
+                    </V-Button> -->
+                  </a>
+                </div>
+              </VCard>
+            </div>
           </div>
-        </div>
-
-        <div class="column is-8">
-          <VCard class="mb-4 column is-12" v-if="!presupuestos.length">
-            <inputsLayaut :inputs-step="InputsDisponibles" />
-
-            <VAvatarStack
-              v-if="member && member.trainers"
-              :avatars="arregloTrainers(member.trainers)"
-              size="small"
-            />
-
-            <VLoader
-              v-if="member && memberMermship && memberMermship.status == 1"
-              size="small"
-              :active="isLoaderActive"
-            >
-              <VButton class="mt-5" @click="onSave" color="primary"
-                >Save Changes</VButton
-              >
-            </VLoader>
-
-            <VLoader v-if="!pagado" size="small" :active="isLoaderActive">
-              <VButton
-                v-if="!memberMermship || memberMermship.status == 2"
-                class="mt-5"
-                @click="onNew"
-                color="primary"
-              >
-                New Membership
-              </VButton>
-            </VLoader>
-          </VCard>
         </div>
 
         <div class="mb-4 column is-12" v-if="itentPayment">
@@ -823,55 +917,11 @@ const onClickSubscribeDebitAutomatic = () => {
           </MemberCards>
         </div>
 
-        <!-- Presupuesto -->
-        <div
-          v-if="!memberMermship || memberMermship.status == 2"
-          class="column is-12 mb-6 mt-4"
-        >
-          <VPlaceload height="300px" class="mb-4" v-if="isLoaderActive" />
-          <div v-if="presupuestos.length">
-            <Presupuesto
-              v-for="(presupuesto, key) in presupuestos"
-              :key="`presupuesto-${key}`"
-              class="mb-4"
-              :presupuesto="presupuesto"
-            >
-              <div class="d-flex justify-content-end w-100">
-                <generateMember
-                  :member="presupuesto.member"
-                  :member_id="member.id"
-                  :membresia="presupuesto.membresia"
-                  :contact="dataContact"
-                  :presupuesto_id="presupuesto.presupuesto_id"
-                  :categories-members="categoriesMembers"
-                  :notas-input="notasInput"
-                  :total="presupuesto.totales.upfront.amount_total"
-                  @PaymentAction="PaymentAction"
-                  :type="'edit'"
-                />
-              </div>
-            </Presupuesto>
-
-            <VButton @click="presupuestos = []" color="danger">Cancel</VButton>
-          </div>
-        </div>
-
         <!-- Contract -->
         <div
-          v-if="member && memberMermship"
+          v-if="member && memberMermship && !memberMermship.sign"
           class="columns is-multiline column mt-4 is-12"
         >
-          <div>
-            <p>
-              <b>Contract Date:</b>
-              {{
-                moment(member.membership_members.created_at).format(
-                  'ddd - DD MMM yyyy'
-                )
-              }}
-            </p>
-          </div>
-
           <div class="column is-12">
             <signComponent
               @onSign="onSign"
@@ -881,97 +931,6 @@ const onClickSubscribeDebitAutomatic = () => {
             />
           </div>
         </div>
-
-        <VCard class="mb-4" v-if="false">
-          <h1 class="title is-6">Inactive Contract Information</h1>
-          <table class="table is-hoverable is-fullwidth">
-            <thead>
-              <tr>
-                <th scope="col">Contract</th>
-                <th scope="col">Agreement Date</th>
-                <th scope="col">Sold By</th>
-                <th scope="col">Membership Type</th>
-                <th scope="col">Decipline</th>
-                <th scope="col">Start Date</th>
-                <th scope="col">End Date</th>
-                <th scope="col">Auto Renew</th>
-                <th scope="col">Discount Type</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                v-for="(item, key) in memberMembershipsHistory"
-                :key="`item-${key}`"
-              >
-                <td>
-                  <a :href="item.contract"
-                    ><img src="/public/images/pdf_icon.png" width="40" alt=""
-                  /></a>
-                </td>
-                <td>
-                  {{ moment(item.created_at).format('dd - DD MMM YYYY') }}
-                </td>
-                <td>{{ item.user.name }}</td>
-                <td>{{ item.membership.name }}</td>
-
-                <td>
-                  <span
-                    v-if="
-                      item.diciplines != '' ||
-                      item.diciplines != null ||
-                      item.diciplines != undefined
-                    "
-                  >
-                    <span
-                      v-for="(dicipline, ke) in item.diciplines"
-                      :key="`dicipline-${ke}`"
-                      ><span> {{ dicipline.dicipline.name }} </span>
-                    </span>
-                  </span>
-
-                  <span v-else>N/A</span>
-                </td>
-                <td>
-                  {{ moment(item.created_at).format('dd - DD MMM YYYY') }}
-                </td>
-                <td>
-                  {{ moment(item.cacelation_date).format('dd - DD MMM YYYY') }}
-                </td>
-                <td>
-                  <span>
-                    {{ item.is_recurrence ? 'Recurrence' : 'Not Recurrence' }}
-                  </span>
-                  <span v-if="item.is_recurrence">{{
-                    item.recurrence.recurrence
-                  }}</span>
-                </td>
-                <td>N/A</td>
-              </tr>
-            </tbody>
-          </table>
-        </VCard>
-
-        <!-- WAIVER -->
-        <VCard class="mb-4" v-if="member && memberMermship">
-          <h1 class="title is-6">Active Waiver Information</h1>
-          <div class="text-center">
-            <a
-              target="_blank"
-              :href="`${API_WEB_URL}generateWeiver/${member.id}`"
-            >
-              <img src="/public/images/pdf_icon.png" width="40" alt="" />
-              <p>
-                weiver_{{ member.id }}_{{ member.membership_members.id }}_{{
-                  member.personal_identifications
-                }}.pdf
-              </p>
-              <V-Button color="success" outlined class="mt-4 py-1">
-                View PDF
-              </V-Button>
-            </a>
-          </div>
-        </VCard>
-        <!--  -->
       </div>
     </template>
   </VCardAdvanced>
