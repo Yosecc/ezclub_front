@@ -757,7 +757,16 @@ const onClickSubscribeDebitAutomatic = () => {
           </div>
         </div>
 
+
+        
+
+
         <div class="column is-8">
+        <UpdateSubscription
+          :member="member"
+          :member-mermship="memberMermship"
+          :is-loader-active="isLoaderActive"
+        />
           <VCard class="mb-4 column is-12" v-if="!presupuestos.length">
             <inputsLayaut :inputs-step="InputsDisponibles" />
 
@@ -789,6 +798,7 @@ const onClickSubscribeDebitAutomatic = () => {
             </VLoader>
           </VCard>
         </div>
+
         <div class="mb-4 column is-12" v-if="itentPayment">
           <MemberCards
             v-if="member.user"
