@@ -1355,9 +1355,11 @@ export const syncMembershipMembers = async () => {
   return response
 }
 
-
 export const updateMembershipMembers = async (id: number, data: any) => {
-  const response = await Api.post(`members/updateMembershipMember/${id}`, data)
+  const response = await Api.post(
+    `members/update-membership-member/${id}`,
+    data
+  )
   return response
 }
 
