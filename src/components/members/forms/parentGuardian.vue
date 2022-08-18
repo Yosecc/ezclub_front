@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, defineProps, defineEmit, watch } from 'vue'
+import { computed, defineProps, defineEmit, watch, ref, onMounted } from 'vue'
 
 import { parentInsputs, member, memberGuardian } from '/@src/models/Members.ts'
 
@@ -20,16 +20,25 @@ const props = defineProps({
   },
 })
 
+const Emailvalor = ref(null)
+const buttonsDisabled = ref([])
+
 const emit = defineEmit(['changeStep', 'returData'])
 
 const change = (val) => {
   emit('changeStep', val)
 }
 
+onMounted(() => {
+  buttonsDisabled.value = []
+  getInput(parentInsputs.value, 'parent_email').disabled = true
+})
+
 watch(
   () => memberGuardian.value,
   () => {
     if (memberGuardian.value) {
+      buttonsDisabled.value = []
       console.log(memberGuardian.value)
       getInput(parentInsputs.value, 'member_id').model = memberGuardian.value.id
       getInput(parentInsputs.value, 'parent_email').model =
@@ -74,16 +83,38 @@ watch(
     }
   }
 )
+
+// watch(()=>Emailvalor.value,()=>{
+//   console.log(Emailvalor.value)
+// })
+const onSubmitMail = (value) => {
+  if (value === false) {
+    buttonsDisabled.value.push('next')
+    getInput(parentInsputs.value, 'parent_email').model = ''
+  } else {
+    buttonsDisabled.value = []
+
+    getInput(parentInsputs.value, 'parent_email').model = value
+  }
+}
 </script>
 
 <template>
   <formLayaut
     :titles="{ title: title }"
     :buttons="['next', 'prev']"
+    :buttons-disabled="buttonsDisabled"
     :step="2"
     @changeStep="change"
   >
-    <SearchBar class="" v-model="memberGuardian" />
+    <p>{{ Emailvalor }}</p>
+    <SearchBar
+      :is-head="true"
+      :place-holder="'Enter the guardian email'"
+      @onSubmit="onSubmitMail"
+      class=""
+      v-model="memberGuardian"
+    />
 
     <!-- <div
       v-if="!memberGuardian"

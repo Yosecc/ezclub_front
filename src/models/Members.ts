@@ -1299,6 +1299,16 @@ export const putInformation = async (data: any) => {
   return response
 }
 
+export const subscribeDebitAutomatic = async (id) => {
+  const response = await Api.post(`members/subscribeDebitAutomatic/${id}`)
+  return response
+}
+
+export const sendEmailContractAndWaiver = async (id) => {
+  const response = await Api.post(`members/sendEmailContractAndWaiver/${id}`)
+  return response
+}
+
 export const putMembership = async (data: any) => {
   const response = await Api.post(
     `members/updateMembershipMember/${memberMermship.value.id}`,

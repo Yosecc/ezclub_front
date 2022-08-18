@@ -18,9 +18,16 @@ const props = defineProps({
     //#
     default: null,
   },
+  placeHolder: {
+    default: 'Search',
+  },
+  isHead: {
+    type: Boolean,
+    default: false,
+  },
 })
 
-const emit = defineEmit(['update:modelValue', 'update:valor'])
+const emit = defineEmit(['update:modelValue', 'update:valor', 'onSubmit'])
 
 watch(props.valor, () => {
   console.log('cambia')
@@ -45,7 +52,13 @@ const showMembers = ref(false)
 const memberSelect = ref(null)
 const loadingMemberSelected = ref(false)
 
-const searchMember = async () => {
+const searchMember = async (event) => {
+  // console.log('event', event)
+  if (event != undefined && event.code == 'Enter') {
+    let member = onSubmitEvent()
+    return
+  }
+
   members.value = []
   memberSelect.value = null
   emit('update:modelValue', null)
@@ -85,6 +98,17 @@ const getMemberPaymentMethods = async (id) => {
   const response = await Api.get(`orders/get_payment_methods/${id}`)
   return response
 }
+const onSubmitEvent = () => {
+  showMembers.value = false
+  let index = members.value.findIndex((e) => e.email == value.value)
+  if (index != -1) {
+    notyf.error('Please select the guardian from the list')
+    emit('onSubmit', false)
+    searchMember()
+  } else {
+    emit('onSubmit', value)
+  }
+}
 </script>
 
 <template>
@@ -103,7 +127,7 @@ const getMemberPaymentMethods = async (id) => {
       v-model="value"
       type="text"
       class="input custom-text-filter"
-      placeholder="Search"
+      :placeholder="placeHolder"
       @keyup="searchMember"
       @change="$emit('update:valor', value)"
     />
@@ -121,6 +145,21 @@ const getMemberPaymentMethods = async (id) => {
           </tr>
         </thead> -->
         <tbody>
+          <tr v-if="isHead">
+            <td colspan="2">
+              <p style="font-size: 10px">
+                Select a guardian from the following list or press enter if it
+                is not found
+              </p>
+            </td>
+            <td
+              @click="showMembers = false"
+              colspan="1"
+              style="text-align: right"
+            >
+              <p style="font-size: 10px">Close</p>
+            </td>
+          </tr>
           <tr
             @click="selectMember(member)"
             v-for="(member, key) in members"
