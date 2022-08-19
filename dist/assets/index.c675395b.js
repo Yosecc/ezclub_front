@@ -1,1 +1,0 @@
-import{d as a,aa as s,I as e,o as r,i as o}from"./vendor.5bccebbb.js";var b=a({expose:[],setup(a){const b=s();return e((()=>{b.push({name:"navbar-dashboards"})})),(a,s)=>(r(),o("div"))}});export default b;
