@@ -13,21 +13,28 @@ const handleModal = () => {
 }
 </script>
 <template>
-  <div class="column is-2">
-    <VLoader size="small" :active="isLoaderActive">
-      <VCard
-        :color="undefined"
-        outlined
-        @click="handleModal"
-        class="mr-4 btn-card text-center px-2"
-        style="font-size: 12px"
-      >
-        <p>
-          <b>Upgrade Subscription</b>
-        </p>
-      </VCard>
+  <VLoader class="h-100 w-100" size="small" :active="isLoaderActive">
+    <VCard
+      :color="undefined"
+      outlined
+      @click="handleModal"
+      class="
+        mr-4
+        btn-card
+        text-center
+        px-2
+        h-100
+        d-flex
+        align-items-center
+        justify-content-center
+      "
+      style="font-size: 12px"
+    >
+      <p>
+        <b>Upgrade Subscription</b>
+      </p>
+    </VCard>
 
-      <updateSubscriptionModal :open="openModal" @closeModal="handleModal()" />
-    </VLoader>
-  </div>
+    <updateSubscriptionModal :open="openModal" @closeModal="handleModal()" />
+  </VLoader>
 </template>

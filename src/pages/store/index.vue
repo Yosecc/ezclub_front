@@ -244,7 +244,27 @@ const searchCodeBar = () => {
               tag="div"
               class="columns is-multiline"
             >
-              <!--Grid item-->
+              <!--Grid istem-->
+              <a href="#" class="card-grid-item">
+                <img
+                  :src="`https://via.placeholder.com/400x300`"
+                  alt=""
+                  @error.once="
+                    $event.target.src = 'https://via.placeholder.com/400x300'
+                  "
+                />
+                <div class="card-grid-item-content">
+                  <h3 class="dark-inverted text-center">
+                    <h2 class="title is-6">Cualquiera</h2>
+                    <input type="text" class="input" placeholder="Price" />
+                  </h3>
+                </div>
+                <div class="card-grid-item-footer">
+                  <VButton color="white" class="w-100 justify-content-center">
+                    ADD
+                  </VButton>
+                </div>
+              </a>
               <div
                 v-for="item in filteredData"
                 :key="item.id"
