@@ -57,6 +57,20 @@ export const getMemberReports = async (data: object = {}) => {
   return response
 }
 
+export const getTrainerReports = async (data: object = {}) => {
+  const response = await Api.get(`reports/trainers`, {
+    params: data,
+  })
+  return response
+}
+
+export const getDiciplineReports = async (data: object = {}) => {
+  const response = await Api.get(`reports/diciplines`, {
+    params: data,
+  })
+  return response
+}
+
 export const filterInsputs = ref([
   {
     typeInput: 'select',
@@ -172,6 +186,32 @@ export const filterInsputsMembershipsCancelledReport = ref([
     typeInput: 'date',
     name: 'end_date',
     placeholder: 'End Date',
+    model: '',
+    class: 'is-3',
+    isLabel: true,
+  },
+])
+
+export const filterInsputsTrainerReport = ref([
+  {
+    typeInput: 'selectData',
+    name: 'trainer_id',
+    label: 'Trainers',
+    placeholder: 'Select Trainer',
+    values: [],
+    model: '',
+    class: 'is-3',
+    isLabel: true,
+  },
+])
+
+export const filterInsputsDiciplineReport = ref([
+  {
+    typeInput: 'selectData',
+    name: 'dicipline_id',
+    label: 'Diciplines',
+    placeholder: 'Select Dicipline',
+    values: [],
     model: '',
     class: 'is-3',
     isLabel: true,
