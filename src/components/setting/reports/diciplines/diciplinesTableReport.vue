@@ -58,7 +58,10 @@ const handleDownload = async (data: object = {}) => {
         @download="handleDownload"
       />
     </div>
-    <div class="mt-4">
+    <div class="is-12 d-flex justify-content-end mt-5">
+      <p><strong>Total:</strong> {{ reports.length }}</p>
+    </div>
+    <div class="mt-1">
       <VLoader class="is-12" center size="small" :active="loading">
         <table class="table is-hoverable is-fullwidth">
           <thead>
