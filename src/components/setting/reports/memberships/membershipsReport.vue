@@ -69,7 +69,7 @@ const handleDownload = async (data: object = {}) => {
               <th scope="col">Status</th>
               <th scope="col">Category</th>
               <th scope="col">Full Name</th>
-              <th scope="col">Member card id</th>
+              <th scope="col">Member Card ID</th>
               <th scope="col">Membership</th>
               <th scope="col">payment Type</th>
               <th scope="col">Start Day</th>

@@ -82,7 +82,7 @@ export const filterInsputs = ref([
   {
     typeInput: 'select',
     name: 'report_type',
-    placeholder: 'Report Type',
+    placeholder: 'All',
     values: ['Memberships', 'Products'],
     model: '',
     class: 'is-3',
