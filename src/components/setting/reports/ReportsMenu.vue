@@ -50,6 +50,12 @@ const menu = ref([
     toName: 'settings-reports-diciplines',
     icon: 'lnil lnil-gift-alt-1',
   },
+  {
+    name: 'Memberships Report',
+    subname: 'Memberships Report',
+    toName: 'settings-reports-memberships',
+    icon: 'lnil lnil-gift-alt-1',
+  },
 ])
 </script>
 <template>
