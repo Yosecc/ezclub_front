@@ -81,7 +81,7 @@ const handleDownload = async (data: object = {}) => {
           <tbody v-if="reports && !loading">
             <tr v-for="(report, key) in reports" :key="`report-${key}`">
               <td>{{ report.status }}</td>
-              <td>Category</td>
+              <td>{{ report.category }}</td>
               <td>
                 {{
                   `${report.first_name} ${report.second_name ?? ''} ${
