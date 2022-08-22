@@ -158,40 +158,42 @@ const onSave = () => {
         </div>
       </template>
     </VCardAdvanced>
-    <VCard v-if="type == 'edit'" class="mt-4">
-      <h1 class="title is-5">Prices</h1>
-      <table class="table is-hoverable is-fullwidth">
-        <thead>
-          <tr>
-            <th scope="col">Status</th>
-            <th scope="col">Price</th>
-            <th scope="col">Create Date</th>
-            <th scope="col">User</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(price, key) in product.prices" :key="`price-${key}`">
-            <td>
-              <VTag
-                :color="price.status ? 'success' : 'danger'"
-                :label="price.status ? 'Active' : 'Archived'"
-                rounded
-              />
-            </td>
-            <td>${{ price.price }}</td>
-            <td>{{ moment(price.created_at).format('MM-DD-YYYY') }}</td>
-            <td>{{ price.user.name }}</td>
-          </tr>
-        </tbody>
-      </table>
+    <div v-if="!getInput(inputsProducts, 'custom').model">
+      <VCard v-if="type == 'edit'" class="mt-4">
+        <h1 class="title is-5">Prices</h1>
+        <table class="table is-hoverable is-fullwidth">
+          <thead>
+            <tr>
+              <th scope="col">Status</th>
+              <th scope="col">Price</th>
+              <th scope="col">Create Date</th>
+              <th scope="col">User</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(price, key) in product.prices" :key="`price-${key}`">
+              <td>
+                <VTag
+                  :color="price.status ? 'success' : 'danger'"
+                  :label="price.status ? 'Active' : 'Archived'"
+                  rounded
+                />
+              </td>
+              <td>${{ price.price }}</td>
+              <td>{{ moment(price.created_at).format('MM-DD-YYYY') }}</td>
+              <td>{{ price.user.name }}</td>
+            </tr>
+          </tbody>
+        </table>
 
-      <div class="w-100 justify-content-center d-flex">
-        <inputsLayaut :inputs-step="priceInputs" />
-        <VButton color="info" @click="addPrice" class="mt-5 ml-3">
-          Add Price
-        </VButton>
-      </div>
-    </VCard>
+        <div class="w-100 justify-content-center d-flex">
+          <inputsLayaut :inputs-step="priceInputs" />
+          <VButton color="info" @click="addPrice" class="mt-5 ml-3">
+            Add Price
+          </VButton>
+        </div>
+      </VCard>
+    </div>
   </div>
 </template>
 
