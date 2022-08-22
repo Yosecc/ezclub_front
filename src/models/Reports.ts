@@ -57,11 +57,32 @@ export const getMemberReports = async (data: object = {}) => {
   return response
 }
 
+export const getTrainerReports = async (data: object = {}) => {
+  const response = await Api.get(`reports/trainers`, {
+    params: data,
+  })
+  return response
+}
+
+export const getDiciplineReports = async (data: object = {}) => {
+  const response = await Api.get(`reports/diciplines`, {
+    params: data,
+  })
+  return response
+}
+
+export const getMembershipReports = async (data: object = {}) => {
+  const response = await Api.get(`reports/memberships`, {
+    params: data,
+  })
+  return response
+}
+
 export const filterInsputs = ref([
   {
     typeInput: 'select',
     name: 'report_type',
-    placeholder: 'Report Type',
+    placeholder: 'All',
     values: ['Memberships', 'Products'],
     model: '',
     class: 'is-3',
@@ -160,6 +181,61 @@ export const filterInsputsMemberReport = ref([
 ])
 
 export const filterInsputsMembershipsCancelledReport = ref([
+  {
+    typeInput: 'date',
+    name: 'start_date',
+    placeholder: 'Start Date',
+    model: '',
+    class: 'is-3',
+    isLabel: true,
+  },
+  {
+    typeInput: 'date',
+    name: 'end_date',
+    placeholder: 'End Date',
+    model: '',
+    class: 'is-3',
+    isLabel: true,
+  },
+])
+
+export const filterInsputsTrainerReport = ref([
+  {
+    typeInput: 'selectData',
+    name: 'trainer_id',
+    label: 'Trainers',
+    placeholder: 'Select Trainer',
+    values: [],
+    model: '',
+    class: 'is-3',
+    isLabel: true,
+  },
+])
+
+export const filterInsputsDiciplineReport = ref([
+  {
+    typeInput: 'selectData',
+    name: 'dicipline_id',
+    label: 'Diciplines',
+    placeholder: 'Select Dicipline',
+    values: [],
+    model: '',
+    class: 'is-3',
+    isLabel: true,
+  },
+])
+
+export const filterInsputsMembershipsReport = ref([
+  {
+    typeInput: 'selectData',
+    name: 'status_id',
+    label: 'Status',
+    placeholder: 'Select Status',
+    values: ['cancel', 'active', 'due', 'hold'],
+    model: '',
+    class: 'is-3',
+    isLabel: true,
+  },
   {
     typeInput: 'date',
     name: 'start_date',

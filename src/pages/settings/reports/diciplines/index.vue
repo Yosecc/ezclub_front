@@ -2,9 +2,10 @@
 import { useHead } from '@vueuse/head'
 import { onMounted, watch, ref, computed } from 'vue'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
-pageTitle.value = 'Memberships Cacelled Reports'
+
+pageTitle.value = 'Diciplines Reports'
 useHead({
-  title: 'Memberships Cacelled Reports',
+  title: 'Diciplines Reports',
 })
 
 onMounted(() => {})
@@ -15,7 +16,7 @@ onMounted(() => {})
     <!-- Content Wrapper -->
     <div class="page-content-inner">
       <div class="columns is-multiline">
-        <membershipsCancelledReport />
+        <diciplinesTableReport />
       </div>
     </div>
   </SidebarLayout>

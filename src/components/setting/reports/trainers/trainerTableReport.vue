@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { getReports, downloadReports } from '/@src/models/Reports.ts'
+import { getTrainerReports, downloadReports } from '/@src/models/Reports'
 import moment from 'moment'
-import VLoader from '../../base/loader/V-Loader.vue'
-import { notyf } from '/@src/models/Mixin.ts'
+import VLoader from '../../../base/loader/V-Loader.vue'
+import { notyf } from '/@src/models/Mixin'
 
 const reports = ref([])
 const loading = ref(false)
 
-onMounted(async () => {
-  handleReports()
-})
+// onMounted(async () => {
+//   handleReports()
+// })
 
 const handleSearch = async (data: object) => {
   handleReports(data)
@@ -19,7 +19,7 @@ const handleSearch = async (data: object) => {
 const handleReports = async (data: object = {}) => {
   loading.value = true
   try {
-    const response = await getReports(data)
+    const response = await getTrainerReports(data)
     reports.value = response.data
   } catch (error) {
     notyf.error(error.message)
@@ -33,8 +33,7 @@ const handleDownload = async (data: object = {}) => {
   try {
     const response = await downloadReports({
       ...data,
-      report_export_type:
-        data.report_type == 'Products' ? 'products' : 'memberships',
+      report_export_type: 'memberships',
     })
     const url = window.URL.createObjectURL(new Blob([response.data]))
     const link = document.createElement('a')
@@ -53,7 +52,7 @@ const handleDownload = async (data: object = {}) => {
 <template>
   <VCard>
     <div>
-      <filterReportsTable
+      <trainerFilterReport
         @search="handleSearch"
         :loading="loading"
         @download="handleDownload"
@@ -69,26 +68,33 @@ const handleDownload = async (data: object = {}) => {
             <tr>
               <th scope="col">ID</th>
               <th scope="col">Name</th>
-              <th scope="col">Member Card ID</th>
-              <th scope="col">Description</th>
-              <th scope="col">Date</th>
-              <th scope="col">Payment Type</th>
-              <th scope="col">Invoice Type</th>
-              <th scope="col">Amount</th>
+              <th scope="col">Created At</th>
+              <th scope="col">Update At</th>
             </tr>
           </thead>
           <tbody v-if="reports && !loading">
             <tr v-for="(report, key) in reports" :key="`report-${key}`">
               <td>{{ report.id }}</td>
-              <td>{{ `${report.first_name} ${report.last_name}` }}</td>
-              <td>{{ `${report.bar_code}` }}</td>
-              <td>{{ `${report.description}` }}</td>
+              <td>
+                {{
+                  `${report.name} ${report.second_name ?? ''} ${
+                    report.last_name
+                  }`
+                }}
+              </td>
               <td>
                 {{ moment(report.created_at).format('MM/DD/YYYY') }}
               </td>
-              <td>{{ report.payment_type }}</td>
-              <td>{{ report.invoice_type }}</td>
-              <td>{{ `$ ${report.amount}` }}</td>
+              <td>
+                {{ moment(report.updated_at).format('MM/DD/YYYY') }}
+              </td>
+            </tr>
+          </tbody>
+          <tbody v-if="reports.length < 1 && !loading">
+            <tr>
+              <td></td>
+              <td>No members</td>
+              <td></td>
             </tr>
           </tbody>
         </table>
