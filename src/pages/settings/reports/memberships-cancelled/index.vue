@@ -15,7 +15,7 @@ onMounted(() => {})
     <!-- Content Wrapper -->
     <div class="page-content-inner">
       <div class="columns is-multiline">
-        <membershipsReport />
+        <membershipsCancelledReport />
       </div>
     </div>
   </SidebarLayout>

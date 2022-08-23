@@ -38,6 +38,24 @@ const menu = ref([
     toName: 'settings-reports-stripe',
     icon: 'lnil lnil-gift-alt-1',
   },
+  {
+    name: 'Trainers Report',
+    subname: 'Trainers Report',
+    toName: 'settings-reports-trainers',
+    icon: 'lnil lnil-gift-alt-1',
+  },
+  {
+    name: 'Diciplines Report',
+    subname: 'Diciplines Report',
+    toName: 'settings-reports-diciplines',
+    icon: 'lnil lnil-gift-alt-1',
+  },
+  {
+    name: 'Memberships Report',
+    subname: 'Memberships Report',
+    toName: 'settings-reports-memberships',
+    icon: 'lnil lnil-gift-alt-1',
+  },
 ])
 </script>
 <template>

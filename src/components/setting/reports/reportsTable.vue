@@ -59,13 +59,17 @@ const handleDownload = async (data: object = {}) => {
         @download="handleDownload"
       />
     </div>
-    <div class="mt-4">
+    <div class="is-12 d-flex justify-content-end mt-5">
+      <p><strong>Total:</strong> {{ reports.length }}</p>
+    </div>
+    <div class="mt-1">
       <VLoader class="is-12" center size="small" :active="loading">
         <table class="table is-hoverable is-fullwidth">
           <thead>
             <tr>
               <th scope="col">ID</th>
               <th scope="col">Name</th>
+              <th scope="col">Member Card ID</th>
               <th scope="col">Description</th>
               <th scope="col">Date</th>
               <th scope="col">Payment Type</th>
@@ -77,6 +81,7 @@ const handleDownload = async (data: object = {}) => {
             <tr v-for="(report, key) in reports" :key="`report-${key}`">
               <td>{{ report.id }}</td>
               <td>{{ `${report.first_name} ${report.last_name}` }}</td>
+              <td>{{ `${report.bar_code}` }}</td>
               <td>{{ `${report.description}` }}</td>
               <td>
                 {{ moment(report.created_at).format('MM/DD/YYYY') }}
