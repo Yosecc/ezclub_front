@@ -35,6 +35,7 @@ export const addProduct = (product: any) => {
 
     if (cart.value[index].custom) {
       cart.value[index].products_amount = product.price
+      cart.value[index].name = product.name
     }
   }
 }
