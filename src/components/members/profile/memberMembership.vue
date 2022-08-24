@@ -109,10 +109,6 @@ const InputsDisponibles = computed(() => {
     return membershipsData.filter((e) => d.includes(e.name))
   }
 
-  console.log(
-    'membershipsData2',
-    membershipsData.findIndex((e) => e.name == 'prorrateo')
-  )
   return membershipsData
 })
 
@@ -430,6 +426,25 @@ const onClickSubscribeDebitAutomatic = () => {
           class="column is-8"
           :class="member.membership_members ? 'is-8' : 'is-12'"
         >
+          <div class="mb-4 column is-12" v-if="itentPayment">
+            <MemberCards
+              v-if="member.user"
+              @onMethodPayment="retryPayment"
+              :memberid="member.id"
+              :method_default="member.user.pm_last_four"
+              :show-new-card="false"
+              class="mb-4"
+              ancho="is-6"
+            >
+              <memberCheckoutCash
+                :total="member.subscription.total_invoice"
+                margin="mx-0"
+                class="is-4"
+                @onPaymentCash="paymentCash"
+              />
+            </MemberCards>
+          </div>
+
           <VCard
             style="position: sticky; top: 10px"
             class="mb-4 column is-12"
@@ -917,25 +932,6 @@ const onClickSubscribeDebitAutomatic = () => {
               </VCard>
             </div>
           </div>
-        </div>
-
-        <div class="mb-4 column is-12" v-if="itentPayment">
-          <MemberCards
-            v-if="member.user"
-            @onMethodPayment="retryPayment"
-            :memberid="member.id"
-            :method_default="member.user.pm_last_four"
-            :show-new-card="false"
-            class="mb-4"
-            ancho="is-4"
-          >
-            <memberCheckoutCash
-              :total="member.subscription.total_invoice"
-              margin="mx-0"
-              class="is-4"
-              @onPaymentCash="paymentCash"
-            />
-          </MemberCards>
         </div>
 
         <!-- Contract -->

@@ -1547,9 +1547,12 @@ export const sinMembresia = computed(() => {
 })
 
 const change_memberships_id = function (inputsStep: any) {
+  // alert('cambie')
   const membershipSelected = this.values.find(
     (element: any) => element.id == this.model
   )
+
+  getInput(inputsStep, 'recurrences_id').model = ''
 
   setInputModelData(
     inputsStep,
@@ -1682,6 +1685,9 @@ const click_diciplines = function (event: any, inputsStep: any, id: number) {
 
 const change_is_recurrence = function (inputsStep: any) {
   const memberships_id = getInput(inputsStep, 'memberships_id').model
+
+  getInput(inputsStep, 'recurrences_id').model = ''
+  getInput(inputsStep, 'memberships_id').model = ''
   if (memberships_id != '') {
     let is_recurrence = null
     if (!this.model) {

@@ -212,6 +212,10 @@ const mountMember = async () => {
               getInput(membershipsData, 'discount').model =
                 response.data[i][e].id
             }
+          } else if (e == 'status') {
+            if (response.data[i][e] == 2) {
+              getInput(membershipsData, 'memberships_id').model = ''
+            }
           } else {
             if (getInput(membershipsData, e) != undefined) {
               setInputModelData(membershipsData, e, response.data[i][e])
