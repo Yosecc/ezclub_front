@@ -212,6 +212,7 @@ const PaymentAction = (idMember) => {
             :categories-members="categoriesMembers"
             :notas-input="notasInput"
             :total="presupuesto.totales.upfront.amount_total"
+            :presupuesto="presupuesto"
             @PaymentAction="PaymentAction"
           />
         </div>

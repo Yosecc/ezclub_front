@@ -126,7 +126,7 @@ const handleSubmit = async (e) => {
 
     if (props.variosMiembros) {
       props.miembros.forEach((e) => {
-        Api.post('paymentStripe', {
+        let response = Api.post('paymentStripe', {
           payment_method,
           user_id: e.idMember,
           membership_member_id: e.idMemberMembership,
@@ -135,21 +135,32 @@ const handleSubmit = async (e) => {
           setLoading.value = false
         })
       })
+
+      response
+        .then((r) => {
+          console.log('addcard', r.data)
+          emit('PaymentAction', r.data)
+          notyf.success('Success Payment')
+        })
+        .catch((e) => {
+          setLoading.value = false
+        })
     } else {
-      const { data } = await Api.post('paymentStripe', {
+      await Api.post('paymentStripe', {
         payment_method,
         amount: props.amount,
         user_id: user_id.value,
         membership_member_id: props.member_membership,
         payment_type_id: 3,
-      }).catch((e) => {
-        setLoading.value = false
       })
-    }
-
-    if (data.value) {
-      emit('PaymentAction', data)
-      notyf.success('Success Payment')
+        .then((r) => {
+          console.log('addcard', r.data)
+          emit('PaymentAction', r.data)
+          notyf.success('Success Payment')
+        })
+        .catch((e) => {
+          setLoading.value = false
+        })
     }
 
     // console.log(data)
