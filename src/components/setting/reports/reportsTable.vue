@@ -60,7 +60,10 @@ const handleDownload = async (data: object = {}) => {
       />
     </div>
     <div class="is-12 d-flex justify-content-end mt-5">
-      <p><strong>Total:</strong> {{ reports.length }}</p>
+      <p>
+        <strong>Total:</strong>
+        {{ reports.total_amount }}
+      </p>
     </div>
     <div class="mt-1">
       <VLoader class="is-12" center size="small" :active="loading">
@@ -78,7 +81,7 @@ const handleDownload = async (data: object = {}) => {
             </tr>
           </thead>
           <tbody v-if="reports && !loading">
-            <tr v-for="(report, key) in reports" :key="`report-${key}`">
+            <tr v-for="(report, key) in reports.data" :key="`report-${key}`">
               <td>{{ report.id }}</td>
               <td>{{ `${report.first_name} ${report.last_name}` }}</td>
               <td>{{ `${report.bar_code}` }}</td>
