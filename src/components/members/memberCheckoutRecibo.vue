@@ -10,6 +10,10 @@ const props = defineProps({
     type: [Number, String],
     default: 0,
   },
+  invoice_id: {
+    type: [Number, String],
+    default: 0,
+  },
 })
 
 onMounted(() => {
@@ -56,14 +60,14 @@ const payment = () => {
       <!-- <iframe id="printf" :src="`${FRONTEND_URL}members/recibo?id=${props.membership_member}`"></iframe> -->
 
       <iframe
-        :src="`${API_WEB_URL}ticket_membership/${props.membership_member}?companie_id=${company.id}`"
+        :src="`${API_WEB_URL}ticket_membership/${props.membership_member}?companie_id=${company.id}&invoice_id=${props.invoice_id}`"
         width="100%"
         height="500px"
         frameborder="0"
       ></iframe>
 
       <a
-        :href="`${API_WEB_URL}/ticket_membership/${props.membership_member}?companie_id=${company.id}`"
+        :href="`${API_WEB_URL}ticket_membership/${props.membership_member}?companie_id=${company.id}&invoice_id=${props.invoice_id}`"
         >Open</a
       >
     </template>

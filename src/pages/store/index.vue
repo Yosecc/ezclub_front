@@ -86,8 +86,6 @@ onMounted(() => {
   }
 })
 
-import { posts } from '/@src/data/layouts/card-grid-v4'
-
 const filters = ref('')
 
 const filterCategorie = ref(null)
@@ -244,11 +242,34 @@ const searchCodeBar = () => {
               tag="div"
               class="columns is-multiline"
             >
-              <!--Grid item-->
+              <!--Grid istem-->
+              <div class="column is-2" v-if="false">
+                <a href="#" class="card-grid-item w-100">
+                  <img
+                    :src="`https://via.placeholder.com/400x300`"
+                    alt=""
+                    @error.once="
+                      $event.target.src = 'https://via.placeholder.com/400x300'
+                    "
+                  />
+                  <div class="card-grid-item-content">
+                    <h3 class="dark-inverted text-center">
+                      <h2 class="title is-6">Cualquiera</h2>
+                      <input type="text" class="input" placeholder="Price" />
+                    </h3>
+                  </div>
+                  <div class="card-grid-item-footer">
+                    <VButton color="white" class="w-100 justify-content-center">
+                      ADD
+                    </VButton>
+                  </div>
+                </a>
+              </div>
               <div
                 v-for="item in filteredData"
                 :key="item.id"
                 class="column is-2 d-flex"
+                :class="!item.custom ? 'is-2' : 'is-4'"
               >
                 <store-product-card :product="item" />
               </div>

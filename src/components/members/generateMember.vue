@@ -30,6 +30,10 @@ import {
 const emit = defineEmit(['PaymentAction'])
 
 const props = defineProps({
+  presupuesto: {
+    type: Object,
+    default: {},
+  },
   member: {
     type: Array,
     required: true,
@@ -129,7 +133,10 @@ const newMembership = () => {
 }
 
 const isMemberPayment = ref(false)
-const PaymentAction = (idMember) => {
+const PaymentAction = (data) => {
+  console.log('yy', data)
+  idMember.value = data.id
+  invoice_id.value = data.invoice_id
   isMemberPayment.value = true
   emit('PaymentAction', idMember)
 }
@@ -170,7 +177,7 @@ const onSign = (base64) => {
       // error.response.data
     })
 }
-
+const invoice_id = ref(0)
 const onPaymentCash = (obj) => {
   paymentMethod.value = 1
   if (idMemberMembership.value) {
@@ -180,10 +187,15 @@ const onPaymentCash = (obj) => {
       total: props.total,
       cash_back: obj.changeBack,
       membership_member_id: idMemberMembership.value,
+      presupuesto: props.presupuesto.membresias,
     }
     storePaymentCash(idMemberMembership.value, datos)
       .then((response) => {
-        PaymentAction(idMember.value)
+        console.log('cash', response)
+        PaymentAction({
+          id: response.data.member_id,
+          invoice_id: response.data.invoice_id,
+        })
         notyf.success('Success Payment')
       })
       .catch((error) => {
@@ -206,6 +218,7 @@ const subscribir = (payment_method) => {
     payment_type_id: 3,
   })
     .then((response) => {
+      invoice_id.value = response.data.invoice_id
       PaymentAction(idMember.value)
       notyf.success('Success')
       setLoading.value = false
@@ -281,6 +294,7 @@ const subscribir = (payment_method) => {
       <memberCheckoutRecibo
         v-if="idMemberMembership && isMemberPayment"
         :membership_member="idMemberMembership"
+        :invoice_id="invoice_id"
       />
     </div>
 
@@ -297,7 +311,7 @@ const subscribir = (payment_method) => {
       :amount="props.total"
       :id="idMember"
       :member_membership="idMemberMembership"
-      @PaymentAction="PaymentAction(idMember)"
+      @PaymentAction="PaymentAction"
     />
 
     <VCard color="success" class="my-6" v-if="isMemberPayment">

@@ -1,9 +1,47 @@
 import { ref, computed, reactive } from 'vue'
 import { Api } from '/@src/services'
-// import { notyf } from '/@src/models/Mixin.ts'
+import { getInput } from '/@src/models/Mixin.ts'
 
 export const products = ref([])
 export const total = ref(0)
+
+const objectProduct = reactive({
+  id: 'CUSTOM',
+  companies_id: 1,
+  name: '',
+  sku: '',
+  price: null,
+  retail_price: null,
+  taxes_id: 1,
+  aceptable_payment_types: 'All',
+  photo: '',
+  color: null,
+  size: null,
+  var_code: 'custom',
+  descriptions: null,
+  product_categories_id: 7,
+  user_id: 0,
+  stock: 1,
+  status: 'active',
+  stripe_id: '',
+  loading: false,
+  classe: 'primary',
+  category: {
+    id: 7,
+    companies_id: 1,
+    name: 'Miscellaneous',
+    description: 'Miscellaneous',
+    image: 'product_categories/misselaniuss.png',
+    status: 'active',
+  },
+  locations: [
+    {
+      id: 85,
+      locations_id: 1,
+      products_id: 88,
+    },
+  ],
+})
 
 export const getProducts = async (
   locations_id: number = null,
@@ -12,7 +50,21 @@ export const getProducts = async (
   const response = await Api.get(
     `products?locations_id=${locations_id}&status=${status}`
   )
-  products.value = response.data.products
+
+  const data = response.data.products.map(function (x) {
+    if (x.custom) {
+      x.price = ''
+      x.name = ''
+    }
+
+    return x
+  })
+
+  products.value = data
+
+  // objectProduct.custom = true
+  // products.value.push(objectProduct)
+
   total.value = response.data.total
   return response
 }
@@ -65,19 +117,41 @@ export const inputsProducts = ref([
   {
     typeInput: 'switch',
     name: 'status',
-    values: ['', 'Active'],
+    values: ['Inactive', 'Active'],
     placeholder: 'Status',
+    isLabel: true,
     model: true,
     default: true,
     // values:['active','inactive'],
-    class: 'is-6',
+    class: 'is-2',
+  },
+  {
+    typeInput: 'switchEventChangeInput',
+    name: 'custom',
+    values: ['NO', 'YES'],
+    placeholder: 'Price Custom',
+    isLabel: true,
+    model: false,
+    default: false,
+    class: 'is-2',
+    change: function () {
+      const value = !this.model
+
+      if (value) {
+        getInput(priceInputs.value, 'price').model = 1
+        getInput(priceInputs.value, 'price').typeInput = 'hidden'
+      } else {
+        getInput(priceInputs.value, 'price').model = null
+        getInput(priceInputs.value, 'price').typeInput = 'number'
+      }
+    },
   },
   {
     typeInput: 'file',
     name: 'photo',
     placeholder: 'Product Picture',
     model: '',
-    class: 'd-flex is-6 justify-content-end',
+    class: 'd-flex is-8 justify-content-end',
   },
   {
     typeInput: 'text',

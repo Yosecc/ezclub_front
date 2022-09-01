@@ -212,6 +212,10 @@ const mountMember = async () => {
               getInput(membershipsData, 'discount').model =
                 response.data[i][e].id
             }
+          } else if (e == 'status') {
+            if (response.data[i][e] == 2) {
+              getInput(membershipsData, 'memberships_id').model = ''
+            }
           } else {
             if (getInput(membershipsData, e) != undefined) {
               setInputModelData(membershipsData, e, response.data[i][e])
@@ -313,7 +317,7 @@ const reload = () => {
           <VPlaceload height="150px" />
         </div>
         <div class="columns is-multiline column is-12">
-          <VPlaceload height="420px" />
+          <VPlaceload height="530px" />
         </div>
       </div>
     </div>
@@ -321,6 +325,7 @@ const reload = () => {
     <div v-if="!isLoading && member" class="columns is-multiline">
       <div class="column is-3">
         <MemberProfileMenu
+          style="position: sticky; top: 10px"
           :category="member.category"
           @changeMenu="changeMenu"
           :class="status"

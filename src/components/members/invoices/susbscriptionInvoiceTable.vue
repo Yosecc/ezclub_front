@@ -80,7 +80,7 @@ onMounted(async () => {
               <!-- </td> -->
 
               <td>
-                {{ moment(invoice.created).format('MM/DD/YYYY') }}
+                {{ moment(invoice.updated_at).format('MM/DD/YYYY') }}
               </td>
               <td>{{ moneda(invoice.total / 100) }}</td>
               <td>{{ invoice.collection_method }}</td>

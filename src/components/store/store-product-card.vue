@@ -16,17 +16,30 @@ const props = defineProps({
 })
 
 onMounted(() => {})
+
+const onAddProduct = (product) => {
+  if (product.custom) {
+    addProduct(product)
+    product.price = null
+    product.name = ''
+  }
+}
 </script>
 
 <template>
-  <a href="#" @click.prevent="addProduct(product)" class="card-grid-item">
+  <a
+    href="#"
+    @click.prevent="!product.custom ? addProduct(product) : null"
+    class="card-grid-item"
+  >
     <img
       :src="`${API_WEB_URL}storage/${product.photo}`"
       alt=""
       @error.once="$event.target.src = 'https://via.placeholder.com/400x300'"
     />
+
     <div class="card-grid-item-content">
-      <h3 class="dark-inverted text-center">
+      <h3 v-if="!product.custom" class="dark-inverted text-center">
         <h2 class="title is-6">{{ product.name }}</h2>
         <h2 class="title is-5">{{ moneda(product.price) }}</h2>
         <p v-if="product.stock" class="is-7 title">
@@ -35,9 +48,29 @@ onMounted(() => {})
         <p v-else class="is-7 title">Stock: 0</p>
         <p>{{ product.category.name }}</p>
       </h3>
+
+      <div v-if="product.custom">
+        <p class="mb-3 text-center">Enter custom price</p>
+        <input
+          type="text"
+          class="input mb-3"
+          v-model="product.price"
+          placeholder="$0.00"
+        />
+        <input
+          type="text"
+          class="input"
+          v-model="product.name"
+          placeholder="Description"
+        />
+      </div>
     </div>
     <div class="card-grid-item-footer">
-      <VButton color="white" class="w-100 justify-content-center">
+      <VButton
+        @click.prevent="onAddProduct(product)"
+        color="white"
+        class="w-100 justify-content-center"
+      >
         ADD
       </VButton>
     </div>

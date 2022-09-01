@@ -1299,6 +1299,16 @@ export const putInformation = async (data: any) => {
   return response
 }
 
+export const subscribeDebitAutomatic = async (id) => {
+  const response = await Api.post(`members/subscribeDebitAutomatic/${id}`)
+  return response
+}
+
+export const sendEmailContractAndWaiver = async (id) => {
+  const response = await Api.post(`members/sendEmailContractAndWaiver/${id}`)
+  return response
+}
+
 export const putMembership = async (data: any) => {
   const response = await Api.post(
     `members/updateMembershipMember/${memberMermship.value.id}`,
@@ -1341,6 +1351,14 @@ export const cancelMembershipMembers = async () => {
 export const syncMembershipMembers = async () => {
   const response = await Api.post(
     `members/syncMembershipMember/${memberMermship.value.id}`
+  )
+  return response
+}
+
+export const updateMembershipMembers = async (id: number, data: any) => {
+  const response = await Api.post(
+    `members/update-membership-member/${id}`,
+    data
   )
   return response
 }
@@ -1529,9 +1547,12 @@ export const sinMembresia = computed(() => {
 })
 
 const change_memberships_id = function (inputsStep: any) {
+  // alert('cambie')
   const membershipSelected = this.values.find(
     (element: any) => element.id == this.model
   )
+
+  getInput(inputsStep, 'recurrences_id').model = ''
 
   setInputModelData(
     inputsStep,
@@ -1664,6 +1685,9 @@ const click_diciplines = function (event: any, inputsStep: any, id: number) {
 
 const change_is_recurrence = function (inputsStep: any) {
   const memberships_id = getInput(inputsStep, 'memberships_id').model
+
+  getInput(inputsStep, 'recurrences_id').model = ''
+  getInput(inputsStep, 'memberships_id').model = ''
   if (memberships_id != '') {
     let is_recurrence = null
     if (!this.model) {
