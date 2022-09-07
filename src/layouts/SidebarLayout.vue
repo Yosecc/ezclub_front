@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import type { PropType } from 'vue'
-import { defineProps, ref, watchEffect, watch } from 'vue'
+import { defineProps, ref, watchEffect, watch, computed } from 'vue'
 import { useRoute } from 'vue-router'
 
 import { activePanel } from '/@src/state/activePanelState'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
+
+import { PUBLIC_KEY_STRIPE } from '/@src/services/index.ts'
 
 type SidebarTheme =
   | 'default'
@@ -84,6 +86,17 @@ watch(
     }
   }
 )
+
+const validaCredenciales = computed(() => {
+  if (
+    PUBLIC_KEY_STRIPE.value.includes('pk_live') &&
+    (import.meta.env.VITE_MODE == 'development' ||
+      import.meta.env.VITE_MODE == 'staging')
+  ) {
+    return true
+  }
+  return false
+})
 </script>
 
 <template>
@@ -391,6 +404,12 @@ watch(
           <slot></slot>
         </template>
         <div v-else class="page-content is-relative">
+          <div v-if="validaCredenciales" class="w-100 bg-danger p-5">
+            <h2 class="title is-5">
+              Alert: You are on a development site using production credentials.
+            </h2>
+          </div>
+
           <div class="page-title has-text-centered">
             <div class="title-wrap">
               <h1 class="title is-4">{{ pageTitle }}</h1>
