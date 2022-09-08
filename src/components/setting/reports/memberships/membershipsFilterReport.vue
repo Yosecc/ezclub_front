@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { defineEmit, defineProps, onMounted } from 'vue'
-import { filterInsputsMembershipsReport } from '/@src/models/Reports'
+import { filterInputsMembershipsReport } from '/@src/models/Reports'
 import { perpareDataInputs, setInputValuesData } from '/@src/models/Mixin'
 import { getDiciplines } from '/@src/models/Diciplines'
 
@@ -13,7 +13,7 @@ const props = defineProps({
 onMounted(async () => {
   const data = await getDiciplines()
 
-  setInputValuesData(filterInsputsMembershipsReport, 'dicipline_id', data)
+  setInputValuesData(filterInputsMembershipsReport, 'dicipline_id', data)
 })
 
 const emit = defineEmit({
@@ -26,12 +26,12 @@ const emit = defineEmit({
 })
 
 const handleDownload = () => {
-  const data = perpareDataInputs(filterInsputsMembershipsReport.value)
+  const data = perpareDataInputs(filterInputsMembershipsReport.value)
   emit('download', data)
 }
 
 const handleSearch = () => {
-  const data = perpareDataInputs(filterInsputsMembershipsReport.value)
+  const data = perpareDataInputs(filterInputsMembershipsReport.value)
   emit('search', data)
 }
 </script>
@@ -42,10 +42,10 @@ const handleSearch = () => {
       >Download Excel</V-Button
     >
   </div> -->
-  <inputsLayaut :inputs-step="filterInsputsMembershipsReport" />
+  <inputsLayaut :inputs-step="filterInputsMembershipsReport" />
   <div class="is-12 d-flex justify-content-end">
     <V-Button color="primary" :loading="props.loading" @click="handleSearch">
-      Search Members
+      Search Memberships
     </V-Button>
   </div>
 </template>

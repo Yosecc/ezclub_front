@@ -225,13 +225,13 @@ export const filterInsputsDiciplineReport = ref([
   },
 ])
 
-export const filterInsputsMembershipsReport = ref([
+export const filterInputsMembershipsReport = ref([
   {
-    typeInput: 'selectData',
+    typeInput: 'select',
     name: 'status_id',
     label: 'Status',
     placeholder: 'Select Status',
-    values: ['cancel', 'active', 'due', 'hold'],
+    values: ['active', 'cancel', 'due', 'hold', 'status:0'],
     model: '',
     class: 'is-3',
     isLabel: true,
