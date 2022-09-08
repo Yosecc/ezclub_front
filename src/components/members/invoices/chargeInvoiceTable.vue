@@ -8,6 +8,7 @@ import {
   member,
   getListInvoices,
 } from '/@src/models/Members.ts'
+
 import { moneda } from '/@src/models/Mixin.ts'
 
 const invoices = reactive({
@@ -17,6 +18,7 @@ const invoices = reactive({
 const paymentsMemberchipMember = computed(() => {
   return memberMermship.value.payments
 })
+
 const paymentsMemberchipsHistory = computed(() => {
   let arr = []
   memberMembershipsHistory.value.forEach((element) => {
