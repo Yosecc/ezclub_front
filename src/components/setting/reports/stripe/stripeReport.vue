@@ -38,7 +38,7 @@ const handleReports = async (data: object = {}) => {
 
 <template>
   <VCard>
-    <stripeBalance v-if="reports.balance" :balance="reports.balance" />
+    <!-- <stripeBalance v-if="reports.balance" :balance="reports.balance" /> -->
     <div>
       <stripeFilterReport @search="handleSearch" :loading="loading" />
     </div>
