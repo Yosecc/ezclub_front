@@ -499,6 +499,7 @@ const onClickSubscribeDebitAutomatic = () => {
                     :member_id="member.id"
                     :membresia="presupuesto.membresia"
                     :contact="dataContact"
+                    :presupuesto="presupuesto"
                     :presupuesto_id="presupuesto.presupuesto_id"
                     :categories-members="categoriesMembers"
                     :notas-input="notasInput"

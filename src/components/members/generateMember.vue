@@ -189,6 +189,8 @@ const onPaymentCash = (obj) => {
       membership_member_id: idMemberMembership.value,
       presupuesto: props.presupuesto.membresias,
     }
+
+    console.log('datos', datos)
     storePaymentCash(idMemberMembership.value, datos)
       .then((response) => {
         console.log('cash', response)
