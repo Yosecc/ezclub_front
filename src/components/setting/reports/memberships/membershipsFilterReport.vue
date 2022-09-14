@@ -37,11 +37,11 @@ const handleSearch = () => {
 </script>
 
 <template>
-  <!-- <div class="is-12 d-flex justify-content-end">
+  <div class="is-12 d-flex justify-content-end">
     <V-Button color="primary" @click="handleDownload" :loading="props.loading"
       >Download Excel</V-Button
     >
-  </div> -->
+  </div>
   <inputsLayaut :inputs-step="filterInputsMembershipsReport" />
   <div class="is-12 d-flex justify-content-end">
     <V-Button color="primary" :loading="props.loading" @click="handleSearch">

@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { getMembershipReports, downloadReports } from '/@src/models/Reports'
+import {
+  getMembershipReports,
+  downloadMembershipReports,
+} from '/@src/models/Reports'
 import moment from 'moment'
 import VLoader from '../../../base/loader/V-Loader.vue'
 import { notyf } from '/@src/models/Mixin'
@@ -31,7 +34,7 @@ const handleReports = async (data: object = {}) => {
 const handleDownload = async (data: object = {}) => {
   loading.value = true
   try {
-    const response = await downloadReports({
+    const response = await downloadMembershipReports({
       ...data,
       report_export_type: 'memberships',
     })

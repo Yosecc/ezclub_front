@@ -78,6 +78,30 @@ export const getMembershipReports = async (data: object = {}) => {
   return response
 }
 
+export const downloadMembershipReports = async (data: object = {}) => {
+  const response = await Api.get(`reports/download/memberships`, {
+    params: data,
+    responseType: 'arraybuffer',
+  })
+  return response
+}
+
+export const downloadDisciplinesReports = async (data: object = {}) => {
+  const response = await Api.get(`reports/download/disciplines`, {
+    params: data,
+    responseType: 'arraybuffer',
+  })
+  return response
+}
+
+export const downloadTrainersReports = async (data: object = {}) => {
+  const response = await Api.get(`reports/download/trainers`, {
+    params: data,
+    responseType: 'arraybuffer',
+  })
+  return response
+}
+
 export const filterInsputs = ref([
   {
     typeInput: 'select',
