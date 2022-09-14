@@ -1,1 +1,0 @@
-import{d as s,o as a,h as o,L as d}from"./vendor.f12df2b6.js";var e=s({expose:[],props:{addons:{type:Boolean,default:!1}},setup(s){const e=s;return(s,t)=>(a(),o("div",{class:["tags",[e.addons&&"has-addons"]]},[d(s.$slots,"default")],2))}});export{e as _};
