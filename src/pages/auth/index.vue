@@ -32,12 +32,17 @@ const handleLogin = async () => {
     await Api.post('login', { email: email.value, password: password.value })
       .then((response) => {
         let user = response.data.user
-
+        console.log('Login', response)
         if (response.data.status) {
           isLoading.value = true
           setAuthStorage(user).then((response) => {
             notif.success(`Welcome back, ${user.name}`)
-            router.push({ name: 'index' })
+
+            if (cookies.get('locations_id')) {
+              router.push({ name: 'index' })
+            } else {
+              router.push({ name: 'selectlocation' })
+            }
             isLoading.value = false
           })
         }
@@ -51,7 +56,7 @@ const handleLogin = async () => {
 }
 
 onMounted(() => {
-  console.log(cookies.get('background'))
+  // console.log(cookies.get('background'))
   if (cookies.get('background') != null) {
     background.value = cookies.get('background')
   }

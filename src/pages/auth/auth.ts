@@ -41,21 +41,15 @@ const removeCookies = () => {
   cookies.remove('remember')
   cookies.remove('user')
   cookies.remove('x-api-key')
+  cookies.remove('locations_id')
 }
 
 export const setAuthStorage = async (response: any) => {
   removeCookies()
 
-  // if(!remember.value){
-  // 	sessionStorage.setItem('remember', remember.value)
-  // 	sessionStorage.setItem('user', JSON.stringify(response))
-  // 	sessionStorage.setItem('x-api-key',response.token)
-  // }
-  // if(remember.value){
   cookies.set('remember', remember.value)
   cookies.set('user', JSON.stringify(response))
   cookies.set('x-api-key', response.token)
-  // }
 
   user.value = await getUserStorage()
 

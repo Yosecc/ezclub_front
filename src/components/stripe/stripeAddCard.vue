@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, defineProps, watch, computed, defineEmit } from 'vue'
 import { PUBLIC_KEY_STRIPE } from '/@src/services'
+console.log(PUBLIC_KEY_STRIPE.value)
 const stripe = Stripe(PUBLIC_KEY_STRIPE.value)
 import { notyf } from '/@src/models/Mixin.ts'
 
