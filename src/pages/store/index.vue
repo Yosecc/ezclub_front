@@ -22,6 +22,7 @@ import {
   company,
   locationsActives,
   locationsSelect,
+  setLocationSistem,
 } from '/@src/models/Companies.ts'
 import {
   products,
@@ -43,6 +44,7 @@ const changeLocation = function (value) {
     value = this.model
   }
   locationInventory.value = value
+  setLocationSistem(value)
   getInventories(value).then((response) => {
     if (inventories.value.length > 0) {
       if (inventories.value[0].status == 1) {

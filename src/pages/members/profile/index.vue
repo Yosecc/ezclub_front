@@ -131,6 +131,7 @@ onMounted(() => {
   }
   getCompany().then((response) => {
     setInputValuesData(membershipsData, 'locations_id', locations.value)
+    setInputValuesData(membershipsData, 'locations', locations.value)
   })
   getAllConfig().then((response) => {
     setInputValuesData(inputsInformation, 'country_id', response.contries)
@@ -216,6 +217,14 @@ const mountMember = async () => {
             if (response.data[i][e] == 2) {
               getInput(membershipsData, 'memberships_id').model = ''
             }
+          } else if (e == 'locations') {
+            let arr = []
+            if (response.data[i][e].length) {
+              response.data[i][e].forEach((e) => {
+                arr.push(e.companies_locations_id)
+              })
+            }
+            getInput(membershipsData, 'locations').model = arr
           } else {
             if (getInput(membershipsData, e) != undefined) {
               setInputModelData(membershipsData, e, response.data[i][e])

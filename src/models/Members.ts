@@ -914,9 +914,20 @@ export const membershipsData = reactive([
     isLabel: true,
   },
   {
-    typeInput: 'selectDataActionChangeInput',
+    typeInput: 'hidden',
     name: 'locations_id',
     placeholder: 'Locations Sale',
+    required: false,
+    values: [],
+    model: '',
+    disabled: false,
+    class: 'is-4',
+    isLabel: true,
+  },
+  {
+    typeInput: 'checkboxGroupSimple',
+    name: 'locations',
+    placeholder: 'Locations access',
     required: true,
     values: [],
     model: '',
@@ -1567,6 +1578,7 @@ const change_memberships_id = function (inputsStep: any) {
     }
   })
   setInputValuesData(inputsStep, 'locations_id', locations)
+  setInputValuesData(inputsStep, 'locations', locations)
   let is_recurrence = 1
   if (!getInput(inputsStep, 'recurrence').model) {
     is_recurrence = 0
@@ -1710,6 +1722,7 @@ export const setInputsEvents = (inputs: any) => {
   getInput(inputs, 'memberships_id').change = change_memberships_id
   getInput(inputs, 'recurrences_id').change = change_recurrences_id
   getInput(inputs, 'locations_id').change = change_locations_id
+  getInput(inputs, 'locations').change = change_locations_id
   getInput(inputs, 'discount').change = change_discount
   getInput(inputs, 'discount').filter = filter_discount
   getInput(inputs, 'staff_id').filter = filterOptionText_staff_id
