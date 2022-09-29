@@ -82,7 +82,7 @@ onMounted(() => {
   })
 })
 
-const stepActive = ref(4)
+const stepActive = ref(1)
 
 const steps = ref([
   {
