@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { getStripeReportsDue, downloadReports } from '/@src/models/Reports'
+import {
+  getStripeReportsDue,
+  downloadReports,
+  payStripeInvoice,
+} from '/@src/models/Reports'
 import moment from 'moment'
 import VLoader from '../../../base/loader/V-Loader.vue'
 import { notyf } from '/@src/models/Mixin'
@@ -8,6 +12,7 @@ import VButton from '/@src/components/base/button/V-Button.vue'
 
 const reports = ref([])
 const loading = ref(false)
+const loadingPayButton = ref(false)
 
 onMounted(async () => {
   handleReports()
@@ -29,8 +34,18 @@ const handleReports = async (data: object = {}) => {
   }
 }
 
-const payInvoice = (invoiceID: string) => {
-  console.log(invoiceID)
+const payInvoice = async (invoiceID: string) => {
+  loadingPayButton.value = true
+
+  try {
+    await payStripeInvoice(invoiceID)
+    notyf.success('Success')
+    handleReports()
+  } catch (error) {
+    notyf.error(error.message)
+  } finally {
+    loadingPayButton.value = false
+  }
 }
 </script>
 
@@ -66,6 +81,7 @@ const payInvoice = (invoiceID: string) => {
                   color="primary"
                   @click="payInvoice(transaction.id)"
                   outlined
+                  :loading="loadingPayButton"
                 >
                   Pay
                 </VButton>

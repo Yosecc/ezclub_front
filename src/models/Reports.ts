@@ -102,6 +102,10 @@ export const downloadTrainersReports = async (data: object = {}) => {
   return response
 }
 
+export const payStripeInvoice = async (id: string) => {
+  return await Api.post(`pay-invoice-stripe-by-id/${id}`)
+}
+
 export const filterInsputs = ref([
   {
     typeInput: 'select',
