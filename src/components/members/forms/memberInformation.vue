@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, defineProps, defineEmit, onMounted, watch } from 'vue'
-import { perpareDataInputs, hasErrors } from '/@src/models/Mixin.ts'
+import { perpareDataInputs, hasErrors, getInput } from '/@src/models/Mixin.ts'
 import { dataInformationMember, buttonsDisabled } from '/@src/models/Members.ts'
 
 const props = defineProps({
@@ -35,11 +35,19 @@ const reloadForm = () => {
 }
 
 const inputsSteps = computed(() => {
-  if (isCompany.value) {
-    return props.inputs.filter((input) => input.typeMember.includes('Company'))
+  const data = props.inputs
+  // console.log('data',data)
+  if (data.length) {
+    // console.log('d', getInput(data,'country_id'))
+    getInput(data, 'country_id').model = 34
   }
 
-  return props.inputs.filter((input) => input.typeMember.includes('Individual'))
+  console.log('data', data)
+  if (isCompany.value) {
+    return data.filter((input) => input.typeMember.includes('Company'))
+  }
+
+  return data.filter((input) => input.typeMember.includes('Individual'))
 })
 
 const isCompany = ref(false)
@@ -68,7 +76,7 @@ const emit = defineEmit(['changeStep', 'returData'])
   <formLayaut
     :titles="{ title: title }"
     :is-loading="isLoading"
-    :buttons="['next', 'back']"
+    :buttons="['next']"
     :buttons-disabled="buttonsDisabled"
     :step="1"
     @changeStep="change"

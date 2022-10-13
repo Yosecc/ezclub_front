@@ -192,7 +192,7 @@ const cambiarColor = (color) => {
             alt=""
           />
         </RouterLink>
-        <label class="dark-mode ml-auto">
+        <!-- <label class="dark-mode ml-auto">
           <input
             type="checkbox"
             :checked="!isDark"
@@ -203,7 +203,7 @@ const cambiarColor = (color) => {
             "
           />
           <span></span>
-        </label>
+        </label> -->
         <div class="is-form">
           <div class="hero-body">
             <div class="form-text">
@@ -273,7 +273,7 @@ const cambiarColor = (color) => {
                   </span>
                 </label>
                 <div class="remember-me">Remember Me</div>
-                <a @click="step = 'forgot-password'">Forgot Password?</a>
+                <!-- <a @click="step = 'forgot-password'">Forgot Password?</a> -->
               </div>
               <div class="button-wrap has-help">
                 <V-Button
@@ -286,13 +286,13 @@ const cambiarColor = (color) => {
                 >
                   Confirm
                 </V-Button>
-                <span>
+                <!-- <span>
                   Or
                   <RouterLink :to="{ name: 'auth-register' }">
                     Create
                   </RouterLink>
                   an account.
-                </span>
+                </span> -->
               </div>
             </form>
 

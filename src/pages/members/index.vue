@@ -92,15 +92,42 @@ const reloadForm = () => {
 
 const statusSelect = ref('All')
 const estados = ref([
-  'All',
-  'active',
-  'due',
-  'expired',
-  'sincard',
-  'sin_factura',
-  'nomembershipcontarjeta',
-  'cancel',
-  'nomembership',
+  {
+    value: 'All',
+    name: 'All',
+  },
+  {
+    value: 'active',
+    name: 'Active',
+  },
+  {
+    value: 'due',
+    name: 'Due',
+  },
+  {
+    value: 'expired',
+    name: 'Expired',
+  },
+  {
+    value: 'sincard',
+    name: 'No card',
+  },
+  {
+    value: 'sin_factura',
+    name: 'No invoice',
+  },
+  {
+    value: 'nomembershipcontarjeta',
+    name: 'Without membership, with card',
+  },
+  {
+    value: 'cancel',
+    name: 'Cancel',
+  },
+  {
+    value: 'nomembership',
+    name: 'No membership',
+  },
 ])
 
 const changeStado = () => {
@@ -128,9 +155,9 @@ const changeStado = () => {
                   <option
                     v-for="(item, key) in estados"
                     :key="`estados-${key}`"
-                    :value="item"
+                    :value="item.value"
                   >
-                    {{ item }}
+                    {{ item.name }}
                   </option>
                 </select>
               </div>

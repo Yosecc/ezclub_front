@@ -32,7 +32,7 @@ export const idMemberPrincipal = ref(null)
 export const presupuestos = ref([])
 export const categoriesMembers = ref({
   name: 'category',
-  values: ['Adult', 'Minor', 'Prospect'],
+  values: ['Adult', 'Minor'],
   model: 'Adult',
   required: true,
 })
@@ -162,7 +162,7 @@ export const namesValidate = function (event, input) {
 
 export const inputsInformation = ref([
   {
-    typeInput: 'switchEventChangeInput',
+    typeInput: 'hidden',
     name: 'select_type',
     values: ['Individual', 'Company'],
     model: false,
@@ -459,7 +459,8 @@ export const inputsInformation = ref([
   {
     typeInput: 'switch',
     name: 'leo_vet_fr',
-    values: ['', 'LEO / VET / FR'],
+    values: ['', 'LAW ENFORCEMENT OFFICER'],
+    html: '<div class="ml-4"><p><small>VETERAN</small></p><p><small>FIRTS RESPONDER</small></p></div>',
     model: false,
     default: false,
     required: false,
@@ -648,7 +649,7 @@ const familyData = ref([
     category: ['Adult'],
   },
   {
-    typeInput: 'number',
+    typeInput: 'text',
     typeInputDefault: 'number',
     name: 'personal_identifications',
     placeholder: 'ID #',
@@ -723,11 +724,11 @@ const familyData = ref([
     typeInputDefault: 'selectData',
     name: 'country_id',
     placeholder: 'Country',
-    model: '',
-    values: [''],
+    model: 34,
+    values: [],
     class: 'is-3',
     isLabel: true,
-    required: true,
+    required: false,
     category: ['Adult'],
     typeMember: ['Individual', 'Company'],
   },
@@ -758,7 +759,8 @@ const familyData = ref([
     typeInput: 'checkbox',
     typeInputDefault: 'checkbox',
     name: 'leo_vet_fr',
-    placeholder: 'LEO / VET / FR',
+    placeholder: 'LAW ENFORCEMENT OFFICER',
+    html: '<p>Lorem</p>',
     model: [],
     required: false,
     class: 'is-6',
@@ -871,7 +873,7 @@ export const membershipsData = reactive([
   {
     typeInput: 'switchEventChangeInput',
     name: 'recurrence',
-    values: ['', 'Recurrence'],
+    values: ['Temporary', 'Subscription'],
     placeholder: 'Recurrence',
     model: true,
     disabled: false,
@@ -1092,7 +1094,7 @@ export const parentInsputs = ref([
     required: true,
   },
   {
-    typeInput: 'number',
+    typeInput: 'text',
     name: 'parent_personal_identifications',
     placeholder: 'ID #',
     model: '',
