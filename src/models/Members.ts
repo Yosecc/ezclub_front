@@ -948,7 +948,7 @@ export const membershipsData = reactive([
     data: null,
     model: '',
     disabled: false,
-    class: 'is-6',
+    class: 'is-3',
     isLabel: true,
   },
   {
@@ -973,7 +973,17 @@ export const membershipsData = reactive([
     class: 'is-3',
     isLabel: true,
   },
-
+  {
+    typeInput: 'switchEventChangeInput',
+    default: false,
+    name: 'is_last_month',
+    placeholder: 'Last Month',
+    values: ['NO', 'YES'],
+    model: false,
+    disabled: false,
+    class: 'is-3',
+    isLabel: true,
+  },
   {
     typeInput: 'DropdownCheckbox',
     name: 'staff_id',
@@ -1826,6 +1836,8 @@ export const generaPresupuesto = async (membresia: any, member: any) => {
     ...Objectforthebudget(membresia),
   }
 
+  data.is_last_month = getInput(membresia, 'is_last_month').model
+
   if (categorieActive.value == 'Minor') {
     data.email = getInput(parentInsputs.value, 'parent_email')
       ? getInput(parentInsputs.value, 'parent_email').model
@@ -1847,7 +1859,7 @@ export const generaPresupuesto = async (membresia: any, member: any) => {
   if (getInput(membresia, 'schedules') != undefined) {
     data.schedules = getInput(membresia, 'schedules').model
   }
-  console.log(data)
+  // console.log(data)
   const response = await getPresupuesto(data)
     .then((response) => {
       presupuestos.value.push({

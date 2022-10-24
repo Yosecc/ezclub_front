@@ -105,7 +105,13 @@ const InputsDisponibles = computed(() => {
     memberMermship.value &&
     memberMermship.value.status == 1
   ) {
-    let d = ['locations_id', 'diciplines', 'staff_id', 'discount']
+    let d = [
+      'locations_id',
+      'diciplines',
+      'staff_id',
+      'discount',
+      'is_last_month',
+    ]
     return membershipsData.filter((e) => d.includes(e.name))
   }
 
