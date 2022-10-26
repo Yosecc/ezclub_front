@@ -37,7 +37,7 @@ const reloadForm = () => {
 const inputsSteps = computed(() => {
   const data = props.inputs
   // console.log('data',data)
-  if (data.length) {
+  if (data.length && getInput(data, 'country_id') != undefined) {
     // console.log('d', getInput(data,'country_id'))
     getInput(data, 'country_id').model = 34
   }
