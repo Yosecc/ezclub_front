@@ -192,7 +192,7 @@ const cambiarColor = (color) => {
             alt=""
           />
         </RouterLink>
-        <!-- <label class="dark-mode ml-auto">
+        <label class="dark-mode ml-auto">
           <input
             type="checkbox"
             :checked="!isDark"
@@ -203,7 +203,7 @@ const cambiarColor = (color) => {
             "
           />
           <span></span>
-        </label> -->
+        </label>
         <div class="is-form">
           <div class="hero-body">
             <div class="form-text">
