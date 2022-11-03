@@ -128,6 +128,10 @@ const estados = ref([
     value: 'nomembership',
     name: 'No membership',
   },
+  {
+    value: 'schedules',
+    name: 'Schedules',
+  },
 ])
 
 const changeStado = () => {
