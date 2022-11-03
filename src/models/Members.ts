@@ -345,7 +345,7 @@ export const inputsInformation = ref([
     typeMember: ['Individual', 'Company'],
   },
   {
-    typeInput: 'keyInput',
+    typeInput: 'text',
     name: 'city_id',
     placeholder: 'City',
     value: '',
@@ -358,26 +358,26 @@ export const inputsInformation = ref([
     isLabel: true,
     categories: ['Adult', 'Prospect'],
     typeMember: ['Individual', 'Company'],
-    keyUp: function (event, input) {
-      if (input.values.length) {
-        input.valuesCalculated = input.values.filter((e) =>
-          e.name.match(new RegExp(input.value, 'i'))
-        )
-      }
-      if (input.valuesCalculated.length && input.value != '') {
-        input.showList = true
-      } else {
-        input.showList = false
-      }
-      if (event.keyCode == 40 && input.values.length) {
-        input.showList = true
-        document[`form-list-${input.name}`][`form-select-${input.name}`].focus()
-      }
-      if (input.value == '') {
-        input.showList = false
-        input.model = ''
-      }
-    },
+    // keyUp: function (event, input) {
+    //   if (input.values.length) {
+    //     input.valuesCalculated = input.values.filter((e) =>
+    //       e.name.match(new RegExp(input.value, 'i'))
+    //     )
+    //   }
+    //   if (input.valuesCalculated.length && input.value != '') {
+    //     input.showList = true
+    //   } else {
+    //     input.showList = false
+    //   }
+    //   if (event.keyCode == 40 && input.values.length) {
+    //     input.showList = true
+    //     document[`form-list-${input.name}`][`form-select-${input.name}`].focus()
+    //   }
+    //   if (input.value == '') {
+    //     input.showList = false
+    //     input.model = ''
+    //   }
+    // },
     selectOption: function (event, input) {
       // if(event.code == 'Enter'){
       input.value = input.values.find((e) => e.id == event.target.value).name
@@ -385,9 +385,9 @@ export const inputsInformation = ref([
       input.showList = false
       // }
     },
-    keyUpEnter: function (event, input) {
-      input.showList = true
-    },
+    // keyUpEnter: function (event, input) {
+    //   input.showList = true
+    // },
   },
   {
     typeInput: 'selectData',
@@ -420,6 +420,7 @@ export const inputsInformation = ref([
     name: 'country_id',
     placeholder: 'Country',
     model: 'US',
+    disabled: true,
     required: true,
     values: [''],
     class: 'is-3',
