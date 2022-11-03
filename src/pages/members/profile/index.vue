@@ -371,7 +371,20 @@ const reload = () => {
               <p>
                 <b>Membership Active:</b> {{ memberMermship.membership.name }}
               </p>
-              <p>
+              <p
+                v-if="
+                  member.subscription &&
+                  member.subscription.status == 'schedules'
+                "
+              >
+                <b>Schedules: </b>
+                {{
+                  moment(member.membership_members.schedules).format(
+                    'ddd - DD MMM YYYY'
+                  )
+                }}
+              </p>
+              <p v-else>
                 <b>Due Date: </b>
                 {{
                   moment(member.subscription.proxima_factura).format(

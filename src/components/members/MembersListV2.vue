@@ -290,6 +290,18 @@ watch(
                     color="danger"
                   />
 
+                  <VTag
+                    v-if="
+                      item.membership_members &&
+                      item.membership_members.schedules
+                    "
+                    :label="`${moment(item.membership_members.schedules).format(
+                      'MM-DD-YYYY'
+                    )}`"
+                    class="mr-1"
+                    color=""
+                  />
+
                   <div
                     class="mr-1"
                     v-if="
