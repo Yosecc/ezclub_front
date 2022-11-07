@@ -43,6 +43,8 @@ import {
 import { Api, API_WEB_URL } from '/@src/services'
 import { recurrences } from '/@src/models/Recurrences.ts'
 
+import { locationSistemID } from '/@src/models/Companies.ts'
+
 const emit = defineEmit(['reload'])
 
 const props = defineProps({})
@@ -112,6 +114,14 @@ const InputsDisponibles = computed(() => {
       'discount',
       'is_last_month',
     ]
+
+    if (
+      locationFacturacion.value &&
+      locationSistemID.value == locationFacturacion.value.id
+    ) {
+      d.push('discount')
+    }
+
     return membershipsData.filter((e) => d.includes(e.name))
   }
 
@@ -364,6 +374,13 @@ const onClickSubscribeDebitAutomatic = () => {
       emit('reload')
     })
 }
+
+const locationFacturacion = computed(() => {
+  if (member.value.user && member.value.user.location_facturacion) {
+    return member.value.user.location_facturacion
+  }
+  return null
+})
 </script>
 
 <template>
@@ -375,6 +392,7 @@ const onClickSubscribeDebitAutomatic = () => {
       </div>
     </template>
     <template #content>
+      <!-- <p>{{ locationSistemID }}/ {{ locationFacturacion }}</p> -->
       <div class="columns is-multiline justify-content-center">
         <div
           v-if="member && memberMermship && memberMermship.status == 1"
@@ -392,7 +410,15 @@ const onClickSubscribeDebitAutomatic = () => {
             "
           >
             <span>
-              <p><small>Membership</small></p>
+              <p>
+                <small
+                  >Membership:
+                  <small v-if="member.user && member.user.location_facturacion"
+                    >Current billing location:
+                    <b>{{ member.user.location_facturacion.name }}</b></small
+                  ></small
+                >
+              </p>
               <p class="title is-4 mb-0">
                 {{ memberMermship.membership.name }}
               </p>
@@ -522,423 +548,442 @@ const onClickSubscribeDebitAutomatic = () => {
             </div>
           </div>
         </div>
-        <div class="column is-4" v-if="member.membership_members">
-          <div style="position: sticky; top: 10px" class="columns is-multiline">
+
+        <div
+          class="column is-4"
+          v-if="
+            locationFacturacion && locationSistemID == locationFacturacion.id
+          "
+        >
+          <div v-if="member.membership_members">
             <div
-              v-if="member && memberMermship && memberMermship.status == 1"
-              class="column is-6"
+              style="position: sticky; top: 10px"
+              class="columns is-multiline"
             >
-              <VLoader
-                v-if="
-                  member.membership_members &&
-                  member.membership_members.is_recurrence
-                "
-                size="small"
-                class="h-100"
-                :active="isLoaderActive"
+              <div
+                v-if="member && memberMermship && memberMermship.status == 1"
+                class="column is-6"
               >
-                <VCard
-                  color="warning"
-                  :outlined="
-                    memberMermship.hold_date_finish != null ? false : true
+                <VLoader
+                  v-if="
+                    member.membership_members &&
+                    member.membership_members.is_recurrence
                   "
-                  v-if="memberMermship && member.subscription"
-                  @click="onClickHold"
-                  class="
-                    mr-4
-                    btn-card
-                    text-center
-                    h-100
-                    px-2
-                    d-flex
-                    align-items-center
-                    justify-content-center
-                  "
-                  style="font-size: 12px"
+                  size="small"
+                  class="h-100"
+                  :active="isLoaderActive"
                 >
-                  <p><b>HOLD Membership</b></p>
-                  <p>
-                    <span v-if="memberMermship.hold_date_finish != null"
-                      >Active until:
-                      {{
-                        moment(memberMermship.hold_date_finish).format(
-                          'MM/DD/YYYY'
-                        )
-                      }}</span
-                    >
-                  </p>
-                </VCard>
-              </VLoader>
-              <V-Modal
-                :open="modalShowHold"
-                actions="center"
-                @close="modalShowHold = false"
-              >
-                <template #content>
-                  <p>
-                    Hold end date last day of the month prior to the end of the
-                    hold
-                  </p>
-                  <input type="date" v-model="fecha" class="input mt-4" />
-                </template>
-                <template #action>
-                  <V-Button @click="onHold" color="primary" raised
-                    >Confirm</V-Button
+                  <VCard
+                    color="warning"
+                    :outlined="
+                      memberMermship.hold_date_finish != null ? false : true
+                    "
+                    v-if="memberMermship && member.subscription"
+                    @click="onClickHold"
+                    class="
+                      mr-4
+                      btn-card
+                      text-center
+                      h-100
+                      px-2
+                      d-flex
+                      align-items-center
+                      justify-content-center
+                    "
+                    style="font-size: 12px"
                   >
-                </template>
-              </V-Modal>
-              <V-Modal
-                :open="modalShowProrratedHold"
-                actions="center"
-                @close="modalShowProrratedHold = false"
-              >
-                <template #content>
-                  <p>
-                    Do you want to create an invoice with the prorated amount?
-                  </p>
-                  <inputsLayaut :inputs-step="isProrrateoHold" />
-
-                  <table class="table w-100" v-if="presupuestoProrrateo.total">
-                    <tr>
-                      <td>
-                        Subtotal ({{ presupuestoProrrateo.dias_restantes }}
-                        days)
-                      </td>
-                      <td>{{ moneda(presupuestoProrrateo.subtotal) }}</td>
-                    </tr>
-                    <tr>
-                      <td>Tax</td>
-                      <td>{{ moneda(presupuestoProrrateo.tax) }}</td>
-                    </tr>
-                    <tr>
-                      <td>Total</td>
-                      <td>{{ moneda(presupuestoProrrateo.total) }}</td>
-                    </tr>
-                  </table>
-                </template>
-                <template #action>
-                  <V-Button @click="onHold" color="primary" raised
-                    >Confirm</V-Button
-                  >
-                </template>
-              </V-Modal>
-            </div>
-
-            <div
-              v-if="member && memberMermship && memberMermship.status == 1"
-              class="column is-6"
-            >
-              <VLoader
-                v-if="
-                  member.membership_members &&
-                  member.membership_members.is_recurrence
-                "
-                size="small"
-                class="h-100"
-                :active="isLoaderActive"
-              >
-                <VCard
-                  color="undefined"
-                  style="font-size: 12px"
-                  :style="
-                    member.subscription.pause_collection == null
-                      ? {}
-                      : { backgroundColor: '#404046' }
-                  "
-                  :outlined="
-                    member.subscription.pause_collection != null ? false : true
-                  "
-                  v-if="memberMermship && member.subscription"
-                  @click="onClickPause"
-                  class="
-                    mr-4
-                    btn-card
-                    text-center
-                    px-2
-                    h-100
-                    d-flex
-                    align-items-center
-                    justify-content-center
-                  "
-                >
-                  <p><b>Pause Payment</b></p>
-                  <p>
-                    <span v-if="member.subscription.pause_collection != null"
-                      >Active until:
-                      {{
-                        moment(member.subscription.pause_collection).format(
-                          'MM-DD-YYYY'
-                        )
-                      }}</span
-                    >
-                  </p>
-                </VCard>
-              </VLoader>
-              <V-Modal
-                :open="centeredActionsOpen"
-                actions="center"
-                @close="centeredActionsOpen = false"
-              >
-                <template #content>
-                  <input type="date" v-model="fecha" class="input" />
-                </template>
-                <template #action>
-                  <V-Button @click="onPause" color="primary" raised
-                    >Confirm</V-Button
-                  >
-                </template>
-              </V-Modal>
-            </div>
-
-            <div
-              v-if="member && memberMermship && memberMermship.status == 1"
-              class="column is-6"
-            >
-              <VLoader class="h-100" size="small" :active="isLoaderActive">
-                <VCard
-                  color="danger"
-                  v-if="memberMermship"
-                  outlined
-                  @click="onCancel"
-                  class="
-                    mr-4
-                    btn-card
-                    text-center
-                    px-2
-                    h-100
-                    d-flex
-                    align-items-center
-                    justify-content-center
-                  "
-                  style="font-size: 12px"
-                >
-                  <p><b>Cancel Membership</b></p>
-                </VCard>
-              </VLoader>
-            </div>
-
-            <div
-              v-if="member && memberMermship && memberMermship.status == 1"
-              class="column is-6"
-            >
-              <VLoader size="small" class="h-100" :active="isLoaderActive">
-                <VCard
-                  color="success"
-                  v-if="memberMermship"
-                  outlined
-                  @click="itentPayment = !itentPayment"
-                  class="
-                    mr-4
-                    btn-card
-                    text-center
-                    px-2
-                    h-100
-                    d-flex
-                    align-items-center
-                    justify-content-center
-                  "
-                  style="font-size: 12px"
-                >
-                  <p><b>Payment Now</b></p>
-                </VCard>
-              </VLoader>
-            </div>
-
-            <div v-if="member && memberMermship" class="column is-6">
-              <VLoader
-                v-if="
-                  member.membership_members &&
-                  member.membership_members.is_recurrence
-                "
-                size="small"
-                :active="isLoaderActive"
-                class="h-100"
-              >
-                <VCard
-                  color="secondary"
-                  v-if="memberMermship"
-                  outlined
-                  @click="onaddPenalty"
-                  class="
-                    mr-4
-                    btn-card
-                    text-center
-                    px-2
-                    h-100
-                    d-flex
-                    align-items-center
-                    justify-content-center
-                  "
-                  style="font-size: 12px"
-                >
-                  <p><b>Pay Late Fee</b></p>
-                </VCard>
-              </VLoader>
-            </div>
-
-            <div v-if="member && memberMermship" class="column is-6">
-              <VLoader
-                v-if="
-                  member.membership_members &&
-                  member.membership_members.is_recurrence
-                "
-                size="small"
-                :active="isLoaderActive"
-                class="h-100"
-              >
-                <VCard
-                  :color="undefined"
-                  v-if="memberMermship"
-                  outlined
-                  @click="onsyncStripeResource"
-                  class="
-                    mr-4
-                    btn-card
-                    text-center
-                    px-2
-                    h-100
-                    d-flex
-                    align-items-center
-                    justify-content-center
-                  "
-                  style="font-size: 12px"
-                >
-                  <p><b>Sync Subscription</b></p>
-                </VCard>
-              </VLoader>
-            </div>
-
-            <div class="column is-6">
-              <VLoader
-                class="w-100 h-100"
-                v-if="
-                  member.membership_members &&
-                  member.membership_members.is_recurrence
-                "
-                size="small"
-                :active="isLoaderActive"
-              >
-                <VCard
-                  color="info"
-                  :outlined="true"
-                  v-if="memberMermship && member.subscription"
-                  @click="onClickSendEmail"
-                  class="
-                    mr-4
-                    btn-card
-                    text-center
-                    px-2
-                    h-100
-                    d-flex
-                    align-items-center
-                    justify-content-center
-                  "
-                  style="font-size: 12px"
-                >
-                  <p><b>Send Email: Contract and Waiver</b></p>
-                </VCard>
-              </VLoader>
-            </div>
-
-            <div class="column is-6">
-              <VLoader
-                class="w-100 h-100"
-                v-if="
-                  member.membership_members &&
-                  member.membership_members.is_recurrence
-                "
-                size="small"
-                :active="isLoaderActive"
-              >
-                <VCard
-                  color="success"
-                  :outlined="true"
-                  v-if="memberMermship && member.subscription"
-                  @click="onClickSubscribeDebitAutomatic"
-                  class="
-                    mr-4
-                    btn-card
-                    text-center
-                    px-2
-                    h-100
-                    d-flex
-                    align-items-center
-                    justify-content-center
-                  "
-                  style="font-size: 12px"
-                >
-                  <p><b>Subscribe Debit Automatic</b></p>
-                </VCard>
-              </VLoader>
-            </div>
-
-            <div class="column is-6 mb-6">
-              <UpdateSubscription
-                v-if="member && memberMermship"
-                :member="member"
-                :member-mermship="memberMermship"
-                :is-loader-active="isLoaderActive"
-              />
-            </div>
-
-            <!-- WAIVER -->
-            <div class="column is-12">
-              <VCard class="mb-4 w-100" v-if="member && memberMermship">
-                <h1 class="title is-6">Active Waiver Information</h1>
-                <div class="text-center">
-                  <a
-                    target="_blank"
-                    :href="`${API_WEB_URL}generateWeiver/${member.id}`"
-                    class="d-flex justify-content-start align-items-center"
-                  >
-                    <img
-                      src="/public/images/pdf_icon.png"
-                      class="mr-3"
-                      width="40"
-                      alt=""
-                    />
+                    <p><b>HOLD Membership</b></p>
                     <p>
-                      weiver_{{ member.id }}_{{
-                        member.membership_members.id
-                      }}_{{ member.personal_identifications }}.pdf
+                      <span v-if="memberMermship.hold_date_finish != null"
+                        >Active until:
+                        {{
+                          moment(memberMermship.hold_date_finish).format(
+                            'MM/DD/YYYY'
+                          )
+                        }}</span
+                      >
                     </p>
-                    <!-- <V-Button color="success" outlined class="mt-4 py-1">
-                      View PDF
-                    </V-Button> -->
-                  </a>
-                </div>
-              </VCard>
-            </div>
-
-            <!-- Contract -->
-            <div class="column is-12">
-              <VCard class="mb-4 w-100" v-if="member && memberMermship">
-                <h1 class="title is-6">Active Contract Information</h1>
-                <div class="text-center">
-                  <a
-                    target="_blank"
-                    :href="`${API_WEB_URL}generateContract/${member.id}`"
-                    class="d-flex justify-content-start align-items-center"
-                  >
-                    <img
-                      src="/public/images/pdf_icon.png"
-                      class="mr-3"
-                      width="40"
-                      alt=""
-                    />
+                  </VCard>
+                </VLoader>
+                <V-Modal
+                  :open="modalShowHold"
+                  actions="center"
+                  @close="modalShowHold = false"
+                >
+                  <template #content>
                     <p>
-                      contract_{{ member.id }}_{{
-                        member.membership_members.id
-                      }}_{{ member.personal_identifications }}.pdf
+                      Hold end date last day of the month prior to the end of
+                      the hold
                     </p>
-                    <!--  <V-Button color="success" outlined class="mt-4 py-1">
-                      View PDF
-                    </V-Button> -->
-                  </a>
-                </div>
-              </VCard>
+                    <input type="date" v-model="fecha" class="input mt-4" />
+                  </template>
+                  <template #action>
+                    <V-Button @click="onHold" color="primary" raised
+                      >Confirm</V-Button
+                    >
+                  </template>
+                </V-Modal>
+                <V-Modal
+                  :open="modalShowProrratedHold"
+                  actions="center"
+                  @close="modalShowProrratedHold = false"
+                >
+                  <template #content>
+                    <p>
+                      Do you want to create an invoice with the prorated amount?
+                    </p>
+                    <inputsLayaut :inputs-step="isProrrateoHold" />
+
+                    <table
+                      class="table w-100"
+                      v-if="presupuestoProrrateo.total"
+                    >
+                      <tr>
+                        <td>
+                          Subtotal ({{ presupuestoProrrateo.dias_restantes }}
+                          days)
+                        </td>
+                        <td>{{ moneda(presupuestoProrrateo.subtotal) }}</td>
+                      </tr>
+                      <tr>
+                        <td>Tax</td>
+                        <td>{{ moneda(presupuestoProrrateo.tax) }}</td>
+                      </tr>
+                      <tr>
+                        <td>Total</td>
+                        <td>{{ moneda(presupuestoProrrateo.total) }}</td>
+                      </tr>
+                    </table>
+                  </template>
+                  <template #action>
+                    <V-Button @click="onHold" color="primary" raised
+                      >Confirm</V-Button
+                    >
+                  </template>
+                </V-Modal>
+              </div>
+
+              <div
+                v-if="member && memberMermship && memberMermship.status == 1"
+                class="column is-6"
+              >
+                <VLoader
+                  v-if="
+                    member.membership_members &&
+                    member.membership_members.is_recurrence
+                  "
+                  size="small"
+                  class="h-100"
+                  :active="isLoaderActive"
+                >
+                  <VCard
+                    color="undefined"
+                    style="font-size: 12px"
+                    :style="
+                      member.subscription.pause_collection == null
+                        ? {}
+                        : { backgroundColor: '#404046' }
+                    "
+                    :outlined="
+                      member.subscription.pause_collection != null
+                        ? false
+                        : true
+                    "
+                    v-if="memberMermship && member.subscription"
+                    @click="onClickPause"
+                    class="
+                      mr-4
+                      btn-card
+                      text-center
+                      px-2
+                      h-100
+                      d-flex
+                      align-items-center
+                      justify-content-center
+                    "
+                  >
+                    <p><b>Pause Payment</b></p>
+                    <p>
+                      <span v-if="member.subscription.pause_collection != null"
+                        >Active until:
+                        {{
+                          moment(member.subscription.pause_collection).format(
+                            'MM-DD-YYYY'
+                          )
+                        }}</span
+                      >
+                    </p>
+                  </VCard>
+                </VLoader>
+                <V-Modal
+                  :open="centeredActionsOpen"
+                  actions="center"
+                  @close="centeredActionsOpen = false"
+                >
+                  <template #content>
+                    <input type="date" v-model="fecha" class="input" />
+                  </template>
+                  <template #action>
+                    <V-Button @click="onPause" color="primary" raised
+                      >Confirm</V-Button
+                    >
+                  </template>
+                </V-Modal>
+              </div>
+
+              <div
+                v-if="member && memberMermship && memberMermship.status == 1"
+                class="column is-6"
+              >
+                <VLoader class="h-100" size="small" :active="isLoaderActive">
+                  <VCard
+                    color="danger"
+                    v-if="memberMermship"
+                    outlined
+                    @click="onCancel"
+                    class="
+                      mr-4
+                      btn-card
+                      text-center
+                      px-2
+                      h-100
+                      d-flex
+                      align-items-center
+                      justify-content-center
+                    "
+                    style="font-size: 12px"
+                  >
+                    <p><b>Cancel Membership</b></p>
+                  </VCard>
+                </VLoader>
+              </div>
+
+              <div
+                v-if="member && memberMermship && memberMermship.status == 1"
+                class="column is-6"
+              >
+                <VLoader size="small" class="h-100" :active="isLoaderActive">
+                  <VCard
+                    color="success"
+                    v-if="memberMermship"
+                    outlined
+                    @click="itentPayment = !itentPayment"
+                    class="
+                      mr-4
+                      btn-card
+                      text-center
+                      px-2
+                      h-100
+                      d-flex
+                      align-items-center
+                      justify-content-center
+                    "
+                    style="font-size: 12px"
+                  >
+                    <p><b>Payment Now</b></p>
+                  </VCard>
+                </VLoader>
+              </div>
+
+              <div v-if="member && memberMermship" class="column is-6">
+                <VLoader
+                  v-if="
+                    member.membership_members &&
+                    member.membership_members.is_recurrence
+                  "
+                  size="small"
+                  :active="isLoaderActive"
+                  class="h-100"
+                >
+                  <VCard
+                    color="secondary"
+                    v-if="memberMermship"
+                    outlined
+                    @click="onaddPenalty"
+                    class="
+                      mr-4
+                      btn-card
+                      text-center
+                      px-2
+                      h-100
+                      d-flex
+                      align-items-center
+                      justify-content-center
+                    "
+                    style="font-size: 12px"
+                  >
+                    <p><b>Pay Late Fee</b></p>
+                  </VCard>
+                </VLoader>
+              </div>
+
+              <div v-if="member && memberMermship" class="column is-6">
+                <VLoader
+                  v-if="
+                    member.membership_members &&
+                    member.membership_members.is_recurrence
+                  "
+                  size="small"
+                  :active="isLoaderActive"
+                  class="h-100"
+                >
+                  <VCard
+                    :color="undefined"
+                    v-if="memberMermship"
+                    outlined
+                    @click="onsyncStripeResource"
+                    class="
+                      mr-4
+                      btn-card
+                      text-center
+                      px-2
+                      h-100
+                      d-flex
+                      align-items-center
+                      justify-content-center
+                    "
+                    style="font-size: 12px"
+                  >
+                    <p><b>Sync Subscription</b></p>
+                  </VCard>
+                </VLoader>
+              </div>
+
+              <div class="column is-6">
+                <VLoader
+                  class="w-100 h-100"
+                  v-if="
+                    member.membership_members &&
+                    member.membership_members.is_recurrence
+                  "
+                  size="small"
+                  :active="isLoaderActive"
+                >
+                  <VCard
+                    color="info"
+                    :outlined="true"
+                    v-if="memberMermship && member.subscription"
+                    @click="onClickSendEmail"
+                    class="
+                      mr-4
+                      btn-card
+                      text-center
+                      px-2
+                      h-100
+                      d-flex
+                      align-items-center
+                      justify-content-center
+                    "
+                    style="font-size: 12px"
+                  >
+                    <p><b>Send Email: Contract and Waiver</b></p>
+                  </VCard>
+                </VLoader>
+              </div>
+
+              <div class="column is-6">
+                <VLoader
+                  class="w-100 h-100"
+                  v-if="
+                    member.membership_members &&
+                    member.membership_members.is_recurrence
+                  "
+                  size="small"
+                  :active="isLoaderActive"
+                >
+                  <VCard
+                    color="success"
+                    :outlined="true"
+                    v-if="memberMermship && member.subscription"
+                    @click="onClickSubscribeDebitAutomatic"
+                    class="
+                      mr-4
+                      btn-card
+                      text-center
+                      px-2
+                      h-100
+                      d-flex
+                      align-items-center
+                      justify-content-center
+                    "
+                    style="font-size: 12px"
+                  >
+                    <p><b>Subscribe Debit Automatic</b></p>
+                  </VCard>
+                </VLoader>
+              </div>
+
+              <div class="column is-6 mb-6">
+                <UpdateSubscription
+                  v-if="member && memberMermship"
+                  :member="member"
+                  :member-mermship="memberMermship"
+                  :is-loader-active="isLoaderActive"
+                />
+              </div>
+
+              <!-- WAIVER -->
+              <div class="column is-12">
+                <VCard class="mb-4 w-100" v-if="member && memberMermship">
+                  <h1 class="title is-6">Active Waiver Information</h1>
+                  <div class="text-center">
+                    <a
+                      target="_blank"
+                      :href="`${API_WEB_URL}generateWeiver/${member.id}`"
+                      class="d-flex justify-content-start align-items-center"
+                    >
+                      <img
+                        src="/public/images/pdf_icon.png"
+                        class="mr-3"
+                        width="40"
+                        alt=""
+                      />
+                      <p>
+                        weiver_{{ member.id }}_{{
+                          member.membership_members.id
+                        }}_{{ member.personal_identifications }}.pdf
+                      </p>
+                      <!-- <V-Button color="success" outlined class="mt-4 py-1">
+                        View PDF
+                      </V-Button> -->
+                    </a>
+                  </div>
+                </VCard>
+              </div>
+
+              <!-- Contract -->
+              <div class="column is-12">
+                <VCard class="mb-4 w-100" v-if="member && memberMermship">
+                  <h1 class="title is-6">Active Contract Information</h1>
+                  <div class="text-center">
+                    <a
+                      target="_blank"
+                      :href="`${API_WEB_URL}generateContract/${member.id}`"
+                      class="d-flex justify-content-start align-items-center"
+                    >
+                      <img
+                        src="/public/images/pdf_icon.png"
+                        class="mr-3"
+                        width="40"
+                        alt=""
+                      />
+                      <p>
+                        contract_{{ member.id }}_{{
+                          member.membership_members.id
+                        }}_{{ member.personal_identifications }}.pdf
+                      </p>
+                      <!--  <V-Button color="success" outlined class="mt-4 py-1">
+                        View PDF
+                      </V-Button> -->
+                    </a>
+                  </div>
+                </VCard>
+              </div>
             </div>
           </div>
+        </div>
+        <div class="column is-4 text-center" v-else>
+          <p class="title is-4">Change the location to perform actions</p>
         </div>
 
         <!-- Contract -->
