@@ -90,8 +90,8 @@ watch(
 )
 
 const validaCredenciales = computed(() => {
-  console.log('locationSistem.value', locationSistem.value)
-  console.log('CREDENCIALES SIDEBAR', PUBLIC_KEY_STRIPE.value)
+  // console.log('locationSistem.value', locationSistem.value)
+  // console.log('CREDENCIALES SIDEBAR', PUBLIC_KEY_STRIPE.value)
   // if (
   //   PUBLIC_KEY_STRIPE.value.includes('pk_live') &&
   //   (import.meta.env.VITE_MODE == 'development' ||

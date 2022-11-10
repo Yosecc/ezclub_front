@@ -1,11 +1,15 @@
 <script setup lang="ts">
 import { ref, onMounted, defineProps, watch, computed, defineEmit } from 'vue'
 import { PUBLIC_KEY_STRIPE } from '/@src/services'
-console.log(PUBLIC_KEY_STRIPE.value)
+// console.log(PUBLIC_KEY_STRIPE.value)
 const stripe = Stripe(PUBLIC_KEY_STRIPE.value)
 import { notyf } from '/@src/models/Mixin.ts'
 
 const props = defineProps({
+  presupuesto: {
+    type: Object,
+    default: {},
+  },
   amount: {
     type: [Number, String],
     required: true,
@@ -132,6 +136,10 @@ const handleSubmit = async (e) => {
           user_id: e.idMember,
           membership_member_id: e.idMemberMembership,
           payment_type_id: 3,
+          presupuesto: {
+            membresias: props.presupuesto.membresias,
+            totales: props.presupuesto.totales,
+          },
         }).catch((e) => {
           setLoading.value = false
         })
@@ -139,7 +147,7 @@ const handleSubmit = async (e) => {
 
       response
         .then((r) => {
-          console.log('addcard', r.data)
+          // console.log('addcard', r.data)
           emit('PaymentAction', r.data)
           notyf.success('Success Payment')
         })
@@ -153,9 +161,13 @@ const handleSubmit = async (e) => {
         user_id: user_id.value,
         membership_member_id: props.member_membership,
         payment_type_id: 3,
+        presupuesto: {
+          membresias: props.presupuesto.membresias,
+          totales: props.presupuesto.totales,
+        },
       })
         .then((r) => {
-          console.log('addcard', r.data)
+          // console.log('addcard', r.data)
           emit('PaymentAction', r.data)
           notyf.success('Success Payment')
         })

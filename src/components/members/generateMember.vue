@@ -95,6 +95,7 @@ const save = () => {
     categoriesMembers: props.categoriesMembers,
     notasInput: props.notasInput,
     presupuesto_id: props.presupuesto_id,
+    // presupuesto:presupuesto
   })
     .then((response) => {
       idMember.value = response.data.id
@@ -134,11 +135,13 @@ const newMembership = () => {
 
 const isMemberPayment = ref(false)
 const PaymentAction = (data) => {
-  console.log('yy', data)
-  idMember.value = data.id
-  invoice_id.value = data.invoice_id
+  // console.log('yy', data)
+  if (typeof data == 'object') {
+    idMember.value = data.id
+    invoice_id.value = data.invoice_id
+    emit('PaymentAction', idMember)
+  }
   isMemberPayment.value = true
-  emit('PaymentAction', idMember)
 }
 
 const soyPrincipal = computed(() => {
@@ -218,9 +221,14 @@ const subscribir = (payment_method) => {
     user_id: idMember.value,
     membership_member_id: idMemberMembership.value,
     payment_type_id: 3,
+    presupuesto: {
+      membresias: props.presupuesto.membresias,
+      totales: props.presupuesto.totales,
+    },
   })
     .then((response) => {
       invoice_id.value = response.data.invoice_id
+      alert(invoice_id.value)
       PaymentAction(idMember.value)
       notyf.success('Success')
       setLoading.value = false
@@ -293,6 +301,7 @@ const subscribir = (payment_method) => {
     </div>
 
     <div class="columns is-multiline justify-content-center mt-6">
+      <p>{{ typeof invoice_id }}</p>
       <memberCheckoutRecibo
         v-if="idMemberMembership && isMemberPayment"
         :membership_member="idMemberMembership"
@@ -313,6 +322,7 @@ const subscribir = (payment_method) => {
       :amount="props.total"
       :id="idMember"
       :member_membership="idMemberMembership"
+      :presupuesto="presupuesto"
       @PaymentAction="PaymentAction"
     />
 

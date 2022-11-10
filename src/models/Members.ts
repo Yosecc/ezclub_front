@@ -1805,6 +1805,7 @@ export const proccessMembership = async (props: object) => {
     fd.append(i, notasInputFD[i])
   }
 
+  // fd.append('presupuesto', JSON.stringify(props.presupuesto))
   fd.append('presupuesto_id', props.presupuesto_id)
 
   if (idMemberPrincipal.value) {
