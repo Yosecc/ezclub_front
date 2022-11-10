@@ -228,7 +228,7 @@ const subscribir = (payment_method) => {
   })
     .then((response) => {
       invoice_id.value = response.data.invoice_id
-      alert(invoice_id.value)
+      // alert(invoice_id.value)
       PaymentAction(idMember.value)
       notyf.success('Success')
       setLoading.value = false
