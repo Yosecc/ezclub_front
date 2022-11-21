@@ -94,8 +94,8 @@ const save = () => {
     total: props.total,
     categoriesMembers: props.categoriesMembers,
     notasInput: props.notasInput,
-    presupuesto_id: props.presupuesto_id,
-    // presupuesto:presupuesto
+    // presupuesto_id: props.presupuesto_id,
+    // presupuesto:props.presupuesto
   })
     .then((response) => {
       idMember.value = response.data.id
@@ -111,11 +111,13 @@ const newMembership = () => {
 
   idMember.value = props.member.id
   idMemberMembership.value = null
-
+  console.log('props.membresia', props.membresia)
   const data = perpareDataInputs(props.membresia)
   data.members_id = props.member_id
   data.total = props.total
   data.payment_type_id = 3
+
+  console.log(data)
 
   storeNewMembership(data)
     .then((response) => {
@@ -221,10 +223,7 @@ const subscribir = (payment_method) => {
     user_id: idMember.value,
     membership_member_id: idMemberMembership.value,
     payment_type_id: 3,
-    presupuesto: {
-      membresias: props.presupuesto.membresias,
-      totales: props.presupuesto.totales,
-    },
+    presupuesto: props.presupuesto,
   })
     .then((response) => {
       invoice_id.value = response.data.invoice_id
@@ -301,7 +300,7 @@ const subscribir = (payment_method) => {
     </div>
 
     <div class="columns is-multiline justify-content-center mt-6">
-      <p>{{ typeof invoice_id }}</p>
+      <!-- <p>{{ typeof invoice_id }}</p> -->
       <memberCheckoutRecibo
         v-if="idMemberMembership && isMemberPayment"
         :membership_member="idMemberMembership"

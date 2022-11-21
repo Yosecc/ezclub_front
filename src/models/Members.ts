@@ -1286,7 +1286,8 @@ export const inputsMembership = reactive([])
 export const member = ref()
 
 export const getPresupuesto = async (data: any) => {
-  const response = Api.post('getPresupuesto', data)
+  const response = Api.post('v2/presupuesto_member', data)
+  // const response = Api.post('getPresupuesto', data)
   return response
 }
 
@@ -1806,7 +1807,7 @@ export const proccessMembership = async (props: object) => {
   }
 
   // fd.append('presupuesto', JSON.stringify(props.presupuesto))
-  fd.append('presupuesto_id', props.presupuesto_id)
+  // fd.append('presupuesto_id', props.presupuesto_id)
 
   if (idMemberPrincipal.value) {
     fd.append('id_principal', idMemberPrincipal.value)

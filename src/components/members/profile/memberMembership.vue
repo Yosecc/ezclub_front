@@ -535,7 +535,7 @@ const locationFacturacion = computed(() => {
                     :presupuesto_id="presupuesto.presupuesto_id"
                     :categories-members="categoriesMembers"
                     :notas-input="notasInput"
-                    :total="presupuesto.totales.upfront.amount_total"
+                    :total="presupuesto.total"
                     @PaymentAction="PaymentAction"
                     :type="'edit'"
                   />

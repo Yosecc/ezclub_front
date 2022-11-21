@@ -6,8 +6,14 @@ export const memberships = ref([])
 
 export const membership = ref({})
 
-export const getMeberships = async () => {
-  const response = await Api.get(`memberships`)
+export const getMeberships = async (status = null) => {
+  console.log(status)
+  let url = 'memberships'
+  if (status != null) {
+    url = `memberships?status=${status}`
+  }
+
+  const response = await Api.get(`${url}`)
   memberships.value = response.data.memberships
   return response
 }

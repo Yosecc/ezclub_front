@@ -146,7 +146,7 @@ onMounted(() => {
     setInputValuesData(parentInsputs.value, 'state_id', response.states)
     setInputValuesData(parentInsputs.value, 'country_id', response.contries)
   })
-  getMeberships().then((response) => {
+  getMeberships(1).then((response) => {
     setInputValuesData(
       membershipsData,
       'memberships_id',

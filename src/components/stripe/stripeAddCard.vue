@@ -136,10 +136,7 @@ const handleSubmit = async (e) => {
           user_id: e.idMember,
           membership_member_id: e.idMemberMembership,
           payment_type_id: 3,
-          presupuesto: {
-            membresias: props.presupuesto.membresias,
-            totales: props.presupuesto.totales,
-          },
+          presupuesto: props.presupuesto,
         }).catch((e) => {
           setLoading.value = false
         })
@@ -161,10 +158,7 @@ const handleSubmit = async (e) => {
         user_id: user_id.value,
         membership_member_id: props.member_membership,
         payment_type_id: 3,
-        presupuesto: {
-          membresias: props.presupuesto.membresias,
-          totales: props.presupuesto.totales,
-        },
+        presupuesto: props.presupuesto,
       })
         .then((r) => {
           // console.log('addcard', r.data)
