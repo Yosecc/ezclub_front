@@ -192,7 +192,7 @@ const onPaymentCash = (obj) => {
       total: props.total,
       cash_back: obj.changeBack,
       membership_member_id: idMemberMembership.value,
-      presupuesto: props.presupuesto.membresias,
+      presupuesto: props.presupuesto,
     }
 
     console.log('datos', datos)
@@ -296,7 +296,11 @@ const subscribir = (payment_method) => {
         </div>
       </VCard>
 
-      <memberCheckoutCash :total="props.total" @onPaymentCash="onPaymentCash" />
+      <memberCheckoutCash
+        :presupuesto="presupuesto"
+        :total="props.total"
+        @onPaymentCash="onPaymentCash"
+      />
     </div>
 
     <div class="columns is-multiline justify-content-center mt-6">
