@@ -78,108 +78,11 @@ const cambiarColor = (color) => {
 </script>
 
 <template>
-  <div class="modern-login">
-    <div class="underlay h-hidden-mobile h-hidden-tablet-p"></div>
-
-    <div class="columns is-gapless is-vcentered">
-      <div
-        class=""
-        style="position: absolute; z-index: 9999999; top: 10px; left: 10px"
-      >
-        <div class="field is-grouped">
-          <div class="control">
-            <V-Dropdown>
-              <template #button="{ open, toggle }">
-                <VIconBox
-                  @mouseenter="open"
-                  @click="toggle"
-                  size="small"
-                  class="is-trigger"
-                  :color="'green'"
-                  rounded
-                >
-                  <i
-                    class="fas fa-palette"
-                    style="color: white"
-                    aria-hidden="true"
-                  ></i>
-                </VIconBox>
-              </template>
-              <template #content="{ close }">
-                <div @mouseleave="close" class="p-2 d-flex">
-                  <VIconBox
-                    size="small"
-                    @click="cambiarColor('#2980B9')"
-                    style="background: #2980b9"
-                    class="mr-2"
-                    :color="undefined"
-                  >
-                  </VIconBox>
-                  <VIconBox
-                    size="small"
-                    @click="cambiarColor('#00838F')"
-                    style="background: #00838f"
-                    class="mr-2"
-                    :color="undefined"
-                  >
-                  </VIconBox>
-                  <VIconBox
-                    size="small"
-                    @click="cambiarColor('#6A1B9A')"
-                    style="background: #6a1b9a"
-                    class="mr-2"
-                    :color="undefined"
-                  >
-                  </VIconBox>
-
-                  <VIconBox
-                    size="small"
-                    @click="cambiarColor('#3D5AFE')"
-                    style="background: #3d5afe"
-                    class="mr-2"
-                    :color="undefined"
-                  >
-                  </VIconBox>
-                  <VIconBox
-                    size="small"
-                    @click="cambiarColor('#F39C12')"
-                    style="background: #f39c12"
-                    class="mr-2"
-                    :color="undefined"
-                  >
-                  </VIconBox>
-                  <VIconBox
-                    size="small"
-                    @click="cambiarColor('#D50000')"
-                    style="background: #d50000"
-                    class="mr-2"
-                    :color="undefined"
-                  >
-                  </VIconBox>
-                </div>
-              </template>
-            </V-Dropdown>
-          </div>
-        </div>
-      </div>
-      <div class="column is-relative is-8 h-hidden-mobile h-hidden-tablet-p">
-        <div class="hero is-fullheight is-image">
-          <div class="hero-body" :style="{ background: `${background}` }">
-            <div class="container">
-              <div class="columns">
-                <div class="column">
-                  <img
-                    class="hero-image"
-                    src="/@src/assets/img-hero.svg"
-                    alt=""
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="column is-4 is-relative">
+  <div class="auth-wrapper-inner is-single">
+    <!--Fake navigation-->
+    <div class="auth-nav">
+      <div class="left"></div>
+      <div class="center" style="padding-top: 134px">
         <RouterLink :to="{ name: 'index' }" class="">
           <img
             v-if="isDark"
@@ -197,6 +100,8 @@ const cambiarColor = (color) => {
             alt=""
           />
         </RouterLink>
+      </div>
+      <div class="right">
         <label class="dark-mode ml-auto">
           <input
             type="checkbox"
@@ -209,145 +114,72 @@ const cambiarColor = (color) => {
           />
           <span></span>
         </label>
-        <div class="is-form">
-          <div class="hero-body">
-            <div class="form-text">
-              <h2>Sign In</h2>
-              <p>Welcome back to your account.</p>
-            </div>
-            <div class="form-text is-hidden">
-              <h2>Recover Account</h2>
-              <p>Reset your account password.</p>
-            </div>
-            <form
-              :class="[step !== 'login' && 'is-hidden']"
-              class="login-wrapper"
-              @submit.prevent="handleLogin"
-            >
-              <div class="control has-validation">
-                <input
-                  type="text"
-                  class="input"
-                  placeholder=""
-                  autocomplete="email"
-                  v-model="email"
-                />
-                <small class="error-text">This is a required field</small>
-                <div class="auth-label">Email Address</div>
-                <div class="autv-icon">
-                  <i aria-hidden="true" class="lnil lnil-envelope"></i>
-                </div>
-                <div class="validation-icon is-success">
-                  <V-IconWrap icon="feather:check" />
-                </div>
-                <div class="validation-icon is-error">
-                  <V-IconWrap icon="feather:x" />
-                </div>
-              </div>
-              <div class="control has-validation">
-                <input
-                  type="password"
-                  v-model="password"
-                  class="input"
-                  autocomplete="current-password"
-                />
-                <div class="auth-label">Password</div>
-                <div class="autv-icon">
-                  <i aria-hidden="true" class="lnil lnil-lock-alt"></i>
-                </div>
-              </div>
+      </div>
+    </div>
 
-              <div class="control is-flex">
-                <label class="remember-toggle">
-                  <input type="checkbox" v-model="remember" />
-                  <span class="toggler">
-                    <span class="active">
-                      <i
-                        aria-hidden="true"
-                        class="iconify"
-                        data-icon="feather:check"
-                      ></i>
-                    </span>
-                    <span class="inactive">
-                      <i
-                        aria-hidden="true"
-                        class="iconify"
-                        data-icon="feather:circle"
-                      ></i>
-                    </span>
-                  </span>
+    <!--Single Centered Form-->
+    <div class="single-form-wrap">
+      <div class="inner-wrap">
+        <!--Form Title-->
+
+        <!--Form-->
+        <div class="form-card">
+          <form @submit.prevent="handleLogin">
+            <div class="login-form">
+              <V-Field>
+                <V-Control icon="feather:user">
+                  <input
+                    type="text"
+                    class="input"
+                    placeholder="Email"
+                    autocomplete="email"
+                    v-model="email"
+                  />
+                </V-Control>
+              </V-Field>
+              <V-Field>
+                <V-Control icon="feather:lock">
+                  <input
+                    type="password"
+                    v-model="password"
+                    placeholder="Password"
+                    class="input"
+                    autocomplete="current-password"
+                  />
+                </V-Control>
+              </V-Field>
+
+              <!-- Switch -->
+              <V-Control class="setting-item">
+                <label for="remember-me" class="form-switch is-primary">
+                  <input id="remember-me" type="checkbox" class="is-switch" />
+                  <i aria-hidden="true"></i>
                 </label>
-                <div class="remember-me">Remember Me</div>
-                <!-- <a @click="step = 'forgot-password'">Forgot Password?</a> -->
-              </div>
-              <div class="button-wrap has-help">
+                <div class="setting-meta">
+                  <label for="remember-me">
+                    <span>Remember Me</span>
+                  </label>
+                </div>
+              </V-Control>
+
+              <!-- Submit -->
+              <V-Control class="login">
                 <V-Button
                   :loading="isLoading"
                   color="primary"
-                  size="big"
-                  rounded
-                  raised
                   bold
+                  fullwidth
+                  raised
                 >
-                  Confirm
+                  Sign In
                 </V-Button>
-                <!-- <span>
-                  Or
-                  <RouterLink :to="{ name: 'auth-register' }">
-                    Create
-                  </RouterLink>
-                  an account.
-                </span> -->
-              </div>
-            </form>
+              </V-Control>
+            </div>
+          </form>
+        </div>
 
-            <form
-              :class="[step !== 'forgot-password' && 'is-hidden']"
-              class="login-wrapper"
-              @submit.prevent
-            >
-              <p class="recover-text">
-                Enter your email and click on the confirm button to reset your
-                password. We'll send you an email detailing the steps to
-                complete the procedure.
-              </p>
-              <div class="control has-validation">
-                <input type="text" class="input" autocomplete="email" />
-                <small class="error-text">This is a required field</small>
-                <div class="auth-label">Email Address</div>
-                <div class="autv-icon">
-                  <i aria-hidden="true" class="lnil lnil-envelope"></i>
-                </div>
-                <div class="validation-icon is-success">
-                  <V-IconWrap icon="feather:check" />
-                </div>
-                <div class="validation-icon is-error">
-                  <V-IconWrap icon="feather:x" />
-                </div>
-              </div>
-              <div class="button-wrap">
-                <V-Button
-                  color="white"
-                  size="big"
-                  lower
-                  rounded
-                  @click="step = 'login'"
-                >
-                  Cancel
-                </V-Button>
-                <V-Button
-                  color="primary"
-                  size="big"
-                  lower
-                  rounded
-                  solid
-                  @click="step = 'login'"
-                >
-                  Confirm
-                </V-Button>
-              </div>
-            </form>
-          </div>
+        <div class="forgot-link has-text-centered">
+          <!-- <a>Forgot Password?</a> -->
         </div>
       </div>
     </div>
