@@ -170,8 +170,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       base: '/',
       manifest: {
-        name: 'Ezclub',
-        short_name: 'Ezclub',
+        name: 'Donosite',
+        short_name: 'Donosite',
         start_url: '/?utm_source=pwa',
         display: 'standalone',
         theme_color: '#ffffff',
