@@ -1,0 +1,1 @@
+import{d as t,h as s,i as a,L as e}from"./vendor.7d5213a2.js";var i=t({expose:[],props:{title:{type:String,default:"UI Widget"},straight:{type:Boolean,default:!1}},setup:t=>(i,o)=>(s(),a("div",{class:["widget",[t.straight&&"is-straight"]]},[e(i.$slots,"header"),e(i.$slots,"body")],2))});export{i as _};
