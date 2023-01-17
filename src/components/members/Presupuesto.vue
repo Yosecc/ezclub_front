@@ -91,7 +91,9 @@ onMounted(() => {
         </tr>
         <tr style="text-align: right">
           <td colspan="4"><b>Total to pay today</b></td>
-          <td>{{ moneda(presupuesto.total) }}</td>
+          <td style="font-size: 20px; font-weight: 900">
+            {{ moneda(presupuesto.total) }}
+          </td>
         </tr>
         <tr style="text-align: right">
           <td colspan="4">

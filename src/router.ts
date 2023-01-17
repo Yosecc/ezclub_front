@@ -63,14 +63,14 @@ const routesPublic = [
   'wizard-v1',
 ]
 
-router.beforeResolve((to, from, next) => {
-  if (!routesPublic.includes(to.name) && !isAuthenticated.value) {
-    sessionStorage.clear()
-    localStorage.clear()
+// router.beforeResolve((to, from, next) => {
+//   if (!routesPublic.includes(to.name) && !isAuthenticated.value) {
+//     sessionStorage.clear()
+//     localStorage.clear()
 
-    next({ name: 'auth' })
-  } else next()
-})
+//     next({ name: 'auth' })
+//   } else next()
+// })
 /**
  * Handle NProgress display on page changes
  */

@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { ref } from 'vue'
-import { user, onLogout } from '/@src/pages/auth/auth.ts'
-import { notyf } from '/@src/models/Mixin.ts'
+import { user, onLogout } from '/@src/pages/auth/auth'
+import { notyf } from '/@src/models/Mixin'
 
 export const API_URL = ref(import.meta.env.VITE_ROUTE_API)
 export const FRONTEND_URL = ref(import.meta.env.VITE_FRONTEND_URL)
@@ -21,7 +21,7 @@ const intance = axios.create({
     Accept: 'application/json',
     'Content-type': 'application/json',
     // "Authorization": "Bearer "+localStorage.getItem("x-api-key"),
-    // "x-api-key": user.value != null ? user.value.token : '',
+    // 'x-api-key': user?.value != null ? user?.value.token : '',
   },
 })
 
@@ -43,7 +43,7 @@ intance.interceptors.response.use(
       }
     }
     if (error.response.status == 401) {
-      onLogout()
+      // onLogout()
     } else {
       return Promise.reject(error)
     }
