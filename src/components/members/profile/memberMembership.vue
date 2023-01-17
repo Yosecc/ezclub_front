@@ -439,7 +439,7 @@ const locationFacturacion = computed(() => {
                 }}</small>
               </p>
               <p class="title is-4">
-                {{ moneda(member.subscription.total_invoice / 100) }}<br />
+                {{ moneda(member.subscription.total_invoice) }}<br />
                 <small
                   v-if="
                     member.subscription &&
