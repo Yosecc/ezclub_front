@@ -1,0 +1,1 @@
+import{d as a,o,e as r,z as t}from"./index.4457215e.js";var d=a({expose:[],props:{title:{type:String,default:"UI Widget"},straight:{type:Boolean,default:!1}},setup(s){return(e,i)=>(o(),r("div",{class:["widget",[s.straight&&"is-straight"]]},[t(e.$slots,"header"),t(e.$slots,"body")],2))}});export{d as _};

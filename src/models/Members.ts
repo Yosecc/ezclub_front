@@ -161,7 +161,7 @@ export const namesValidate = function (event, input) {
 }
 
 export const inputsInformation = ref([
-  {
+  /*{
     typeInput: 'switchEventChangeInput',
     name: 'select_type',
     values: ['Individual', 'Company'],
@@ -178,7 +178,7 @@ export const inputsInformation = ref([
         getInput(inputs, 'company_name').typeInput = 'text'
       }
     },
-  },
+  },*/
   {
     typeInput: 'file',
     name: 'photo',
@@ -1884,5 +1884,8 @@ export const arregloTrainers = (trainers: any) => {
 }
 
 export const initials = (name, lastname) => {
-  return name.substr(0, 1) + lastname.substr(0, 1)
+  if (name) {
+    return name.substr(0, 1) + lastname.substr(0, 1)
+  }
+  return ''
 }

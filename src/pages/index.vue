@@ -94,11 +94,13 @@ const reloadForm = () => {
 const membersData = ref([])
 const computedMembers = computed(() => {
   membersData.value = []
-  members.value.forEach((e) => {
-    if (e != null) {
-      membersData.value.push(e)
-    }
-  })
+  if (members.value.length) {
+    members.value.forEach((e) => {
+      if (e != null) {
+        membersData.value.push(e)
+      }
+    })
+  }
   return membersData.value
 })
 

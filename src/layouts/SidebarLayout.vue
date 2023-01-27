@@ -88,13 +88,13 @@ watch(
 )
 
 const validaCredenciales = computed(() => {
-  if (
-    PUBLIC_KEY_STRIPE.value.includes('pk_live') &&
-    (import.meta.env.VITE_MODE == 'development' ||
-      import.meta.env.VITE_MODE == 'staging')
-  ) {
-    return true
-  }
+  //if (
+  //  PUBLIC_KEY_STRIPE.value.includes('pk_live') &&
+  //  (import.meta.env.VITE_MODE == 'development' ||
+  //    import.meta.env.VITE_MODE == 'staging')
+  // ) {
+  //   return true
+  // }
   return false
 })
 </script>
