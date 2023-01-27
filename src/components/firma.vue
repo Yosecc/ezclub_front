@@ -1,8 +1,16 @@
 <script setup lang="ts">
 import { useHead } from '@vueuse/head'
-import { computed, ref, onMounted } from 'vue'
+import { computed, ref, onMounted, defineEmit, defineProps } from 'vue'
 import { inputs, getDiciplines } from '/@src/models/Weiver'
 import { setInputValuesData } from '/@src/models/Mixin'
+const emit = defineEmit(['onFirma', 'onReset'])
+
+const props = defineProps({
+  isdisabled: {
+    type: Boolean,
+    default: false,
+  },
+})
 
 let miCanvas
 let lineas = []
@@ -16,19 +24,20 @@ let nuevaPosicionY = 0
 let posicion
 
 onMounted(() => {
+  montaje()
+})
+
+const montaje = () => {
   //======================================================================
   // VARIABLES
   //======================================================================
 
   miCanvas = document.querySelector('#pizarra')
-  console.log(miCanvas)
 
   posicion = miCanvas.getBoundingClientRect()
 
   correccionX = posicion.x
   correccionY = posicion.y
-
-  console.log(posicion)
 
   miCanvas.width = 300
   miCanvas.height = 300
@@ -45,8 +54,7 @@ onMounted(() => {
   // Eventos pantallas táctiles
   miCanvas.addEventListener('touchstart', empezarDibujo, false)
   miCanvas.addEventListener('touchmove', dibujarLinea, false)
-})
-
+}
 //======================================================================
 // FUNCIONES
 //======================================================================
@@ -78,7 +86,7 @@ const dibujarLinea = (event) => {
     let ctx = miCanvas.getContext('2d')
     // Estilos de linea
     ctx.lineJoin = ctx.lineCap = 'round'
-    ctx.lineWidth = 10
+    ctx.lineWidth = 1
     // Color de la linea
     ctx.strokeStyle = '#000'
     // Marca el nuevo punto
@@ -112,10 +120,42 @@ const pararDibujar = () => {
   pintarLinea = false
   guardarLinea()
 }
+
+const sendFirma = () => {
+  emit('onFirma', miCanvas.toDataURL('image/png', 1))
+}
+
+const reset = ref(true)
+const limpiar = () => {
+  emit('onReset')
+}
 </script>
 
 <template>
-  <canvas id="pizarra"> </canvas>
+  <div class="d-flex justify-content-center flex-column mt-4 mb-6">
+    <canvas v-if="reset" id="pizarra"> </canvas>
+    <div class="d-flex justify-content-center mt-4">
+      <V-Button
+        color="primary"
+        @click="limpiar"
+        bold
+        raised
+        outlined
+        class="mr-6"
+      >
+        Reset
+      </V-Button>
+      <V-Button
+        :disabled="isdisabled"
+        color="success"
+        @click="sendFirma"
+        bold
+        raised
+      >
+        Sign and send
+      </V-Button>
+    </div>
+  </div>
 </template>
 
 <style lang="scss">
@@ -124,5 +164,7 @@ canvas {
   height: 300px;
   // background-color: #0d0909;
   border: 1px solid black;
+  display: block;
+  margin: 0 auto;
 }
 </style>

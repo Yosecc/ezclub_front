@@ -1,8 +1,13 @@
 <script setup lang="ts">
 import { useHead } from '@vueuse/head'
 import { computed, ref, onMounted } from 'vue'
-import { inputs, getDiciplines } from '/@src/models/Weiver'
-import { setInputValuesData } from '/@src/models/Mixin'
+import { inputs, getDiciplines, saveData } from '/@src/models/Weiver'
+import {
+  setInputValuesData,
+  perpareDataInputs,
+  hasErrors,
+  notyf,
+} from '/@src/models/Mixin'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
 
 pageTitle.value = 'Weiver'
@@ -21,13 +26,59 @@ const isStuck = computed(() => {
 })
 
 const firmar = ref(false)
+const isDisabled = ref(false)
+const onFirma = (firma: string) => {
+  if (firma == '') {
+    alert('error signing. try again')
+    return
+  }
+
+  let data = perpareDataInputs(inputs.value)
+  if (!hasErrors.value) {
+    data.firma = firma
+    isDisabled.value = true
+
+    saveData(data)
+      .then((response) => {
+        notyf.success(response.data.message)
+        setTimeout(() => {
+          window.location.reload()
+        }, 2000)
+      })
+      .catch((error) => {
+        isDisabled.value = false
+        for (var i in error.response.data) {
+          error.response.data[i].forEach((e) => {
+            notyf.error(`${i}: ${e}`)
+          })
+        }
+      })
+  }
+}
+
+const continuar = () => {
+  let data = perpareDataInputs(inputs.value)
+  if (!hasErrors.value) {
+    firmar.value = true
+  }
+}
 
 onMounted(() => {
   getDiciplines().then((response) => {
     setInputValuesData(inputs, 'dicipline_id', response)
-    console.log(response)
+    // console.log(response)
   })
 })
+
+const resetFirma = ref(true)
+
+const onResetFirma = () => {
+  resetFirma.value = false
+
+  setTimeout(() => {
+    resetFirma.value = true
+  }, 1)
+}
 </script>
 
 <template>
@@ -56,18 +107,28 @@ onMounted(() => {
             <div v-if="!firmar">
               <inputsLayaut :inputs-step="inputs" />
 
-              <V-Button color="primary" @click="firmar = true" bold raised>
+              <V-Button color="primary" @click="continuar" bold raised>
                 Continue
               </V-Button>
             </div>
             <div v-if="firmar">
-              <p class="title is-6 mt-6">Please sign in the box below</p>
-              <div class="d-flex justify-content-center mt-6 mb-6">
-                <firma />
+              <div class="d-flex justify-content-between">
+                <p class="title is-6 mt-2">Please sign in the box below</p>
+                <V-Button
+                  color="info"
+                  size="small"
+                  outlined
+                  @click="firmar = false"
+                >
+                  Go back
+                </V-Button>
               </div>
-              <div class="d-flex justify-content-center mt-4 mb-6">
-                <V-Button color="primary" bold raised> Sign and send </V-Button>
-              </div>
+              <firma
+                @onFirma="onFirma"
+                @onReset="onResetFirma"
+                :isdisabled="isDisabled"
+                v-if="resetFirma"
+              />
             </div>
           </div>
         </div>

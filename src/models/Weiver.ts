@@ -6,6 +6,11 @@ export const getDiciplines = async () => {
   return response.data
 }
 
+export const saveData = async (data) => {
+  const response = await Api.post('jornada', data)
+  return response
+}
+
 export const inputs = ref([
   {
     typeInput: 'text',
@@ -27,7 +32,7 @@ export const inputs = ref([
   },
   {
     typeInput: 'email',
-    name: 'email',
+    name: 'mail',
     placeholder: 'Email',
     model: '',
     required: true,
