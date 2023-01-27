@@ -53,11 +53,13 @@ onMounted(() => {
           </div>
 
           <div class="form-body mb-6">
-            <inputsLayaut :inputs-step="inputs" />
+            <div v-if="!firmar">
+              <inputsLayaut :inputs-step="inputs" />
 
-            <V-Button color="primary" @click="firmar = true" bold raised>
-              Continue
-            </V-Button>
+              <V-Button color="primary" @click="firmar = true" bold raised>
+                Continue
+              </V-Button>
+            </div>
             <div v-if="firmar">
               <p class="title is-6 mt-6">Please sign in the box below</p>
               <div class="d-flex justify-content-center mt-6 mb-6">

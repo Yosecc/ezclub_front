@@ -30,7 +30,7 @@ onMounted(() => {
 
   console.log(posicion)
 
-  miCanvas.width = 500
+  miCanvas.width = 300
   miCanvas.height = 300
 
   //======================================================================
@@ -120,7 +120,7 @@ const pararDibujar = () => {
 
 <style lang="scss">
 canvas {
-  width: 500px;
+  width: 300px;
   height: 300px;
   // background-color: #0d0909;
   border: 1px solid black;
