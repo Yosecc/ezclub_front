@@ -72,6 +72,7 @@ const continuar = () => {
   let data = perpareDataInputs(inputs.value)
   if (!hasErrors.value) {
     firmar.value = true
+    window.scrollTo(0, 0)
   }
 }
 
