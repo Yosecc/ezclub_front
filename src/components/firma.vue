@@ -134,6 +134,9 @@ const limpiar = () => {
 <template>
   <div class="d-flex justify-content-center flex-column mt-4 mb-6">
     <canvas v-if="reset" id="pizarra"> </canvas>
+    <div>
+      <slot></slot>
+    </div>
     <div class="d-flex justify-content-center mt-4">
       <V-Button
         color="primary"

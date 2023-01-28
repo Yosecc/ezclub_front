@@ -22,9 +22,9 @@ const routesCustom: RouteRecordRaw = [
     props: true,
   },
   {
-    component: () => import('/src/pages/weiver/index.vue'),
-    name: 'weiver',
-    path: '/weiver',
+    component: () => import('/src/pages/waiver/index.vue'),
+    name: 'waiver',
+    path: '/waiver',
     props: true,
   },
 ]
@@ -67,7 +67,7 @@ const routesPublic = [
   'auth-register-steps',
   'landing-member-updated',
   'wizard-v1',
-  'weiver',
+  'waiver',
 ]
 
 router.beforeResolve((to, from, next) => {
