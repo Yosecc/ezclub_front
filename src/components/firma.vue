@@ -40,7 +40,7 @@ const montaje = () => {
   correccionY = posicion.y
 
   miCanvas.width = 300
-  miCanvas.height = 300
+  miCanvas.height = 500
 
   //======================================================================
   // EVENTOS
@@ -164,7 +164,7 @@ const limpiar = () => {
 <style lang="scss">
 canvas {
   width: 300px;
-  height: 300px;
+  height: 500px;
   // background-color: #0d0909;
   border: 1px solid black;
   display: block;
