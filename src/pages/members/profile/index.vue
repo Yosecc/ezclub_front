@@ -411,6 +411,7 @@ const reload = () => {
             </div>
           </div>
         </VCard>
+        <subscriptionIndex v-if="Component == 'susbcriptionIndex'" />
         <personalInformation
           :category="member.category"
           v-show="Component == 'personalInformation'"

@@ -162,6 +162,18 @@ export const namesValidate = function (event, input) {
 
 export const inputsInformation = ref([
   {
+    typeInput: 'switchEventChangeInput',
+    name: 'category',
+    values: ['Minor', 'Adult'],
+    placeholder: 'Category',
+    default: 'Adult',
+    model: 'Adult',
+    disabled: false,
+    class: 'is-3',
+    isLabel: true,
+    required: true,
+  },
+  {
     typeInput: 'hidden',
     name: 'select_type',
     values: ['Individual', 'Company'],

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useHead } from '@vueuse/head'
-import { onMounted, watch, ref, computed } from 'vue'
+import { onMounted, watch, ref, computed, reactive } from 'vue'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
 import { useRoute, useRouter } from 'vue-router'
 import { Api } from '/@src/services'
@@ -22,6 +22,7 @@ import {
   perpareDataInputs,
   cleanUpModelInputs,
   notyf,
+  setInputModelData,
 } from '/@src/models/Mixin'
 import { inputsInformation, categoriesMembers } from '/@src/models/Members'
 pageTitle.value = 'Subscriptions'
@@ -31,9 +32,14 @@ useHead({
 
 //DATA
 const route = useRoute()
+const router = useRouter()
+
 const memberships = ref([])
 const recurring = ref(true)
 const aprobado = ref(false)
+
+const member = ref(null)
+const dato = ref(null)
 
 //COMPUTED
 const precios = computed(() => {
@@ -91,6 +97,7 @@ const aprobarPresupuesto = () => {
 const initSuscripcion = () => {
   presupuesto.value = null
   aprobado.value = false
+  isLoaderActive.value = true
   getPresupuesto(datosSolicitud.value)
     .then((response) => {
       presupuesto.value = response.data
@@ -99,28 +106,24 @@ const initSuscripcion = () => {
           0,
           document.body.scrollHeight || document.documentElement.scrollHeight
         )
+        isLoaderActive.value = false
       }, 300)
     })
     .catch((error) => {
       const data = error.response.data
-      // console.log('ERRORES', typeof data, data)
+      isLoaderActive.value = false
       for (var i in data) {
         if (typeof data[i] == 'object') {
-          // console.log('++++++++++++', i, typeof data[i], data[i])
           if (typeof data[i] == 'object') {
             for (var o in data[i]) {
-              // console.log(']]]]]]]', o, data[i][o])
               notyf.error(data[i][o])
             }
           }
-          // data[i].forEach((e: any) => {
-          //   console.log(e, typeof e)
-          //   // notyf.error(`${i}: ${e}`)
-          // })
         }
       }
     })
 }
+const isLoaderActive = ref(false)
 
 const proccessMember = async () => {
   suscripcion.member = perpareDataInputs(inputsInformation.value)
@@ -144,14 +147,36 @@ const proccessMember = async () => {
       fd.append(i, objeto[i])
     }
   }
-
+  isLoaderActive.value = true
   const response = await createSuscripcion(fd)
     .then((response) => {
-      limpiarTodo()
+      console.log(response.data.suscripcion.member.id)
+      notyf.success(
+        'Subscription Processed… you will be redirected to the profile where you can process the payment and activate the subscription'
+      )
+      tiempo.number = 5
+      tiempo.status = true
+      let interval = setInterval(() => {
+        if (tiempo.number > 0) {
+          tiempo.number--
+        }
+        if (tiempo.number == 0) {
+          clearInterval(interval)
+          tiempo.status = false
+          router.push({
+            name: 'members-profile',
+            query: {
+              id: response.data.suscripcion.member.id,
+            },
+            hash: '#susbcriptionIndex',
+          })
+          isLoaderActive.value = false
+        }
+      }, tiempo.time)
     })
     .catch((error) => {
       const data = error.response.data
-      // console.log('ERRORES', typeof data, data)
+      isLoaderActive.value = false
       for (var i in data) {
         if (typeof data[i] == 'object') {
           // console.log('++++++++++++', i, typeof data[i], data[i])
@@ -167,12 +192,28 @@ const proccessMember = async () => {
           // })
         }
       }
-      // console.log('error')
     })
-
-  // ddd
 }
 
+const scrollHeight = () => {
+  return document.body.scrollHeight || document.documentElement.scrollHeight
+}
+
+const selectMember = () => {
+  setTimeout(() => {
+    if (member.value) {
+      console.log(member.value)
+      for (var i in member.value) {
+        if (i != 'photo') {
+          setInputModelData(inputsInformation, i, member.value[i])
+        }
+      }
+    }
+
+    let num = window.scrollY + window.scrollY / 4
+    window.scrollTo(0, num)
+  }, 300)
+}
 const limpiarTodo = async () => {
   cleanUpModelInputs(inputsMembership.value)
   cleanUpModelInputs(inputsInformation.value)
@@ -256,19 +297,21 @@ const limpiarTodo = async () => {
             </div>
           </div>
           <div>
-            <VButton
-              @click="initSuscripcion"
-              color="primary"
-              class="d-flex justify-content-center mt-6 py-5 w-100"
-              style="
-                text-align: center;
-                text-transform: uppercase;
-                font-size: 20px;
-                font-weight: 900;
-              "
-            >
-              start subscription
-            </VButton>
+            <VLoader size="large" :active="isLoaderActive">
+              <VButton
+                @click="initSuscripcion"
+                color="primary"
+                class="d-flex justify-content-center mt-6 py-5 w-100"
+                style="
+                  text-align: center;
+                  text-transform: uppercase;
+                  font-size: 20px;
+                  font-weight: 900;
+                "
+              >
+                start subscription
+              </VButton>
+            </VLoader>
           </div>
         </VCard>
       </div>
@@ -295,8 +338,23 @@ const limpiarTodo = async () => {
       </div>
 
       <div class="column is-12" v-if="presupuesto && aprobado">
-        <h1 class="title is-4">3. Enter member information</h1>
-        <VCard>
+        <h1 class="title is-4">
+          3. Enter the member's email.
+          <br />
+          <small style="font-size: 12px"
+            >Then select a match if possible...otherwise press ENTER</small
+          >
+        </h1>
+        <VCard :style="{ marginBottom: dato ? '25px' : '250px' }">
+          <SearchBar
+            dato="email"
+            v-model:valor="dato"
+            v-model="member"
+            :not-payment-methods="true"
+            @onSubmit="selectMember"
+          />
+        </VCard>
+        <VCard v-if="dato">
           <div class="column is-12">
             <V-Field class="w-100" addons>
               <V-Control
@@ -317,23 +375,33 @@ const limpiarTodo = async () => {
               </V-Control>
             </V-Field>
           </div>
-
           <inputsLayaut :inputs-step="inputsInformation" />
-
-          <VButton
-            @click="proccessMember"
-            color="info"
-            class="d-flex justify-content-center py-5 px-6 ml-auto"
-            style="
-              text-align: center;
-              text-transform: uppercase;
-              font-size: 20px;
-              font-weight: 900;
-            "
-            >Continue
-          </VButton>
+          <p v-if="tiempo.status">
+            You will be redirected, please wait a moment ...
+            {{ tiempo.number }}
+          </p>
+          <VLoader size="large" :active="isLoaderActive">
+            <VButton
+              @click="proccessMember"
+              color="info"
+              class="d-flex justify-content-center py-5 px-6 ml-auto"
+              style="
+                text-align: center;
+                text-transform: uppercase;
+                font-size: 20px;
+                font-weight: 900;
+              "
+            >
+              Continue
+            </VButton>
+          </VLoader>
         </VCard>
       </div>
     </div>
   </SidebarLayout>
 </template>
+<style>
+html {
+  scroll-behavior: smooth;
+}
+</style>

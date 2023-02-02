@@ -67,6 +67,7 @@ export const inputsMembership = ref([
     name: 'prorrateo',
     values: ['', 'Prorated Payment'],
     model: true,
+    default: true,
     required: false,
     class: 'is-3',
     isLabel: true,
@@ -118,5 +119,10 @@ export const getPresupuesto = async (solicitud: object) => {
 
 export const createSuscripcion = async (obj: object) => {
   const response = await Api.post('v2/create_suscripcion', obj)
+  return response
+}
+
+export const getSuscripcion = async (id: Number) => {
+  const response = await Api.post(`v2/get_suscripcion/${id}?is_member=true`)
   return response
 }
