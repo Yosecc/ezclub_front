@@ -1,6 +1,9 @@
 import { Api } from '/@src/services'
 import { ref, computed, reactive } from 'vue'
 
+//DATA
+export const presupuesto = ref(null)
+
 export const solicitud = reactive({
   memberships_id: null,
   recurrences_id: null,
@@ -91,6 +94,8 @@ export const suscripcion = reactive({
   member: {},
 })
 
+//METHODS
+
 export const getMeberships = async () => {
   const response = await Api.get('v2/get_membership')
   return response
@@ -110,8 +115,6 @@ export const getPresupuesto = async (solicitud: object) => {
   const response = await Api.post('v2/presupuesto_member', solicitud)
   return response
 }
-
-export const presupuesto = ref(null)
 
 export const createSuscripcion = async (obj: object) => {
   const response = await Api.post('v2/create_suscripcion', obj)

@@ -20,30 +20,51 @@ import {
   getInput,
   setInputValuesData,
   perpareDataInputs,
+  cleanUpModelInputs,
   notyf,
 } from '/@src/models/Mixin'
-import { inputsInformation } from '/@src/models/Members'
+import { inputsInformation, categoriesMembers } from '/@src/models/Members'
 pageTitle.value = 'Subscriptions'
 useHead({
   title: 'Subscriptions',
 })
 
+//DATA
 const route = useRoute()
-
 const memberships = ref([])
-
 const recurring = ref(true)
-
 const aprobado = ref(false)
 
-const aprobarPresupuesto = () => {
-  aprobado.value = true
-  setTimeout(() => {
-    window.scrollTo(0, window.scrollY + 500)
-  }, 300)
-}
+//COMPUTED
+const precios = computed(() => {
+  const data = memberships.value.find((e) => e.id == solicitud.memberships_id)
+  return data?.amounts.filter(
+    (e) => e.is_recurrence == recurring.value && e.recurrencia != null
+  )
+})
 
+const datosSolicitud = computed(() => {
+  for (var i in solicitud) {
+    if (getInput(inputsMembership.value, i) != undefined) {
+      solicitud[i] = getInput(inputsMembership.value, i).model
+    }
+  }
+  return solicitud
+})
+
+//WATCHS
+watch(
+  () => solicitud.memberships_id,
+  (memberships_id) => {
+    solicitud.recurrences_id = null
+    presupuesto.value = null
+    aprobado.value = false
+  }
+)
+
+//MOUNTED
 onMounted(() => {
+  limpiarTodo()
   getMeberships().then((response) => {
     memberships.value = response.data
   })
@@ -58,51 +79,59 @@ onMounted(() => {
   })
 })
 
-const precios = computed(() => {
-  const data = memberships.value.find((e) => e.id == solicitud.memberships_id)
-  return data?.amounts.filter(
-    (e) => e.is_recurrence == recurring.value && e.recurrencia != null
-  )
-})
+//METHODS
 
-watch(
-  () => solicitud.memberships_id,
-  (memberships_id) => {
-    solicitud.recurrences_id = null
-    presupuesto.value = null
-    aprobado.value = false
-  }
-)
-
-const datosSolicitud = computed(() => {
-  for (var i in solicitud) {
-    if (getInput(inputsMembership.value, i) != undefined) {
-      solicitud[i] = getInput(inputsMembership.value, i).model
-    }
-  }
-  return solicitud
-})
+const aprobarPresupuesto = () => {
+  aprobado.value = true
+  setTimeout(() => {
+    window.scrollTo(0, window.scrollY + 500)
+  }, 300)
+}
 
 const initSuscripcion = () => {
   presupuesto.value = null
   aprobado.value = false
-  getPresupuesto(datosSolicitud.value).then((response) => {
-    presupuesto.value = response.data
-    setTimeout(() => {
-      window.scrollTo(
-        0,
-        document.body.scrollHeight || document.documentElement.scrollHeight
-      )
-    }, 300)
-  })
+  getPresupuesto(datosSolicitud.value)
+    .then((response) => {
+      presupuesto.value = response.data
+      setTimeout(() => {
+        window.scrollTo(
+          0,
+          document.body.scrollHeight || document.documentElement.scrollHeight
+        )
+      }, 300)
+    })
+    .catch((error) => {
+      const data = error.response.data
+      // console.log('ERRORES', typeof data, data)
+      for (var i in data) {
+        if (typeof data[i] == 'object') {
+          // console.log('++++++++++++', i, typeof data[i], data[i])
+          if (typeof data[i] == 'object') {
+            for (var o in data[i]) {
+              // console.log(']]]]]]]', o, data[i][o])
+              notyf.error(data[i][o])
+            }
+          }
+          // data[i].forEach((e: any) => {
+          //   console.log(e, typeof e)
+          //   // notyf.error(`${i}: ${e}`)
+          // })
+        }
+      }
+    })
 }
 
 const proccessMember = async () => {
-  console.log(solicitud)
   suscripcion.member = perpareDataInputs(inputsInformation.value)
 
-  console.log(suscripcion)
-  let objeto = { ...solicitud, ...suscripcion }
+  let objeto = {
+    ...solicitud,
+    ...suscripcion,
+  }
+  objeto.member.category = categoriesMembers.value.model
+
+  console.log(objeto)
 
   const fd = new FormData()
 
@@ -118,24 +147,46 @@ const proccessMember = async () => {
 
   const response = await createSuscripcion(fd)
     .then((response) => {
-      console.log(response)
+      limpiarTodo()
     })
     .catch((error) => {
       const data = error.response.data
-      console.log('data', typeof data, data)
+      // console.log('ERRORES', typeof data, data)
       for (var i in data) {
         if (typeof data[i] == 'object') {
-          console.log(i, typeof data[i], data[i])
+          // console.log('++++++++++++', i, typeof data[i], data[i])
+          if (typeof data[i] == 'object') {
+            for (var o in data[i]) {
+              // console.log(']]]]]]]', o, data[i][o])
+              notyf.error(data[i][o])
+            }
+          }
           // data[i].forEach((e: any) => {
           //   console.log(e, typeof e)
           //   // notyf.error(`${i}: ${e}`)
           // })
         }
       }
-      console.log('error')
+      // console.log('error')
     })
-  console.log('Response', response)
-  // console.log()
+
+  // ddd
+}
+
+const limpiarTodo = async () => {
+  cleanUpModelInputs(inputsMembership.value)
+  cleanUpModelInputs(inputsInformation.value)
+  presupuesto.value = null
+
+  solicitud.memberships_id = null
+  solicitud.recurrences_id = null
+  solicitud.is_initiation_fee = false
+  solicitud.is_card_price = false
+  solicitud.discount = null
+  solicitud.is_last_month = false
+  solicitud.prorrateo = true
+  solicitud.schedules = ''
+  solicitud.leo_vet_fr = false
 }
 </script>
 
@@ -246,6 +297,27 @@ const proccessMember = async () => {
       <div class="column is-12" v-if="presupuesto && aprobado">
         <h1 class="title is-4">3. Enter member information</h1>
         <VCard>
+          <div class="column is-12">
+            <V-Field class="w-100" addons>
+              <V-Control
+                v-for="(category, categoryIndex) in categoriesMembers.values"
+                :key="`categoymember-${categoryIndex}`"
+              >
+                <V-Button
+                  @click="categoriesMembers.model = category"
+                  :color="
+                    categoriesMembers.model == category ? 'primary' : undefined
+                  "
+                  rounded
+                >
+                  {{
+                    category == 'Prospect' ? 'Temporary Members' : category
+                  }}</V-Button
+                >
+              </V-Control>
+            </V-Field>
+          </div>
+
           <inputsLayaut :inputs-step="inputsInformation" />
 
           <VButton
