@@ -17,49 +17,56 @@ const props = defineProps({
     required: true,
   },
 })
+
+onMounted(() => {
+  console.log(props.presupuesto)
+})
 </script>
 
 <template>
-  <VCard class="mb-4" v-if="presupuesto">
-    <!-- <h1 @click="window.print()" class="title is-6">PRINT</h1> -->
+  <VCard class="mb-4" v-if="true">
     <table class="table is-hoverable is-striped is-fullwidth">
       <thead>
         <tr>
-          <th scope="col">Membership Name</th>
-          <th scope="col">Plan</th>
-          <th scope="col">Quantity</th>
-          <th scope="col">Cost</th>
-          <th scope="col">Import</th>
+          <th scope="col">Membership</th>
+          <th scope="col">Description</th>
+          <th style="text-align: center" scope="col">Quantity</th>
+          <th style="text-align: right" scope="col">Cost</th>
+          <th style="text-align: right" scope="col">Import</th>
         </tr>
       </thead>
       <tbody>
-        <tr
-          v-for="(membresia, key) in presupuesto.membresias"
-          :key="`membresia-${key}`"
-        >
-          <td>{{ membresia.description }}</td>
-          <td class="text-capitalize">
-            {{ membresia.interval_count }}
-            {{ membresia.type ? membresia.type : 'Initiation Fee' }}
-            <!-- <span v-if="membresia.type != 'Initiation Fee'">
-             Membership
-            </span> -->
+        <tr v-for="(item, key) in presupuesto.items" :key="`membresia-${key}`">
+          <td>
+            <p>{{ item.description }}</p>
+            <p v-if="item.date_between">
+              <small
+                >{{ item.date_between.start }} -
+                {{ item.date_between.end }}</small
+              >
+            </p>
           </td>
-          <td>{{ membresia.quantity }}</td>
-          <td style="text-align: right">
-            {{ moneda(membresia.amount_subtotal / membresia.quantity / 100) }}
+          <td style="text-transform: capitalize">
+            {{ item.interval_count }} {{ item.type }}
           </td>
+          <td style="text-align: center">{{ item.quantity }}</td>
+          <td style="text-align: right">{{ moneda(item.amount_subtotal) }}</td>
           <td style="text-align: right">
-            {{ moneda(membresia.amount_subtotal / 100) }}
+            <p>
+              <small v-if="item.discount"
+                >({{ item.discount.value }} off)</small
+              >
+              {{ moneda(item.amount_total) }}
+            </p>
           </td>
         </tr>
         <tr style="text-align: right">
           <td colspan="4" style="text-align: right"><b>Subtotal</b></td>
           <td>
-            {{ moneda(presupuesto.totales.upfront.amount_subtotal / 100) }}
+            {{ moneda(presupuesto.subtotal) }}
           </td>
         </tr>
-        <tr style="text-align: right" v-if="presupuesto.discount">
+        <!-- <tr style="text-align: right" v-if="presupuesto.discount">
           <td colspan="4">
             {{ presupuesto.discount.name }}
             <span v-if="presupuesto.discount.type == 'percentaje'">
@@ -75,41 +82,31 @@ const props = defineProps({
               )
             }}
           </td>
-        </tr>
-
-        <tr style="text-align: right">
-          <td colspan="4" style="text-align: right">Tax 7%</td>
-          <td>
-            {{
-              moneda(presupuesto.totales.upfront.total_details.amount_tax / 100)
-            }}
-          </td>
-        </tr>
-
+        </tr> -->
         <tr style="text-align: right">
           <td colspan="4" style="text-align: right">
-            <p v-if="presupuesto.schedules">
+            Tax {{ presupuesto.tax.percentage }}%
+          </td>
+          <td>{{ moneda(presupuesto.tax.value) }}</td>
+        </tr>
+        <tr style="text-align: right">
+          <td colspan="4"><b>Total to pay today</b></td>
+          <td>{{ moneda(presupuesto.total) }}</td>
+        </tr>
+        <tr style="text-align: right">
+          <td colspan="4">
+            <p><b>Recurring Payment</b></p>
+            <p>
               <small
-                >Scheduled Membership:
-                {{ moment(presupuesto.schedules).format('MM-DD-YYYY') }}</small
+                >Next payment date:
+                {{ presupuesto.fechas.next_payment_date }}</small
               >
             </p>
-            <b>Total to pay today</b>
           </td>
-          <td>
-            {{ moneda(presupuesto.totales.upfront.amount_total / 100) }}
-          </td>
-        </tr>
-
-        <tr v-if="presupuesto.totales.recurring" style="text-align: right">
-          <td colspan="4" style="text-align: right">Recurring Payment</td>
-          <td>
-            {{ moneda(presupuesto.totales.recurring.amount_total / 100) }}
-          </td>
+          <td>{{ moneda(presupuesto.recurrente) }}</td>
         </tr>
       </tbody>
     </table>
-
     <slot></slot>
   </VCard>
 </template>

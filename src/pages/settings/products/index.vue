@@ -9,11 +9,13 @@ import {
   company,
   locationsSelect,
   locationsActives,
+  setLocationSistem,
 } from '/@src/models/Companies.ts'
 import { getProducts, products, total } from '/@src/models/Products.ts'
 import { moneda, setInputValuesData, getInput } from '/@src/models/Mixin.ts'
 import { locationInventory } from '/@src/models/Inventory.ts'
 import { useCookies } from 'vue3-cookies'
+
 const { cookies } = useCookies()
 pageTitle.value = 'Products'
 useHead({
@@ -38,6 +40,7 @@ const changeLocation = function (value) {
   }
   isLoaded.value = true
   locationInventory.value = value
+  setLocationSistem(value)
   getProducts(value).then((response) => {
     isLoaded.value = false
   })

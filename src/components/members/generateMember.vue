@@ -94,7 +94,8 @@ const save = () => {
     total: props.total,
     categoriesMembers: props.categoriesMembers,
     notasInput: props.notasInput,
-    presupuesto_id: props.presupuesto_id,
+    // presupuesto_id: props.presupuesto_id,
+    // presupuesto:props.presupuesto
   })
     .then((response) => {
       idMember.value = response.data.id
@@ -110,11 +111,13 @@ const newMembership = () => {
 
   idMember.value = props.member.id
   idMemberMembership.value = null
-
+  console.log('props.membresia', props.membresia)
   const data = perpareDataInputs(props.membresia)
   data.members_id = props.member_id
   data.total = props.total
   data.payment_type_id = 3
+
+  console.log(data)
 
   storeNewMembership(data)
     .then((response) => {
@@ -134,11 +137,13 @@ const newMembership = () => {
 
 const isMemberPayment = ref(false)
 const PaymentAction = (data) => {
-  console.log('yy', data)
-  idMember.value = data.id
-  invoice_id.value = data.invoice_id
+  // console.log('yy', data)
+  if (typeof data == 'object') {
+    idMember.value = data.id
+    invoice_id.value = data.invoice_id
+    emit('PaymentAction', idMember)
+  }
   isMemberPayment.value = true
-  emit('PaymentAction', idMember)
 }
 
 const soyPrincipal = computed(() => {
@@ -187,7 +192,7 @@ const onPaymentCash = (obj) => {
       total: props.total,
       cash_back: obj.changeBack,
       membership_member_id: idMemberMembership.value,
-      presupuesto: props.presupuesto.membresias,
+      presupuesto: props.presupuesto,
     }
 
     console.log('datos', datos)
@@ -218,9 +223,11 @@ const subscribir = (payment_method) => {
     user_id: idMember.value,
     membership_member_id: idMemberMembership.value,
     payment_type_id: 3,
+    presupuesto: props.presupuesto,
   })
     .then((response) => {
       invoice_id.value = response.data.invoice_id
+      // alert(invoice_id.value)
       PaymentAction(idMember.value)
       notyf.success('Success')
       setLoading.value = false
@@ -289,10 +296,15 @@ const subscribir = (payment_method) => {
         </div>
       </VCard>
 
-      <memberCheckoutCash :total="props.total" @onPaymentCash="onPaymentCash" />
+      <memberCheckoutCash
+        :presupuesto="presupuesto"
+        :total="props.total"
+        @onPaymentCash="onPaymentCash"
+      />
     </div>
 
     <div class="columns is-multiline justify-content-center mt-6">
+      <!-- <p>{{ typeof invoice_id }}</p> -->
       <memberCheckoutRecibo
         v-if="idMemberMembership && isMemberPayment"
         :membership_member="idMemberMembership"
@@ -313,6 +325,7 @@ const subscribir = (payment_method) => {
       :amount="props.total"
       :id="idMember"
       :member_membership="idMemberMembership"
+      :presupuesto="presupuesto"
       @PaymentAction="PaymentAction"
     />
 

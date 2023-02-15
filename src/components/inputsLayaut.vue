@@ -114,6 +114,7 @@ const takePhoto = (event) => {
               color="primary"
             />
           </V-Control>
+          <div v-if="input.html" v-html="input.html"></div>
         </div>
       </V-Field>
       <!-- switchEventChange -->

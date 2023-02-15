@@ -1,9 +1,11 @@
 import { ref, computed } from 'vue'
-
 import { Api } from '/@src/services'
-
 import { user } from '/@src/pages/auth/auth.ts'
 import { getInput } from '/@src/models/Mixin.ts'
+import { useCookies } from 'vue3-cookies'
+
+const { cookies } = useCookies()
+
 export const company = ref(null)
 
 export const company_name = computed(() => {
@@ -16,6 +18,7 @@ export const company_name = computed(() => {
 export const locationsData = ref(null)
 
 export const location = ref({})
+const locationCookie = ref(cookies.get('locations_id'))
 
 export const locations = computed(() => {
   if (company.value) return company.value.locations
@@ -53,21 +56,48 @@ export const getLocation = async (id: any) => {
   location.value = response.data
   return response
 }
-import { PUBLIC_KEY_STRIPE } from '/@src/services'
+import { Api, PUBLIC_KEY_STRIPE } from '/@src/services'
 
 export const getCompany = async () => {
   const response = await Api.get('company/get')
   company.value = response.data
-  if (
-    import.meta.env.VITE_MODE == 'development' ||
-    import.meta.env.VITE_MODE == 'staging'
-  ) {
-    PUBLIC_KEY_STRIPE.value = response.data.dev_key_stripe_public
-  } else {
-    PUBLIC_KEY_STRIPE.value = response.data.key_stripe_public
-  }
-
+  locationSistem()
   return response
+}
+
+export const setLocationSistem = (id: number) => {
+  cookies.set('locations_id', id)
+  const locacion = locationSistem()
+  // Api.defaults.headers.common['x-location'] = cookies.get('locations_id')
+}
+
+export const locationSistemID = computed(() => {
+  if (cookies.get('locations_id')) {
+    return cookies.get('locations_id')
+  }
+  return null
+})
+
+export const locationSistem = () => {
+  const id = cookies.get('locations_id')
+  if (id) {
+    const location = locations.value.find((e) => e.id == id)
+
+    if (location) {
+      cookies.set('location_name', location.name)
+
+      const mode = import.meta.env.VITE_MODE
+      if (mode == 'development' || mode == 'staging') {
+        PUBLIC_KEY_STRIPE.value = location.dev_key_stripe_public
+      } else {
+        PUBLIC_KEY_STRIPE.value = location.key_stripe_public
+      }
+      Api.defaults.headers.common['x-location'] = cookies.get('locations_id')
+    }
+
+    return location
+  }
+  return null
 }
 
 export const getCompanySlug = async (slug: string) => {
@@ -99,7 +129,6 @@ export const putLocation = async (id: any, data: any) => {
 
 export const storeLocation = async (data: any) => {
   const response = await Api.post(`companies/storeLocation`, data)
-
   return response
 }
 

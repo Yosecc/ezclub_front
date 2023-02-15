@@ -27,6 +27,10 @@ const props = defineProps({
     type: String,
     default: 'mx-2',
   },
+  presupuesto: {
+    type: Object,
+    defaukt: {},
+  },
 })
 
 const emit = defineEmit(['onPaymentCash'])
@@ -36,6 +40,7 @@ const payment = () => {
   emit('onPaymentCash', {
     changeBack: changeBack.value,
     cash: cash.value,
+    presupuesto: props.presupuesto,
   })
 }
 </script>
@@ -51,7 +56,7 @@ const payment = () => {
       <i class="fas fa-money-bill" aria-hidden="true"></i>
     </p>
     <p class="title is-5">
-      Cash <b>{{ moneda(total / 100) }}</b>
+      Cash <b>{{ moneda(total) }}</b>
     </p>
   </VCard>
   <VModal
@@ -63,7 +68,7 @@ const payment = () => {
     <template #content>
       <div class="d-flex mb-4 justify-content-between">
         <p class="title is-5">
-          Total: <b>{{ moneda(total / 100) }}</b>
+          Total: <b>{{ moneda(total) }}</b>
         </p>
 
         <p class="title is-5">
@@ -90,9 +95,9 @@ const payment = () => {
           bold
           class="m-3"
           style="font-size: 14px"
-          @click="cash = Number.parseFloat(total / 100).toFixed(2)"
+          @click="cash = Number.parseFloat(total).toFixed(2)"
         >
-          Full Payment {{ moneda(total / 100) }}</VButton
+          Full Payment {{ moneda(total) }}</VButton
         >
         <div class="w-100"></div>
         <VButton

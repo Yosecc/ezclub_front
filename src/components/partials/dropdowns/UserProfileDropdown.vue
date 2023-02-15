@@ -1,8 +1,18 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { user, onLogout } from '/@src/pages/auth/auth.ts'
-import { getCompany, company } from '/@src/models/Companies.ts'
-import { notyf, setInputValuesData, getInput } from '/@src/models/Mixin.ts'
+import {
+  getCompany,
+  company,
+  setLocationSistem,
+  locationSistem,
+} from '/@src/models/Companies.ts'
+import {
+  notyf,
+  setInputValuesData,
+  getInput,
+  getValueInput,
+} from '/@src/models/Mixin.ts'
 import { useCookies } from 'vue3-cookies'
 const { cookies } = useCookies()
 
@@ -25,21 +35,26 @@ const locations = ref([
     values: [],
     class: 'is-12',
     change: function (inputsstep) {
-      cookies.set('locations_id', this.model)
+      setLocationSistem(this.model)
+      window.location.reload()
     },
   },
 ])
 </script>
 
 <template>
-  <V-Dropdown right spaced class="user-dropdown profile-dropdown">
+  <V-Dropdown right spaced class="user-dropdown profile-dropdown mb-5">
     <template #button="{ toggle }">
       <a
         class="is-trigger dropdown-trigger"
+        style="display: block; background: transparent; text-align: center"
         aria-haspopup="true"
         @click="toggle"
       >
         <V-Avatar picture="https://picsum.photos/200/200" />
+        <p v-if="getInput(locations, 'locations_id').values.length">
+          {{ getValueInput(locations, 'locations_id').name }}
+        </p>
       </a>
     </template>
 
@@ -49,7 +64,9 @@ const locations = ref([
 
         <div class="meta">
           <span>{{ user.name }}</span>
-          <!-- <span>Product Manager</span> -->
+          <span v-if="getInput(locations, 'locations_id').values.length">{{
+            getValueInput(locations, 'locations_id').name
+          }}</span>
         </div>
       </div>
 
@@ -57,7 +74,7 @@ const locations = ref([
         <inputsLayaut class="w-100" :inputs-step="locations" />
       </div>
 
-      <!-- <a href="#" role="menuitem" class="dropdown-item is-media">
+      <!--  <a href="#" role="menuitem" class="dropdown-item is-media">
         <div class="icon">
           <i aria-hidden="true" class="lnil lnil-user-alt"></i>
         </div>

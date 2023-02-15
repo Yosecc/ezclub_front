@@ -204,6 +204,7 @@ const PaymentAction = (idMember) => {
         :presupuesto="presupuesto"
       >
         <div class="d-flex justify-content-end w-100">
+          <p>{{ presupuesto.presupuesto_id }}</p>
           <generateMember
             :member="presupuesto.member"
             :membresia="presupuesto.membresia"
@@ -211,7 +212,7 @@ const PaymentAction = (idMember) => {
             :presupuesto_id="presupuesto.presupuesto_id"
             :categories-members="categoriesMembers"
             :notas-input="notasInput"
-            :total="presupuesto.totales.upfront.amount_total"
+            :total="presupuesto.total"
             :presupuesto="presupuesto"
             @PaymentAction="PaymentAction"
           />

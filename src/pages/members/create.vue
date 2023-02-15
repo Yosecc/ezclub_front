@@ -73,6 +73,8 @@ onMounted(() => {
     setInputValuesData(inputsFamily, 'state_id', states.value)
     setInputValuesData(parentInsputs, 'state_id', states.value)
     setInputValuesData(inputsInformation, 'country_id', contries.value)
+    // console.log('f',inputsInformation.value, 'country_id')
+    getInput(inputsInformation.value, 'country_id').model = 34
     setInputValuesData(inputsFamily, 'country_id', contries.value)
     setInputValuesData(parentInsputs, 'country_id', contries.value)
   })

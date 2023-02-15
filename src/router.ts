@@ -21,6 +21,12 @@ const routesCustom: RouteRecordRaw = [
     path: '/landing/member/updated',
     props: true,
   },
+  {
+    component: () => import('/src/pages/waiver/index.vue'),
+    name: 'waiver',
+    path: '/waiver',
+    props: true,
+  },
 ]
 
 //* Here is how nested routes are generated:
@@ -61,6 +67,7 @@ const routesPublic = [
   'auth-register-steps',
   'landing-member-updated',
   'wizard-v1',
+  'waiver',
 ]
 
 router.beforeResolve((to, from, next) => {

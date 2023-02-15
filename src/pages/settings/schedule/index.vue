@@ -20,6 +20,7 @@ import {
   company,
   locationsSelect,
   locationsActives,
+  setLocationSistem,
 } from '/@src/models/Companies.ts'
 import {
   notyf,
@@ -87,7 +88,8 @@ export default {
   },
   watch: {
     locationChange: function (to) {
-      cookies.set('locations_id', to)
+      // cookies.set('locations_id', to)
+      setLocationSistem(to)
       getSchedules(to).then((response) => {
         this.calendarOptions.events = response.data
       })

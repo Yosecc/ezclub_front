@@ -8,6 +8,8 @@ import { pageTitle } from '/@src/state/sidebarLayoutState'
 
 import { PUBLIC_KEY_STRIPE } from '/@src/services/index.ts'
 
+import { locationSistem } from '/@src/models/Companies.ts'
+
 type SidebarTheme =
   | 'default'
   | 'color'
@@ -88,10 +90,12 @@ watch(
 )
 
 const validaCredenciales = computed(() => {
-  //if (
-  //  PUBLIC_KEY_STRIPE.value.includes('pk_live') &&
-  //  (import.meta.env.VITE_MODE == 'development' ||
-  //    import.meta.env.VITE_MODE == 'staging')
+  // console.log('locationSistem.value', locationSistem.value)
+  // console.log('CREDENCIALES SIDEBAR', PUBLIC_KEY_STRIPE.value)
+  // if (
+  //   PUBLIC_KEY_STRIPE.value.includes('pk_live') &&
+  //   (import.meta.env.VITE_MODE == 'development' ||
+  //     import.meta.env.VITE_MODE == 'staging')
   // ) {
   //   return true
   // }

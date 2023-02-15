@@ -203,9 +203,9 @@ const emit = defineEmit(['changeStep', 'returnData'])
       <inputsLayaut :inputs-step="i.membresia" />
     </V-Card>
 
-    <V-Card class="mb-4">
+    <!-- <V-Card class="mb-4">
       <inputsLayaut :inputs-step="notes" />
-    </V-Card>
+    </V-Card> -->
   </formLayaut>
 </template>
 

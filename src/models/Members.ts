@@ -32,7 +32,7 @@ export const idMemberPrincipal = ref(null)
 export const presupuestos = ref([])
 export const categoriesMembers = ref({
   name: 'category',
-  values: ['Adult', 'Minor', 'Prospect'],
+  values: ['Adult', 'Minor'],
   model: 'Adult',
   required: true,
 })
@@ -161,8 +161,8 @@ export const namesValidate = function (event, input) {
 }
 
 export const inputsInformation = ref([
-  /*{
-    typeInput: 'switchEventChangeInput',
+  {
+    typeInput: 'hidden',
     name: 'select_type',
     values: ['Individual', 'Company'],
     model: false,
@@ -178,7 +178,7 @@ export const inputsInformation = ref([
         getInput(inputs, 'company_name').typeInput = 'text'
       }
     },
-  },*/
+  },
   {
     typeInput: 'file',
     name: 'photo',
@@ -345,7 +345,7 @@ export const inputsInformation = ref([
     typeMember: ['Individual', 'Company'],
   },
   {
-    typeInput: 'keyInput',
+    typeInput: 'text',
     name: 'city_id',
     placeholder: 'City',
     value: '',
@@ -358,26 +358,26 @@ export const inputsInformation = ref([
     isLabel: true,
     categories: ['Adult', 'Prospect'],
     typeMember: ['Individual', 'Company'],
-    keyUp: function (event, input) {
-      if (input.values.length) {
-        input.valuesCalculated = input.values.filter((e) =>
-          e.name.match(new RegExp(input.value, 'i'))
-        )
-      }
-      if (input.valuesCalculated.length && input.value != '') {
-        input.showList = true
-      } else {
-        input.showList = false
-      }
-      if (event.keyCode == 40 && input.values.length) {
-        input.showList = true
-        document[`form-list-${input.name}`][`form-select-${input.name}`].focus()
-      }
-      if (input.value == '') {
-        input.showList = false
-        input.model = ''
-      }
-    },
+    // keyUp: function (event, input) {
+    //   if (input.values.length) {
+    //     input.valuesCalculated = input.values.filter((e) =>
+    //       e.name.match(new RegExp(input.value, 'i'))
+    //     )
+    //   }
+    //   if (input.valuesCalculated.length && input.value != '') {
+    //     input.showList = true
+    //   } else {
+    //     input.showList = false
+    //   }
+    //   if (event.keyCode == 40 && input.values.length) {
+    //     input.showList = true
+    //     document[`form-list-${input.name}`][`form-select-${input.name}`].focus()
+    //   }
+    //   if (input.value == '') {
+    //     input.showList = false
+    //     input.model = ''
+    //   }
+    // },
     selectOption: function (event, input) {
       // if(event.code == 'Enter'){
       input.value = input.values.find((e) => e.id == event.target.value).name
@@ -385,9 +385,9 @@ export const inputsInformation = ref([
       input.showList = false
       // }
     },
-    keyUpEnter: function (event, input) {
-      input.showList = true
-    },
+    // keyUpEnter: function (event, input) {
+    //   input.showList = true
+    // },
   },
   {
     typeInput: 'selectData',
@@ -420,6 +420,7 @@ export const inputsInformation = ref([
     name: 'country_id',
     placeholder: 'Country',
     model: 'US',
+    disabled: true,
     required: true,
     values: [''],
     class: 'is-3',
@@ -459,7 +460,8 @@ export const inputsInformation = ref([
   {
     typeInput: 'switch',
     name: 'leo_vet_fr',
-    values: ['', 'LEO / VET / FR'],
+    values: ['', 'LAW ENFORCEMENT OFFICER'],
+    html: '<div class="ml-4"><p><small>VETERAN</small></p><p><small>FIRTS RESPONDER</small></p></div>',
     model: false,
     default: false,
     required: false,
@@ -648,7 +650,7 @@ const familyData = ref([
     category: ['Adult'],
   },
   {
-    typeInput: 'number',
+    typeInput: 'text',
     typeInputDefault: 'number',
     name: 'personal_identifications',
     placeholder: 'ID #',
@@ -723,11 +725,11 @@ const familyData = ref([
     typeInputDefault: 'selectData',
     name: 'country_id',
     placeholder: 'Country',
-    model: '',
-    values: [''],
+    model: 34,
+    values: [],
     class: 'is-3',
     isLabel: true,
-    required: true,
+    required: false,
     category: ['Adult'],
     typeMember: ['Individual', 'Company'],
   },
@@ -758,7 +760,8 @@ const familyData = ref([
     typeInput: 'checkbox',
     typeInputDefault: 'checkbox',
     name: 'leo_vet_fr',
-    placeholder: 'LEO / VET / FR',
+    placeholder: 'LAW ENFORCEMENT OFFICER',
+    html: '<p>Lorem</p>',
     model: [],
     required: false,
     class: 'is-6',
@@ -871,7 +874,7 @@ export const membershipsData = reactive([
   {
     typeInput: 'switchEventChangeInput',
     name: 'recurrence',
-    values: ['', 'Recurrence'],
+    values: ['Temporary', 'Subscription'],
     placeholder: 'Recurrence',
     model: true,
     disabled: false,
@@ -914,9 +917,20 @@ export const membershipsData = reactive([
     isLabel: true,
   },
   {
-    typeInput: 'selectDataActionChangeInput',
+    typeInput: 'hidden',
     name: 'locations_id',
     placeholder: 'Locations Sale',
+    required: false,
+    values: [],
+    model: '',
+    disabled: false,
+    class: 'is-4',
+    isLabel: true,
+  },
+  {
+    typeInput: 'checkboxGroupSimple',
+    name: 'locations',
+    placeholder: 'Locations access',
     required: true,
     values: [],
     model: '',
@@ -946,7 +960,7 @@ export const membershipsData = reactive([
     data: null,
     model: '',
     disabled: false,
-    class: 'is-6',
+    class: 'is-3',
     isLabel: true,
   },
   {
@@ -971,7 +985,17 @@ export const membershipsData = reactive([
     class: 'is-3',
     isLabel: true,
   },
-
+  {
+    typeInput: 'switchEventChangeInput',
+    default: false,
+    name: 'is_last_month',
+    placeholder: 'Last Month',
+    values: ['NO', 'YES'],
+    model: false,
+    disabled: false,
+    class: 'is-3',
+    isLabel: true,
+  },
   {
     typeInput: 'DropdownCheckbox',
     name: 'staff_id',
@@ -1092,7 +1116,7 @@ export const parentInsputs = ref([
     required: true,
   },
   {
-    typeInput: 'number',
+    typeInput: 'text',
     name: 'parent_personal_identifications',
     placeholder: 'ID #',
     model: '',
@@ -1262,7 +1286,8 @@ export const inputsMembership = reactive([])
 export const member = ref()
 
 export const getPresupuesto = async (data: any) => {
-  const response = Api.post('getPresupuesto', data)
+  const response = Api.post('v2/presupuesto_member', data)
+  // const response = Api.post('getPresupuesto', data)
   return response
 }
 
@@ -1567,6 +1592,7 @@ const change_memberships_id = function (inputsStep: any) {
     }
   })
   setInputValuesData(inputsStep, 'locations_id', locations)
+  setInputValuesData(inputsStep, 'locations', locations)
   let is_recurrence = 1
   if (!getInput(inputsStep, 'recurrence').model) {
     is_recurrence = 0
@@ -1710,6 +1736,7 @@ export const setInputsEvents = (inputs: any) => {
   getInput(inputs, 'memberships_id').change = change_memberships_id
   getInput(inputs, 'recurrences_id').change = change_recurrences_id
   getInput(inputs, 'locations_id').change = change_locations_id
+  getInput(inputs, 'locations').change = change_locations_id
   getInput(inputs, 'discount').change = change_discount
   getInput(inputs, 'discount').filter = filter_discount
   getInput(inputs, 'staff_id').filter = filterOptionText_staff_id
@@ -1779,7 +1806,8 @@ export const proccessMembership = async (props: object) => {
     fd.append(i, notasInputFD[i])
   }
 
-  fd.append('presupuesto_id', props.presupuesto_id)
+  // fd.append('presupuesto', JSON.stringify(props.presupuesto))
+  // fd.append('presupuesto_id', props.presupuesto_id)
 
   if (idMemberPrincipal.value) {
     fd.append('id_principal', idMemberPrincipal.value)
@@ -1824,6 +1852,8 @@ export const generaPresupuesto = async (membresia: any, member: any) => {
     ...Objectforthebudget(membresia),
   }
 
+  data.is_last_month = getInput(membresia, 'is_last_month').model
+
   if (categorieActive.value == 'Minor') {
     data.email = getInput(parentInsputs.value, 'parent_email')
       ? getInput(parentInsputs.value, 'parent_email').model
@@ -1845,7 +1875,7 @@ export const generaPresupuesto = async (membresia: any, member: any) => {
   if (getInput(membresia, 'schedules') != undefined) {
     data.schedules = getInput(membresia, 'schedules').model
   }
-  console.log(data)
+  // console.log(data)
   const response = await getPresupuesto(data)
     .then((response) => {
       presupuestos.value.push({

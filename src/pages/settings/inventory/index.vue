@@ -15,6 +15,7 @@ import {
   company,
   locationsSelect,
   locationsActives,
+  setLocationSistem,
 } from '/@src/models/Companies.ts'
 import { API_URL } from '/@src/services'
 
@@ -76,6 +77,8 @@ const changeLocation = function (value) {
     value = this.model
   }
   isLoaded.value = true
+
+  setLocationSistem(getInput(locationsSelect.value, 'locations_id').model)
   getProducts(
     getInput(locationsSelect.value, 'locations_id').model,
     'active'

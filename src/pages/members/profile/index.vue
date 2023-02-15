@@ -131,6 +131,7 @@ onMounted(() => {
   }
   getCompany().then((response) => {
     setInputValuesData(membershipsData, 'locations_id', locations.value)
+    setInputValuesData(membershipsData, 'locations', locations.value)
   })
   getAllConfig().then((response) => {
     setInputValuesData(inputsInformation, 'country_id', response.contries)
@@ -145,7 +146,7 @@ onMounted(() => {
     setInputValuesData(parentInsputs.value, 'state_id', response.states)
     setInputValuesData(parentInsputs.value, 'country_id', response.contries)
   })
-  getMeberships().then((response) => {
+  getMeberships(1).then((response) => {
     setInputValuesData(
       membershipsData,
       'memberships_id',
@@ -216,6 +217,14 @@ const mountMember = async () => {
             if (response.data[i][e] == 2) {
               getInput(membershipsData, 'memberships_id').model = ''
             }
+          } else if (e == 'locations') {
+            let arr = []
+            if (response.data[i][e].length) {
+              response.data[i][e].forEach((e) => {
+                arr.push(e.companies_locations_id)
+              })
+            }
+            getInput(membershipsData, 'locations').model = arr
           } else {
             if (getInput(membershipsData, e) != undefined) {
               setInputModelData(membershipsData, e, response.data[i][e])
@@ -371,7 +380,20 @@ const reload = () => {
               <p>
                 <b>Membership Active:</b> {{ memberMermship.membership.name }}
               </p>
-              <p>
+              <p
+                v-if="
+                  member.subscription &&
+                  member.subscription.status == 'schedules'
+                "
+              >
+                <b>Schedules: </b>
+                {{
+                  moment(member.membership_members.schedules).format(
+                    'ddd - DD MMM YYYY'
+                  )
+                }}
+              </p>
+              <p v-else>
                 <b>Due Date: </b>
                 {{
                   moment(member.subscription.proxima_factura).format(

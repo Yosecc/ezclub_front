@@ -130,7 +130,16 @@ watch(
           <V-Control>
             <V-Button
               :color="filterDate == 'all' ? 'primary' : undefined"
-              @click="getMembers('all')"
+              @click="
+                getMembers(
+                  'all',
+                  filters.value,
+                  route.query.page,
+                  categoryB,
+                  false
+                ),
+                  (filterDate = 'all')
+              "
               rounded
             >
               Today
@@ -139,7 +148,16 @@ watch(
           <V-Control>
             <V-Button
               :color="filterDate == 'yesterday' ? 'primary' : undefined"
-              @click="getMembers('yesterday')"
+              @click="
+                getMembers(
+                  'yesterday',
+                  filters.value,
+                  route.query.page,
+                  categoryB,
+                  false
+                ),
+                  (filterDate = 'yesterday')
+              "
               rounded
             >
               Yesterday
@@ -148,7 +166,16 @@ watch(
           <V-Control>
             <V-Button
               :color="filterDate == 'week' ? 'primary' : undefined"
-              @click="getMembers('week')"
+              @click="
+                getMembers(
+                  'week',
+                  filters.value,
+                  route.query.page,
+                  categoryB,
+                  false
+                ),
+                  (filterDate = 'week')
+              "
               rounded
             >
               last 7 day
@@ -198,7 +225,7 @@ watch(
                 :color="categoryB == 'Adult' ? 'primary' : undefined"
                 @click="
                   getMembers(
-                    'all',
+                    filterDate,
                     filters.value,
                     route.query.page,
                     'Adult',
@@ -216,7 +243,7 @@ watch(
                 :color="categoryB == 'Minor' ? 'primary' : undefined"
                 @click="
                   getMembers(
-                    'all',
+                    filterDate,
                     filters.value,
                     route.query.page,
                     'Minor',
@@ -234,7 +261,7 @@ watch(
                 :color="categoryB == 'Prospect' ? 'primary' : undefined"
                 @click="
                   getMembers(
-                    'all',
+                    filterDate,
                     filters.value,
                     route.query.page,
                     'Prospect',
