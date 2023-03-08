@@ -172,7 +172,7 @@ const datatableV1 = computed(() => {
           </VCard>
         </div>
 
-        <div class="is-4 column content-card">
+        <!-- <div class="is-4 column content-card">
           <VPlaceloadWrap v-if="isLoaded">
             <VPlaceload height="110px" width="100%" class="mx-2" />
           </VPlaceloadWrap>
@@ -191,9 +191,9 @@ const datatableV1 = computed(() => {
               </div>
             </div>
           </VCard>
-        </div>
+        </div> -->
 
-        <div class="is-4 column content-card">
+        <!-- <div class="is-4 column content-card">
           <VPlaceloadWrap v-if="isLoaded">
             <VPlaceload height="110px" width="100%" class="mx-2" />
           </VPlaceloadWrap>
@@ -209,7 +209,7 @@ const datatableV1 = computed(() => {
               </div>
             </div>
           </VCard>
-        </div>
+        </div> -->
       </div>
 
       <VLoader size="large" :active="isLoaded">
