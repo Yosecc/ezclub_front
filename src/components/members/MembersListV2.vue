@@ -182,7 +182,12 @@ watch(
           </template>
         </V-PlaceholderPage>
 
-        <transition-group name="list" tag="div" class="columns is-multiline">
+        <transition-group
+          name="list"
+          tag="div"
+          class="columns is-multiline"
+          v-if="filteredData.length"
+        >
           <!--Grid item-->
           <div
             v-for="item in filteredData"
@@ -261,7 +266,11 @@ watch(
                     :label="' '"
                     :value="item.id"
                   /> -->
-                  <FlexTableDropdown :id-member="item.id" :member="item" />
+                  <FlexTableDropdown
+                    :id-member="item.id"
+                    :member="item"
+                    v-if="item"
+                  />
                 </div>
               </div>
               <div class="d-flex justify-content-between mt-3">
@@ -341,7 +350,7 @@ watch(
                     />
                   </div>
 
-                  <div class="mr-3" v-if="item.cards.length">
+                  <div class="mr-3" v-if="item.cards && item.cards.length">
                     <!-- <p>{{ item.cards[0] }}</p> -->
                     <VTag
                       v-if="item.cards[0].last4 != null"

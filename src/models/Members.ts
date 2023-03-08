@@ -1914,5 +1914,8 @@ export const arregloTrainers = (trainers: any) => {
 }
 
 export const initials = (name, lastname) => {
-  return name.substr(0, 1) + lastname.substr(0, 1)
+  if (name) {
+    return name.substr(0, 1) + lastname.substr(0, 1)
+  }
+  return ''
 }
