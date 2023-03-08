@@ -1,407 +1,290 @@
 <script setup lang="ts">
 import { useHead } from '@vueuse/head'
-import { onMounted, watch, ref, computed, reactive } from 'vue'
+import { onMounted, watch, ref, computed } from 'vue'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
 import { useRoute, useRouter } from 'vue-router'
 import { Api } from '/@src/services'
-import {
-  getMeberships,
-  solicitud,
-  inputsMembership,
-  getDiscounts,
-  getPresupuesto,
-  presupuesto,
-  suscripcion,
-  createSuscripcion,
-} from '/@src/models/Subscriptions'
-import { cities, states, contries, getAllConfig } from '/@src/services/config'
-import {
-  moneda,
-  getInput,
-  setInputValuesData,
-  perpareDataInputs,
-  cleanUpModelInputs,
-  notyf,
-  setInputModelData,
-} from '/@src/models/Mixin'
-import { inputsInformation, categoriesMembers } from '/@src/models/Members'
-pageTitle.value = 'Subscriptions'
+// import { members, subscriptionsCreateStripe } from '/@src/models/Members.ts'
+
+import { suscripciones } from '/@src/models/Subscriptions.ts'
+
+pageTitle.value = 'Suscriptions'
 useHead({
-  title: 'Subscriptions',
+  title: 'List Suscriptions',
 })
 
-//DATA
 const route = useRoute()
-const router = useRouter()
 
-const memberships = ref([])
-const recurring = ref(true)
-const aprobado = ref(false)
+const filters = ref('')
+const filterDate = ref('all')
 
-const member = ref(null)
-const dato = ref(null)
+const paginationData = ref([])
 
-//COMPUTED
-const precios = computed(() => {
-  const data = memberships.value.find((e) => e.id == solicitud.memberships_id)
-  return data?.amounts.filter(
-    (e) => e.is_recurrence == recurring.value && e.recurrencia != null
-  )
-})
+const isLoading = ref(true)
+const defalA = ref('all')
 
-const datosSolicitud = computed(() => {
-  for (var i in solicitud) {
-    if (getInput(inputsMembership.value, i) != undefined) {
-      solicitud[i] = getInput(inputsMembership.value, i).model
-    }
-  }
-  return solicitud
-})
-
-//WATCHS
 watch(
-  () => solicitud.memberships_id,
-  (memberships_id) => {
-    solicitud.recurrences_id = null
-    presupuesto.value = null
-    aprobado.value = false
+  () => route.query.page,
+  () => {
+    getSuscripcion(
+      'all',
+      filters.value,
+      route.query.page,
+      categoryB.value,
+      false
+    )
   }
 )
 
-//MOUNTED
+watch(
+  () => filters.value,
+  () => {
+    // getSuscripcion('all', filters.value, 1, categoryB.value, false)
+  }
+)
+
+const getSuscripcion = async (
+  filter,
+  value = '',
+  page = 1,
+  category = null,
+  reload = true,
+  estado = null
+) => {
+  filterDate.value = filter
+  isLoading.value = true
+  await Api.get('v2/suscripcion', {
+    params: {
+      [filterDate.value]: true,
+      filter: value,
+      page: page,
+      category: category,
+      estado: estado,
+    },
+  })
+    .then((response) => {
+      suscripciones.value = response.data.suscripciones
+      paginationData.value = response.data.pagination
+      isLoading.value = false
+
+      if (reload) {
+        reloadForm()
+      }
+    })
+    .catch((error) => {
+      isLoading.value = false
+      console.log(error)
+    })
+}
+const categoryB = ref('All')
+const change = (val) => {
+  reloadForm()
+  defalA.value = val
+  getSuscripcion('all', filters.value, route.query.page, val, false)
+}
+
 onMounted(() => {
-  limpiarTodo()
-  getMeberships().then((response) => {
-    memberships.value = response.data
-  })
-  getDiscounts(1, 'membership').then((response) => {
-    setInputValuesData(inputsMembership, 'discount', response.data.discounts)
-  })
-  getAllConfig().then((response) => {
-    setInputValuesData(inputsInformation, 'city_id', cities.value)
-    setInputValuesData(inputsInformation, 'state_id', states.value)
-    setInputValuesData(inputsInformation, 'country_id', contries.value)
-    getInput(inputsInformation.value, 'country_id').model = 34
-  })
+  getSuscripcion('all', filters.value, route.query.page, 'All')
 })
 
-//METHODS
+const filtersSearch = () => {
+  // console.log(filters.value.length)
+  getSuscripcion('all', filters.value, 1, categoryB.value, false)
+}
 
-const aprobarPresupuesto = () => {
-  aprobado.value = true
+const reloadForm = () => {
+  isLoading.value = true
   setTimeout(() => {
-    window.scrollTo(0, window.scrollY + 500)
-  }, 300)
+    isLoading.value = false
+  }, 500)
 }
 
-const initSuscripcion = () => {
-  presupuesto.value = null
-  aprobado.value = false
-  isLoaderActive.value = true
-  getPresupuesto(datosSolicitud.value)
-    .then((response) => {
-      presupuesto.value = response.data
-      setTimeout(() => {
-        window.scrollTo(
-          0,
-          document.body.scrollHeight || document.documentElement.scrollHeight
-        )
-        isLoaderActive.value = false
-      }, 300)
-    })
-    .catch((error) => {
-      const data = error.response.data
-      isLoaderActive.value = false
-      for (var i in data) {
-        if (typeof data[i] == 'object') {
-          if (typeof data[i] == 'object') {
-            for (var o in data[i]) {
-              notyf.error(data[i][o])
-            }
-          }
-        }
-      }
-    })
-}
-const isLoaderActive = ref(false)
+const statusSelect = ref('All')
+const estados = ref([
+  {
+    value: 'All',
+    name: 'All',
+  },
+  {
+    value: 'active',
+    name: 'Active',
+  },
+  {
+    value: 'due',
+    name: 'Due',
+  },
+  {
+    value: 'expired',
+    name: 'Expired',
+  },
+  {
+    value: 'sincard',
+    name: 'No card',
+  },
+  {
+    value: 'sin_factura',
+    name: 'No invoice',
+  },
+  {
+    value: 'nomembershipcontarjeta',
+    name: 'Without membership, with card',
+  },
+  {
+    value: 'cancel',
+    name: 'Cancel',
+  },
+  {
+    value: 'nomembership',
+    name: 'No membership',
+  },
+  {
+    value: 'schedules',
+    name: 'Schedules',
+  },
+])
 
-const proccessMember = async () => {
-  suscripcion.member = perpareDataInputs(inputsInformation.value)
-
-  let objeto = {
-    ...solicitud,
-    ...suscripcion,
-  }
-  objeto.member.category = categoriesMembers.value.model
-
-  console.log(objeto)
-
-  const fd = new FormData()
-
-  for (var i in objeto) {
-    if (typeof objeto[i] == 'object') {
-      for (var e in objeto[i]) {
-        fd.append(i + `[${e}]`, objeto[i][e])
-      }
-    } else {
-      fd.append(i, objeto[i])
-    }
-  }
-  isLoaderActive.value = true
-  const response = await createSuscripcion(fd)
-    .then((response) => {
-      console.log(response.data.suscripcion.member.id)
-      notyf.success(
-        'Subscription Processed… you will be redirected to the profile where you can process the payment and activate the subscription'
-      )
-      tiempo.number = 5
-      tiempo.status = true
-      let interval = setInterval(() => {
-        if (tiempo.number > 0) {
-          tiempo.number--
-        }
-        if (tiempo.number == 0) {
-          clearInterval(interval)
-          tiempo.status = false
-          router.push({
-            name: 'members-profile',
-            query: {
-              id: response.data.suscripcion.member.id,
-            },
-            hash: '#susbcriptionIndex',
-          })
-          isLoaderActive.value = false
-        }
-      }, tiempo.time)
-    })
-    .catch((error) => {
-      const data = error.response.data
-      isLoaderActive.value = false
-      for (var i in data) {
-        if (typeof data[i] == 'object') {
-          // console.log('++++++++++++', i, typeof data[i], data[i])
-          if (typeof data[i] == 'object') {
-            for (var o in data[i]) {
-              // console.log(']]]]]]]', o, data[i][o])
-              notyf.error(data[i][o])
-            }
-          }
-          // data[i].forEach((e: any) => {
-          //   console.log(e, typeof e)
-          //   // notyf.error(`${i}: ${e}`)
-          // })
-        }
-      }
-    })
-}
-
-const scrollHeight = () => {
-  return document.body.scrollHeight || document.documentElement.scrollHeight
-}
-
-const selectMember = () => {
-  setTimeout(() => {
-    if (member.value) {
-      console.log(member.value)
-      for (var i in member.value) {
-        if (i != 'photo') {
-          setInputModelData(inputsInformation, i, member.value[i])
-        }
-      }
-    }
-
-    let num = window.scrollY + window.scrollY / 4
-    window.scrollTo(0, num)
-  }, 300)
-}
-const limpiarTodo = async () => {
-  cleanUpModelInputs(inputsMembership.value)
-  cleanUpModelInputs(inputsInformation.value)
-  presupuesto.value = null
-
-  solicitud.memberships_id = null
-  solicitud.recurrences_id = null
-  solicitud.is_initiation_fee = false
-  solicitud.is_card_price = false
-  solicitud.discount = null
-  solicitud.is_last_month = false
-  solicitud.prorrateo = true
-  solicitud.schedules = ''
-  solicitud.leo_vet_fr = false
+const changeStado = () => {
+  getSuscripcion(
+    'all',
+    filters.value,
+    1,
+    categoryB.value,
+    false,
+    statusSelect.value
+  )
 }
 </script>
 
 <template>
   <SidebarLayout>
-    <div class="columns is-multiline">
-      <div class="column is-9">
-        <h1 class="title is-4">1. Select a membership</h1>
-        <VCard class="mb-4">
-          <VLoader size="large" :active="!memberships.length">
-            <div class="columns is-multiline">
-              <div
-                v-for="(item, key) in memberships"
-                :key="`membership-${key}`"
-                class="column is-4 btn btn-card"
-                @click="solicitud.memberships_id = item.id"
-              >
-                <VCard
-                  :color="
-                    solicitud.memberships_id == item.id ? 'primary' : undefined
-                  "
-                  class="h-100"
-                >
-                  <div>
-                    <h1 class="title is-4">{{ item.name }}</h1>
-                    <!-- <p>{{ item }}</p> -->
-                  </div>
-                </VCard>
+    <!-- Content Wrapper -->
+    <div class="page-content-inner">
+      <div class="mb-5 columns is-multiline">
+        <div class="is-2 column">
+          <V-Field class="w-100">
+            <V-Control class="input-select">
+              <div class="select">
+                <select v-model="statusSelect" @change="changeStado">
+                  <option
+                    v-for="(item, key) in estados"
+                    :key="`estados-${key}`"
+                    :value="item.value"
+                  >
+                    {{ item.name }}
+                  </option>
+                </select>
               </div>
-            </div>
-          </VLoader>
-        </VCard>
-        <VCard class="">
-          <inputsLayaut :inputs-step="inputsMembership" />
-        </VCard>
-      </div>
-      <div class="column is-3">
-        <VCard class="h-100 d-flex flex-column justify-content-between">
-          <div>
-            <VField>
-              <VControl>
-                <VSwitchBlock
-                  v-model="recurring"
-                  label="Recurring Subscription"
-                  color="primary"
-                />
-              </VControl>
-            </VField>
-
-            <div
-              v-for="(item, key) in precios"
-              :key="`membership-precios-${key}`"
-              class="btn btn-card"
-              @click="solicitud.recurrences_id = item.id"
-            >
-              <VCard
-                :color="
-                  solicitud.recurrences_id == item.id ? 'primary' : undefined
-                "
-                class="mb-3 py-4"
-              >
-                <p>{{ item.recurrencia.descriptions }}</p>
-                <p class="title is-5 text-left mt-2">
-                  {{ moneda(item.amount) }}
-                </p>
-              </VCard>
-            </div>
-          </div>
-          <div>
-            <VLoader size="large" :active="isLoaderActive">
-              <VButton
-                @click="initSuscripcion"
-                color="primary"
-                class="d-flex justify-content-center mt-6 py-5 w-100"
-                style="
-                  text-align: center;
-                  text-transform: uppercase;
-                  font-size: 20px;
-                  font-weight: 900;
-                "
-              >
-                start subscription
-              </VButton>
-            </VLoader>
-          </div>
-        </VCard>
-      </div>
-
-      <div class="column is-12" v-if="presupuesto">
-        <h1 class="title is-4">2. Approve the budget</h1>
-        <VCard>
-          <Presupuesto :presupuesto="presupuesto"></Presupuesto>
-
-          <VButton
-            @click="aprobarPresupuesto"
-            color="info"
-            class="d-flex justify-content-center py-5 px-6 ml-auto"
-            style="
-              text-align: center;
-              text-transform: uppercase;
-              font-size: 20px;
-              font-weight: 900;
-            "
-            v-if="!aprobado"
-            >Approve and continue
-          </VButton>
-        </VCard>
-      </div>
-
-      <div class="column is-12" v-if="presupuesto && aprobado">
-        <h1 class="title is-4">
-          3. Enter the member's email.
-          <br />
-          <small style="font-size: 12px"
-            >Then select a match if possible...otherwise press ENTER</small
+            </V-Control>
+          </V-Field>
+        </div>
+        <V-Field class="is-8 column">
+          <V-Control icon="feather:search">
+            <input
+              v-model="filters"
+              class="input custom-text-filter"
+              placeholder="Search..."
+              @keyup.enter="filtersSearch"
+            />
+          </V-Control>
+        </V-Field>
+        <div class="is-2 column">
+          <V-Button
+            :to="{ name: 'members-create' }"
+            color="primary"
+            icon="fas fa-plus"
+            elevated
+            class="w-100"
           >
-        </h1>
-        <VCard :style="{ marginBottom: dato ? '25px' : '250px' }">
-          <SearchBar
-            dato="email"
-            v-model:valor="dato"
-            v-model="member"
-            :not-payment-methods="true"
-            @onSubmit="selectMember"
-          />
-        </VCard>
-        <VCard v-if="dato">
-          <div class="column is-12">
-            <V-Field class="w-100" addons>
-              <V-Control
-                v-for="(category, categoryIndex) in categoriesMembers.values"
-                :key="`categoymember-${categoryIndex}`"
+            Add Subscription
+          </V-Button>
+        </div>
+      </div>
+
+      <div class="columns is-multiline" v-if="isLoading">
+        <div class="mb-2 column is-4" v-for="i in 12" :key="i">
+          <VPlaceload height="120px" />
+        </div>
+      </div>
+
+      <div v-else>
+        <div class="d-flex justify-content-center mb-5">
+          <V-Field addons>
+            <V-Control>
+              <V-Button
+                :color="categoryB == 'All' ? 'primary' : undefined"
+                @click="getSuscripcion('all'), (categoryB = 'All')"
+                rounded
               >
-                <V-Button
-                  @click="categoriesMembers.model = category"
-                  :color="
-                    categoriesMembers.model == category ? 'primary' : undefined
-                  "
-                  rounded
-                >
-                  {{
-                    category == 'Prospect' ? 'Temporary Members' : category
-                  }}</V-Button
-                >
-              </V-Control>
-            </V-Field>
-          </div>
-          <inputsLayaut :inputs-step="inputsInformation" />
-          <p v-if="tiempo.status">
-            You will be redirected, please wait a moment ...
-            {{ tiempo.number }}
-          </p>
-          <VLoader size="large" :active="isLoaderActive">
-            <VButton
-              @click="proccessMember"
-              color="info"
-              class="d-flex justify-content-center py-5 px-6 ml-auto"
-              style="
-                text-align: center;
-                text-transform: uppercase;
-                font-size: 20px;
-                font-weight: 900;
-              "
-            >
-              Continue
-            </VButton>
-          </VLoader>
-        </VCard>
+                All
+              </V-Button>
+            </V-Control>
+            <V-Control>
+              <V-Button
+                :color="categoryB == 'Adult' ? 'primary' : undefined"
+                @click="
+                  getSuscripcion(
+                    'all',
+                    filters.value,
+                    route.query.page,
+                    'Adult',
+                    false
+                  ),
+                    (categoryB = 'Adult')
+                "
+                rounded
+              >
+                Adult
+              </V-Button>
+            </V-Control>
+            <V-Control>
+              <V-Button
+                :color="categoryB == 'Minor' ? 'primary' : undefined"
+                @click="
+                  getSuscripcion(
+                    'all',
+                    filters.value,
+                    route.query.page,
+                    'Minor',
+                    false
+                  ),
+                    (categoryB = 'Minor')
+                "
+                rounded
+              >
+                Minor
+              </V-Button>
+            </V-Control>
+            <V-Control>
+              <V-Button
+                :color="categoryB == 'Prospect' ? 'primary' : undefined"
+                @click="
+                  getSuscripcion(
+                    'all',
+                    filters.value,
+                    route.query.page,
+                    'Prospect',
+                    false
+                  ),
+                    (categoryB = 'Prospect')
+                "
+                rounded
+              >
+                Temporary Members
+              </V-Button>
+            </V-Control>
+          </V-Field>
+        </div>
+
+        <div class="w-100 d-flex justify-content-end mb-4">
+          <membersOptionDropdown />
+        </div>
+        <subscription-list
+          :suscripciones="suscripciones"
+          :pagination-data="paginationData"
+          :filters="filters"
+          @onSearch="onSearch"
+        />
       </div>
     </div>
   </SidebarLayout>
 </template>
-<style>
-html {
-  scroll-behavior: smooth;
-}
-</style>

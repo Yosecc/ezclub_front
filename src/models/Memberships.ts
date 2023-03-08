@@ -7,7 +7,7 @@ export const memberships = ref([])
 export const membership = ref({})
 
 export const getMeberships = async (status = null) => {
-  console.log(status)
+  // console.log(status)
   let url = 'memberships'
   if (status != null) {
     url = `memberships?status=${status}`

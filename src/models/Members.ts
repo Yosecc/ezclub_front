@@ -1295,7 +1295,7 @@ export const emergencyInputs = ref([
 
 export const inputsMembership = reactive([])
 
-export const member = ref()
+export const member = ref(null)
 
 export const getPresupuesto = async (data: any) => {
   const response = Api.post('v2/presupuesto_member', data)
@@ -1468,7 +1468,7 @@ export const storeFirma = async (base64: any, id: any) => {
 }
 
 // Stripe
-export const getCardsMembers = async (id: number) => {
+export const getCardsMembers = async (id: number, url: string) => {
   const response = await Api.get(`members/cards/${id}`)
   return response
 }

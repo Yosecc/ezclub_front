@@ -39,10 +39,11 @@ const addCash = (i) => {
 }
 
 const payment = () => {
+  openModalCash.value = false
   emit('onPayment', {
     cash: cash.value,
     changeBack: changeBack.value,
-    total: props.total,
+    amount: props.total,
     payment_type_id: 1,
   })
 }

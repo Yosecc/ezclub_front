@@ -9,7 +9,7 @@ const props = defineProps({
     type: String,
     required: true,
   },
-  member_id: {
+  user_id: {
     type: Number,
     required: true,
   },
@@ -20,6 +20,10 @@ const props = defineProps({
   pm_last_four: {
     type: String,
     default: '',
+  },
+  addCardStripeURL: {
+    type: String,
+    default: 'addCardStripe',
   },
 })
 
@@ -80,9 +84,9 @@ const initialize = async () => {
 
 const payment = async (payment_method) => {
   isLoaderActive.value = true
-  const { data } = await Api.post('addCardStripe', {
+  const { data } = await Api.post(props.addCardStripeURL, {
     payment_method,
-    member_id: props.member_id,
+    user_id: props.user_id,
   }).catch((e) => {
     buttonLoading.value = false
   })
@@ -113,7 +117,7 @@ const handleSubmit = async (e) => {
 
     if (data) {
       emit('PaymentAction', data)
-      notyf.success('Success Payment')
+      notyf.success('Success')
     }
   } else {
     buttonLoading.value = false

@@ -1,13 +1,38 @@
 <script setup lang="ts">
-import { ref, computed, defineProps } from 'vue'
-import { inputsInformation, putInformation } from '/@src/models/Members.ts'
-import { perpareDataInputs, notyf } from '/@src/models/Mixin.ts'
+import { ref, computed, defineProps, onMounted } from 'vue'
+import {
+  inputsInformation,
+  putInformation,
+  member,
+} from '/@src/models/Members.ts'
+
+import { memberProcess } from '/@src/models/v2/Members.ts'
+import { perpareDataInputs, notyf, getInput } from '/@src/models/Mixin.ts'
+import { useRoute, useRouter } from 'vue-router'
+const router = useRouter()
 
 const props = defineProps({
   category: {
     type: String,
     default: 'Adult',
   },
+  suscripcion: {
+    type: Object,
+    default: null,
+  },
+  user: {
+    type: Object,
+    default: null,
+  },
+})
+
+onMounted(() => {
+  // console.log(props.user)
+  if (props.suscripcion && props.user) {
+    getInput(inputsInformation.value, 'email').model = props.user.email
+    getInput(inputsInformation.value, 'email').disabled = true
+    getInput(inputsInformation.value, 'country_id').model = 34
+  }
 })
 
 const isProspect = computed(() => {
@@ -33,14 +58,36 @@ const onSave = () => {
     // }
   }
 
-  putInformation(fd)
-    .then((response) => {
-      notyf.success('Edit Success')
-      isLoaderActive.value = false
-    })
-    .catch((error) => {
-      isLoaderActive.value = false
-    })
+  if (member.value) {
+    putInformation(fd)
+      .then((response) => {
+        notyf.success('Edit Success')
+        isLoaderActive.value = false
+      })
+      .catch((error) => {
+        isLoaderActive.value = false
+      })
+  } else {
+    if (props.suscripcion) {
+      fd.append('suscripcion_id', props.suscripcion.id)
+    }
+    memberProcess(fd)
+      .then((response) => {
+        notyf.success('Success')
+        isLoaderActive.value = false
+        console.log(response.data.member.id)
+        router.push({
+          name: 'members-profile',
+          query: {
+            id: response.data.member.id,
+          },
+          hash: '#susbcriptionIndex',
+        })
+      })
+      .catch((error) => {
+        isLoaderActive.value = false
+      })
+  }
 }
 
 // const camposMenor = [ '','','','','','','','' ]

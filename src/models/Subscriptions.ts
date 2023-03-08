@@ -1,8 +1,20 @@
 import { Api } from '/@src/services'
 import { ref, computed, reactive } from 'vue'
+import { validateCuponV2 } from '/@src/models/Discounts.ts'
+import {
+  // setInputValuesData,
+  // setInputModelData,
+  // getValueInput,
+  // getInput,
+  notyf,
+  // perpareDataInputs,
+  // convertFormData,
+} from '/@src/models/Mixin.ts'
 
 //DATA
 export const presupuesto = ref(null)
+
+export const suscripciones = ref(null)
 
 export const solicitud = reactive({
   memberships_id: null,
@@ -27,6 +39,24 @@ export const inputsMembership = ref([
     disabled: false,
     class: 'is-3',
     isLabel: true,
+    change: function (inputsStep: any) {
+      if (this.model != '') {
+        validateCuponV2(
+          this.values.find((e: any) => e.id == this.model).code,
+          'membership'
+        )
+          .then((response: any) => {
+            this.data = response.data
+            notyf.success('Discuount valid')
+          })
+          .catch((error: any) => {
+            notyf.error(error.response.data)
+            this.model = ''
+          })
+      } else {
+        this.data = null
+      }
+    },
   },
   {
     typeInput: 'switchEventChangeInput',
@@ -85,6 +115,15 @@ export const inputsMembership = ref([
     categories: ['Adult'],
     typeMember: ['Individual'],
   },
+  {
+    typeInput: 'date',
+    name: 'schedules',
+    placeholder: 'Subscription Schedules',
+    model: '',
+    required: false,
+    class: 'is-4',
+    isLabel: true,
+  },
 ])
 
 export const suscripcion = reactive({
@@ -122,7 +161,35 @@ export const createSuscripcion = async (obj: object) => {
   return response
 }
 
+export const remplazarSuscripcion = async (obj: object) => {
+  const response = await Api.post(
+    `v2/suscripcion/remplace/${obj.suscripcion_id}`,
+    obj
+  )
+  return response
+}
+
 export const getSuscripcion = async (id: Number) => {
   const response = await Api.post(`v2/get_suscripcion/${id}?is_member=true`)
+  return response
+}
+
+export const getSuscripcionCode = async (code: Number) => {
+  const response = await Api.post(`v2/get_suscripcion/code/${code}`)
+  return response
+}
+
+export const paymentSuscripcion = async (id: number, obj: object) => {
+  const response = await Api.post(`v2/suscripcion/payment/${id}`, obj)
+  return response
+}
+
+export const cancelSuscripcion = async (id: number, obj: object) => {
+  const response = await Api.post(`v2/suscripcion/cancel/${id}`, obj)
+  return response
+}
+
+export const holdSuscripcion = async (id: number, obj: object) => {
+  const response = await Api.post(`v2/suscripcion/hold/${id}`, obj)
   return response
 }
