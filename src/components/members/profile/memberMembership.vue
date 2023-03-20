@@ -379,6 +379,10 @@ const locationFacturacion = computed(() => {
   if (member.value.user && member.value.user.location_facturacion) {
     return member.value.user.location_facturacion
   }
+
+  if (memberMermship.value && memberMermship.value.payment_type_id == 1) {
+    return { id: memberMermship.value.locations_id }
+  }
   return null
 })
 </script>

@@ -93,7 +93,7 @@ const onSave = () => {
 // const camposMenor = [ '','','','','','','','' ]
 
 const inputsFiltrados = computed(() => {
-  // console.log('personal',inputsInformation.value)
+  console.log('personal', inputsInformation.value)
   return inputsInformation.value.filter((input) =>
     input.categories.includes(props.category)
   )

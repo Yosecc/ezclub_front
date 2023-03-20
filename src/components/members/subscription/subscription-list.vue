@@ -229,7 +229,7 @@ watch(
                   <p style="font-size: 12px">
                     {{ item.recurrence.recurrencia.descriptions }}
                   </p>
-                  <p class="title is-5 mb-1">
+                  <p v-if="item.membership" class="title is-5 mb-1">
                     {{ item.membership.name }}
                   </p>
                   <p class="title is-6">{{ item.estado.estado_pago }}</p>
@@ -269,15 +269,25 @@ watch(
                     Payment Type: {{ item.payment_type.name }}
                   </p>
 
-                  <div class="mr-3" v-if="item.user.cards.length">
-                    <!-- <p>{{ item.cards[0] }}</p> -->
-                    <VTag
-                      v-if="item.cards[0].last4 != null"
-                      :label="`Cards`"
-                      class="mr-1"
-                      color="purple"
-                    />
+                  <div class="d-flex mt-2">
+                    <div class="mr-1" v-if="item.member.leo_vet_fr">
+                      <VTag :label="`LEO`" class="mr-1" color="orange" />
+                    </div>
+
+                    <div class="mr-1" v-if="item.discount">
+                      <VTag
+                        :label="`${item.discount.name}`"
+                        class="mr-1"
+                        color="secondary"
+                      />
+                    </div>
+
+                    <div class="mr-1" v-if="item.user.cards.length">
+                      <VTag :label="`Cards`" class="mr-1" color="purple" />
+                    </div>
                   </div>
+
+                  <!-- <p>{{ item.discount }}</p> -->
                 </div>
               </div>
             </div>

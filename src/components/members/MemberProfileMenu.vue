@@ -123,6 +123,10 @@ const itemsMenuProspect = [
     name: 'Personal Information',
     component: 'personalInformation',
   },
+  {
+    name: 'Subscription',
+    component: 'susbcriptionIndex',
+  },
   // {
   //   name:'Credit Card',
   //   component: 'memberCreditCard'

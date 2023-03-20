@@ -137,8 +137,11 @@ const onHold = () => {
                 : 'no recurrence'
             }}</small>
           </p>
-          <p class="title is-4 mb-0">
+          <p v-if="!suscripcionComputed.discount" class="title is-4 mb-0">
             {{ moneda(suscripcionComputed.presupuesto.recurrente) }}<br />
+          </p>
+          <p v-else class="title is-4 mb-0">
+            {{ moneda(suscripcionComputed.presupuesto.total) }}<br />
           </p>
           <p v-if="suscripcionComputed.discount" class="title is-6">
             <small>{{ suscripcionComputed.discount.name }}</small> :

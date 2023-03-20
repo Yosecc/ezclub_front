@@ -172,6 +172,7 @@ export const inputsInformation = ref([
     class: 'is-3',
     isLabel: true,
     required: true,
+    categories: ['Adult', 'Minor'],
   },
   {
     typeInput: 'hidden',
