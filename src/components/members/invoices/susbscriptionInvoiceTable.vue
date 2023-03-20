@@ -83,7 +83,10 @@ onMounted(async () => {
                 <!-- <p>{{ invoice.created }}</p> -->
                 {{ moment(invoice.created).format('MM/DD/YYYY') }}
               </td>
-              <td>{{ moneda(invoice.total / 100) }}</td>
+              <td v-if="invoice.collection_method == 'Cash'">
+                {{ moneda(invoice.total) }}
+              </td>
+              <td v-else>{{ moneda(invoice.total / 100) }}</td>
               <td>{{ invoice.collection_method }}</td>
               <td>
                 <a :href="invoice.invoice_pdf" target="_blank">
