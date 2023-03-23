@@ -263,6 +263,15 @@ export const notes = reactive([
 export const inputsConfig = reactive([
   {
     typeInput: 'number',
+    name: 'multigym',
+    placeholder: 'MultiGym',
+    model: '',
+    required: true,
+    isLabel: true,
+    class: 'is-3',
+  },
+  {
+    typeInput: 'number',
     name: 'penalty',
     placeholder: 'Price Late fee',
     model: '',

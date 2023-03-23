@@ -113,6 +113,7 @@ const InputsDisponibles = computed(() => {
       'staff_id',
       'discount',
       'is_last_month',
+      'multigym',
     ]
 
     if (
