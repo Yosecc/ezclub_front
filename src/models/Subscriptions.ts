@@ -23,6 +23,7 @@ export const solicitud = reactive({
   is_card_price: false,
   discount: null,
   is_last_month: false,
+  multigym: false,
   prorrateo: true,
   schedules: '',
   leo_vet_fr: false,
@@ -85,6 +86,17 @@ export const inputsMembership = ref([
     default: false,
     name: 'is_last_month',
     placeholder: 'Last Month',
+    values: ['NO', 'YES'],
+    model: false,
+    disabled: false,
+    class: 'is-3',
+    isLabel: true,
+  },
+  {
+    typeInput: 'switchEventChangeInput',
+    default: false,
+    name: 'multigym',
+    placeholder: 'MultiGym',
     values: ['NO', 'YES'],
     model: false,
     disabled: false,
@@ -186,6 +198,11 @@ export const paymentSuscripcion = async (id: number, obj: object) => {
 
 export const cancelSuscripcion = async (id: number, obj: object) => {
   const response = await Api.post(`v2/suscripcion/cancel/${id}`, obj)
+  return response
+}
+
+export const updateSuscripcion = async (id: number, obj: object) => {
+  const response = await Api.post(`v2/suscripcion/update/${id}`, obj)
   return response
 }
 

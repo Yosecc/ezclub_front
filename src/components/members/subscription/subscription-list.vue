@@ -68,16 +68,41 @@ watch(
 )
 
 // const memberCard = ref({ status: false, member: null })
+const centeredActionsOpen = ref(false)
+const member_id = ref(null)
+const code = ref(null)
 
-const openMemberCard = (status, member) => {
-  // memberCard.value.status = status
-  // memberCard.value.member = member
+const redirectProfile = () => {
+  let query = {}
+  if (item.member) {
+    query = { id: item.member.id }
+  }
+  if (!item.member) {
+    query = { code: item.code }
+  }
+  router.push({
+    name: 'members-profile',
+    query: query,
+    hash: '#susbcriptionIndex',
+  })
 }
 
-// const closeMemberCard = () => {
-//   memberCard.value.status = false
-//   memberCard.value.member = null
-// }
+const openMemberCard = (item) => {
+  centeredActionsOpen.value = true
+  // let query = {}
+  if (item.member) {
+    member_id.value = item.member.id
+    // query = { id: item.member.id }
+  }
+  if (!item.member) {
+    code.value = item.code
+  }
+}
+
+const closeModal = () => {
+  centeredActionsOpen.value = false
+  member_id.value = null
+}
 
 watch(
   () => props.suscripciones,
@@ -188,9 +213,10 @@ watch(
             v-for="item in filteredData"
             :key="`${props.name}-${item.id}`"
             class="column is-4"
+            style="cursor: pointer"
           >
             <div
-              @click="openMemberCard(true, item)"
+              @click="openMemberCard(item)"
               class="tile-grid-item cardprofile"
               :class="colorCard(item)"
               :style="{ backgroundColor: item.estado.color }"
@@ -265,12 +291,15 @@ watch(
                     }}
                   </p>
 
-                  <p style="font-size: 12px">
+                  <p v-if="item.payment_type" style="font-size: 12px">
                     Payment Type: {{ item.payment_type.name }}
                   </p>
 
                   <div class="d-flex mt-2">
-                    <div class="mr-1" v-if="item.member.leo_vet_fr">
+                    <div
+                      class="mr-1"
+                      v-if="item.member && item.member.leo_vet_fr"
+                    >
                       <VTag :label="`LEO`" class="mr-1" color="orange" />
                     </div>
 
@@ -304,11 +333,44 @@ watch(
         />
       </div>
     </div>
-    <!-- <sidebar-member
-      :status="memberCard.status"
-      :member="memberCard.member"
-      @closeMemberCard="closeMemberCard"
-    /> -->
+    <!--  -->
+    <VModal
+      :open="centeredActionsOpen"
+      size="big"
+      actions="center"
+      noscroll
+      @close="closeModal"
+    >
+      <template #content>
+        <subscriptionIndex
+          v-if="centeredActionsOpen"
+          :member_id="member_id"
+          :code="code"
+        />
+      </template>
+      <template #action>
+        <VButton
+          :to="{
+            name: 'members-profile',
+            query: { id: member_id },
+          }"
+          v-if="member_id"
+          color="info"
+          raised
+          >View member profile {{ code }}
+        </VButton>
+        <VButton
+          :to="{
+            name: 'members-profile',
+            query: { code: code },
+          }"
+          v-if="code"
+          color="info"
+          raised
+          >View member profile
+        </VButton>
+      </template>
+    </VModal>
   </div>
 </template>
 

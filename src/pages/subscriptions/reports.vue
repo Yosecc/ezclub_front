@@ -7,6 +7,7 @@ import { Api } from '/@src/services'
 // import { members, subscriptionsCreateStripe } from '/@src/models/Members.ts'
 
 import { suscripciones } from '/@src/models/Subscriptions.ts'
+import * as barSimple from '/@src/models/v2/Reports.ts'
 
 pageTitle.value = 'Suscriptions'
 useHead({
@@ -55,7 +56,7 @@ const getSuscripcion = async (
 ) => {
   filterDate.value = filter
   isLoading.value = true
-  await Api.get('v2/suscripcion', {
+  await Api.get('v2/suscripcion/reports', {
     params: {
       [filterDate.value]: true,
       filter: value,
@@ -67,8 +68,19 @@ const getSuscripcion = async (
   })
     .then((response) => {
       suscripciones.value = response.data.suscripciones
-      paginationData.value = response.data.pagination
-      isLoading.value = false
+
+      // console.log(barSimple.options)
+      // barSimple.options.axis.x.categories = suscripciones.value.fechas
+      let data1 = ['data1'].concat(suscripciones.value.cantidad)
+      let data2 = ['data2'].concat(suscripciones.value.montos)
+      let x = ['x'].concat(suscripciones.value.fechas)
+
+      barSimple.dataNew.data1 = data1
+      barSimple.dataNew.data2 = data2
+      barSimple.dataNew.x = x
+
+      console.log(barSimple.dataNew)
+      // barSimple.options.data.columns = barSimple.options.data.columns.concat(r)
 
       if (reload) {
         reloadForm()
@@ -181,6 +193,9 @@ const changeStado = () => {
         <div class="is-2 column">
           <V-Field class="w-100">
             <V-Control class="input-select">
+              <label for="fecha_pago">
+                <p><small>Status</small></p>
+              </label>
               <div class="select">
                 <select v-model="statusSelect" @change="changeStado">
                   <option
@@ -195,7 +210,11 @@ const changeStado = () => {
             </V-Control>
           </V-Field>
         </div>
-        <V-Field class="is-8 column">
+
+        <V-Field class="is-6 column">
+          <label for="fecha_pago">
+            <p><small>Por definir</small></p>
+          </label>
           <V-Control icon="feather:search">
             <input
               v-model="filters"
@@ -205,50 +224,28 @@ const changeStado = () => {
             />
           </V-Control>
         </V-Field>
-        <div class="is-2 column">
-          <V-Button
-            :to="{ name: 'subscriptions-create' }"
-            color="primary"
-            icon="fas fa-plus"
-            elevated
-            class="w-100"
-          >
-            Add Subscription
-          </V-Button>
-        </div>
-      </div>
-
-      <div class="columns is-multiline" v-if="isLoading">
-        <div class="mb-2 column is-4" v-for="i in 12" :key="i">
-          <VPlaceload height="120px" />
-        </div>
-      </div>
-
-      <div v-else>
-        <div class="d-flex justify-content-end mb-5">
-          <div class="column is-4">
-            <label for="fecha_pago">
-              <p><small>Payment Date</small></p>
-            </label>
-            <input
-              type="date"
-              @change="changeStado"
-              id="fecha_pago"
-              class="input custom-text-filter"
-              v-model="fecha_pago"
-            />
-          </div>
-        </div>
-
-        <!-- <div class="w-100 d-flex justify-content-end mb-4">
-          <membersOptionDropdown />
+        <!-- <div class="is-2 column">
+          
         </div> -->
-        <subscription-list
-          :suscripciones="suscripciones"
-          :pagination-data="paginationData"
-          :filters="filters"
-          @onSearch="onSearch"
-        />
+        <div class="column is-4">
+          <label for="fecha_pago">
+            <p><small>Payment Date</small></p>
+          </label>
+          <input
+            type="date"
+            @change="changeStado"
+            id="fecha_pago"
+            class="input custom-text-filter"
+            v-model="fecha_pago"
+          />
+        </div>
+
+        <VCard v-if="barSimple.dataNew.data1.length" class="column is-12">
+          <V-BillboardJS
+            :options="barSimple.options"
+            @ready="barSimple.onReady"
+          />
+        </VCard>
       </div>
     </div>
   </SidebarLayout>

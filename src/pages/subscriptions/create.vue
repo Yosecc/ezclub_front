@@ -209,7 +209,7 @@ const proccessMember = async () => {
 
 /** PROCESAR SUSCRIPCION V2.2 */
 
-const proccessSuscripcion = async () => {
+const proccessSuscripcion = async (data: any) => {
   if (!dato.value) {
     notyf.error('Email is required')
     return
@@ -217,6 +217,8 @@ const proccessSuscripcion = async () => {
   isLoaderActive.value = true
 
   solicitud.email = dato.value
+
+  Object.assign(solicitud, data)
 
   await createSuscripcion(solicitud)
     .then((response) => {
@@ -265,6 +267,7 @@ const limpiarTodo = async () => {
   solicitud.prorrateo = true
   solicitud.schedules = ''
   solicitud.leo_vet_fr = false
+  solicitud.multigym = false
 }
 
 // PROCESS MINOR
@@ -405,7 +408,42 @@ const isMinor = computed(() => {
           />
         </VCard>
 
-        <VLoader :active="isLoaderActive">
+        <VCard style="margin-bottom: 24px">
+          <div class="columns is-multiline">
+            <div class="column is-4">
+              <VLoader size="small" class="h-100" :active="isLoaderActive">
+                <VCard class="mb-4 h-100">
+                  <div>
+                    <p class="title is-6 mb-1"><b>Total</b></p>
+                    <p class="title is-3 mb-0">
+                      {{ moneda(presupuesto.total) }}
+                    </p>
+                  </div>
+                </VCard>
+              </VLoader>
+            </div>
+
+            <div class="is-4 column mx-auto">
+              <VLoader size="small" :active="isLoaderActive">
+                <subscription-method-stripe-checkout
+                  :total="presupuesto.total"
+                  @onPayment="proccessSuscripcion"
+                />
+              </VLoader>
+            </div>
+
+            <div class="is-4 column mx-auto">
+              <VLoader size="small" :active="isLoaderActive">
+                <subscription-method-payment-cash
+                  :total="presupuesto.total"
+                  @onPayment="proccessSuscripcion"
+                />
+              </VLoader>
+            </div>
+          </div>
+        </VCard>
+
+        <!-- <VLoader :active="isLoaderActive">
           <VButton
             @click="proccessSuscripcion"
             color="info"
@@ -419,7 +457,7 @@ const isMinor = computed(() => {
           >
             Process
           </VButton>
-        </VLoader>
+        </VLoader> -->
 
         <!-- <VCard v-if="dato">
           <inputsLayaut :inputs-step="inputsInformation" />

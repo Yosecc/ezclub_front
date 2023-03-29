@@ -24,6 +24,10 @@ const props = defineProps({
     type: Number,
     required: true,
   },
+  metodos: {
+    type: Array,
+    default: ['stripe-debit', 'cash'],
+  },
 })
 
 const emit = defineEmit(['proccessCheckout', 'reload'])
@@ -83,7 +87,10 @@ const onPayment = (obj: object) => {
       <h1 class="title is-5">Payment methods</h1>
        <div class="d-flex"> -->]
 
-    <div class="is-4 column mx-auto">
+    <div
+      class="is-4 column mx-auto"
+      v-if="props.metodos.includes('stripe-debit')"
+    >
       <VLoader size="small" :active="isLoaderActive">
         <subscription-method-payment-debit-automatic
           :total="props.total"
@@ -220,7 +227,19 @@ const onPayment = (obj: object) => {
 
     <!--  -->
 
-    <div class="is-4 column mx-auto">
+    <div
+      class="is-4 column mx-auto"
+      v-if="props.metodos.includes('stripe-checkout')"
+    >
+      <VLoader size="small" :active="isLoaderActive">
+        <subscription-method-stripe-checkout
+          :total="props.total"
+          @onPayment="onPayment"
+        />
+      </VLoader>
+    </div>
+
+    <div class="is-4 column mx-auto" v-if="props.metodos.includes('cash')">
       <VLoader size="small" :active="isLoaderActive">
         <subscription-method-payment-cash
           :total="props.total"

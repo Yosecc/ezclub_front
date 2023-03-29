@@ -91,6 +91,7 @@ export const perpareDataInputs = (
     })
     return a
   }
+  return {}
 }
 
 export const convertFormData = (fd: any, objeto: object) => {

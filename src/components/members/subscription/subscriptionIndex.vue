@@ -17,9 +17,10 @@ import {
   // presupuesto,
   // suscripcion,
   // createSuscripcion,
-  holdSuscripcion,
-  cancelSuscripcion,
+  // holdSuscripcion,
+  // cancelSuscripcion,
   getSuscripcion,
+  getSuscripcionCode,
 } from '/@src/models/Subscriptions'
 
 import { moneda } from '/@src/models/Mixin'
@@ -30,6 +31,14 @@ const props = defineProps({
     type: Object,
     default: null,
   },
+  member_id: {
+    type: Number,
+    default: null,
+  },
+  code: {
+    type: String,
+    default: null,
+  },
 })
 
 import { useRoute } from 'vue-router'
@@ -37,14 +46,26 @@ const route = useRoute()
 
 const suscripcionD = ref(null)
 const isLoaderActive = ref(false)
-const modalShowHold = ref(false)
 
 const onGetSuscripcion = () => {
+  let id = null
   if (route.query.id) {
-    getSuscripcion(route.query.id).then((response) => {
+    id = route.query.id
+  }
+  if (props.member_id) {
+    id = props.member_id
+  }
+  console.log(id, props.code)
+  if (id == null && props.code) {
+    getSuscripcionCode(props.code).then((response) => {
       suscripcionD.value = response.data.suscripcion
     })
+    return
   }
+
+  getSuscripcion(id).then((response) => {
+    suscripcionD.value = response.data.suscripcion
+  })
 }
 
 const suscripcionComputed = computed(() => {
@@ -59,38 +80,15 @@ onMounted(() => {
   onGetSuscripcion()
 })
 
+watch(
+  () => props.member_id,
+  () => {
+    onGetSuscripcion()
+  }
+)
+
 const proccessCheckout = () => {
   onGetSuscripcion()
-}
-
-const onCancel = () => {
-  isLoaderActive.value = true
-
-  cancelSuscripcion(suscripcionComputed.value.id, {})
-    .then((response) => {
-      isLoaderActive.value = false
-      window.location.reload()
-    })
-    .catch((error) => {
-      isLoaderActive.value = false
-    })
-}
-
-const hold_date_start = ref(null)
-const hold_date_end = ref(null)
-
-const onHold = () => {
-  // modalShowHold.value = true
-  holdSuscripcion(suscripcionComputed.value.id, {
-    hold_date_start: hold_date_start.value,
-    hold_date_end: hold_date_end.value,
-  })
-    .then((response) => {
-      modalShowHold.value = false
-    })
-    .catch((error) => {
-      modalShowHold.value = false
-    })
 }
 </script>
 <template>
@@ -137,16 +135,21 @@ const onHold = () => {
                 : 'no recurrence'
             }}</small>
           </p>
-          <p v-if="!suscripcionComputed.discount" class="title is-4 mb-0">
-            {{ moneda(suscripcionComputed.presupuesto.recurrente) }}<br />
-          </p>
-          <p v-else class="title is-4 mb-0">
-            {{ moneda(suscripcionComputed.presupuesto.total) }}<br />
-          </p>
-          <p v-if="suscripcionComputed.discount" class="title is-6">
-            <small>{{ suscripcionComputed.discount.name }}</small> :
-            {{ moneda(suscripcionComputed.presupuesto.total) }}<br />
-          </p>
+          <span v-if="suscripcionComputed.presupuesto">
+            <p v-if="!suscripcionComputed.discount" class="title is-4 mb-0">
+              {{ moneda(suscripcionComputed.presupuesto.recurrente) }}<br />
+            </p>
+            <p v-else class="title is-4 mb-0">
+              {{ moneda(suscripcionComputed.presupuesto.total) }}<br />
+            </p>
+            <p v-if="suscripcionComputed.discount" class="title is-6">
+              <small>{{ suscripcionComputed.discount.name }}</small> :
+              {{ moneda(suscripcionComputed.presupuesto.total) }}<br />
+            </p>
+          </span>
+          <span v-else>
+            <p>no tiene presupuesto</p>
+          </span>
         </span>
       </div>
       <div class="d-flex flex-row mt-4">
@@ -172,10 +175,19 @@ const onHold = () => {
           }}
         </p>
         <p class="mr-3">
-          <b>Expiration date: </b>
+          <b>Next payment date: </b>
           {{
             moment(
               suscripcionComputed.estado.fecha_vencimiento,
+              'YYYY-MM-DD'
+            ).format('MM-DD-YYYY')
+          }}
+        </p>
+        <p v-if="suscripcionComputed.estado.fecha_suspencion" class="mr-3">
+          <b>Cancellation Date: </b>
+          {{
+            moment(
+              suscripcionComputed.estado.fecha_suspencion,
               'YYYY-MM-DD'
             ).format('MM-DD-YYYY')
           }}
@@ -188,7 +200,7 @@ const onHold = () => {
           {{
             moment(
               suscripcionComputed.memberships_members.payments[0].created_at
-            ).format('MM-DD-YYYY H:m:s')
+            ).format('MM-DD-YYYY')
           }}
         </p>
         <p
@@ -219,136 +231,78 @@ const onHold = () => {
         </div>
       </div>
     </VCard>
-    <VCard
-      v-if="suscripcionComputed.estado.estado_pago != 'CANCELADO'"
-      class="d-flex mb-4"
-    >
-      <div class="column is-4">
-        <VLoader class="h-100" size="small" :active="isLoaderActive">
-          <VCard
-            color="danger"
-            outlined
-            @click="onCancel"
-            class="
-              mr-4
-              btn-card
-              text-center
-              px-2
-              h-100
-              d-flex
-              align-items-center
-              justify-content-center
-            "
-            style="font-size: 12px"
-          >
-            <p><b>Cancel Suscription</b></p>
-          </VCard>
-        </VLoader>
-      </div>
-      <div class="column is-4">
-        <VLoader size="small" class="h-100" :active="isLoaderActive">
-          <VCard
-            color="warning"
-            :outlined="suscripcionComputed.hold_date_end != null ? false : true"
-            @click="modalShowHold = true"
-            class="
-              mr-4
-              btn-card
-              text-center
-              h-100
-              px-2
-              d-flex
-              align-items-center
-              justify-content-center
-            "
-            style="font-size: 12px"
-          >
-            <p><b>HOLD Membership</b></p>
-            <p>
-              <span v-if="suscripcionComputed.hold_date_end != null"
-                >Active until: <br />
-                {{
-                  moment(suscripcionComputed.hold_date_start).format(
-                    'MM/DD/YYYY'
-                  )
-                }}
-                -
-                {{
-                  moment(suscripcionComputed.hold_date_end).format('MM/DD/YYYY')
-                }}</span
-              >
-            </p>
-          </VCard>
-        </VLoader>
-        <V-Modal
-          :open="modalShowHold"
-          actions="center"
-          @close="modalShowHold = false"
-        >
-          <template #content>
-            <!-- <p>
-              Hold end date last day of the month prior to the end of the hold
-            </p> -->
-            <label for="hold_date_start"><p>Hold date start</p></label>
-            <input
-              type="date"
-              v-model="hold_date_start"
-              class="input mt-2 mb-4"
-            />
-            <label for="hold_date_end"><p>Hold date end</p></label>
-            <input
-              type="date"
-              v-model="hold_date_end"
-              class="input mt-2 mb-4"
-            />
-          </template>
-          <template #action>
-            <V-Button @click="onHold" color="primary" raised>Confirm</V-Button>
-          </template>
-        </V-Modal>
-        <!-- <V-Modal
-          :open="modalShowProrratedHold"
-          actions="center"
-          @close="modalShowProrratedHold = false"
-        >
-          <template #content>
-            <p>Do you want to create an invoice with the prorated amount?</p>
-            <inputsLayaut :inputs-step="isProrrateoHold" />
 
-            <table class="table w-100" v-if="presupuestoProrrateo.total">
-              <tr>
-                <td>
-                  Subtotal ({{ presupuestoProrrateo.dias_restantes }}
-                  days)
-                </td>
-                <td>{{ moneda(presupuestoProrrateo.subtotal) }}</td>
-              </tr>
-              <tr>
-                <td>Tax</td>
-                <td>{{ moneda(presupuestoProrrateo.tax) }}</td>
-              </tr>
-              <tr>
-                <td>Total</td>
-                <td>{{ moneda(presupuestoProrrateo.total) }}</td>
-              </tr>
-            </table>
-          </template>
-          <template #action>
-            <V-Button @click="onHold" color="primary" raised>Confirm</V-Button>
-          </template>
-        </V-Modal> -->
+    <div
+      class="columns"
+      v-if="
+        !['PROX. CANCELADO', 'CANCELADO'].includes(
+          suscripcionComputed.estado.estado_pago
+        )
+      "
+    >
+      <div class="column is-8 pt-0">
+        <subscription-edit
+          :suscripcion="suscripcionComputed"
+          @reload="onGetSuscripcion"
+        />
       </div>
-    </VCard>
+      <div class="column is-4">
+        <VCard
+          v-if="suscripcionComputed.estado.estado_pago != 'CANCELADO'"
+          class="columns is-multiline p-1"
+        >
+          <div class="column is-12">
+            <subscription-action-cancel
+              :suscripcion="suscripcionComputed"
+              @reload="onGetSuscripcion"
+            />
+          </div>
+          <div class="column is-12">
+            <subscription-action-hold
+              :suscripcion="suscripcionComputed"
+              @reload="onGetSuscripcion"
+            />
+          </div>
+          <div class="column is-12">
+            <subscription-action-multigym
+              :suscripcion="suscripcionComputed"
+              @reload="onGetSuscripcion"
+            />
+          </div>
+          <!-- <div class="column is-12">
+            <subscription-action-send-email
+              :suscripcion="suscripcionComputed"
+              @reload="onGetSuscripcion"
+            />
+          </div> -->
+          <div class="column is-12">
+            <subscription-action-upgrade
+              :suscripcion="suscripcionComputed"
+              @reload="onGetSuscripcion"
+            />
+          </div>
+        </VCard>
+      </div>
+    </div>
+
     <membershipsGrid
       v-if="
         suscripcionComputed &&
-        suscripcionComputed.estado.estado_pago == 'CANCELADO'
+        ['CANCELADO', 'PROX. CANCELADO'].includes(
+          suscripcionComputed.estado.estado_pago
+        )
       "
       v-model="suscripcionComputed.presupuesto"
       :suscripcion="suscripcionComputed"
     />
 
-    <div v-if="suscripcionComputed.estado.estado_pago != 'CANCELADO'">
+    <div
+      v-if="
+        !['CANCELADO', 'PROX. CANCELADO'].includes(
+          suscripcionComputed.estado.estado_pago
+        )
+      "
+    >
       <subscription-checkout
         v-if="
           suscripcionComputed &&
