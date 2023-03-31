@@ -43,15 +43,21 @@ const onPayment = (obj: object) => {
     })
     .catch((error: any) => {
       isLoaderActive.value = false
+      // console.log(error.response.data, typeof error.response.data)
       emit('reload')
+
       if (typeof error.response.data == 'object') {
         for (var i in error.response.data) {
           if (typeof error.response.data[i] == 'object') {
             for (var e in error.response.data[i]) {
+              // console.log(typeof error.response.data[i][e])
               if (typeof error.response.data[i][e] == 'object') {
                 for (var x in error.response.data[i][e]) {
                   notyf.error(error.response.data[i][e][x])
                 }
+              }
+              if (typeof error.response.data[i][e] == 'string') {
+                notyf.error(error.response.data[i][e])
               }
             }
           }

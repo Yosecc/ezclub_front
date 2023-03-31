@@ -201,6 +201,11 @@ export const cancelSuscripcion = async (id: number, obj: object) => {
   return response
 }
 
+export const upgradeSuscripcion = async (id: number, obj: object) => {
+  const response = await Api.post(`v2/suscripcion/upgrade/${id}`, obj)
+  return response
+}
+
 export const updateSuscripcion = async (id: number, obj: object) => {
   const response = await Api.post(`v2/suscripcion/update/${id}`, obj)
   return response
@@ -208,5 +213,18 @@ export const updateSuscripcion = async (id: number, obj: object) => {
 
 export const holdSuscripcion = async (id: number, obj: object) => {
   const response = await Api.post(`v2/suscripcion/hold/${id}`, obj)
+  return response
+}
+
+export const processMultigym = async (id: number, obj: Object) => {
+  const response = await Api.post(`v2/suscripcion/process_multigym/${id}`, obj)
+  return response
+}
+
+export const getAmountMultigym = async (id: number, obj: Object) => {
+  const response = await Api.post(
+    `v2/suscripcion/get_amount_multigym/${id}`,
+    obj
+  )
   return response
 }

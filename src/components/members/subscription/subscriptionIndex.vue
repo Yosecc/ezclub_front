@@ -55,7 +55,7 @@ const onGetSuscripcion = () => {
   if (props.member_id) {
     id = props.member_id
   }
-  console.log(id, props.code)
+  // console.log(id, props.code)
   if (id == null && props.code) {
     getSuscripcionCode(props.code).then((response) => {
       suscripcionD.value = response.data.suscripcion
@@ -258,17 +258,18 @@ const proccessCheckout = () => {
             />
           </div>
           <div class="column is-12">
-            <subscription-action-hold
-              :suscripcion="suscripcionComputed"
-              @reload="onGetSuscripcion"
-            />
-          </div>
-          <div class="column is-12">
             <subscription-action-multigym
               :suscripcion="suscripcionComputed"
               @reload="onGetSuscripcion"
             />
           </div>
+          <div class="column is-12">
+            <subscription-action-hold
+              :suscripcion="suscripcionComputed"
+              @reload="onGetSuscripcion"
+            />
+          </div>
+
           <!-- <div class="column is-12">
             <subscription-action-send-email
               :suscripcion="suscripcionComputed"
@@ -294,6 +295,7 @@ const proccessCheckout = () => {
       "
       v-model="suscripcionComputed.presupuesto"
       :suscripcion="suscripcionComputed"
+      @reload="onGetSuscripcion()"
     />
 
     <div

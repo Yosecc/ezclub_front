@@ -6,7 +6,7 @@ import {
   getInput,
   setInputValuesData,
 } from '/@src/models/Mixin.ts'
-import { cancelSuscripcion } from '/@src/models/Subscriptions'
+import { upgradeSuscripcion } from '/@src/models/Subscriptions'
 
 // import { locationsSelect, terminales } from '/@src/models/Companies.ts'
 // import swal from 'sweetalert'
@@ -25,7 +25,7 @@ const isLoaderActive = ref(false)
 const onAction = () => {
   isLoaderActive.value = true
 
-  cancelSuscripcion(props.suscripcion.id, {})
+  upgradeSuscripcion(props.suscripcion.id, {})
     .then((response) => {
       isLoaderActive.value = false
       emit('reload')

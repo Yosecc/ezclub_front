@@ -7,7 +7,7 @@ import {
   setInputValuesData,
 } from '/@src/models/Mixin.ts'
 import { holdSuscripcion } from '/@src/models/Subscriptions'
-
+import moment from 'moment'
 // import { locationsSelect, terminales } from '/@src/models/Companies.ts'
 // import swal from 'sweetalert'
 
@@ -24,8 +24,12 @@ const isLoaderActive = ref(false)
 
 const modal = ref(false)
 
-const hold_date_start = ref(null)
-const hold_date_end = ref(null)
+const hold_date_start = ref(
+  moment(props.suscripcion.hold_date_start).format('YYYY-MM-DD')
+)
+const hold_date_end = ref(
+  moment(props.suscripcion.hold_date_end).format('YYYY-MM-DD')
+)
 
 const onHold = () => {
   // modal.value = true
@@ -35,12 +39,17 @@ const onHold = () => {
   })
     .then((response) => {
       modal.value = false
+      notyf.success('success')
+      emit('reload')
     })
     .catch((error) => {
       modal.value = false
     })
 }
 
+const isHold = computed(() => {
+  return props.suscripcion.isHold
+})
 onMounted(() => {})
 </script>
 
@@ -49,7 +58,7 @@ onMounted(() => {})
     <VCard
       color="warning"
       :outlined="props.suscripcion.hold_date_end != null ? false : true"
-      @click="modal = true"
+      @click="!isHold ? (modal = true) : onHold()"
       class="
         mr-4
         btn-card
@@ -77,9 +86,6 @@ onMounted(() => {})
   </VLoader>
   <V-Modal :open="modal" actions="center" @close="modal = false">
     <template #content>
-      <!-- <p>
-                  Hold end date last day of the month prior to the end of the hold
-                </p> -->
       <label for="hold_date_start"><p>Hold date start</p></label>
       <input type="date" v-model="hold_date_start" class="input mt-2 mb-4" />
       <label for="hold_date_end"><p>Hold date end</p></label>
@@ -89,37 +95,6 @@ onMounted(() => {})
       <V-Button @click="onHold" color="primary" raised>Confirm</V-Button>
     </template>
   </V-Modal>
-  <!-- <V-Modal
-              :open="modalShowProrratedHold"
-              actions="center"
-              @close="modalShowProrratedHold = false"
-            >
-              <template #content>
-                <p>Do you want to create an invoice with the prorated amount?</p>
-                <inputsLayaut :inputs-step="isProrrateoHold" />
-
-                <table class="table w-100" v-if="presupuestoProrrateo.total">
-                  <tr>
-                    <td>
-                      Subtotal ({{ presupuestoProrrateo.dias_restantes }}
-                      days)
-                    </td>
-                    <td>{{ moneda(presupuestoProrrateo.subtotal) }}</td>
-                  </tr>
-                  <tr>
-                    <td>Tax</td>
-                    <td>{{ moneda(presupuestoProrrateo.tax) }}</td>
-                  </tr>
-                  <tr>
-                    <td>Total</td>
-                    <td>{{ moneda(presupuestoProrrateo.total) }}</td>
-                  </tr>
-                </table>
-              </template>
-              <template #action>
-                <V-Button @click="onHold" color="primary" raised>Confirm</V-Button>
-              </template>
-            </V-Modal> -->
 </template>
 
 <style lang="scss"></style>

@@ -27,6 +27,7 @@ import {
 const route = useRoute()
 const memberships = ref([])
 const recurring = ref(true)
+
 const props = defineProps({
   suscripcion: {
     type: Object,
@@ -35,7 +36,7 @@ const props = defineProps({
 })
 const isLoaderActive = ref(false)
 const aprobado = ref(false)
-const emit = defineEmit(['update:modelValue'])
+const emit = defineEmit(['update:modelValue', 'reload'])
 
 onMounted(() => {
   getMeberships().then((response) => {
@@ -101,7 +102,8 @@ const aprobarPresupuesto = () => {
 
   remplazarSuscripcion(data)
     .then((response) => {
-      window.location.reload()
+      emit('reload')
+      // window.location.reload()
     })
     .catch((error) => {})
   //   setTimeout(() => {
