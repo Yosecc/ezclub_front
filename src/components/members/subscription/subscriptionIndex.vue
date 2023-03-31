@@ -23,6 +23,7 @@ import {
   getSuscripcionCode,
 } from '/@src/models/Subscriptions'
 
+import { useRoute } from 'vue-router'
 import { moneda } from '/@src/models/Mixin'
 import moment from 'moment'
 
@@ -41,7 +42,6 @@ const props = defineProps({
   },
 })
 
-import { useRoute } from 'vue-router'
 const route = useRoute()
 
 const suscripcionD = ref(null)
@@ -282,6 +282,13 @@ const proccessCheckout = () => {
               @reload="onGetSuscripcion"
             />
           </div>
+
+          <div class="column is-12">
+            <subscription-action-saldo
+              :suscripcion="suscripcionComputed"
+              @reload="onGetSuscripcion"
+            />
+          </div>
         </VCard>
       </div>
     </div>
@@ -300,7 +307,7 @@ const proccessCheckout = () => {
 
     <div
       v-if="
-        !['CANCELADO', 'PROX. CANCELADO'].includes(
+        !['CANCELADO', 'PROX. CANCELADO', 'HOLD'].includes(
           suscripcionComputed.estado.estado_pago
         )
       "

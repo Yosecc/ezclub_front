@@ -25,6 +25,15 @@ export const getCardsuserV2 = async (id: number) => {
   return response
 }
 
+export const getSaldo = async (id: number) => {
+  const response = await Api.get(`v2/user/saldo/${id}`)
+  return response
+}
+export const addSaldo = async (id: number) => {
+  const response = await Api.post(`v2/user/saldo/add/${id}`)
+  return response
+}
+
 export const memberProcess = async (data: any) => {
   const response = await Api.post(`v2/members/process`, data)
   return response
