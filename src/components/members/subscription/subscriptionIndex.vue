@@ -289,6 +289,21 @@ const proccessCheckout = () => {
               @reload="onGetSuscripcion"
             />
           </div>
+
+          <div class="column is-12">
+            <VLoader size="small" :active="isLoaderActive">
+              <subscription-method-payment-debit-automatic
+                :total="20"
+                :card="true"
+                :user="suscripcionComputed.user"
+                @onPayment="onGetSuscripcion"
+              />
+            </VLoader>
+            <!-- <subscription-action-cards
+              :suscripcion="suscripcionComputed"
+              @reload="onGetSuscripcion"
+            /> -->
+          </div>
         </VCard>
       </div>
     </div>

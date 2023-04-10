@@ -18,6 +18,10 @@ const props = defineProps({
     type: Object,
     required: true,
   },
+  card: {
+    type: Boolean,
+    default: false,
+  },
   // member_id: {
   //   type: Number,
   //   required: true,
@@ -59,6 +63,7 @@ const payment_method = ref(null)
     @click="openModal = true"
     color="success"
     class="mx-2 btn-card w-100 justify-content-center"
+    v-if="!props.card"
   >
     <div class="d-flex justify-content-between align-items-start">
       <div>
@@ -72,6 +77,27 @@ const payment_method = ref(null)
       </p>
     </div>
   </VCard>
+
+  <VLoader v-else class="h-100" size="small" :active="isLoaderActive">
+    <VCard
+      color="success"
+      outlined
+      @click="openModal = true"
+      class="
+        mr-4
+        btn-card
+        text-center
+        px-2
+        h-100
+        d-flex
+        align-items-center
+        justify-content-center
+      "
+      style="font-size: 14px"
+    >
+      <p><b>Cards</b></p>
+    </VCard>
+  </VLoader>
 
   <!--  -->
   <VModal

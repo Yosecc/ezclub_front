@@ -7,7 +7,10 @@ import { Api } from '/@src/services'
 // import { members, subscriptionsCreateStripe } from '/@src/models/Members.ts'
 
 import { suscripciones } from '/@src/models/Subscriptions.ts'
-import * as barSimple from '/@src/models/v2/Reports.ts'
+
+import * as suscripcionPayment from '/@src/models/v2/reports/suscripcionPayment'
+
+import * as suscripcionXmembresia from '/@src/models/v2/reports/suscripcionXmembresia'
 
 pageTitle.value = 'Suscriptions'
 useHead({
@@ -27,7 +30,7 @@ const defalA = ref('all')
 watch(
   () => route.query.page,
   () => {
-    getSuscripcion(
+    getReport(
       'all',
       filters.value,
       route.query.page,
@@ -41,11 +44,11 @@ watch(
 watch(
   () => filters.value,
   () => {
-    // getSuscripcion('all', filters.value, 1, categoryB.value, false)
+    // getReport('all', filters.value, 1, categoryB.value, false)
   }
 )
 
-const getSuscripcion = async (
+const getReport = async (
   filter,
   value = '',
   page = 1,
@@ -67,20 +70,16 @@ const getSuscripcion = async (
     },
   })
     .then((response) => {
-      suscripciones.value = response.data.suscripciones
+      suscripciones.value = response.data.suscripcionesXpayment
+      suscripcionesXmembresias.value = response.data.suscripcionesXmembresias
 
-      // console.log(barSimple.options)
-      // barSimple.options.axis.x.categories = suscripciones.value.fechas
       let data1 = ['data1'].concat(suscripciones.value.cantidad)
       let data2 = ['data2'].concat(suscripciones.value.montos)
       let x = ['x'].concat(suscripciones.value.fechas)
 
-      barSimple.dataNew.data1 = data1
-      barSimple.dataNew.data2 = data2
-      barSimple.dataNew.x = x
-
-      console.log(barSimple.dataNew)
-      // barSimple.options.data.columns = barSimple.options.data.columns.concat(r)
+      suscripcionPayment.dataNew.data1 = data1
+      suscripcionPayment.dataNew.data2 = data2
+      suscripcionPayment.dataNew.x = x
 
       if (reload) {
         reloadForm()
@@ -95,7 +94,7 @@ const categoryB = ref('All')
 const change = (val) => {
   reloadForm()
   defalA.value = val
-  getSuscripcion(
+  getReport(
     'all',
     filters.value,
     route.query.page,
@@ -106,25 +105,12 @@ const change = (val) => {
 }
 
 onMounted(() => {
-  getSuscripcion(
-    'all',
-    filters.value,
-    route.query.page,
-    'All',
-    fecha_pago.value
-  )
+  getReport('all', filters.value, route.query.page, 'All', fecha_pago.value)
 })
 
 const filtersSearch = () => {
   // console.log(filters.value.length)
-  getSuscripcion(
-    'all',
-    filters.value,
-    1,
-    categoryB.value,
-    false,
-    fecha_pago.value
-  )
+  getReport('all', filters.value, 1, categoryB.value, false, fecha_pago.value)
 }
 
 const reloadForm = () => {
@@ -173,7 +159,7 @@ const estados = ref([
 ])
 
 const changeStado = () => {
-  getSuscripcion(
+  getReport(
     'all',
     filters.value,
     1,
@@ -183,6 +169,85 @@ const changeStado = () => {
     fecha_pago.value
   )
 }
+
+const suscripcionesXmembresias = ref(null)
+
+const membresiasGraficas = computed(() => {
+  for (var s in suscripcionesXmembresias.value) {
+    const _ = suscripcionesXmembresias.value[s]
+
+    const copiaGender = JSON.parse(
+      JSON.stringify(suscripcionXmembresia.options)
+    )
+    copiaGender.title.text = 'Gender'
+    copiaGender.data.columns = suscripcionXmembresia.dataGenero(_.members)
+
+    suscripcionesXmembresias.value[s].optionsGender = copiaGender
+
+    const copiaEdades = JSON.parse(
+      JSON.stringify(suscripcionXmembresia.optionsBar)
+    )
+    copiaEdades.title.text = 'Ages'
+    copiaEdades.data.columns = suscripcionXmembresia.dataEdades(_.edades)
+
+    suscripcionesXmembresias.value[s].optionsEdades = copiaEdades
+
+    const copiaRangos = JSON.parse(
+      JSON.stringify(suscripcionXmembresia.options)
+    )
+
+    copiaRangos.title.text = 'Ages Ranges'
+    copiaRangos.data.columns = suscripcionXmembresia.dataEdadesRangos(
+      _.edades_rango
+    )
+
+    suscripcionesXmembresias.value[s].optionsRangos = copiaRangos
+
+    if (Object.keys(_.diciplines).length) {
+      for (const d in suscripcionesXmembresias.value[s].diciplines) {
+        let copiaDiciplinaGenders = JSON.parse(
+          JSON.stringify(suscripcionXmembresia.options)
+        )
+
+        copiaDiciplinaGenders.title.text = 'Gender'
+        copiaDiciplinaGenders.data.columns = suscripcionXmembresia.dataGenero(
+          suscripcionesXmembresias.value[s].diciplines[d].members
+        )
+
+        suscripcionesXmembresias.value[s].diciplines[d].optionsGenders =
+          copiaDiciplinaGenders
+
+        //
+
+        let copiaDiciplinaEdades = JSON.parse(
+          JSON.stringify(suscripcionXmembresia.optionsBar)
+        )
+
+        copiaDiciplinaEdades.title.text = 'Age'
+        copiaDiciplinaEdades.data.columns = suscripcionXmembresia.dataEdades(
+          suscripcionesXmembresias.value[s].diciplines[d].edades
+        )
+
+        suscripcionesXmembresias.value[s].diciplines[d].optionsEdades =
+          copiaDiciplinaEdades
+      }
+    }
+  }
+
+  return suscripcionesXmembresias.value
+})
+
+const tabs = computed(() => {
+  let tabs = []
+  const _ = suscripcionesXmembresias.value
+  for (const i in _) {
+    tabs.push({ label: _[i].membership_name, value: _[i].membership_name })
+  }
+
+  return tabs
+})
+
+const selectMembresia = ref(null)
 </script>
 
 <template>
@@ -190,7 +255,7 @@ const changeStado = () => {
     <!-- Content Wrapper -->
     <div class="page-content-inner">
       <div class="mb-5 columns is-multiline">
-        <div class="is-2 column">
+        <!-- <div class="is-2 column">
           <V-Field class="w-100">
             <V-Control class="input-select">
               <label for="fecha_pago">
@@ -209,9 +274,9 @@ const changeStado = () => {
               </div>
             </V-Control>
           </V-Field>
-        </div>
+        </div> -->
 
-        <V-Field class="is-6 column">
+        <!-- <V-Field class="is-6 column">
           <label for="fecha_pago">
             <p><small>Por definir</small></p>
           </label>
@@ -223,11 +288,11 @@ const changeStado = () => {
               @keyup.enter="filtersSearch"
             />
           </V-Control>
-        </V-Field>
+        </V-Field> -->
         <!-- <div class="is-2 column">
           
         </div> -->
-        <div class="column is-4">
+        <!-- <div class="column is-4">
           <label for="fecha_pago">
             <p><small>Payment Date</small></p>
           </label>
@@ -238,13 +303,93 @@ const changeStado = () => {
             class="input custom-text-filter"
             v-model="fecha_pago"
           />
-        </div>
+        </div> -->
 
-        <VCard v-if="barSimple.dataNew.data1.length" class="column is-12">
+        <VCard
+          v-if="suscripcionPayment.dataNew.data1.length"
+          class="column is-12 mb-4"
+        >
           <V-BillboardJS
-            :options="barSimple.options"
-            @ready="barSimple.onReady"
+            :options="suscripcionPayment.options"
+            @ready="suscripcionPayment.onReady"
           />
+        </VCard>
+
+        <!-- <div class="column columns is-12 mb-4" style="overflow: scroll">
+          <div
+            class="column is-4 mb-4"
+            v-for="(item, key) in membresiasGraficas"
+            :key="`ii-${key}`"
+          >
+            <VCard
+              @click="selectMembresia = item.membership_name"
+              :color="
+                item.membership_name == selectMembresia ? 'info' : undefined
+              "
+            >
+              <p class="title is-5">{{ item.membership_name }}</p>
+            </VCard>
+          </div>
+        </div> -->
+
+        <VCard
+          class="column columns is-multiline is-12 mb-6"
+          v-for="(item, key) in membresiasGraficas"
+          :key="`ii-${key}`"
+        >
+          <div class="column columns is-multiline is-12 mb-4">
+            <div class="column is-12 d-flex justify-content-between">
+              <p class="title is-5">{{ item.membership_name }}</p>
+              <p class="title is-5">{{ item.conteo_suscripciones }}</p>
+            </div>
+            <div class="column is-4">
+              <VCard>
+                <V-BillboardJS :options="item.optionsGender" />
+              </VCard>
+            </div>
+            <div class="column is-4">
+              <VCard>
+                <V-BillboardJS :options="item.optionsEdades" />
+              </VCard>
+            </div>
+            <div class="column is-4">
+              <VCard>
+                <V-BillboardJS :options="item.optionsRangos" />
+              </VCard>
+            </div>
+            <div
+              class="column is-12"
+              v-if="Object.keys(item.diciplines).length"
+            >
+              <p class="title is-6 text-center">Diciplines</p>
+              <VCard>
+                <div class="columns is-multiline">
+                  <div
+                    class="column is-4"
+                    v-for="(dicipline, e) in item.diciplines"
+                    :key="`iy-${e}`"
+                  >
+                    <VCard class="columns is-multiline mb-4">
+                      <div class="column is-12 d-flex justify-content-between">
+                        <p class="title is-6">
+                          {{ dicipline.dicipline_name }}
+                        </p>
+                        <p class="title is-6">
+                          {{ dicipline.numero_miembros }}
+                        </p>
+                      </div>
+                      <div class="column is-6">
+                        <V-BillboardJS :options="dicipline.optionsGenders" />
+                      </div>
+                      <div class="column is-6">
+                        <V-BillboardJS :options="dicipline.optionsEdades" />
+                      </div>
+                    </VCard>
+                  </div>
+                </div>
+              </VCard>
+            </div>
+          </div>
         </VCard>
       </div>
     </div>

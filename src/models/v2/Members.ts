@@ -29,8 +29,8 @@ export const getSaldo = async (id: number) => {
   const response = await Api.get(`v2/user/saldo/${id}`)
   return response
 }
-export const addSaldo = async (id: number) => {
-  const response = await Api.post(`v2/user/saldo/add/${id}`)
+export const addSaldo = async (id: number, obj: object) => {
+  const response = await Api.post(`v2/user/saldo/add/${id}`, obj)
   return response
 }
 

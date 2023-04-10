@@ -22,7 +22,7 @@ const props = defineProps({
   },
 })
 
-const amount = ref(0)
+const amount = ref(null)
 const isLoaderActive = ref(false)
 
 const onAction = (obj = null) => {
@@ -31,19 +31,19 @@ const onAction = (obj = null) => {
 
   console.log(obj)
 
-  //   addSaldo(user.value.id, obj)
-  //     .then((response) => {
-  //       isLoaderActive.value = false
-  //       centeredActionsOpen.value = false
-  //       notyf.success('Success')
-  //       emit('reload')
-  //     })
-  //     .catch((error) => {
-  //       console.log(error)
-  //       notyf.error('Error')
-  //       isLoaderActive.value = false
-  //       centeredActionsOpen.value = false
-  //     })
+  addSaldo(user.value.id, obj)
+    .then((response) => {
+      isLoaderActive.value = false
+      centeredActionsOpen.value = false
+      notyf.success('Success')
+      emit('reload')
+    })
+    .catch((error) => {
+      console.log(error)
+      notyf.error('Error')
+      isLoaderActive.value = false
+      centeredActionsOpen.value = false
+    })
 }
 
 const centeredActionsOpen = ref(false)
@@ -140,7 +140,7 @@ const onClick = () => {
             <div class="is-4 column mx-auto">
               <VLoader size="small" :active="isLoaderActive">
                 <subscription-method-payment-debit-automatic
-                  :total="acobrar"
+                  :total="amount"
                   :user="user"
                   @onPayment="onAction"
                 />
@@ -150,7 +150,7 @@ const onClick = () => {
             <div class="is-4 column mx-auto">
               <VLoader size="small" :active="isLoaderActive">
                 <subscription-method-payment-cash
-                  :total="acobrar"
+                  :total="amount"
                   @onPayment="onAction"
                 />
               </VLoader>

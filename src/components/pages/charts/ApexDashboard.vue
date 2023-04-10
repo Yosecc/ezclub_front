@@ -5,7 +5,7 @@ import * as chartOptions from '/@src/data/dashboards/apex-demo/chartOptions'
 <template>
   <div class="apex-dashboard">
     <div class="columns is-multiline">
-      <div class="column is-6">
+      <div class="column is-6" v-if="true">
         <div class="s-card">
           <apexchart
             id="apex-chart-1"
@@ -17,7 +17,7 @@ import * as chartOptions from '/@src/data/dashboards/apex-demo/chartOptions'
           </apexchart>
         </div>
       </div>
-      <div class="column is-6">
+      <div class="column is-6" v-if="true">
         <div class="s-card">
           <apexchart
             id="apex-chart-2"
@@ -29,7 +29,7 @@ import * as chartOptions from '/@src/data/dashboards/apex-demo/chartOptions'
           </apexchart>
         </div>
       </div>
-      <div class="column is-6">
+      <div class="column is-6" v-if="true">
         <div class="s-card">
           <apexchart
             id="apex-chart-4"
@@ -41,7 +41,7 @@ import * as chartOptions from '/@src/data/dashboards/apex-demo/chartOptions'
           </apexchart>
         </div>
       </div>
-      <div class="column is-6">
+      <div class="column is-6" v-if="true">
         <div class="s-card">
           <apexchart
             id="apex-chart-5"
@@ -53,7 +53,7 @@ import * as chartOptions from '/@src/data/dashboards/apex-demo/chartOptions'
           </apexchart>
         </div>
       </div>
-      <div class="column is-6">
+      <div class="column is-6" v-if="true">
         <div class="s-card">
           <apexchart
             id="apex-chart-6"
@@ -65,7 +65,7 @@ import * as chartOptions from '/@src/data/dashboards/apex-demo/chartOptions'
           </apexchart>
         </div>
       </div>
-      <div class="column is-6">
+      <div class="column is-6" v-if="true">
         <div class="s-card">
           <apexchart
             id="apex-chart-7"
@@ -77,7 +77,7 @@ import * as chartOptions from '/@src/data/dashboards/apex-demo/chartOptions'
           </apexchart>
         </div>
       </div>
-      <div class="column is-6">
+      <div class="column is-6" v-if="true">
         <div class="s-card">
           <apexchart
             id="apex-chart-8"
@@ -89,7 +89,7 @@ import * as chartOptions from '/@src/data/dashboards/apex-demo/chartOptions'
           </apexchart>
         </div>
       </div>
-      <div class="column is-6">
+      <div class="column is-6" v-if="true">
         <div class="s-card">
           <apexchart
             id="apex-chart-9"
@@ -101,7 +101,7 @@ import * as chartOptions from '/@src/data/dashboards/apex-demo/chartOptions'
           </apexchart>
         </div>
       </div>
-      <div class="column is-6">
+      <div class="column is-6" v-if="true">
         <div class="s-card">
           <apexchart
             id="apex-chart-10"
@@ -113,7 +113,7 @@ import * as chartOptions from '/@src/data/dashboards/apex-demo/chartOptions'
           </apexchart>
         </div>
       </div>
-      <div class="column is-6">
+      <div class="column is-6" v-if="true">
         <div class="s-card">
           <apexchart
             id="apex-chart-11"
@@ -125,7 +125,7 @@ import * as chartOptions from '/@src/data/dashboards/apex-demo/chartOptions'
           </apexchart>
         </div>
       </div>
-      <div class="column is-6">
+      <div class="column is-6" v-if="true">
         <div class="s-card">
           <apexchart
             id="apex-chart-12"
@@ -137,7 +137,7 @@ import * as chartOptions from '/@src/data/dashboards/apex-demo/chartOptions'
           </apexchart>
         </div>
       </div>
-      <div class="column is-6">
+      <div class="column is-6" v-if="true">
         <div class="s-card">
           <apexchart
             id="apex-chart-13"
@@ -149,7 +149,7 @@ import * as chartOptions from '/@src/data/dashboards/apex-demo/chartOptions'
           </apexchart>
         </div>
       </div>
-      <div class="column is-6">
+      <div class="column is-6" v-if="true">
         <div class="s-card">
           <apexchart
             id="apex-chart-14"
@@ -161,7 +161,7 @@ import * as chartOptions from '/@src/data/dashboards/apex-demo/chartOptions'
           </apexchart>
         </div>
       </div>
-      <div class="column is-6">
+      <div class="column is-6" v-if="true">
         <div class="s-card">
           <apexchart
             id="apex-chart-15"
@@ -173,7 +173,7 @@ import * as chartOptions from '/@src/data/dashboards/apex-demo/chartOptions'
           </apexchart>
         </div>
       </div>
-      <div class="column is-6">
+      <div class="column is-6" v-if="false">
         <div class="s-card">
           <apexchart
             id="apex-chart-16"
@@ -185,7 +185,7 @@ import * as chartOptions from '/@src/data/dashboards/apex-demo/chartOptions'
           </apexchart>
         </div>
       </div>
-      <div class="column is-6">
+      <div class="column is-6" v-if="false">
         <div class="s-card">
           <apexchart
             id="apex-chart-17"
@@ -197,7 +197,7 @@ import * as chartOptions from '/@src/data/dashboards/apex-demo/chartOptions'
           </apexchart>
         </div>
       </div>
-      <div class="column is-6">
+      <div class="column is-6" v-if="false">
         <div class="s-card">
           <apexchart
             id="apex-chart-18"
@@ -209,7 +209,7 @@ import * as chartOptions from '/@src/data/dashboards/apex-demo/chartOptions'
           </apexchart>
         </div>
       </div>
-      <div class="column is-6">
+      <div class="column is-6" v-if="false">
         <div class="s-card">
           <apexchart
             id="apex-chart-19"
@@ -221,7 +221,7 @@ import * as chartOptions from '/@src/data/dashboards/apex-demo/chartOptions'
           </apexchart>
         </div>
       </div>
-      <div class="column is-6">
+      <div class="column is-6" v-if="false">
         <div class="s-card">
           <apexchart
             id="apex-chart-20"
@@ -233,7 +233,7 @@ import * as chartOptions from '/@src/data/dashboards/apex-demo/chartOptions'
           </apexchart>
         </div>
       </div>
-      <div class="column is-6">
+      <div class="column is-6" v-if="false">
         <div class="s-card">
           <apexchart
             id="apex-chart-21"
@@ -245,7 +245,7 @@ import * as chartOptions from '/@src/data/dashboards/apex-demo/chartOptions'
           </apexchart>
         </div>
       </div>
-      <div class="column is-6">
+      <div class="column is-6" v-if="false">
         <div class="s-card">
           <apexchart
             id="apex-chart-22"
@@ -257,7 +257,7 @@ import * as chartOptions from '/@src/data/dashboards/apex-demo/chartOptions'
           </apexchart>
         </div>
       </div>
-      <div class="column is-6">
+      <div class="column is-6" v-if="false">
         <div class="s-card">
           <apexchart
             id="apex-chart-23"
