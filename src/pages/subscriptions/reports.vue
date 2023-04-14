@@ -247,6 +247,15 @@ const tabs = computed(() => {
   return tabs
 })
 
+const conteo = computed(() => {
+  let count = 0
+  const y = membresiasGraficas.value
+  for (const i in y) {
+    count += y[i].conteo_suscripciones
+  }
+  return count
+})
+
 const selectMembresia = ref(null)
 </script>
 
@@ -331,7 +340,9 @@ const selectMembresia = ref(null)
             </VCard>
           </div>
         </div> -->
-
+        <VCard class="mb-4">
+          <p class="title is-5">{{ conteo }} Subscriptions</p>
+        </VCard>
         <VCard
           class="column columns is-multiline is-12 mb-6"
           v-for="(item, key) in membresiasGraficas"
@@ -339,19 +350,22 @@ const selectMembresia = ref(null)
         >
           <div class="column columns is-multiline is-12 mb-4">
             <div class="column is-12 d-flex justify-content-between">
-              <p class="title is-5">{{ item.membership_name }}</p>
-              <p class="title is-5">{{ item.conteo_suscripciones }}</p>
+              <p class="title is-5">
+                {{ item.membership_name }} ({{ item.conteo_suscripciones }}
+                subscriptions)
+              </p>
+              <!-- <p class="title is-5">{{ item.conteo_suscripciones }}</p> -->
             </div>
             <div class="column is-4">
               <VCard>
                 <V-BillboardJS :options="item.optionsGender" />
               </VCard>
             </div>
-            <div class="column is-4">
+            <!-- <div class="column is-4">
               <VCard>
                 <V-BillboardJS :options="item.optionsEdades" />
               </VCard>
-            </div>
+            </div> -->
             <div class="column is-4">
               <VCard>
                 <V-BillboardJS :options="item.optionsRangos" />
@@ -364,7 +378,28 @@ const selectMembresia = ref(null)
               <p class="title is-6 text-center">Diciplines</p>
               <VCard>
                 <div class="columns is-multiline">
-                  <div
+                  <table class="table is-hoverable is-fullwidth">
+                    <thead>
+                      <tr>
+                        <th scope="col">Dicipline</th>
+                        <th scope="col">Members count</th>
+                        <th scope="col">Male</th>
+                        <th scope="col">Female</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr
+                        v-for="(dicipline, e) in item.diciplines"
+                        :key="`iy-${e}`"
+                      >
+                        <td>{{ dicipline.dicipline_name }}</td>
+                        <td>{{ dicipline.numero_miembros }}</td>
+                        <td>{{ dicipline.members.Male }}</td>
+                        <td>{{ dicipline.members.Female }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <!-- <div
                     class="column is-4"
                     v-for="(dicipline, e) in item.diciplines"
                     :key="`iy-${e}`"
@@ -372,10 +407,7 @@ const selectMembresia = ref(null)
                     <VCard class="columns is-multiline mb-4">
                       <div class="column is-12 d-flex justify-content-between">
                         <p class="title is-6">
-                          {{ dicipline.dicipline_name }}
-                        </p>
-                        <p class="title is-6">
-                          {{ dicipline.numero_miembros }}
+                          {{ dicipline.dicipline_name }} ({{ dicipline.numero_miembros }} members)
                         </p>
                       </div>
                       <div class="column is-6">
@@ -385,7 +417,7 @@ const selectMembresia = ref(null)
                         <V-BillboardJS :options="dicipline.optionsEdades" />
                       </div>
                     </VCard>
-                  </div>
+                  </div> -->
                 </div>
               </VCard>
             </div>
