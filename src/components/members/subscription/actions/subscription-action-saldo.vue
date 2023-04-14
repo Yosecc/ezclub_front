@@ -7,6 +7,8 @@ import {
   setInputValuesData,
 } from '/@src/models/Mixin.ts'
 
+import moment from 'moment'
+
 import { processMultigym, getAmountMultigym } from '/@src/models/Subscriptions'
 import { getSaldo, addSaldo } from '/@src/models/v2/Members.ts'
 
@@ -39,10 +41,22 @@ const onAction = (obj = null) => {
       emit('reload')
     })
     .catch((error) => {
-      console.log(error)
-      notyf.error('Error')
+      error = error.response.data
       isLoaderActive.value = false
       centeredActionsOpen.value = false
+
+      // for (const i in error) {
+      //   if (typeof error[i] == 'object') {
+      //     for (const e in error[i]) {
+      //       if (typeof error[i][e] == 'string') {
+      //         notyf.error(error[i][e])
+      //       }
+      //     }
+      //   }
+      //   if (typeof error[i] == 'string') {
+      //     notyf.error(error[i])
+      //   }
+      // }
     })
 }
 
@@ -57,10 +71,12 @@ const user = computed(() => {
 })
 
 const saldo = ref(0)
+const saldos = ref([])
 
 const onClick = () => {
   getSaldo(user.value.id, {}).then((response) => {
     saldo.value = response.data.saldo
+    saldos.value = response.data.saldos
     centeredActionsOpen.value = true
   })
 }
@@ -97,30 +113,33 @@ const onClick = () => {
       @close="closeModal"
     >
       <template #content>
-        <div class="column is-4">
-          <VLoader size="small" class="h-100" :active="isLoaderActive">
-            <VCard class="mb-4 h-100">
-              <div>
-                <p class="title is-6 mb-1"><b>Total</b></p>
-                <p class="title is-3 mb-0">
-                  {{ moneda(saldo) }}
-                </p>
-              </div>
-            </VCard>
-          </VLoader>
-        </div>
+        <div class="columns">
+          <div class="column is-4">
+            <VLoader size="small" class="h-100" :active="isLoaderActive">
+              <VCard class="mb-4 h-100">
+                <div>
+                  <p class="title is-6 mb-1"><b>Total</b></p>
+                  <p class="title is-3 mb-0">
+                    {{ moneda(saldo) }}
+                  </p>
+                </div>
+              </VCard>
+            </VLoader>
+          </div>
 
-        <V-Field>
-          <V-Control>
-            <label for=""><p>Amount</p></label>
-            <input
-              type="number"
-              v-model="amount"
-              class="input"
-              placeholder="0.00"
-            />
-          </V-Control>
-        </V-Field>
+          <V-Field class="is-8 column">
+            <V-Control style="height: 100%">
+              <label for=""><p>Amount</p></label>
+              <input
+                type="number"
+                v-model="amount"
+                class="input mt-4"
+                placeholder="0.00"
+                style="height: 60%; font-size: 20px"
+              />
+            </V-Control>
+          </V-Field>
+        </div>
 
         <VCard style="margin-bottom: 24px">
           <div class="columns is-multiline">
@@ -156,6 +175,23 @@ const onClick = () => {
               </VLoader>
             </div>
           </div>
+        </VCard>
+
+        <VCard>
+          <table class="table is-hoverable is-fullwidth">
+            <thead>
+              <tr>
+                <th scope="col">Amount</th>
+                <th scope="col">Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(item, key) in saldos" :key="`saldo-${key}`">
+                <td>{{ moneda(item.monto) }}</td>
+                <td>{{ moment(item.created_at).format('MM-DD-YYYY') }}</td>
+              </tr>
+            </tbody>
+          </table>
         </VCard>
       </template>
       <template #action>

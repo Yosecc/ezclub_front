@@ -32,16 +32,31 @@ intance.interceptors.response.use(
   function (error) {
     // Any status codes that falls outside the range of 2xx cause this function to trigger
     // Do something with response error
-    // console.log('soy el interceptor')
-    if (error.response.data.length) {
-      if (typeof error.response.data == 'object') {
-        for (const i in error.response.data) {
-          notyf.error(error.response.data[i])
+    error = error.response.data
+    if (typeof error == 'object') {
+      for (const i in error) {
+        if (typeof error[i] == 'object') {
+          for (const e in error[i]) {
+            if (typeof error[i][e] == 'object') {
+              for (const x in error[i][e]) {
+                if (typeof error[i][e][x] == 'string') {
+                  notyf.error(error[i][e][x])
+                }
+              }
+            } else if (typeof error[i][e] == 'string') {
+              notyf.error(error[i][e])
+            }
+          }
+        } else if (typeof error[i] == 'string') {
+          notyf.error(error[i])
         }
-      } else {
-        notyf.error(error.response.data)
+      }
+    } else {
+      if (typeof error == 'string') {
+        notyf.error(error)
       }
     }
+
     if (error.response.status == 401) {
       // onLogout()
     } else {

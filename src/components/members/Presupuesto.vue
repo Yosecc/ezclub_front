@@ -16,10 +16,31 @@ const props = defineProps({
     type: Object,
     required: true,
   },
+  restar: {
+    type: Number,
+    default: {
+      text: '',
+      amount: '',
+    },
+  },
 })
 
 onMounted(() => {
-  console.log(props.presupuesto)
+  // console.log(props.presupuesto)
+})
+
+const total = computed(() => {
+  let total = props.presupuesto.total
+
+  if (props.restar.text != '') {
+    total = total - props.restar.amount
+
+    if (total < -0) {
+      total = 0
+    }
+  }
+
+  return total
 })
 </script>
 
@@ -89,12 +110,23 @@ onMounted(() => {
           </td>
           <td>{{ moneda(presupuesto.tax.value) }}</td>
         </tr>
+        <tr v-if="props.restar.text != ''">
+          <td style="text-align: right" colspan="4">
+            <p>{{ props.restar.text }}</p>
+          </td>
+          <td style="text-align: right">
+            <p>
+              <b>- {{ moneda(props.restar.amount) }}</b>
+            </p>
+          </td>
+        </tr>
         <tr style="text-align: right">
           <td style="color: #f39c12" colspan="4"><b>Total to pay today</b></td>
           <td style="font-size: 20px; font-weight: 900; color: #f39c12">
-            {{ moneda(presupuesto.total) }}
+            {{ moneda(total) }}
           </td>
         </tr>
+
         <tr style="text-align: right">
           <td colspan="4">
             <p><b>Recurring Payment</b></p>

@@ -33,12 +33,37 @@ const props = defineProps({
     type: Object,
     default: {},
   },
+  is_config: {
+    type: Boolean,
+    default: true,
+  },
+  is_recurrence: {
+    type: Boolean,
+    default: true,
+  },
+  restar: {
+    type: Number,
+    default: {
+      text: '',
+      amount: '',
+    },
+  },
+  amounts_not_ids: {
+    type: Array,
+    default: [],
+  },
 })
 const isLoaderActive = ref(false)
 const aprobado = ref(false)
-const emit = defineEmit(['update:modelValue', 'reload'])
+const emit = defineEmit([
+  'update:modelValue',
+  'reload',
+  'onReady',
+  'changeMembership',
+])
 
 onMounted(() => {
+  isOnActionAcepyandcontinue.value = true
   getMeberships().then((response) => {
     memberships.value = response.data
   })
@@ -67,10 +92,12 @@ const initSuscripcion = () => {
   presupuesto.value = null
   aprobado.value = false
   isLoaderActive.value = true
+  isOnActionAcepyandcontinue.value = true
   getPresupuesto(datosSolicitud.value)
     .then((response) => {
       presupuesto.value = response.data
       emit('update:modelValue', presupuesto.value)
+      isOnActionAcepyandcontinue.value = true
       setTimeout(() => {
         window.scrollTo(
           0,
@@ -93,23 +120,32 @@ const initSuscripcion = () => {
       }
     })
 }
-
+const isOnActionAcepyandcontinue = ref(true)
 const aprobarPresupuesto = () => {
   aprobado.value = true
   let data = datosSolicitud.value
-  data.suscripcion_id = props.suscripcion.id
-  data.email = props.suscripcion.user.email
+  // data.suscripcion_id = props.suscripcion.id
+  // data.email = props.suscripcion.user.email
 
-  remplazarSuscripcion(data)
-    .then((response) => {
-      emit('reload')
-      // window.location.reload()
-    })
-    .catch((error) => {})
-  //   setTimeout(() => {
-  //     window.scrollTo(0, window.scrollY + 500)
-  //   }, 300)
+  emit('onReady', data)
+  isOnActionAcepyandcontinue.value = false
 }
+
+const definePrecio = (item: any) => {
+  if (props.amounts_not_ids.includes(item.id)) {
+    notyf.error('Select a membership with a higher price than the current one')
+    return
+  }
+  solicitud.recurrences_id = item.id
+}
+
+watch(
+  () => solicitud.memberships_id,
+  () => {
+    presupuesto.value = null
+    emit('changeMembership')
+  }
+)
 </script>
 
 <template>
@@ -136,7 +172,7 @@ const aprobarPresupuesto = () => {
   </VCard>
   <VCard class="mb-4">
     <div>
-      <VField>
+      <VField v-if="props.is_recurrence">
         <VControl>
           <VSwitchBlock
             v-model="recurring"
@@ -150,7 +186,7 @@ const aprobarPresupuesto = () => {
         v-for="(item, key) in precios"
         :key="`membership-precios-${key}`"
         class="btn btn-card"
-        @click="solicitud.recurrences_id = item.id"
+        @click="definePrecio(item)"
       >
         <VCard
           :color="solicitud.recurrences_id == item.id ? 'primary' : undefined"
@@ -164,7 +200,7 @@ const aprobarPresupuesto = () => {
       </div>
     </div>
   </VCard>
-  <VCard class="">
+  <VCard class="" v-if="props.is_config">
     <inputsLayaut :inputs-step="inputsMembership" />
   </VCard>
   <div class="d-flex justify-content-end mb-4">
@@ -187,7 +223,10 @@ const aprobarPresupuesto = () => {
   </div>
 
   <VCard v-if="presupuesto" class="mb-4">
-    <Presupuesto :presupuesto="presupuesto"></Presupuesto>
+    <Presupuesto
+      :presupuesto="presupuesto"
+      :restar="props.restar"
+    ></Presupuesto>
   </VCard>
   <VButton
     @click="aprobarPresupuesto"
@@ -199,7 +238,7 @@ const aprobarPresupuesto = () => {
       font-size: 20px;
       font-weight: 900;
     "
-    v-if="presupuesto"
+    v-if="presupuesto && isOnActionAcepyandcontinue"
     >Accept and continue
   </VButton>
 </template>

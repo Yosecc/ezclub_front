@@ -10,7 +10,8 @@ import {
 } from 'vue'
 import {
   //getMeberships,
-  // solicitud,
+  solicitud,
+  solicitudDataInicial,
   // inputsMembership,
   // getDiscounts,
   // getPresupuesto,
@@ -22,9 +23,14 @@ import {
   getSuscripcion,
   getSuscripcionCode,
 } from '/@src/models/Subscriptions'
-
+import { API_WEB_URL } from '/@src/services'
 import { useRoute } from 'vue-router'
 import { moneda } from '/@src/models/Mixin'
+import {
+  // membersSelected,
+  // arregloTrainers,
+  initials,
+} from '/@src/models/Members.ts'
 import moment from 'moment'
 
 const props = defineProps({
@@ -48,6 +54,8 @@ const suscripcionD = ref(null)
 const isLoaderActive = ref(false)
 
 const onGetSuscripcion = () => {
+  Object.assign(solicitud, solicitudDataInicial)
+
   let id = null
   if (route.query.id) {
     id = route.query.id
@@ -93,9 +101,43 @@ const proccessCheckout = () => {
 </script>
 <template>
   <div v-if="suscripcionComputed">
+    <VCard class="mb-4 d-flex align-items-center">
+      <div v-if="suscripcionComputed.member">
+        <V-Avatar
+          :picture="`${API_WEB_URL}storage/${suscripcionComputed.member.photo}`"
+          color="primary"
+          :initials="
+            initials(
+              suscripcionComputed.member.name,
+              suscripcionComputed.member.last_name
+            )
+          "
+          size="medium"
+          class="mr-4 mb-4"
+        />
+      </div>
+      <div>
+        <div v-if="!suscripcionComputed.member" class="">
+          <p style="font-size: 12px">
+            Username: {{ suscripcionComputed.user.name }}
+          </p>
+          <p style="font-size: 12px">
+            Email: {{ suscripcionComputed.user.email }}
+          </p>
+        </div>
+        <div v-else class="">
+          <p style="font-size: 12px">
+            {{ suscripcionComputed.member.name }}
+            {{ suscripcionComputed.member.last_name }}
+          </p>
+          <p style="font-size: 12px">
+            {{ suscripcionComputed.member.email }}
+          </p>
+        </div>
+      </div>
+    </VCard>
     <VCard
       class="mb-5"
-      v-if="suscripcionComputed"
       :style="{ background: suscripcionComputed.estado.color }"
     >
       <div class="d-flex justify-content-between">
@@ -299,25 +341,27 @@ const proccessCheckout = () => {
                 @onPayment="onGetSuscripcion"
               />
             </VLoader>
-            <!-- <subscription-action-cards
+          </div>
+
+          <div class="column is-12">
+            <subscription-action-payments-list
               :suscripcion="suscripcionComputed"
-              @reload="onGetSuscripcion"
-            /> -->
+            />
           </div>
         </VCard>
       </div>
     </div>
 
-    <membershipsGrid
+    <subscription-action-new
       v-if="
         suscripcionComputed &&
         ['CANCELADO', 'PROX. CANCELADO'].includes(
           suscripcionComputed.estado.estado_pago
         )
       "
-      v-model="suscripcionComputed.presupuesto"
       :suscripcion="suscripcionComputed"
-      @reload="onGetSuscripcion()"
+      :type="'reprocess'"
+      @reload="onGetSuscripcion"
     />
 
     <div
@@ -352,12 +396,13 @@ const proccessCheckout = () => {
         ></Presupuesto>
       </VCard>
     </div>
-    <subscription-payments-list
+    <!-- <subscription-payments-list
       v-if="
         suscripcionComputed &&
         suscripcionComputed.estado.estado_pago != 'CANCELADO'
       "
       :payments="suscripcionComputed.memberships_members.payments"
-    />
+      class="mt-4"
+    /> -->
   </div>
 </template>

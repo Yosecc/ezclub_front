@@ -16,7 +16,7 @@ export const presupuesto = ref(null)
 
 export const suscripciones = ref(null)
 
-export const solicitud = reactive({
+export const solicitudDataInicial = {
   memberships_id: null,
   recurrences_id: null,
   is_initiation_fee: false,
@@ -27,7 +27,15 @@ export const solicitud = reactive({
   prorrateo: true,
   schedules: '',
   leo_vet_fr: false,
-})
+}
+
+export const solicitud = reactive(
+  JSON.parse(JSON.stringify(solicitudDataInicial))
+)
+
+export const restartSolicitud = () => {
+  Object.assign(solicitud, JSON.parse(JSON.stringify(solicitudDataInicial)))
+}
 
 export const inputsMembership = ref([
   {
@@ -173,11 +181,8 @@ export const createSuscripcion = async (obj: object) => {
   return response
 }
 
-export const remplazarSuscripcion = async (obj: object) => {
-  const response = await Api.post(
-    `v2/suscripcion/remplace/${obj.suscripcion_id}`,
-    obj
-  )
+export const remplazarSuscripcion = async (id: Number, obj: object) => {
+  const response = await Api.post(`v2/suscripcion/remplace/${id}`, obj)
   return response
 }
 
@@ -225,6 +230,13 @@ export const getAmountMultigym = async (id: number, obj: Object) => {
   const response = await Api.post(
     `v2/suscripcion/get_amount_multigym/${id}`,
     obj
+  )
+  return response
+}
+
+export const calculoSuscripcionRestante = async (id: number) => {
+  const response = await Api.post(
+    `v2/suscripcion/calculo_suscripcion_restante/${id}`
   )
   return response
 }
