@@ -1,16 +1,18 @@
 <script setup lang="ts">
 import { useHead } from '@vueuse/head'
-import { onMounted, watch, ref, computed } from 'vue'
+import { onMounted, watch, ref, computed, reactive } from 'vue'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
 import { useRoute, useRouter } from 'vue-router'
 import { Api } from '/@src/services'
+import type { Chart } from 'billboard.js'
 // import { members, subscriptionsCreateStripe } from '/@src/models/Members.ts'
 
 import { suscripciones } from '/@src/models/Subscriptions.ts'
+import { moneda } from '/@src/models/Mixin'
 
 import * as suscripcionPayment from '/@src/models/v2/reports/suscripcionPayment'
-
 import * as suscripcionXmembresia from '/@src/models/v2/reports/suscripcionXmembresia'
+import * as subscriptionsStripe from '/@src/models/v2/reports/subscriptionsStripe'
 
 pageTitle.value = 'Suscriptions'
 useHead({
@@ -91,6 +93,7 @@ const getReport = async (
     })
 }
 const categoryB = ref('All')
+
 const change = (val) => {
   reloadForm()
   defalA.value = val
@@ -104,8 +107,25 @@ const change = (val) => {
   )
 }
 
+const dataStripe = reactive({})
+
 onMounted(() => {
-  getReport('all', filters.value, route.query.page, 'All', fecha_pago.value)
+  // getReport('all', filters.value, route.query.page, 'All', fecha_pago.value)
+
+  Api.get('v2/suscripcion/reportStripe').then((response) => {
+    for (const i in response.data) {
+      dataStripe[i] = response.data[i]
+    }
+
+    for (const i in dataStripe.data) {
+      Api.get('v2/suscripcion/reportInUsers', {
+        key: i,
+        data: dataStripe.data[i].users,
+      }).then((response) => {
+        dataStripe.data[i].suscripciones = response.data
+      })
+    }
+  })
 })
 
 const filtersSearch = () => {
@@ -233,7 +253,6 @@ const membresiasGraficas = computed(() => {
       }
     }
   }
-
   return suscripcionesXmembresias.value
 })
 
@@ -257,6 +276,8 @@ const conteo = computed(() => {
 })
 
 const selectMembresia = ref(null)
+//STRIPE
+const reload = ref(true)
 </script>
 
 <template>
@@ -273,6 +294,7 @@ const selectMembresia = ref(null)
               <div class="select">
                 <select v-model="statusSelect" @change="changeStado">
                   <option
+
                     v-for="(item, key) in estados"
                     :key="`estados-${key}`"
                     :value="item.value"
@@ -314,7 +336,7 @@ const selectMembresia = ref(null)
           />
         </div> -->
 
-        <VCard
+        <!-- <VCard
           v-if="suscripcionPayment.dataNew.data1.length"
           class="column is-12 mb-4"
         >
@@ -322,7 +344,7 @@ const selectMembresia = ref(null)
             :options="suscripcionPayment.options"
             @ready="suscripcionPayment.onReady"
           />
-        </VCard>
+        </VCard> -->
 
         <!-- <div class="column columns is-12 mb-4" style="overflow: scroll">
           <div
@@ -340,7 +362,16 @@ const selectMembresia = ref(null)
             </VCard>
           </div>
         </div> -->
-        <VCard class="mb-4">
+
+        <div class="column is-12">
+          <reportsStripe
+            :data-stripe="dataStripe"
+            v-if="Object.keys(dataStripe).length > 0"
+            :defer="!dataStripe"
+          />
+        </div>
+
+        <!-- <VCard class="mb-4">
           <p class="title is-5">{{ conteo }} Subscriptions</p>
         </VCard>
         <VCard
@@ -354,18 +385,13 @@ const selectMembresia = ref(null)
                 {{ item.membership_name }} ({{ item.conteo_suscripciones }}
                 subscriptions)
               </p>
-              <!-- <p class="title is-5">{{ item.conteo_suscripciones }}</p> -->
             </div>
             <div class="column is-4">
               <VCard>
                 <V-BillboardJS :options="item.optionsGender" />
               </VCard>
             </div>
-            <!-- <div class="column is-4">
-              <VCard>
-                <V-BillboardJS :options="item.optionsEdades" />
-              </VCard>
-            </div> -->
+
             <div class="column is-4">
               <VCard>
                 <V-BillboardJS :options="item.optionsRangos" />
@@ -399,30 +425,11 @@ const selectMembresia = ref(null)
                       </tr>
                     </tbody>
                   </table>
-                  <!-- <div
-                    class="column is-4"
-                    v-for="(dicipline, e) in item.diciplines"
-                    :key="`iy-${e}`"
-                  >
-                    <VCard class="columns is-multiline mb-4">
-                      <div class="column is-12 d-flex justify-content-between">
-                        <p class="title is-6">
-                          {{ dicipline.dicipline_name }} ({{ dicipline.numero_miembros }} members)
-                        </p>
-                      </div>
-                      <div class="column is-6">
-                        <V-BillboardJS :options="dicipline.optionsGenders" />
-                      </div>
-                      <div class="column is-6">
-                        <V-BillboardJS :options="dicipline.optionsEdades" />
-                      </div>
-                    </VCard>
-                  </div> -->
                 </div>
               </VCard>
             </div>
           </div>
-        </VCard>
+        </VCard> -->
       </div>
     </div>
   </SidebarLayout>
