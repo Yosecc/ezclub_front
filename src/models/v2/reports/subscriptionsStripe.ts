@@ -53,18 +53,18 @@ export const options = {
   data: {
     type: 'bar',
     types: {
-      data2: line(),
-      data1: bar(),
+      data2: bar(),
+      data1: line(),
     },
     x: 'x',
     columns: [],
     names: {
-      data1: 'Subscriptions',
-      data2: 'Amount',
+      data2: 'Subscriptions',
+      data1: 'Amount',
     },
     labels: {
       format: {
-        data2: function (x) {
+        data1: function (x) {
           return d3.format('$')(x)
         },
       },

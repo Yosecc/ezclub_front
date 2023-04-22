@@ -117,14 +117,14 @@ onMounted(() => {
       dataStripe[i] = response.data[i]
     }
 
-    for (const i in dataStripe.data) {
-      Api.get('v2/suscripcion/reportInUsers', {
-        key: i,
-        data: dataStripe.data[i].users,
-      }).then((response) => {
-        dataStripe.data[i].suscripciones = response.data
-      })
-    }
+    // for (const i in dataStripe.data) {
+    //   Api.get('v2/suscripcion/reportInUsers', {
+    //     key: i,
+    //     data: dataStripe.data[i].users,
+    //   }).then((response) => {
+    //     dataStripe.data[i].suscripciones = response.data
+    //   })
+    // }
   })
 })
 

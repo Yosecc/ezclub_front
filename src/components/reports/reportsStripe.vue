@@ -1,5 +1,13 @@
 <script setup lang="ts">
-import { ref, defineProps, onMounted, computed, nextTick, watch } from 'vue'
+import {
+  ref,
+  defineProps,
+  onMounted,
+  computed,
+  nextTick,
+  watch,
+  reactive,
+} from 'vue'
 import { moneda, monedaDecimal } from '/@src/models/Mixin'
 import { Api } from '/@src/services'
 import moment from 'moment'
@@ -28,56 +36,6 @@ onMounted(() => {})
 const filters = ref('')
 const filterDate = ref('all')
 
-const billboardJsOptions = {
-  data: {
-    x: 'x',
-    columns: [
-      ['x', 'Data A', 'Data B', 'Data C', 'Data D', 'Data E'],
-      ['data1', 330, 350, 200, 380, 150],
-      ['data2', 130, 100, 30, 200, 80],
-      ['data3', 230, 153, 85, 300, 250],
-    ],
-    colors: {
-      data1: themeColors.accent,
-      data2: themeColors.primary,
-      data3: themeColors.info,
-      data4: themeColors.purple,
-    },
-    type: radar(),
-    labels: true,
-  },
-  radar: {
-    axis: {
-      max: 400,
-    },
-    level: {
-      depth: 4,
-    },
-    direction: {
-      clockwise: true,
-    },
-  },
-  size: {
-    height: 280,
-  },
-  padding: {
-    bottom: 20,
-  },
-  title: {
-    text: 'Radar Chart',
-    position: 'top-left',
-    padding: {
-      bottom: 20,
-      right: 20,
-      top: 0,
-      left: 20,
-    },
-  },
-  legend: {
-    position: 'inset',
-  },
-}
-
 const convert: object = (data: object) => {
   return JSON.parse(JSON.stringify(data))
 }
@@ -95,15 +53,15 @@ const dataStripe = computed(() => {
     let x = ['x'].concat(subscriptionsStripe.dataFechas(data.data[i].data))
     data.data[i].options.data.columns.push(x)
 
-    let data1 = ['data1'].concat(
-      subscriptionsStripe.dataCount(data.data[i].data)
-    )
-    data.data[i].options.data.columns.push(data1)
-
-    let data2 = ['data2'].concat(
+    let data2 = ['data1'].concat(
       subscriptionsStripe.dataAmount(data.data[i].data)
     )
     data.data[i].options.data.columns.push(data2)
+
+    let data1 = ['data2'].concat(
+      subscriptionsStripe.dataCount(data.data[i].data)
+    )
+    data.data[i].options.data.columns.push(data1)
 
     data.data[i].options.data.labels.format.data2 = function (x) {
       return d3.format('$')(x)
@@ -113,22 +71,45 @@ const dataStripe = computed(() => {
   return data
 })
 
-const subscriptionsEstadoGroup = ref(null)
+////////////////
+const listEstados = reactive({
+  key: null,
+  data: null,
+})
 
-const subscriptionsList = ref(null)
-const subscriptionsMemberships = ref(null)
-
-const ListActive = ref('subscriptions')
-
-const viewListEstados = (data) => {
-  subscriptionsEstadoGroup.value = data
+const viewListEstados = ({ estado, key }) => {
+  if (listEstados.key == key) {
+    listEstados.key = null
+    listEstados.data = null
+    return
+  }
+  listEstados.key = key
+  listEstados.data = estado
 }
 
-const keySelectedProximaFecha = ref(null)
+watch(listEstados.key, (to) => {
+  listEstados.data = null
+  selectedProximaFecha.key = null
+})
+
+/////////////////
+
+const selectedProximaFecha = reactive({
+  key: null,
+  subscriptions: null,
+  memberships: null,
+})
+
 const viewListSubscriptions = ({ data, key }) => {
-  subscriptionsList.value = data
-  subscriptionsMemberships.value = data.membresias
-  keySelectedProximaFecha.value = key
+  if (selectedProximaFecha.key == key) {
+    selectedProximaFecha.key = null
+    selectedProximaFecha.subscriptions = null
+    selectedProximaFecha.memberships = null
+    return
+  }
+  selectedProximaFecha.key = key
+  selectedProximaFecha.subscriptions = data
+  selectedProximaFecha.memberships = data.membresias
 
   setTimeout(() => {
     var element = document.getElementById('subscriptionsList')
@@ -136,19 +117,41 @@ const viewListSubscriptions = ({ data, key }) => {
   }, 100)
 }
 
-const ListSubscriptionsMembership = ref(null)
-const keySelected = ref(null)
-const viewListSubscriptionsMembership = ({ data, key }) => {
-  ListSubscriptionsMembership.value = data
-  keySelected.value = key
-}
 const parpadeo = ref(false)
-watch(keySelectedProximaFecha, (to) => {
-  parpadeo.value = true
-  setTimeout(() => {
-    parpadeo.value = false
-  }, 300)
+watch(
+  () => selectedProximaFecha.key,
+  (to) => {
+    console.log(to)
+    subscriptionMembnership.key = null
+
+    parpadeo.value = true
+    setTimeout(() => {
+      parpadeo.value = false
+    }, 1000)
+  }
+)
+
+////////////////
+
+const subscriptionMembnership = reactive({
+  key: null,
+  dat: null,
 })
+
+const viewListSubscriptionsMembership = ({ data, key }) => {
+  if (subscriptionMembnership.key == key) {
+    subscriptionMembnership.key = null
+    subscriptionMembnership.data = null
+
+    return
+  }
+  subscriptionMembnership.key = key
+  subscriptionMembnership.data = data
+}
+
+/////////////////
+
+const ListActive = ref('subscriptions')
 </script>
 
 <template>
@@ -205,12 +208,11 @@ watch(keySelectedProximaFecha, (to) => {
                     />
                   </VCard>
                 </div>
-
                 <div class="column is-12">
                   <VButton
                     class="w-100"
-                    color="warning"
-                    @click="viewListEstados(estado)"
+                    :color="listEstados.key == key ? 'info' : ''"
+                    @click="viewListEstados({ estado, key })"
                     >View List Subscriptions</VButton
                   >
                 </div>
@@ -221,7 +223,7 @@ watch(keySelectedProximaFecha, (to) => {
       </div>
     </VCard>
 
-    <VCard v-if="subscriptionsEstadoGroup" class="column is-12 mb-4">
+    <VCard v-if="listEstados.data" class="column is-12 mb-4">
       <table class="table is-hoverable is-fullwidth">
         <thead>
           <tr>
@@ -233,8 +235,8 @@ watch(keySelectedProximaFecha, (to) => {
         </thead>
         <tbody
           :key="`estado-${key}`"
-          v-for="(item, key) in subscriptionsEstadoGroup.data"
-          :class="key == keySelectedProximaFecha ? 'bg-info' : ''"
+          v-for="(item, key) in listEstados.data.data"
+          :class="key == selectedProximaFecha.key ? 'bg-info' : ''"
         >
           <tr>
             <td class="p-4">
@@ -259,21 +261,28 @@ watch(keySelectedProximaFecha, (to) => {
     </VCard>
 
     <VCard
-      v-if="subscriptionsList"
+      v-if="selectedProximaFecha.subscriptions"
       id="subscriptionsList"
       class="column is-12 mb-4"
     >
       <VCard class="d-flex justify-content-between mb-4">
-        <div>
-          <p>
-            Payment next date:
-            {{
-              moment(keySelectedProximaFecha, 'YYYY-MM-DD').format('MM-DD-YYYY')
-            }}
-          </p>
-          <p>Count: {{ subscriptionsList.count }}</p>
-          <p>Amount: {{ moneda(subscriptionsList.amount / 100) }}</p>
-        </div>
+        <V-Loader size="small" :active="parpadeo">
+          <div>
+            <p>
+              Payment next date:
+              {{
+                moment(selectedProximaFecha.key, 'YYYY-MM-DD').format(
+                  'MM-DD-YYYY'
+                )
+              }}
+            </p>
+            <p>Count: {{ selectedProximaFecha.subscriptions.count }}</p>
+            <p>
+              Amount:
+              {{ moneda(selectedProximaFecha.subscriptions.amount / 100) }}
+            </p>
+          </div>
+        </V-Loader>
 
         <div>
           <VButton
@@ -290,13 +299,19 @@ watch(keySelectedProximaFecha, (to) => {
         </div>
       </VCard>
 
-      <VCard v-if="ListActive == 'subscriptions' && subscriptionsList">
+      <VCard
+        v-if="
+          ListActive == 'subscriptions' && selectedProximaFecha.subscriptions
+        "
+      >
         <reportsStripeListSubscription
-          :subscriptions="subscriptionsList.data"
+          :subscriptions="selectedProximaFecha.subscriptions.data"
         />
       </VCard>
 
-      <VCard v-if="ListActive == 'membresias' && subscriptionsMemberships">
+      <VCard
+        v-if="ListActive == 'membresias' && selectedProximaFecha.memberships"
+      >
         <table class="table is-hoverable is-fullwidth">
           <thead>
             <tr>
@@ -309,7 +324,8 @@ watch(keySelectedProximaFecha, (to) => {
           </thead>
           <tbody
             :key="`member-${key}`"
-            v-for="(item, key) in subscriptionsMemberships"
+            v-for="(item, key) in selectedProximaFecha.memberships"
+            :class="key == subscriptionMembnership.key ? 'bg-info' : ''"
           >
             <tr>
               <td class="p-4">
@@ -338,11 +354,11 @@ watch(keySelectedProximaFecha, (to) => {
                 ></VButton>
               </td>
             </tr>
-            <tr v-if="key == keySelected">
+            <tr v-if="key == subscriptionMembnership.key">
               <td colspan="4">
-                <VCard v-if="ListSubscriptionsMembership">
+                <VCard v-if="subscriptionMembnership.data">
                   <reportsStripeListSubscription
-                    :subscriptions="ListSubscriptionsMembership"
+                    :subscriptions="subscriptionMembnership.data"
                   />
                 </VCard>
               </td>
