@@ -186,8 +186,10 @@ export const remplazarSuscripcion = async (id: Number, obj: object) => {
   return response
 }
 
-export const getSuscripcion = async (id: Number) => {
-  const response = await Api.post(`v2/get_suscripcion/${id}?is_member=true`)
+export const getSuscripcion = async (id: Number, is_member: Boolean = true) => {
+  const response = await Api.post(
+    `v2/get_suscripcion/${id}?is_member=${is_member}`
+  )
   return response
 }
 

@@ -66,7 +66,20 @@ const dataStripe = computed(() => {
     data.data[i].options.data.labels.format.data2 = function (x) {
       return d3.format('$')(x)
     }
+
+    // for (let e in data.data[i].data) {
+    //   for (let x in data.data[i].data[e].data) {
+    //     if (data.data[i].data[e].data[x].user) {
+    //       const user = data.data[i].data[e].data[x].user
+    //       data.data[i].data[e].data[x].suscripcion_id = data.data[
+    //         i
+    //       ].suscripciones_ids.find((e) => e.user_id == user.id).id
+    //     }
+    //   }
+    // }
   }
+
+  console.log('datafinal', data)
 
   return data
 })
@@ -75,20 +88,28 @@ const dataStripe = computed(() => {
 const listEstados = reactive({
   key: null,
   data: null,
+  suscripciones: null,
+  suscripciones_ids: null,
 })
 
 const viewListEstados = ({ estado, key }) => {
+  console.log('viewListEstados', estado)
   if (listEstados.key == key) {
     listEstados.key = null
     listEstados.data = null
+    listEstados.suscripciones_ids = null
     return
   }
+
   listEstados.key = key
   listEstados.data = estado
+  // listEstados.suscripciones = estado.suscripciones
+  // listEstados.suscripciones_ids = estado.suscripciones_ids
 }
 
 watch(listEstados.key, (to) => {
   listEstados.data = null
+  listEstados.suscripciones_ids = null
   selectedProximaFecha.key = null
 })
 
@@ -101,6 +122,7 @@ const selectedProximaFecha = reactive({
 })
 
 const viewListSubscriptions = ({ data, key }) => {
+  console.log('viewListSubscriptions', data)
   if (selectedProximaFecha.key == key) {
     selectedProximaFecha.key = null
     selectedProximaFecha.subscriptions = null
@@ -317,7 +339,6 @@ const ListActive = ref('subscriptions')
             <tr>
               <th scope="col">Membership</th>
               <th scope="col">Count.</th>
-
               <th scope="col">Amount</th>
               <th scope="col">View Subscription</th>
             </tr>
