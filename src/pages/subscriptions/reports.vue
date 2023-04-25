@@ -108,14 +108,33 @@ const change = (val) => {
 }
 
 const dataStripe = reactive({})
+const suscripciones_ids = reactive({})
+const suscripcionesSegunStripe = reactive({})
 
 onMounted(() => {
   // getReport('all', filters.value, route.query.page, 'All', fecha_pago.value)
 
   Api.get('v2/suscripcion/reportStripe').then((response) => {
+    for (const i in response.data.suscripciones_ids) {
+      suscripciones_ids[i] = response.data.suscripciones_ids[i]
+    }
     for (const i in response.data) {
       dataStripe[i] = response.data[i]
     }
+
+    Api.post('v2/suscripcion/reportInUsers', suscripciones_ids)
+      .then((response) => {
+        let obj = {}
+        const d = response.data.suscripcionesSegunStripe
+        for (const i in d) {
+          suscripcionesSegunStripe[i] = { data: d[i], search: '' }
+        }
+
+        console.log(suscripcionesSegunStripe)
+      })
+      .catch((error) => {
+        console.log('error reportInUsers', error)
+      })
   })
 })
 
@@ -269,6 +288,27 @@ const conteo = computed(() => {
 const selectMembresia = ref(null)
 //STRIPE
 const reload = ref(true)
+
+const returnArr = (estado, search) => {
+  let arr = []
+  // console.log(search)
+  estado.forEach((element) => {
+    arr.push(element.data)
+  })
+
+  return arr.filter((item) => {
+    if (item) {
+      return (
+        item.user.name.match(new RegExp(search, 'i')) ||
+        item.user.email.match(new RegExp(search, 'i')) ||
+        item.fecha_vencimiento.match(new RegExp(search, 'i')) ||
+        item.membership.name.match(new RegExp(search, 'i'))
+      )
+    }
+
+    return item
+  })
+}
 </script>
 
 <template>
@@ -354,12 +394,36 @@ const reload = ref(true)
           </div>
         </div> -->
 
-        <div class="column is-12">
+        <div class="column is-12 columns is-multiline">
           <reportsStripe
             :data-stripe="dataStripe"
             v-if="Object.keys(dataStripe).length > 0"
             :defer="!dataStripe"
           />
+          <div
+            v-for="(estado, key) in suscripcionesSegunStripe"
+            :key="`suscripcion-${key}`"
+            class="column is-6"
+          >
+            <VCard>
+              <p class="title is-6">
+                {{ key }}
+              </p>
+
+              <input
+                type="text"
+                v-model="estado.search"
+                class="input mb-4"
+                placeholder="Search"
+              />
+
+              <subscription-list
+                :colgrid="'is-6'"
+                :suscripciones="returnArr(estado.data, estado.search)"
+                :filter-local="true"
+              />
+            </VCard>
+          </div>
         </div>
 
         <!-- <VCard class="mb-4">

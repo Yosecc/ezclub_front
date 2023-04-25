@@ -173,6 +173,7 @@ export const inputsInformation = ref([
     isLabel: true,
     required: true,
     categories: ['Adult', 'Minor'],
+    typeMember: ['Individual', 'Company'],
   },
   {
     typeInput: 'hidden',
@@ -537,6 +538,7 @@ const familyData = ref([
     isLabel: true,
     model: false,
     category: ['Adult', 'Minor'],
+    typeMember: ['Individual', 'Company'],
   },
   {
     typeInput: 'file',
@@ -1299,7 +1301,7 @@ export const inputsMembership = reactive([])
 export const member = ref(null)
 
 export const getPresupuesto = async (data: any) => {
-  const response = Api.post('v2/presupuesto_member', data)
+  const response = Api.post('v1/presupuesto_member', data)
   // const response = Api.post('getPresupuesto', data)
   return response
 }

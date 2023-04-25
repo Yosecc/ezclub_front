@@ -39,6 +39,14 @@ const props = defineProps({
   filters: {
     type: String,
   },
+  colgrid: {
+    type: String,
+    default: 'is-4',
+  },
+  // filterLocal:{
+  //   type: Boolean,
+  //   default: false
+  // }
 })
 
 const filteredData = computed(() => {
@@ -211,14 +219,16 @@ watch(
           <!--Grid item-->
           <div
             v-for="item in filteredData"
-            :key="`${props.name}-${item.id}`"
-            class="column is-4"
+            :key="`${props.name}-${item ? item.id : 'e'}`"
+            class="column"
+            :class="colgrid"
             style="cursor: pointer"
           >
             <div
               @click="openMemberCard(item)"
               class="tile-grid-item cardprofile"
               :class="colorCard(item)"
+              v-if="item"
               :style="{ backgroundColor: item.estado.color }"
             >
               <div class="tile-grid-item-inner align-items-start">
