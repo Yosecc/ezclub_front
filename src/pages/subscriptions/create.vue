@@ -86,6 +86,8 @@ onMounted(() => {
   getDiscounts(1, 'membership').then((response) => {
     setInputValuesData(inputsMembership, 'discount', response.data.discounts)
   })
+  getInput(inputsMembership, 'payment_type_id').model = 3
+
   getAllConfig().then((response) => {
     setInputValuesData(inputsInformation, 'city_id', cities.value)
     setInputValuesData(inputsInformation, 'state_id', states.value)
@@ -119,17 +121,18 @@ const initSuscripcion = () => {
       }, 300)
     })
     .catch((error) => {
-      const data = error.response.data
       isLoaderActive.value = false
-      for (var i in data) {
-        if (typeof data[i] == 'object') {
-          if (typeof data[i] == 'object') {
-            for (var o in data[i]) {
-              notyf.error(data[i][o])
-            }
-          }
-        }
-      }
+      // console.log('por aqui', error)
+      // const data = error.response.data
+      // for (var i in data) {
+      //   if (typeof data[i] == 'object') {
+      //     if (typeof data[i] == 'object') {
+      //       for (var o in data[i]) {
+      //         notyf.error(data[i][o])
+      //       }
+      //     }
+      //   }
+      // }
     })
 }
 
@@ -217,9 +220,13 @@ const proccessSuscripcion = async (data: any) => {
   isLoaderActive.value = true
 
   solicitud.email = dato.value
-
+  solicitud.subscription_payment_type_id = getInput(
+    inputsMembership,
+    'payment_type_id'
+  ).model
   Object.assign(solicitud, data)
 
+  console.log(solicitud)
   await createSuscripcion(solicitud)
     .then((response) => {
       window.location.href = response.data.url
@@ -270,11 +277,35 @@ const limpiarTodo = async () => {
   solicitud.multigym = false
 }
 
+const paymentType = computed(() => {
+  return getInput(inputsMembership, 'payment_type_id').model
+})
+
 // PROCESS MINOR
 
 const isMinor = computed(() => {
   return !getInput(inputsInformation.value, 'category').model
 })
+
+const cardCargada = ref(false)
+
+const validarTarjetaCargadaSiEsCash = computed(() => {
+  if (paymentType.value == 3 && cardCargada.value) {
+    return true
+  } else if (paymentType.value == 1) {
+    return true
+  }
+
+  return false
+})
+
+const onActionCard = (data = null) => {
+  console.log('sjs', data)
+
+  if (data && data.payment_method_id) {
+    cardCargada.value = true
+  }
+}
 </script>
 
 <template>
@@ -387,7 +418,7 @@ const isMinor = computed(() => {
       <div class="column is-12" v-if="presupuesto && aprobado">
         <h1 class="title is-4">
           3. Enter the member's email.
-          <br />
+          <!-- <br />
           <small style="font-size: 12px"
             >* Then select a match if possible...otherwise press ENTER</small
           >
@@ -395,7 +426,7 @@ const isMinor = computed(() => {
           <small style="font-size: 12px"
             >* If you want to register a minor, please enter the email of the
             family member to register</small
-          >
+          > -->
         </h1>
 
         <VCard style="margin-bottom: 24px">
@@ -404,6 +435,7 @@ const isMinor = computed(() => {
             v-model:valor="dato"
             v-model="member"
             :not-payment-methods="true"
+            :not-search="true"
             @onSubmit="selectMember"
           />
         </VCard>
@@ -423,7 +455,7 @@ const isMinor = computed(() => {
               </VLoader>
             </div>
 
-            <div class="is-4 column mx-auto">
+            <div class="is-4 column">
               <VLoader size="small" :active="isLoaderActive">
                 <subscription-method-stripe-checkout
                   :total="presupuesto.total"
@@ -432,12 +464,35 @@ const isMinor = computed(() => {
               </VLoader>
             </div>
 
-            <div class="is-4 column mx-auto">
+            <div class="column is-2" v-if="paymentType == 3">
+              <VLoader size="small" class="h-100 mr-0" :active="isLoaderActive">
+                <subscription-method-payment-debit-automatic
+                  :total="20"
+                  :card="true"
+                  :user="{ email: dato, id: null }"
+                  :new-user="true"
+                  @onPayment="onActionCard"
+                />
+              </VLoader>
+            </div>
+
+            <div class="column" :class="paymentType == 3 ? 'is-2' : 'is-4'">
               <VLoader size="small" :active="isLoaderActive">
                 <subscription-method-payment-cash
                   :total="presupuesto.total"
                   @onPayment="proccessSuscripcion"
-                />
+                  :define_status="validarTarjetaCargadaSiEsCash"
+                >
+                  <VTag
+                    v-if="paymentType == 3 && !cardCargada"
+                    v-tooltip="
+                      'You must load a card to continue. If you do not have a card, define the paymentType option as cash '
+                    "
+                    color="solid"
+                    label="?"
+                  />
+                  <p style="font-size: 9px; margin: 0px; padding: 0px"></p>
+                </subscription-method-payment-cash>
               </VLoader>
             </div>
           </div>

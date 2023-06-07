@@ -266,6 +266,10 @@ const membresiasGraficas = computed(() => {
   return suscripcionesXmembresias.value
 })
 
+const segunMembresias = computed(() => {
+  return dataStripe.segunMembresia
+})
+
 const tabs = computed(() => {
   let tabs = []
   const _ = suscripcionesXmembresias.value
@@ -308,6 +312,12 @@ const returnArr = (estado, search) => {
 
     return item
   })
+}
+
+const datosDeMembresia = ref(null)
+
+const selectMembresiaEX = (id: string) => {
+  datosDeMembresia.value = segunMembresias.value[id]
 }
 </script>
 
@@ -400,6 +410,29 @@ const returnArr = (estado, search) => {
             v-if="Object.keys(dataStripe).length > 0"
             :defer="!dataStripe"
           />
+
+          <div class="w-100 d-flex" style="overflow-y: scroll">
+            <div
+              v-for="(item, key) in segunMembresias"
+              :key="`segunmenrecvia${key}`"
+            >
+              <VCard class="h-100 btn-card" @click="selectMembresiaEX(key)">
+                <p>{{ item.membership.name }}</p>
+              </VCard>
+            </div>
+          </div>
+
+          <Vcard class="column is-12" v-if="datosDeMembresia">
+            <p>{{ datosDeMembresia.membership.name }}</p>
+            <p>{{ datosDeMembresia.count }}</p>
+            <p></p>
+            <!-- <subscription-list
+              :colgrid="'is-6'"
+              :suscripciones="datosDeMembresia.data"
+              :filter-local="true"
+            /> -->
+          </Vcard>
+
           <div
             v-for="(estado, key) in suscripcionesSegunStripe"
             :key="`suscripcion-${key}`"

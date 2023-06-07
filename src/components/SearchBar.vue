@@ -29,6 +29,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  notSearch: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const emit = defineEmit(['update:modelValue', 'update:valor', 'onSubmit'])
@@ -67,7 +71,7 @@ const searchMember = async (event) => {
   memberSelect.value = null
   emit('update:modelValue', null)
 
-  if (value.value.length) {
+  if (value.value.length && !props.notSearch) {
     const response = await Api.get(`search_member?value=${value.value}`)
     showMembers.value = true
     members.value = response.data
@@ -148,7 +152,7 @@ const onSubmitEvent = () => {
     />
     <div
       class="mt-4 box-table-scroll w-100"
-      v-if="showMembers"
+      v-if="showMembers && !notSearch"
       style="overflow-y: scroll"
     >
       <table class="table is-hoverable is-fullwidth">

@@ -1,6 +1,6 @@
 import { Api } from '/@src/services'
 import { ref, computed, reactive } from 'vue'
-import { validateCuponV2 } from '/@src/models/Discounts.ts'
+import { validateCuponV2 } from '/@src/models/Discounts'
 import {
   // setInputValuesData,
   // setInputModelData,
@@ -9,7 +9,7 @@ import {
   notyf,
   // perpareDataInputs,
   // convertFormData,
-} from '/@src/models/Mixin.ts'
+} from '/@src/models/Mixin'
 
 //DATA
 export const presupuesto = ref(null)
@@ -27,6 +27,7 @@ export const solicitudDataInicial = {
   prorrateo: true,
   schedules: '',
   leo_vet_fr: false,
+  payment_type_id: 3,
 }
 
 export const solicitud = reactive(
@@ -135,14 +136,30 @@ export const inputsMembership = ref([
     categories: ['Adult'],
     typeMember: ['Individual'],
   },
+  // {
+  //   typeInput: 'date',
+  //   name: 'schedules',
+  //   placeholder: 'Subscription Schedules',
+  //   model: '',
+  //   required: false,
+  //   class: 'is-4',
+  //   isLabel: true,
+  // },
   {
-    typeInput: 'date',
-    name: 'schedules',
-    placeholder: 'Subscription Schedules',
-    model: '',
-    required: false,
-    class: 'is-4',
+    name: 'payment_type_id',
+    typeInput: 'selectData',
+    placeholder: 'Payment Type',
+    model: 3,
+    required: true,
+    values: [
+      { id: 1, name: 'Cash' },
+      { id: 3, name: 'Debit automatic' },
+    ],
+    class: 'is-6',
     isLabel: true,
+    filterOptionText: function (option) {
+      return option.name
+    },
   },
 ])
 

@@ -184,9 +184,7 @@ const proccessCheckout = () => {
               <p>
                 <small
                   ><b>Payment Method:</b>
-                  {{
-                    suscripcionComputed.memberships_members.paymenttype.name
-                  }}</small
+                  {{ suscripcionComputed.payment_type.name }}</small
                 >
               </p>
               <p>
@@ -357,7 +355,7 @@ const proccessCheckout = () => {
               <div class="column is-12">
                 <VLoader size="small" :active="isLoaderActive">
                   <subscription-method-payment-debit-automatic
-                    :total="20"
+                    :total="0"
                     :card="true"
                     :user="suscripcionComputed.user"
                     @onPayment="onGetSuscripcion"

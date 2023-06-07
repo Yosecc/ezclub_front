@@ -21,6 +21,10 @@ const props = defineProps({
     type: Number,
     required: true,
   },
+  define_status: {
+    type: Boolean,
+    default: true,
+  },
 })
 
 const cash = ref(0)
@@ -47,13 +51,19 @@ const payment = () => {
     payment_type_id: 1,
   })
 }
+
+const onOpenModal = () => {
+  if (props.define_status) {
+    openModalCash.value = true
+  }
+}
 </script>
 
 <template>
   <VCard
-    @click="openModalCash = true"
-    color="warning"
-    class="mx-2 btn-card w-100 justify-content-center"
+    @click="onOpenModal"
+    :color="props.define_status ? 'warning' : undefined"
+    class="btn-card w-100 justify-content-center"
   >
     <div class="d-flex justify-content-between align-items-start">
       <div>
@@ -63,7 +73,8 @@ const payment = () => {
         <p class="title is-5">Cash</p>
       </div>
       <p class="title is-6">
-        <i class="fas fa-check" aria-hidden="true"></i>
+        <slot />
+        <!-- <i class="fas fa-check" aria-hidden="true"></i> -->
       </p>
     </div>
   </VCard>

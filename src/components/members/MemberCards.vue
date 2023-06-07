@@ -111,17 +111,22 @@ const montaje = () => {
       })
       .catch((error) => {})
   } else {
-    getCardsuserV2(props.user.id)
-      .then((response) => {
-        isLoading.value = false
-        cards.value = response.data
-        let card = cards.value.find((e) => e.default == 1)
-        if (card != undefined) {
-          payment_method.value = card.id
-          emit('update:modelValue', card.id)
-        }
-      })
-      .catch((error) => {})
+    if (props.user.id) {
+      getCardsuserV2(props.user.id)
+        .then((response) => {
+          isLoading.value = false
+          cards.value = response.data
+          let card = cards.value.find((e) => e.default == 1)
+          if (card != undefined) {
+            payment_method.value = card.id
+            emit('update:modelValue', card.id)
+          }
+        })
+        .catch((error) => {})
+    } else if (props.user.id == null) {
+      isLoading.value = false
+      console.log('crear cliente y tarjeta')
+    }
   }
 }
 
@@ -176,9 +181,11 @@ const onNewCard = async () => {
   isLoading.value = true
   const response = await Api.post(props.onNewCardURL, {
     user_id: props.user.id,
+    user: props.user,
   })
     .then((res) => {
       clientSecret.value = res.data.clientSecret
+      props.user.id = res.data.user_id
       isLoading.value = false
     })
     .catch((error) => {

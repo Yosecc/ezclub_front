@@ -22,6 +22,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  newUser: {
+    type: Boolean,
+    dafutl: false,
+  },
   // member_id: {
   //   type: Number,
   //   required: true,
@@ -62,7 +66,7 @@ const payment_method = ref(null)
   <VCard
     @click="openModal = true"
     color="success"
-    class="mx-2 btn-card w-100 justify-content-center"
+    class="mx-2 btn-card w-100 justify-content-center h-100"
     v-if="!props.card"
   >
     <div class="d-flex justify-content-between align-items-start">
@@ -78,26 +82,26 @@ const payment_method = ref(null)
     </div>
   </VCard>
 
-  <VLoader v-else class="h-100" size="small" :active="isLoaderActive">
-    <VCard
-      color="success"
-      outlined
-      @click="openModal = true"
-      class="
-        mr-4
-        btn-card
-        text-center
-        px-2
-        h-100
-        d-flex
-        align-items-center
-        justify-content-center
-      "
-      style="font-size: 14px"
-    >
-      <p><b>Cards</b></p>
-    </VCard>
-  </VLoader>
+  <!-- <VLoader v-else class="h-100" size="small" :active="isLoaderActive"> -->
+  <VCard
+    color="success"
+    outlined
+    @click="openModal = true"
+    class="
+      mr-4
+      btn-card
+      text-center
+      px-2
+      h-100
+      d-flex
+      align-items-center
+      justify-content-center
+    "
+    style="font-size: 14px"
+  >
+    <p><b>Cards</b></p>
+  </VCard>
+  <!-- </VLoader> -->
 
   <!--  -->
   <VModal
@@ -108,7 +112,7 @@ const payment_method = ref(null)
     @close="openModal = false"
   >
     <template #content>
-      <div class="pb-3 mb-5">
+      <div v-if="!newUser" class="pb-3 mb-5">
         <VLoader size="large" :active="isLoaderSyncActive">
           <VButton
             color="undefined"
