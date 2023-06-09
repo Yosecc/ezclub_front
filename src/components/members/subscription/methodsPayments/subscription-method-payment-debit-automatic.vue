@@ -22,7 +22,15 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  textCard: {
+    type: String,
+    default: 'Debit Automatic',
+  },
   newUser: {
+    type: Boolean,
+    dafutl: false,
+  },
+  outline: {
     type: Boolean,
     dafutl: false,
   },
@@ -68,40 +76,45 @@ const payment_method = ref(null)
     color="success"
     class="mx-2 btn-card w-100 justify-content-center h-100"
     v-if="!props.card"
+    :outlined="props.outline"
   >
     <div class="d-flex justify-content-between align-items-start">
       <div>
         <p class="title is-3">
           <i class="fas fa-credit-card" aria-hidden="true"></i>
         </p>
-        <p class="title is-5">Debit Automatic</p>
+        <p class="title is-5">
+          {{ props.textCard }}
+        </p>
       </div>
       <p v-if="true" class="title is-6">
-        <i class="fas fa-check" aria-hidden="true"></i>
+        <slot name="righttop" />
+        <!-- <i class="fas fa-check" aria-hidden="true"></i> -->
       </p>
     </div>
   </VCard>
 
-  <!-- <VLoader v-else class="h-100" size="small" :active="isLoaderActive"> -->
-  <VCard
-    color="success"
-    outlined
-    @click="openModal = true"
-    class="
-      mr-4
-      btn-card
-      text-center
-      px-2
-      h-100
-      d-flex
-      align-items-center
-      justify-content-center
-    "
-    style="font-size: 14px"
-  >
-    <p><b>Cards</b></p>
-  </VCard>
-  <!-- </VLoader> -->
+  <VLoader v-else class="h-100" size="small" :active="isLoaderActive">
+    <VCard
+      color="success"
+      outlined
+      @click="openModal = true"
+      class="
+        mr-4
+        btn-card
+        text-center
+        px-2
+        h-100
+        d-flex
+        align-items-center
+        justify-content-center
+      "
+      style="font-size: 14px"
+    >
+      <p><b>Cards</b></p>
+      <slot />
+    </VCard>
+  </VLoader>
 
   <!--  -->
   <VModal

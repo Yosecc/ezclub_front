@@ -38,16 +38,17 @@ const payment = () => {
     @click="payment"
     color="success"
     class="mx-2 btn-card w-100 justify-content-center"
+    outlined
   >
     <div class="d-flex justify-content-between align-items-start">
       <div>
         <p class="title is-3">
           <i class="fas fa-credit-card" aria-hidden="true"></i>
         </p>
-        <p class="title is-5">Stripe Checkout</p>
+        <p class="title is-5">Debit Card</p>
       </div>
       <p v-if="true" class="title is-6">
-        <i class="fas fa-check" aria-hidden="true"></i>
+        <!-- <i class="fas fa-check" aria-hidden="true"></i> -->
       </p>
     </div>
   </VCard>

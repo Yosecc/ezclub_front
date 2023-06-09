@@ -225,8 +225,8 @@ const proccessSuscripcion = async (data: any) => {
     'payment_type_id'
   ).model
   Object.assign(solicitud, data)
-
   console.log(solicitud)
+
   await createSuscripcion(solicitud)
     .then((response) => {
       window.location.href = response.data.url
@@ -442,7 +442,7 @@ const onActionCard = (data = null) => {
 
         <VCard style="margin-bottom: 24px">
           <div class="columns is-multiline">
-            <div class="column is-4">
+            <div class="column is-3">
               <VLoader size="small" class="h-100" :active="isLoaderActive">
                 <VCard class="mb-4 h-100">
                   <div>
@@ -455,7 +455,7 @@ const onActionCard = (data = null) => {
               </VLoader>
             </div>
 
-            <div class="is-4 column">
+            <div class="is-3 column">
               <VLoader size="small" :active="isLoaderActive">
                 <subscription-method-stripe-checkout
                   :total="presupuesto.total"
@@ -464,35 +464,132 @@ const onActionCard = (data = null) => {
               </VLoader>
             </div>
 
-            <div class="column is-2" v-if="paymentType == 3">
-              <VLoader size="small" class="h-100 mr-0" :active="isLoaderActive">
+            <!-- <div class="column is-2"> -->
+            <!-- <VLoader size="small" class="h-100 mr-0" :active="isLoaderActive">
                 <subscription-method-payment-debit-automatic
                   :total="20"
-                  :card="true"
+                  :card="false"
                   :user="{ email: dato, id: null }"
                   :new-user="true"
+                  :text-card="'Cards'"
+                  :outline="true"
                   @onPayment="onActionCard"
-                />
-              </VLoader>
-            </div>
+                >
+                  <template #righttop>
+                    <VTag
+                      v-tooltip="
+                        'This option does not generate any charge to the card'
+                      "
+                      color="solid"
+                      label="?"
+                    />
+                  </template>
+                </subscription-method-payment-debit-automatic>
+              </VLoader> -->
+            <!-- </div> -->
 
-            <div class="column" :class="paymentType == 3 ? 'is-2' : 'is-4'">
+            <div class="column" :class="paymentType == 3 ? 'is-3' : 'is-3'">
               <VLoader size="small" :active="isLoaderActive">
                 <subscription-method-payment-cash
                   :total="presupuesto.total"
                   @onPayment="proccessSuscripcion"
                   :define_status="validarTarjetaCargadaSiEsCash"
                 >
-                  <VTag
-                    v-if="paymentType == 3 && !cardCargada"
-                    v-tooltip="
-                      'You must load a card to continue. If you do not have a card, define the paymentType option as cash '
-                    "
-                    color="solid"
-                    label="?"
-                  />
-                  <p style="font-size: 9px; margin: 0px; padding: 0px"></p>
+                  <template #righttop>
+                    <VTag
+                      v-if="paymentType == 3 && !cardCargada"
+                      v-tooltip="
+                        'You must load a card to continue. If you do not have a card, define the paymentType option as cash '
+                      "
+                      color="solid"
+                      label="?"
+                    />
+                  </template>
+
+                  <template #modalprev>
+                    <p class="title is-6">
+                      You must load a card to continue. If you do not have a
+                      card, define the paymentType option as cash
+                    </p>
+                    <VLoader
+                      size="small"
+                      class="h-100 mr-0"
+                      :active="isLoaderActive"
+                    >
+                      <subscription-method-payment-debit-automatic
+                        :total="20"
+                        :card="false"
+                        :user="{ email: dato, id: null }"
+                        :new-user="true"
+                        :text-card="'Cards (+)'"
+                        :outline="true"
+                        @onPayment="onActionCard"
+                      >
+                        <template #righttop>
+                          <VTag
+                            v-tooltip="
+                              'This option does not generate any charge to the card'
+                            "
+                            color="solid"
+                            label="?"
+                          />
+                        </template>
+                      </subscription-method-payment-debit-automatic>
+                    </VLoader>
+                  </template>
                 </subscription-method-payment-cash>
+              </VLoader>
+            </div>
+
+            <div class="column is-3">
+              <VLoader size="small" :active="isLoaderActive">
+                <subscription-method-payment-posnet
+                  :total="presupuesto.total"
+                  @onPayment="proccessSuscripcion"
+                  :define_status="!(paymentType == 3 && !cardCargada)"
+                >
+                  <template #righttop>
+                    <VTag
+                      v-if="!cardCargada"
+                      v-tooltip="
+                        'You must load a card to continue. If you do not have a card, define the paymentType option as cash '
+                      "
+                      color="solid"
+                      label="?"
+                    />
+                  </template>
+                  <template #modalprev>
+                    <p class="title is-6">
+                      You must load a card to continue. If you do not have a
+                      card, define the paymentType option as cash
+                    </p>
+                    <VLoader
+                      size="small"
+                      class="h-100 mr-0"
+                      :active="isLoaderActive"
+                    >
+                      <subscription-method-payment-debit-automatic
+                        :total="20"
+                        :card="false"
+                        :user="{ email: dato, id: null }"
+                        :new-user="true"
+                        :text-card="'Cards (+)'"
+                        :outline="true"
+                        @onPayment="onActionCard"
+                      >
+                        <template #righttop>
+                          <VTag
+                            v-tooltip="
+                              'This option does not generate any charge to the card'
+                            "
+                            color="solid"
+                            label="?"
+                          />
+                        </template>
+                      </subscription-method-payment-debit-automatic>
+                    </VLoader>
+                  </template>
+                </subscription-method-payment-posnet>
               </VLoader>
             </div>
           </div>
@@ -548,8 +645,26 @@ const onActionCard = (data = null) => {
     </div>
   </SidebarLayout>
 </template>
-<style>
+<style lang="scss">
 html {
   scroll-behavior: smooth;
+}
+
+.switch-button {
+  .field {
+    width: 100%;
+    padding: 20px;
+    background: #323236;
+    border-color: #404046;
+    border-radius: 10px;
+    border: 1px solid #404046;
+    transition: all 0.3s;
+  }
+}
+
+.title {
+  [class*='hint--'] {
+    position: unset;
+  }
 }
 </style>

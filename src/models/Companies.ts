@@ -1,7 +1,7 @@
 import { ref, computed } from 'vue'
 import { Api } from '/@src/services'
-import { user } from '/@src/pages/auth/auth.ts'
-import { getInput } from '/@src/models/Mixin.ts'
+import { user } from '/@src/pages/auth/auth'
+import { getInput } from '/@src/models/Mixin'
 import { useCookies } from 'vue3-cookies'
 
 const { cookies } = useCookies()
