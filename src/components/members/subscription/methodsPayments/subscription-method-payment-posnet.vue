@@ -22,16 +22,7 @@ import { moneda, notyf, getInput } from '/@src/models/Mixin'
 import { useCookies } from 'vue3-cookies'
 const { cookies } = useCookies()
 
-import Swal from 'sweetalert2'
-// import {
-//   total,
-//   payment,
-//   cash,
-//   changeBack,
-//   addCash,
-//   openModal,
-//   discount,
-// } from '/@src/models/Store'
+//import Swal from 'sweetalert2'
 
 const emit = defineEmit(['onPayment'])
 
@@ -54,6 +45,7 @@ const onOpenModal = () => {
   openModal.value = true
 
   let locaciones = company.value.locations
+
   if (locaciones.length) {
     if (cookies.get('locations_id')) {
       let locacion = locaciones.find((e) => e.id == cookies.get('locations_id'))
@@ -64,6 +56,9 @@ const onOpenModal = () => {
         }
       }
     }
+  }
+  if (terminales.value == 0) {
+    notyf.error('No terminals found at this location')
   }
 }
 
@@ -76,6 +71,7 @@ const terminalActiveData = {
 
 const terminalActive = reactive(JSON.parse(JSON.stringify(terminalActiveData)))
 const isLoaderActive = ref(false)
+
 const onSelectTerminal = (terminal: object) => {
   terminalActive.id = terminal.id
   terminalActive.label = terminal.label
@@ -94,6 +90,7 @@ watch(
     terminalActive.amount = 0
     isLoaderActive.value = false
     isLoadingConsultaTerminal.value = false
+    isPush.value = false
 
     stateTerminal.value = JSON.parse(JSON.stringify(stateTerminalData))
     paymentIntentTerminal.value = JSON.parse(
@@ -102,16 +99,20 @@ watch(
   }
 )
 
+const isPush = ref(false)
+
 watch(
   () => stateTerminal.value.status,
   (to) => {
-    if (to == 'succeeded') {
-      notyf.success('Payment Success')
-      openModal.value = false
-    } else if (to == 'failed') {
-      notyf.error(stateTerminal.value.failure_message)
-    } else if (to == 'in_progress') {
-      notyf.success('Payment in progress')
+    if (isPush.value) {
+      if (to == 'succeeded') {
+        notyf.success('Payment Success')
+        openModal.value = false
+      } else if (to == 'failed') {
+        notyf.error(stateTerminal.value.failure_message)
+      } else if (to == 'in_progress') {
+        notyf.success('Payment in progress')
+      }
     }
   }
 )
@@ -232,6 +233,7 @@ const initPusher = () => {
 
   var channel = pusher.subscribe('terminal_channel')
   channel.bind('terminal_event', function (data) {
+    isPush.value = true
     if (data.terminal == null) {
       stateTerminal.value = JSON.parse(JSON.stringify(stateTerminalData))
     } else {
@@ -281,107 +283,109 @@ const initPusher = () => {
       <div v-show="!props.define_status">
         <slot name="modalprev" />
       </div>
-      <!-- <p>{{ props.define_status }}</p> -->
-      <!-- <div v-show="props.define_status"> -->
-      <div class="mt-4 mx-2" v-if="terminales.length">
-        <VLoader size="small" :active="isLoaderActive">
-          <VCard
-            v-for="(terminal, key) in terminales"
-            :key="`terminal-${key}`"
-            class="columns is-multiline mb-4"
-          >
-            <!-- <p>{{ terminal }}</p> -->
-            <div class="column is-8">
-              <VCard
-                class="p-4 btn-card d-flex justify-content-between"
-                :color="
-                  terminalActive.id == terminal.id
-                    ? estadoTerminal.color
-                    : undefined
-                "
-                @click="onSelectTerminal(terminal)"
-              >
-                <div>
-                  <p class="title is-1">
-                    <i class="lnir lnir-postcard" aria-hidden="true"></i>
-                  </p>
-                  <p class="title is-5 mb-0">{{ terminal.label }}</p>
-                  <p>Status: {{ terminal.status }}</p>
-                </div>
-                <div>
-                  <p style="font-size: 10px" class="is-7 mb-0">
-                    ID: {{ paymentIntentTerminal.id }}
-                  </p>
-                  <p style="font-size: 10px" class="is-7 mb-0">
-                    Amount: {{ moneda(paymentIntentTerminal.amount / 100) }}
-                  </p>
-                  <p style="font-size: 10px" class="is-7 mb-0">
-                    Date: {{ paymentIntentTerminal.created }}
-                  </p>
-                  <p style="font-size: 10px" class="is-7 mb-0">
-                    PI. Status: {{ paymentIntentTerminal.status }}
-                  </p>
-                  <p style="font-size: 10px" class="is-7 mb-0">
-                    Status: {{ stateTerminal.status }}
-                  </p>
-                  <div v-if="stateTerminal.status == 'failed'">
-                    <VCard
-                      class="
-                        d-flex
-                        justify-content-between
-                        mt-4
-                        p-2
-                        align-items-center
-                      "
-                    >
-                      <p class="title is-7 text-capitalize m-0">retry</p>
-                      <p class="title is-6">
-                        <i class="lnil lnil-reload"></i>
-                      </p>
-                    </VCard>
-                  </div>
-                </div>
-              </VCard>
-            </div>
-            <div class="column is-4">
-              <VLoader size="small" :active="isLoadingConsultaTerminal">
+      <p>{{ props.define_status }}</p>
+      <p v-if="terminales.length == 0">'No terminals found at this location'</p>
+      <p>{{ isLoaderActive }}</p>
+      <div v-show="props.define_status">
+        <div class="mt-4 mx-2" v-if="terminales.length">
+          <VLoader size="small" :active="isLoaderActive">
+            <VCard
+              v-for="(terminal, key) in terminales"
+              :key="`terminal-${key}`"
+              class="columns is-multiline mb-4"
+            >
+              <!-- <p>{{ terminal }}</p> -->
+              <div class="column is-8">
                 <VCard
-                  color="warning"
-                  outlined
-                  @click="onConsultaTerminal(terminal)"
-                  class="d-flex justify-content-between mb-4"
+                  class="p-4 btn-card d-flex justify-content-between"
+                  :color="
+                    terminalActive.id == terminal.id
+                      ? estadoTerminal.color
+                      : undefined
+                  "
+                  @click="onSelectTerminal(terminal)"
                 >
                   <div>
-                    <p class="title is-6 mb-0">Terminal status</p>
+                    <p class="title is-1">
+                      <i class="lnir lnir-postcard" aria-hidden="true"></i>
+                    </p>
+                    <p class="title is-5 mb-0">{{ terminal.label }}</p>
+                    <p>Status: {{ terminal.status }}</p>
                   </div>
-
-                  <p class="title is-5">
-                    <i class="lnil lnil-reload"></i>
-                  </p>
-                </VCard>
-              </VLoader>
-              <VLoader size="small" :active="isLoadingConsultaTerminal">
-                <VCard
-                  color="danger"
-                  outlined
-                  @click="onStopTerminal(terminal)"
-                  class="d-flex justify-content-between"
-                >
                   <div>
-                    <p class="title is-6 mb-0">Cancel payment</p>
+                    <p style="font-size: 10px" class="is-7 mb-0">
+                      ID: {{ paymentIntentTerminal.id }}
+                    </p>
+                    <p style="font-size: 10px" class="is-7 mb-0">
+                      Amount: {{ moneda(paymentIntentTerminal.amount / 100) }}
+                    </p>
+                    <p style="font-size: 10px" class="is-7 mb-0">
+                      Date: {{ paymentIntentTerminal.created }}
+                    </p>
+                    <p style="font-size: 10px" class="is-7 mb-0">
+                      PI. Status: {{ paymentIntentTerminal.status }}
+                    </p>
+                    <p style="font-size: 10px" class="is-7 mb-0">
+                      Status: {{ stateTerminal.status }}
+                    </p>
+                    <div v-if="stateTerminal.status == 'failed'">
+                      <VCard
+                        class="
+                          d-flex
+                          justify-content-between
+                          mt-4
+                          p-2
+                          align-items-center
+                        "
+                      >
+                        <p class="title is-7 text-capitalize m-0">retry</p>
+                        <p class="title is-6">
+                          <i class="lnil lnil-reload"></i>
+                        </p>
+                      </VCard>
+                    </div>
                   </div>
-
-                  <p class="title is-5">
-                    <i class="lnil lnil-trash-can"></i>
-                  </p>
                 </VCard>
-              </VLoader>
-            </div>
-            <!---->
-          </VCard>
-        </VLoader>
+              </div>
+              <div class="column is-4">
+                <VLoader size="small" :active="isLoadingConsultaTerminal">
+                  <VCard
+                    color="warning"
+                    outlined
+                    @click="onConsultaTerminal(terminal)"
+                    class="d-flex justify-content-between mb-4"
+                  >
+                    <div>
+                      <p class="title is-6 mb-0">Terminal status</p>
+                    </div>
+
+                    <p class="title is-5">
+                      <i class="lnil lnil-reload"></i>
+                    </p>
+                  </VCard>
+                </VLoader>
+                <VLoader size="small" :active="isLoadingConsultaTerminal">
+                  <VCard
+                    color="danger"
+                    outlined
+                    @click="onStopTerminal(terminal)"
+                    class="d-flex justify-content-between"
+                  >
+                    <div>
+                      <p class="title is-6 mb-0">Cancel payment</p>
+                    </div>
+
+                    <p class="title is-5">
+                      <i class="lnil lnil-trash-can"></i>
+                    </p>
+                  </VCard>
+                </VLoader>
+              </div>
+              <!---->
+            </VCard>
+          </VLoader>
+        </div>
       </div>
-      <!-- </div> -->
     </template>
     <template #action>
       <!-- <VButton @click="cash = 0" class="d-flex justify-content-center" raised
