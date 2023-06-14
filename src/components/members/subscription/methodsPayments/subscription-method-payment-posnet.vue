@@ -108,6 +108,7 @@ watch(
       if (to == 'succeeded') {
         notyf.success('Payment Success')
         openModal.value = false
+        payment()
       } else if (to == 'failed') {
         notyf.error(stateTerminal.value.failure_message)
       } else if (to == 'in_progress') {
@@ -159,7 +160,6 @@ const enviarIntentoDePago = () => {
       .then((response: any) => {
         isLoaderActive.value = false
         notyf.success(response.data.message)
-        payment(response)
       })
       .catch((error: any) => {
         isLoaderActive.value = false
@@ -169,7 +169,7 @@ const enviarIntentoDePago = () => {
   }
 }
 
-const payment = (response) => {
+const payment = () => {
   // openModal.value = false
   emit('onPayment', {
     amount: props.total,
