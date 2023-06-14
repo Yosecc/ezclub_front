@@ -45,6 +45,12 @@ const emit = defineEmit(['close'])
             <span>Subscriptions (v2)</span>
           </RouterLink>
         </li>
+        <li v-has-nested-router-link class="has-children">
+          <RouterLink :to="{ name: 'subscriptions' }" class="is-submenu">
+            <i aria-hidden="true" class="lnil lnil-list-alt mr-2"></i>
+            <span>Subscriptions Reports</span>
+          </RouterLink>
+        </li>
         <!-- <li v-has-nested-router-link class="has-children">
           <RouterLink :to="{ name: 'members-create' }" class="is-submenu">
             <i aria-hidden="true" class="fas fa-user mr-2"></i>
