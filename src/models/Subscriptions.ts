@@ -19,7 +19,7 @@ export const suscripciones = ref(null)
 export const solicitudDataInicial = {
   memberships_id: null,
   recurrences_id: null,
-  is_initiation_fee: false,
+  is_initiation_fee: true,
   is_card_price: false,
   discount: null,
   is_last_month: false,
@@ -42,9 +42,9 @@ export const inputsMembership = ref([
   {
     typeInput: 'switchEventChangeInput',
     name: 'is_initiation_fee',
-    values: ['YES', 'NO'],
+    values: ['NO', 'YES'],
     placeholder: 'Initiation fee',
-    default: false,
+    default: true,
     model: solicitud.is_initiation_fee,
     disabled: false,
     class: 'is-3 switch-button',
@@ -87,7 +87,8 @@ export const inputsMembership = ref([
   {
     typeInput: 'switchEventChangeInput',
     name: 'prorrateo',
-    values: ['', 'Prorated Payment'],
+    values: ['NO', 'YES'],
+    placeholder: 'Prorated Payment',
     model: true,
     default: true,
     required: false,
@@ -97,8 +98,10 @@ export const inputsMembership = ref([
   {
     typeInput: 'switch',
     name: 'leo_vet_fr',
-    values: ['', 'LAW ENFORCEMENT OFFICER'],
-    html: '<div class="ml-4"><p><small>VETERAN</small></p><p><small>FIRTS RESPONDER</small></p></div>',
+    values: ['NO', 'YES'],
+    placeholder:
+      'Member is: Law Enforcement Officer, Veteran o First Responder.',
+    // html: '<div class="ml-4"><p><small>VETERAN</small></p><p><small>FIRTS RESPONDER</small></p></div>',
     model: false,
     default: false,
     required: false,

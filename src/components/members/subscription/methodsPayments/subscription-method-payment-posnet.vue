@@ -159,7 +159,7 @@ const enviarIntentoDePago = () => {
       .then((response: any) => {
         isLoaderActive.value = false
         notyf.success(response.data.message)
-        // payment(response)
+        payment(response)
       })
       .catch((error: any) => {
         isLoaderActive.value = false
@@ -170,7 +170,7 @@ const enviarIntentoDePago = () => {
 }
 
 const payment = (response) => {
-  openModal.value = false
+  // openModal.value = false
   emit('onPayment', {
     amount: props.total,
     payment_type_id: 5,
@@ -283,9 +283,9 @@ const initPusher = () => {
       <div v-show="!props.define_status">
         <slot name="modalprev" />
       </div>
-      <p>{{ props.define_status }}</p>
+
       <p v-if="terminales.length == 0">'No terminals found at this location'</p>
-      <p>{{ isLoaderActive }}</p>
+
       <div v-show="props.define_status">
         <div class="mt-4 mx-2" v-if="terminales.length">
           <VLoader size="small" :active="isLoaderActive">

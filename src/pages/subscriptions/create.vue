@@ -218,7 +218,6 @@ const proccessSuscripcion = async (data: any) => {
     return
   }
   isLoaderActive.value = true
-
   solicitud.email = dato.value
   solicitud.subscription_payment_type_id = getInput(
     inputsMembership,
