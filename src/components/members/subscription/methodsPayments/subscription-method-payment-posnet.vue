@@ -91,7 +91,7 @@ watch(
     isLoaderActive.value = false
     isLoadingConsultaTerminal.value = false
     isPush.value = false
-
+    conteo.value = 0
     stateTerminal.value = JSON.parse(JSON.stringify(stateTerminalData))
     paymentIntentTerminal.value = JSON.parse(
       JSON.stringify(paymentIntentTerminalData)
@@ -101,6 +101,8 @@ watch(
 
 const isPush = ref(false)
 
+const tiempolimite = ref(10)
+
 watch(
   () => stateTerminal.value.status,
   (to) => {
@@ -108,11 +110,18 @@ watch(
       if (to == 'succeeded') {
         notyf.success('Payment Success')
         openModal.value = false
-        payment()
+        if (conteo.value <= tiempolimite.value) {
+          payment()
+        }
       } else if (to == 'failed') {
         notyf.error(stateTerminal.value.failure_message)
       } else if (to == 'in_progress') {
         notyf.success('Payment in progress')
+      }
+    }
+    if (!isPush.value) {
+      if (to == 'succeeded') {
+        initContador()
       }
     }
   }
@@ -249,6 +258,35 @@ const initPusher = () => {
     }
   })
 }
+
+const onCleanAndClose = (terminal: object) => {
+  if (conteo.value == tiempolimite.value) {
+    stopTerminal({
+      id: terminal.id,
+      payment_type_id: null,
+    })
+    openModal.value = false
+    isLoadingConsultaTerminal.value = false
+
+    emit('onPayment', {
+      amount: props.total,
+      payment_type_id: 5,
+    })
+  }
+}
+
+const conteo = ref(0)
+
+const initContador = () => {
+  conteo.value = 0
+
+  let interval = setInterval(() => {
+    conteo.value++
+    if (conteo.value == tiempolimite.value) {
+      clearInterval(interval)
+    }
+  }, 1000)
+}
 </script>
 
 <template>
@@ -275,7 +313,6 @@ const initPusher = () => {
     :open="openModal"
     actions="center"
     size="big"
-    noscroll
     noclose
     @close="onCloseModal"
   >
@@ -377,6 +414,27 @@ const initPusher = () => {
 
                     <p class="title is-5">
                       <i class="lnil lnil-trash-can"></i>
+                    </p>
+                  </VCard>
+                </VLoader>
+              </div>
+              <div
+                class="column is-12"
+                v-if="stateTerminal.status == 'succeeded'"
+              >
+                <VLoader size="small" :active="isLoadingConsultaTerminal">
+                  <VCard
+                    :color="conteo == tiempolimite ? 'success' : undefined"
+                    outlined
+                    @click="onCleanAndClose(terminal)"
+                    class="d-flex justify-content-between"
+                  >
+                    <div>
+                      <p class="title is-6 mb-0">Clean and Close</p>
+                    </div>
+                    <p v-if="conteo < tiempolimite">Loading ... {{ conteo }}</p>
+                    <p class="title is-5">
+                      <i class="lnil lnil-checkmark-circle"></i>
                     </p>
                   </VCard>
                 </VLoader>

@@ -331,27 +331,18 @@ const proccessCheckout = () => {
                   @reload="onGetSuscripcion"
                 />
               </div>
-
-              <!-- <div class="column is-12">
-            <subscription-action-send-email
-              :suscripcion="suscripcionComputed"
-              @reload="onGetSuscripcion"
-            />
-          </div> -->
               <div class="column is-12">
                 <subscription-action-upgrade
                   :suscripcion="suscripcionComputed"
                   @reload="onGetSuscripcion"
                 />
               </div>
-
               <div class="column is-12">
                 <subscription-action-saldo
                   :suscripcion="suscripcionComputed"
                   @reload="onGetSuscripcion"
                 />
               </div>
-
               <div class="column is-12">
                 <VLoader size="small" :active="isLoaderActive">
                   <subscription-method-payment-debit-automatic
@@ -362,9 +353,12 @@ const proccessCheckout = () => {
                   />
                 </VLoader>
               </div>
-
               <div class="column is-12">
-                <subscription-action-payments-list
+                <!-- <subscription-action-payments-list
+                  :suscripcion="suscripcionComputed"
+                /> -->
+
+                <subscription-action-invoices
                   :suscripcion="suscripcionComputed"
                 />
               </div>

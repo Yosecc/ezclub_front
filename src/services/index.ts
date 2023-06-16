@@ -58,7 +58,7 @@ intance.interceptors.response.use(
     }
 
     if (error.response.status == 401) {
-      // onLogout()
+      onLogout()
     } else {
       return Promise.reject(error)
     }

@@ -224,7 +224,7 @@ const proccessSuscripcion = async (data: any) => {
     'payment_type_id'
   ).model
   Object.assign(solicitud, data)
-  console.log(solicitud)
+  console.log('solicitud', solicitud)
 
   await createSuscripcion(solicitud)
     .then((response) => {
@@ -299,7 +299,7 @@ const validarTarjetaCargadaSiEsCash = computed(() => {
 })
 
 const onActionCard = (data = null) => {
-  console.log('sjs', data)
+  // console.log('sjs', data)
 
   if (data && data.payment_method_id) {
     cardCargada.value = true
