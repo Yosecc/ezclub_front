@@ -176,7 +176,7 @@ const proccessCheckout = () => {
               <p class="title is-4 mb-0">
                 {{ suscripcionComputed.membership.name }}
               </p>
-              <p>
+              <p v-if="suscripcionComputed.recurrence">
                 {{ suscripcionComputed.recurrence.recurrencia.descriptions }}
               </p>
             </span>
@@ -189,7 +189,7 @@ const proccessCheckout = () => {
               </p>
               <p>
                 <small>{{
-                  suscripcionComputed.recurrence.is_recurrence
+                  suscripcionComputed.is_recurrence
                     ? 'Recurrence'
                     : 'no recurrence'
                 }}</small>

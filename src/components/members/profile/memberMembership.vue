@@ -426,7 +426,9 @@ const locationFacturacion = computed(() => {
               <p class="title is-4 mb-0">
                 {{ memberMermship.membership.name }}
               </p>
-              <p>{{ memberMermship.recurrence.descriptions }}</p>
+              <p v-if="memberMermship.recurrence">
+                {{ memberMermship.recurrence.descriptions }}
+              </p>
             </span>
             <span class="text-right">
               <p>
@@ -435,7 +437,7 @@ const locationFacturacion = computed(() => {
                   {{ memberMermship.payment_type.name }}</small
                 >
               </p>
-              <p v-if="memberMermship">
+              <p v-if="memberMermship && memberMermship.recurrence">
                 <small>{{
                   memberMermship.recurrence.is_recurrence
                     ? 'Recurrence'
