@@ -46,7 +46,7 @@ watch(
 watch(
   () => filters.value,
   () => {
-    // getReport('all', filters.value, 1, categoryB.value, false)
+    getReport('all', filters.value, 1, categoryB.value, false)
   }
 )
 
@@ -112,8 +112,10 @@ const suscripciones_ids = reactive({})
 const suscripcionesSegunStripe = reactive({})
 
 onMounted(() => {
-  // getReport('all', filters.value, route.query.page, 'All', fecha_pago.value)
+  getReport('all', filters.value, route.query.page, 'All', fecha_pago.value)
+})
 
+const getReportStripe = () => {
   Api.get('v2/suscripcion/reportStripe').then((response) => {
     for (const i in response.data.suscripciones_ids) {
       suscripciones_ids[i] = response.data.suscripciones_ids[i]
@@ -136,7 +138,7 @@ onMounted(() => {
         console.log('error reportInUsers', error)
       })
   })
-})
+}
 
 const filtersSearch = () => {
   // console.log(filters.value.length)
@@ -319,6 +321,8 @@ const datosDeMembresia = ref(null)
 const selectMembresiaEX = (id: string) => {
   datosDeMembresia.value = segunMembresias.value[id]
 }
+
+const mode = ref(1)
 </script>
 
 <template>
@@ -326,7 +330,7 @@ const selectMembresiaEX = (id: string) => {
     <!-- Content Wrapper -->
     <div class="page-content-inner">
       <div class="mb-5 columns is-multiline">
-        <!-- <div class="is-2 column">
+        <div class="is-2 column">
           <V-Field class="w-100">
             <V-Control class="input-select">
               <label for="fecha_pago">
@@ -335,7 +339,6 @@ const selectMembresiaEX = (id: string) => {
               <div class="select">
                 <select v-model="statusSelect" @change="changeStado">
                   <option
-
                     v-for="(item, key) in estados"
                     :key="`estados-${key}`"
                     :value="item.value"
@@ -346,9 +349,9 @@ const selectMembresiaEX = (id: string) => {
               </div>
             </V-Control>
           </V-Field>
-        </div> -->
+        </div>
 
-        <!-- <V-Field class="is-6 column">
+        <V-Field class="is-6 column">
           <label for="fecha_pago">
             <p><small>Por definir</small></p>
           </label>
@@ -360,11 +363,9 @@ const selectMembresiaEX = (id: string) => {
               @keyup.enter="filtersSearch"
             />
           </V-Control>
-        </V-Field> -->
-        <!-- <div class="is-2 column">
-          
-        </div> -->
-        <!-- <div class="column is-4">
+        </V-Field>
+        <div class="is-2 column"></div>
+        <div class="column is-4">
           <label for="fecha_pago">
             <p><small>Payment Date</small></p>
           </label>
@@ -375,9 +376,9 @@ const selectMembresiaEX = (id: string) => {
             class="input custom-text-filter"
             v-model="fecha_pago"
           />
-        </div> -->
+        </div>
 
-        <!-- <VCard
+        <VCard
           v-if="suscripcionPayment.dataNew.data1.length"
           class="column is-12 mb-4"
         >
@@ -385,9 +386,9 @@ const selectMembresiaEX = (id: string) => {
             :options="suscripcionPayment.options"
             @ready="suscripcionPayment.onReady"
           />
-        </VCard> -->
+        </VCard>
 
-        <!-- <div class="column columns is-12 mb-4" style="overflow: scroll">
+        <div class="column columns is-12 mb-4" style="overflow: scroll">
           <div
             class="column is-4 mb-4"
             v-for="(item, key) in membresiasGraficas"
@@ -402,9 +403,9 @@ const selectMembresiaEX = (id: string) => {
               <p class="title is-5">{{ item.membership_name }}</p>
             </VCard>
           </div>
-        </div> -->
+        </div>
 
-        <div class="column is-12 columns is-multiline">
+        <div v-if="mode == 2" class="column is-12 columns is-multiline">
           <reportsStripe
             :data-stripe="dataStripe"
             v-if="Object.keys(dataStripe).length > 0"
@@ -459,7 +460,7 @@ const selectMembresiaEX = (id: string) => {
           </div>
         </div>
 
-        <!-- <VCard class="mb-4">
+        <VCard class="mb-4">
           <p class="title is-5">{{ conteo }} Subscriptions</p>
         </VCard>
         <VCard
@@ -517,7 +518,7 @@ const selectMembresiaEX = (id: string) => {
               </VCard>
             </div>
           </div>
-        </VCard> -->
+        </VCard>
       </div>
     </div>
   </SidebarLayout>

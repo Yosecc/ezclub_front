@@ -262,7 +262,7 @@ watch(
               <div>
                 <p>{{ item.id }}</p>
                 <div class="mb-4 description">
-                  <p style="font-size: 12px">
+                  <p v-if="item.recurrence" style="font-size: 12px">
                     {{ item.recurrence.recurrencia.descriptions }}
                   </p>
                   <p v-if="item.membership" class="title is-5 mb-1">

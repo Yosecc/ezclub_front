@@ -160,7 +160,7 @@ const keyOpen = ref(null)
                 <th scope="col">Cash Back</th>
                 <th scope="col">Action</th>
               </tr>
-              <tr v-show="keyOpen == value.id">
+              <tr v-show="keyOpen == value.id" v-if="value.membership_payment">
                 <!-- <td></td> -->
                 <td>
                   {{
