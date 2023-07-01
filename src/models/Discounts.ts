@@ -45,6 +45,13 @@ export const validateCupon = async (code: any, applies: any) => {
   return response
 }
 
+export const validateCuponV2 = async (code: any, applies: any) => {
+  const response = await Api.get(
+    `v2/discounts/validateCupon/${code}?applies=${applies}`
+  )
+  return response
+}
+
 export const inputs = ref([
   {
     typeInput: 'switch',

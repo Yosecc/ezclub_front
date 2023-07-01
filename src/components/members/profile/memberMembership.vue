@@ -380,6 +380,10 @@ const locationFacturacion = computed(() => {
   if (member.value.user && member.value.user.location_facturacion) {
     return member.value.user.location_facturacion
   }
+
+  if (memberMermship.value && memberMermship.value.payment_type_id == 1) {
+    return { id: memberMermship.value.locations_id }
+  }
   return null
 })
 </script>
@@ -423,7 +427,9 @@ const locationFacturacion = computed(() => {
               <p class="title is-4 mb-0">
                 {{ memberMermship.membership.name }}
               </p>
-              <p>{{ memberMermship.recurrence.descriptions }}</p>
+              <p v-if="memberMermship.recurrence">
+                {{ memberMermship.recurrence.descriptions }}
+              </p>
             </span>
             <span class="text-right">
               <p>
@@ -432,7 +438,7 @@ const locationFacturacion = computed(() => {
                   {{ memberMermship.payment_type.name }}</small
                 >
               </p>
-              <p v-if="memberMermship">
+              <p v-if="memberMermship && memberMermship.recurrence">
                 <small>{{
                   memberMermship.recurrence.is_recurrence
                     ? 'Recurrence'

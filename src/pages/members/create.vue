@@ -29,7 +29,7 @@ import {
   notyf,
   cleanUpModelInputs,
   getInput,
-} from '/@src/models/Mixin.ts'
+} from '/@src/models/Mixin'
 
 import {
   cities,

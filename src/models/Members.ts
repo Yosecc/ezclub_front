@@ -162,6 +162,20 @@ export const namesValidate = function (event, input) {
 
 export const inputsInformation = ref([
   {
+    typeInput: 'switchEventChangeInput',
+    name: 'category',
+    values: ['Minor', 'Adult'],
+    placeholder: 'Category',
+    default: 'Adult',
+    model: 'Adult',
+    disabled: false,
+    class: 'is-3',
+    isLabel: true,
+    required: true,
+    categories: ['Adult', 'Minor'],
+    typeMember: ['Individual', 'Company'],
+  },
+  {
     typeInput: 'hidden',
     name: 'select_type',
     values: ['Individual', 'Company'],
@@ -524,6 +538,7 @@ const familyData = ref([
     isLabel: true,
     model: false,
     category: ['Adult', 'Minor'],
+    typeMember: ['Individual', 'Company'],
   },
   {
     typeInput: 'file',
@@ -1294,10 +1309,10 @@ export const emergencyInputs = ref([
 
 export const inputsMembership = reactive([])
 
-export const member = ref()
+export const member = ref(null)
 
 export const getPresupuesto = async (data: any) => {
-  const response = Api.post('v2/presupuesto_member', data)
+  const response = Api.post('v1/presupuesto_member', data)
   // const response = Api.post('getPresupuesto', data)
   return response
 }
@@ -1467,7 +1482,7 @@ export const storeFirma = async (base64: any, id: any) => {
 }
 
 // Stripe
-export const getCardsMembers = async (id: number) => {
+export const getCardsMembers = async (id: number, url: string) => {
   const response = await Api.get(`members/cards/${id}`)
   return response
 }
