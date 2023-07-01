@@ -9,7 +9,7 @@ import {
   defineProps,
 } from 'vue'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import moment from 'moment'
 import {
   inputsInformation,
@@ -41,6 +41,10 @@ import {
 } from '/@src/models/Mixin.ts'
 import { getAllConfig } from '/@src/services/config.ts'
 import { getCompany, locations } from '/@src/models/Companies.ts'
+
+import { getSuscripcionCode, suscripcion } from '/@src/models/Subscriptions'
+
+const router = useRouter()
 const route = useRoute()
 
 pageTitle.value = 'Member Profile'
@@ -123,6 +127,8 @@ const reloadPage = () => {
   }, 500)
 }
 
+const suscripcionData = ref(null)
+
 onMounted(() => {
   // console.log(route.hash)
 
@@ -164,12 +170,31 @@ onMounted(() => {
     setInputValuesData(membershipsData, 'staff_id', response.data)
   })
 
-  mountMember()
+  if (route.query.id != undefined) {
+    mountMember()
+  }
+
+  if (route.query.code != undefined) {
+    isLoading.value = false
+    getSuscripcionCode(route.query.code).then((response) => {
+      suscripcionData.value = response.data.suscripcion
+      if (response.data.suscripcion.member) {
+        member.value = response.data.suscripcion.member
+        router.push({
+          name: 'members-profile',
+          query: {
+            id: response.data.suscripcion.member.id,
+          },
+          hash: '#susbcriptionIndex',
+        })
+      }
+    })
+  }
 })
 
 const mountMember = async () => {
   await getMember(route.query.id).then((response) => {
-    console.log('response.data', response.data)
+    // console.log('response.data', response.data)
     for (var i in response.data) {
       if (i == 'select_type') {
         if (response.data[i] == 'Individual') {
@@ -309,6 +334,7 @@ const status = computed(() => {
 
   return classs
 })
+
 const reload = () => {
   isLoading.value = true
   mountMember()
@@ -411,6 +437,8 @@ const reload = () => {
             </div>
           </div>
         </VCard>
+        <subscriptionIndex v-if="Component == 'susbcriptionIndex'" />
+
         <personalInformation
           :category="member.category"
           v-show="Component == 'personalInformation'"
@@ -427,6 +455,44 @@ const reload = () => {
         <memberWaiver v-if="Component == 'memberWaiver'" />
         <memberCredit v-if="Component == 'memberCredit'" />
       </div>
+    </div>
+
+    <div v-if="!isLoading && suscripcionData">
+      <VCard
+        class="
+          mb-4
+          d-flex
+          justify-content-between
+          align-items-center
+          cardprofile
+        "
+      >
+        <div>
+          <VAvatar size="big" initials="CT" />
+        </div>
+        <div class="text-right">
+          <p class="title is-6 mb-0">
+            Username: {{ suscripcionData.user.name }}
+          </p>
+          <p class="title is-6">Email: {{ suscripcionData.user.email }}</p>
+
+          <p>{{ suscripcionData.memberships_members.paymenttype.name }}</p>
+          <p v-if="suscripcionData.user.cards.length">
+            {{ suscripcionData.user.cards[0].brand }} ****{{
+              suscripcionData.user.cards[0].last4
+            }}
+          </p>
+        </div>
+      </VCard>
+
+      <subscriptionIndex :suscripcion="suscripcionData" />
+
+      <personalInformation
+        v-if="suscripcionData.estado.meses_pagados > 0 && !member"
+        :category="''"
+        :suscripcion="suscripcionData"
+        :user="suscripcionData.user"
+      />
     </div>
   </SidebarLayout>
 </template>

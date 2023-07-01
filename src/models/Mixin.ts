@@ -91,6 +91,7 @@ export const perpareDataInputs = (
     })
     return a
   }
+  return {}
 }
 
 export const convertFormData = (fd: any, objeto: object) => {
@@ -133,7 +134,11 @@ export const viewInput = (inputs, name) => {
 }
 
 export const getInput = (inputs: any, name: any) => {
-  // console.log(inputs)
+  if (inputs.value != undefined) {
+    // console.log(inputs)
+    return inputs.value.find((e) => e.name == name)
+  }
+
   return inputs.find((e) => e.name == name)
 }
 

@@ -25,6 +25,14 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  notPaymentMethods: {
+    type: Boolean,
+    default: false,
+  },
+  notSearch: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const emit = defineEmit(['update:modelValue', 'update:valor', 'onSubmit'])
@@ -63,7 +71,7 @@ const searchMember = async (event) => {
   memberSelect.value = null
   emit('update:modelValue', null)
 
-  if (value.value.length) {
+  if (value.value.length && !props.notSearch) {
     const response = await Api.get(`search_member?value=${value.value}`)
     showMembers.value = true
     members.value = response.data
@@ -73,6 +81,17 @@ const searchMember = async (event) => {
 const selectMember = (member) => {
   showMembers.value = false
   loadingMemberSelected.value = true
+
+  if (props.notPaymentMethods) {
+    memberSelect.value = member
+    loadingMemberSelected.value = false
+    value.value = memberSelect.value[props.dato]
+    emit('update:modelValue', memberSelect.value)
+    emit('update:valor', value.value)
+    emit('onSubmit')
+    return
+  }
+
   const response = getMemberPaymentMethods(member.id)
     .then((response) => {
       memberSelect.value = member
@@ -133,7 +152,7 @@ const onSubmitEvent = () => {
     />
     <div
       class="mt-4 box-table-scroll w-100"
-      v-if="showMembers"
+      v-if="showMembers && !notSearch"
       style="overflow-y: scroll"
     >
       <table class="table is-hoverable is-fullwidth">

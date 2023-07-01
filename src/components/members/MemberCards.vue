@@ -7,11 +7,18 @@ import {
   storedefaultPaymentMethod,
 } from '/@src/models/Members.ts'
 
+import { getCardsuserV2 } from '/@src/models/v2/Members.ts'
+
 import moment from 'moment'
 import { API_WEB_URL, Api } from '/@src/services'
 import { useRoute } from 'vue-router'
 import { notyf } from '/@src/models/Mixin.ts'
-const emit = defineEmit(['onMethodPayment', 'onNewCard', 'makePayment'])
+const emit = defineEmit([
+  'onMethodPayment',
+  'onNewCard',
+  'makePayment',
+  'update:modelValue',
+])
 
 const route = useRoute()
 const cards = ref([])
@@ -31,9 +38,9 @@ const props = defineProps({
     type: Number,
     default: null,
   },
-  memberid: {
-    type: Number,
-    default: null,
+  user: {
+    type: Object,
+    default: {},
   },
   ancho: {
     type: String,
@@ -46,6 +53,22 @@ const props = defineProps({
   memberGuardianId: {
     type: Number,
     default: null,
+  },
+  onNewCardURL: {
+    type: String,
+    default: 'stripeSetup',
+  },
+  addCardStripeURL: {
+    type: String,
+    default: 'addCardStripe',
+  },
+  v2: {
+    type: Boolean,
+    default: false,
+  },
+  actions: {
+    type: Array,
+    default: ['delete', 'default', 'make'],
   },
 })
 
@@ -70,22 +93,46 @@ const miembro = computed(() => {
 
 onMounted(() => {
   // console.log(miembro)
-  if (!miembro.value) {
-    console.error('Member Not Found')
-    return
-  }
+  // if (!miembro.value) {
+  //   console.error('Member Not Found')
+  //   return
+  // }
 
-  isLoading.value = true
-  getCardsMembers(miembro.value)
-    .then((response) => {
-      isLoading.value = false
-      cards.value = response.data
-    })
-    .catch((error) => {})
+  montaje()
 })
+
+const montaje = () => {
+  isLoading.value = true
+  if (!props.v2) {
+    getCardsMembers(miembro.value)
+      .then((response) => {
+        isLoading.value = false
+        cards.value = response.data
+      })
+      .catch((error) => {})
+  } else {
+    if (props.user.id) {
+      getCardsuserV2(props.user.id)
+        .then((response) => {
+          isLoading.value = false
+          cards.value = response.data
+          let card = cards.value.find((e) => e.default == 1)
+          if (card != undefined) {
+            payment_method.value = card.id
+            emit('update:modelValue', card.id)
+          }
+        })
+        .catch((error) => {})
+    } else if (props.user.id == null) {
+      isLoading.value = false
+      console.log('crear cliente y tarjeta')
+    }
+  }
+}
 
 const selectMethodPayment = (id) => {
   payment_method.value = id
+  emit('update:modelValue', id)
   emit('onMethodPayment', id)
 }
 
@@ -132,11 +179,13 @@ const clientSecret = ref(null)
 
 const onNewCard = async () => {
   isLoading.value = true
-  const response = await Api.post('stripeSetup', {
-    member_id: props.memberid,
+  const response = await Api.post(props.onNewCardURL, {
+    user_id: props.user.id,
+    user: props.user,
   })
     .then((res) => {
       clientSecret.value = res.data.clientSecret
+      props.user.id = res.data.user_id
       isLoading.value = false
     })
     .catch((error) => {
@@ -146,15 +195,9 @@ const onNewCard = async () => {
 
 const PaymentAction = () => {
   isLoading.value = true
-
+  clientSecret.value = null
   setTimeout(() => {
-    getCardsMembers(miembro.value)
-      .then((response) => {
-        console.log(response)
-        isLoading.value = false
-        cards.value = response.data
-      })
-      .catch((error) => {})
+    montaje()
   }, 5000)
 }
 
@@ -172,7 +215,13 @@ const makePayment = (id) => {
         class="column py-0 mb-2"
         :class="ancho"
       >
-        <VCard @click="selectMethodPayment(card.id)" class="btn-card h-100">
+        <VCard
+          :color="card.default ? 'primary' : undefined"
+          @click="selectMethodPayment(card.id)"
+          class="btn-card h-100"
+          :class="payment_method == card.id ? 'active' : ''"
+          :outlined="card.default"
+        >
           <div class="d-flex align-items-start justify-content-between">
             <p class="title is-1 mb-0">
               <i class="fas fa-credit-card" aria-hidden="true"></i>
@@ -182,21 +231,28 @@ const makePayment = (id) => {
               <p class="title is-6 mb-2">
                 {{ card.card.brand }} **** {{ card.card.last4 }}
               </p>
-              <p class="title is-6" v-if="method_default == card.card.last4">
-                Payment Default
-              </p>
+              <p class="title is-6" v-if="card.default">Payment Default</p>
             </div>
             <div class="text-right" v-if="showOption">
-              <VButton @click="deletePaymentMethod(card.id)" class="mb-2">
+              <VButton
+                v-if="props.actions.includes('delete')"
+                @click="deletePaymentMethod(card.id)"
+                class="mb-2"
+              >
                 <i class="fas fa-trash" aria-hidden="true"></i>
               </VButton>
               <VButton
+                v-if="props.actions.includes('default')"
                 @click="defaultPaymentMethod(card.id, card.card.last4)"
                 class="mb-2"
               >
                 <i class="fas fa-check" aria-hidden="true"></i>
               </VButton>
-              <VButton @click.stop="makePayment(card.id)" class="mb-2">
+              <VButton
+                v-if="props.actions.includes('make')"
+                @click.stop="makePayment(card.id)"
+                class="mb-2"
+              >
                 <i class="fa fa-shopping-bag" aria-hidden="true"></i>
               </VButton>
             </div>
@@ -206,9 +262,9 @@ const makePayment = (id) => {
       <slot></slot>
       <div v-if="showNewCard" class="column is-12">
         <VCard
-          v-if="props.memberid"
+          v-if="props.user"
           @click="onNewCard"
-          color="success"
+          color="info"
           class="btn-card"
         >
           <div class="d-flex align-items-center">
@@ -223,11 +279,26 @@ const makePayment = (id) => {
         <stripeAddCardComponent
           v-if="clientSecret"
           :client-secret="clientSecret"
-          :member_id="props.memberid"
+          :user_id="props.user.id"
           :is-back="false"
+          :add-card-stripe-u-r-l="props.addCardStripeURL"
           @PaymentAction="PaymentAction"
         />
       </div>
     </div>
+    <!-- <div v-else>
+      <VCard color="primary" class="btn-card">
+        <h1 class="title is-3">New Payment</h1>
+      </VCard>
+    </div> -->
   </VLoader>
 </template>
+<style scoped>
+.btn-card.active {
+  background: #f39c12 !important;
+  color: black !important;
+}
+.btn-card.active p {
+  color: black !important;
+}
+</style>

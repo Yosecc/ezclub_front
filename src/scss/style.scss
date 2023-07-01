@@ -2,45 +2,59 @@
 .justify-content-between {
   justify-content: space-between;
 }
+
 .justify-content-center {
   justify-content: center;
 }
+
 .justify-content-around {
   justify-content: space-around;
 }
+
 .justify-content-end {
   justify-content: flex-end !important;
 }
+
 .align-items-center {
   align-items: center;
 }
+
 .text-right {
   text-align: right !important;
 }
+
 .text-left {
   text-align: left !important;
 }
+
 .d-flex {
   display: flex;
 }
+
 .d-block {
   display: block;
 }
+
 .flex-column {
   flex-direction: column;
 }
+
 .text-center {
   text-align: center;
 }
+
 .position-relative {
   position: relative;
 }
+
 .rotate90 {
   transform: rotate(90deg) translate(calc(50% + 25px), 100%);
 }
+
 .text-capitalize {
   text-transform: capitalize;
 }
+
 // .progressCheck{
 // 	margin-bottom: 10%;
 // 	.bar-progress{
@@ -57,9 +71,7 @@
 // 	.content-text{
 // 		margin-left: 15%;
 // 	}
-
 // }
-
 $porcentajes: (
   '10': 10%,
   '20': 20%,
@@ -72,7 +84,6 @@ $porcentajes: (
   '90': 90%,
   '100': 100%,
 );
-
 @each $name, $valor in $porcentajes {
   .w-#{$name} {
     width: $valor;
@@ -88,6 +99,7 @@ $porcentajes: (
     display: none;
   }
 }
+
 #che.has-error {
   span {
     border-color: #e62965 !important;
@@ -96,6 +108,7 @@ $porcentajes: (
     display: none;
   }
 }
+
 .card-form-member {
   .card-body {
     margin-bottom: auto;
@@ -119,11 +132,11 @@ $porcentajes: (
   .validation-icon.is-error {
     display: none;
   }
-
   .radio-pill-inner {
     border-color: $danger !important;
   }
 }
+
 .has-error.input-checkbox-checkboxGroupSimple {
   input + span {
     border-color: $danger !important;
@@ -180,6 +193,7 @@ body.is-dark {
 .border-1 {
   border: 1px solid rgba(0, 0, 0, 0.1);
 }
+
 .radius-small {
   border-radius: 5px;
 }
@@ -232,6 +246,7 @@ fieldset[disabled='false'] .checkbox,
   color: #a2a5b9;
   cursor: pointer !important;
 }
+
 .button.v-button.v-modal-close {
   justify-content: center;
 }
@@ -239,6 +254,7 @@ fieldset[disabled='false'] .checkbox,
 .button {
   border-color: rgba(#2d2d31, 0.3) !important;
 }
+
 .btn-card {
   cursor: pointer;
   &:hover {
@@ -291,5 +307,11 @@ fieldset[disabled='false'] .checkbox,
   }
   &.schedules {
     background: #33691e !important;
+  }
+}
+
+.switch-button {
+  .switch-segment {
+    justify-content: flex-start;
   }
 }

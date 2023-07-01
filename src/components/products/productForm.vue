@@ -181,7 +181,7 @@ const onSave = () => {
               </td>
               <td>${{ price.price }}</td>
               <td>{{ moment(price.created_at).format('MM-DD-YYYY') }}</td>
-              <td>{{ price.user.name }}</td>
+              <td v-if="price.user">{{ price.user.name }}</td>
             </tr>
           </tbody>
         </table>

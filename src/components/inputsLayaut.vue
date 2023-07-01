@@ -512,6 +512,12 @@ const takePhoto = (event) => {
         :id="`${input.name}`"
         class="DropdownCheckbox"
       >
+        <label class="label" v-if="input.isLabel" :for="input.name">
+          <p class="m-0 text-left">
+            {{ input.label ? input.label : input.placeholder }}
+            <span v-if="input.required" style="color: red">*</span>
+          </p>
+        </label>
         <VCard
           @click="input.drop = !input.drop"
           :color="undefined"

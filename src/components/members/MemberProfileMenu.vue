@@ -46,6 +46,10 @@ const itemsMenuAdult = [
   //   component: 'memberCreditCard'
   // },
   {
+    name: 'Subscription',
+    component: 'susbcriptionIndex',
+  },
+  {
     name: 'Membership/Contract',
     component: 'memberMembership',
   },
@@ -81,6 +85,10 @@ const itemsMenuMinor = [
     component: 'personalInformation',
   },
   {
+    name: 'Subscription',
+    component: 'susbcriptionIndex',
+  },
+  {
     name: 'Membership/Contract',
     component: 'memberMembership',
   },
@@ -114,6 +122,10 @@ const itemsMenuProspect = [
   {
     name: 'Personal Information',
     component: 'personalInformation',
+  },
+  {
+    name: 'Subscription',
+    component: 'susbcriptionIndex',
   },
   // {
   //   name:'Credit Card',
