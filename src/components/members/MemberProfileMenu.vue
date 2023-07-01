@@ -49,10 +49,10 @@ const itemsMenuAdult = [
     name: 'Subscription',
     component: 'susbcriptionIndex',
   },
-  {
-    name: 'Membership/Contract',
-    component: 'memberMembership',
-  },
+  // {
+  //   name: 'Membership/Contract',
+  //   component: 'memberMembership',
+  // },
   {
     name: 'Family Members',
     component: 'memberFamily',
@@ -65,18 +65,18 @@ const itemsMenuAdult = [
     name: 'Check-ins',
     component: 'memberCheckins',
   },
-  {
-    name: 'Purchases',
-    component: 'memberPurchases',
-  },
+  // {
+  //   name: 'Purchases',
+  //   component: 'memberPurchases',
+  // },
   {
     name: 'Invoices',
     component: 'memberInvoices',
   },
-  {
-    name: 'Credit',
-    component: 'memberCredit',
-  },
+  // {
+  //   name: 'Credit',
+  //   component: 'memberCredit',
+  // },
 ]
 
 const itemsMenuMinor = [
@@ -88,10 +88,10 @@ const itemsMenuMinor = [
     name: 'Subscription',
     component: 'susbcriptionIndex',
   },
-  {
-    name: 'Membership/Contract',
-    component: 'memberMembership',
-  },
+  // {
+  //   name: 'Membership/Contract',
+  //   component: 'memberMembership',
+  // },
   {
     name: 'Parent / Guardian',
     component: 'memberFamily',
@@ -104,14 +104,14 @@ const itemsMenuMinor = [
     name: 'Check-ins',
     component: 'memberCheckins',
   },
-  {
-    name: 'Purchases',
-    component: 'memberPurchases',
-  },
-  {
-    name: 'Credit',
-    component: 'memberCredit',
-  },
+  // {
+  //   name: 'Purchases',
+  //   component: 'memberPurchases',
+  // },
+  // {
+  //   name: 'Credit',
+  //   component: 'memberCredit',
+  // },
   {
     name: 'Invoices',
     component: 'memberInvoices',
@@ -131,10 +131,10 @@ const itemsMenuProspect = [
   //   name:'Credit Card',
   //   component: 'memberCreditCard'
   // },
-  {
-    name: 'Membership/Contract',
-    component: 'memberMembership',
-  },
+  // {
+  //   name: 'Membership/Contract',
+  //   component: 'memberMembership',
+  // },
   // {
   //   name: 'Family Members',
   //   component: 'memberFamily',
@@ -147,18 +147,18 @@ const itemsMenuProspect = [
     name: 'Check-ins',
     component: 'memberCheckins',
   },
-  {
-    name: 'Purchases',
-    component: 'memberPurchases',
-  },
+  // {
+  //   name: 'Purchases',
+  //   component: 'memberPurchases',
+  // },
   {
     name: 'Invoices',
     component: 'memberInvoices',
   },
-  {
-    name: 'Credit',
-    component: 'memberCredit',
-  },
+  // {
+  //   name: 'Credit',
+  //   component: 'memberCredit',
+  // },
 ]
 
 const menuMemberProfile = computed(() => {

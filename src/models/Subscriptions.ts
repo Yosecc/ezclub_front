@@ -111,7 +111,7 @@ export const inputsMembership = ref([
     typeMember: ['Individual'],
   },
   {
-    typeInput: 'date',
+    typeInput: 'hidden',
     name: 'schedules',
     placeholder: 'Subscription Schedules',
     model: '',
