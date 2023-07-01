@@ -124,21 +124,6 @@ const colorCard = (member) => {
   return classs
 }
 
-const users = [
-  {
-    id: 0,
-    picture: '/demo/avatars/7.jpg',
-    initials: 'AC',
-    color: 'info',
-  },
-  {
-    id: 1,
-    picture: null,
-    initials: 'JP',
-    color: 'info',
-  },
-]
-
 const All = ref([])
 
 watch(
@@ -159,6 +144,7 @@ watch(
 <template>
   <div>
     <div class="page-content-inner">
+      <!-- <p>{{ props.members }}</p> -->
       <div class="tile-grid tile-grid-v1">
         <V-PlaceholderPage
           :class="[filteredData.length !== 0 && 'is-hidden']"
@@ -183,6 +169,7 @@ watch(
         </V-PlaceholderPage>
 
         <transition-group name="list" tag="div" class="columns is-multiline">
+          <!-- <p>lorem</p> -->
           <!--Grid item-->
           <div
             v-for="item in filteredData"
@@ -229,10 +216,6 @@ watch(
                         >
                           {{ item.name }} {{ item.second_name }}
                           {{ item.last_name }}
-                          <!-- <br> -->
-                          <!-- {{ colorCard(item) }} -->
-                          <!-- <br> -->
-                          <!-- {{ member.subscription ? member.subscription.status:'no subscription' }} -->
                         </router-link>
                       </span>
                     </div>
@@ -254,14 +237,11 @@ watch(
                 </div>
 
                 <div class="align-items-center d-flex">
-                  <!-- <V-Checkbox
-                    class="p-0"
-                    v-model="membersSelected"
-                    color="primary"
-                    :label="' '"
-                    :value="item.id"
-                  /> -->
-                  <FlexTableDropdown :id-member="item.id" :member="item" />
+                  <FlexTableDropdown
+                    :id-member="item.id"
+                    :member="item"
+                    v-if="item"
+                  />
                 </div>
               </div>
               <div class="d-flex justify-content-between mt-3">
@@ -341,8 +321,7 @@ watch(
                     />
                   </div>
 
-                  <div class="mr-3" v-if="item.cards.length">
-                    <!-- <p>{{ item.cards[0] }}</p> -->
+                  <div class="mr-3" v-if="item.cards && item.cards.length">
                     <VTag
                       v-if="item.cards[0].last4 != null"
                       :label="`Cards`"

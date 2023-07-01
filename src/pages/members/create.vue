@@ -241,9 +241,7 @@ const limpiarCampos = () => {
               "
               rounded
             >
-              {{
-                category == 'Prospect' ? 'Temporary Members' : category
-              }}</V-Button
+              {{ category == 'Prospect' ? '' : category }}</V-Button
             >
           </V-Control>
         </V-Field>
