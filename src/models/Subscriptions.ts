@@ -11,6 +11,41 @@ import {
   // convertFormData,
 } from '/@src/models/Mixin'
 
+export const estados = ref([
+  {
+    value: 'All',
+    name: 'All',
+  },
+  {
+    value: 'COBRAR HOY',
+    name: 'Pay Day',
+  },
+  {
+    value: 'PENDIENTE',
+    name: 'Pending',
+  },
+  {
+    value: 'VENCIDO',
+    name: 'Due',
+  },
+  {
+    value: 'PAGADO',
+    name: 'Paid',
+  },
+  {
+    value: 'CANCELADO',
+    name: 'Canceled',
+  },
+  {
+    value: 'EXPIRADO',
+    name: 'Expired',
+  },
+  {
+    value: 'PROX. EXPIRADO',
+    name: 'Prox. Expired',
+  },
+])
+
 //DATA
 export const presupuesto = ref(null)
 

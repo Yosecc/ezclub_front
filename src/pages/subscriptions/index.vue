@@ -6,7 +6,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { Api } from '/@src/services'
 // import { members, subscriptionsCreateStripe } from '/@src/models/Members.ts'
 
-import { suscripciones } from '/@src/models/Subscriptions.ts'
+import { suscripciones, estados } from '/@src/models/Subscriptions.ts'
 
 pageTitle.value = 'Suscriptions'
 useHead({
@@ -125,40 +125,6 @@ const reloadForm = () => {
 const fecha_pago = ref(null)
 
 const statusSelect = ref('All')
-const estados = ref([
-  {
-    value: 'All',
-    name: 'All',
-  },
-  {
-    value: 'COBRAR HOY',
-    name: 'COBRAR HOY',
-  },
-  {
-    value: 'PENDIENTE',
-    name: 'PENDIENTE',
-  },
-  {
-    value: 'VENCIDO',
-    name: 'VENCIDO',
-  },
-  {
-    value: 'PAGADO',
-    name: 'PAGADO',
-  },
-  {
-    value: 'CANCELADO',
-    name: 'CANCELADO',
-  },
-  {
-    value: 'EXPIRADO',
-    name: 'EXPIRADO',
-  },
-  {
-    value: 'PROX. EXPIRADO',
-    name: 'PROX. EXPIRADO',
-  },
-])
 
 const changeStado = () => {
   getSuscripcion(
