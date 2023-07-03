@@ -226,10 +226,13 @@ watch(
           >
             <div
               @click="openMemberCard(item)"
-              class="tile-grid-item cardprofile"
+              class="tile-grid-item cardprofile h-100"
               :class="colorCard(item)"
               v-if="item"
-              :style="{ backgroundColor: item.estado.color }"
+              :style="{
+                backgroundColor: item.estado.color,
+                overflow: 'hidden',
+              }"
             >
               <div class="tile-grid-item-inner align-items-start">
                 <div v-if="item.member">
@@ -261,6 +264,7 @@ watch(
 
               <div>
                 <p>{{ item.id }}</p>
+
                 <div class="mb-4 description">
                   <p v-if="item.recurrence" style="font-size: 12px">
                     {{ item.recurrence.recurrencia.descriptions }}
@@ -301,9 +305,42 @@ watch(
                     }}
                   </p>
 
-                  <p v-if="item.payment_type" style="font-size: 12px">
+                  <p
+                    v-if="item.payment_type"
+                    style="font-size: 12px"
+                    class="mb-4"
+                  >
                     Payment Type: {{ item.payment_type.name }}
                   </p>
+                  <VCard class="px-3 py-2" v-if="item.estado.ultimo_intento">
+                    <p style="font-size: 10px">
+                      <b>Status:</b>
+                      {{
+                        item.estado.ultimo_intento.estado == 'fallido'
+                          ? 'Failed'
+                          : ''
+                      }}
+                      {{
+                        item.estado.ultimo_intento.estado == 'pagado'
+                          ? 'Paid'
+                          : ''
+                      }}
+                      <b>Intent:</b> {{ item.estado.ultimo_intento.intento }}
+                    </p>
+                    <p
+                      v-if="item.estado.ultimo_intento.estado != 'pagado'"
+                      style="font-size: 10px"
+                    >
+                      {{ item.estado.ultimo_intento.pago_id }}
+                    </p>
+
+                    <p style="font-size: 10px">
+                      Date: {{ item.estado.ultimo_intento.fecha }}
+                    </p>
+                  </VCard>
+                  <div v-else>
+                    <p></p>
+                  </div>
 
                   <div class="d-flex mt-2">
                     <div
@@ -348,7 +385,6 @@ watch(
       :open="centeredActionsOpen"
       size="big"
       actions="center"
-      noscroll
       @close="closeModal"
     >
       <template #content>

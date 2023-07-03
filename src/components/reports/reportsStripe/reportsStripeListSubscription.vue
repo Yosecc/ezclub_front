@@ -337,7 +337,6 @@ const viewSuscripcion = (item) => {
       :open="suscripcion.modal"
       size="big"
       actions="center"
-      noscroll
       @close="closeModal"
     >
       <template #content>

@@ -143,7 +143,6 @@ const onPayment = (data: any) => {
     :open="centeredActionsOpen"
     size="big"
     actions="center"
-    noscroll
     @close="closeModal"
   >
     <template #content>
