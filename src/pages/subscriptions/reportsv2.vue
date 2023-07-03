@@ -51,6 +51,24 @@ const getReport = async () => {
     })
 }
 
+const isLoadingSuscripcionesData = ref(true)
+const suscripcionesData = ref([])
+
+const getSuscripciones = async (data: object) => {
+  console.log(typeof data, data)
+  isLoadingSuscripcionesData.value = true
+  await Api.post('v2/suscripcion/getIn', { data })
+    .then((response) => {
+      console.log('ressponse', response.data)
+      suscripcionesData.value = response.data.suscripciones
+      isLoadingSuscripcionesData.value = false
+    })
+    .catch((error) => {
+      isLoadingSuscripcionesData.value = false
+      console.log(error)
+    })
+}
+
 onMounted(() => {
   getReport()
 })
@@ -61,12 +79,7 @@ onMounted(() => {
 // }
 
 const grupoData = ref(null)
-const suscripcionesData = ref(null)
-const estadosData = ref(null)
-const diciplinasData = ref(null)
-
 const modalStatus = ref(false)
-const modalType = ref('')
 
 const onGrupo = (grup) => {
   grupoData.value = grup
@@ -79,10 +92,19 @@ const dataListModal = reactive({
 })
 
 const onButton = ({ itemKey, i }) => {
-  console.log({ itemKey, i })
+  console.log('onButton', { itemKey, i })
+  suscripcionesData.value = []
+  switch (itemKey) {
+    case 'data':
+      getSuscripciones(i)
+      break
+    default:
+      dataListModal.data = i
+      break
+  }
+
   modalStatus.value = true
   dataListModal.type = itemKey
-  dataListModal.data = i
 }
 </script>
 
@@ -126,11 +148,19 @@ const onButton = ({ itemKey, i }) => {
     >
       <template #content>
         <div v-if="dataListModal.type == 'data'">
-          <subscription-list
-            :colgrid="'is-6'"
-            :suscripciones="dataListModal.data"
-            :filter-local="true"
-          />
+          <VLoader
+            style="min-height: 300px"
+            size="large"
+            :active="isLoadingSuscripcionesData"
+          >
+            <!-- content ... --->
+            <subscription-list
+              v-if="suscripcionesData.length"
+              :colgrid="'is-4'"
+              :suscripciones="suscripcionesData"
+              :filter-local="true"
+            />
+          </VLoader>
         </div>
         <div v-else>
           <listButtoms :data="dataListModal.data" @onAction="onButton" />
