@@ -488,7 +488,8 @@ const reload = () => {
       <subscriptionIndex :suscripcion="suscripcionData" />
 
       <personalInformation
-        v-if="suscripcionData.estado.meses_pagados > 0 && !member"
+        class="mt-4"
+        v-if="!member"
         :category="''"
         :suscripcion="suscripcionData"
         :user="suscripcionData.user"
