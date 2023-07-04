@@ -103,7 +103,7 @@ const keyOpen = ref(null)
               </tr>
 
               <tr v-for="(v, ke) in value.items" :key="`item-${ke}`">
-                <td>{{ v.description }} {{ v.type }}}</td>
+                <td>{{ v.description }} {{ v.type }}</td>
                 <td>{{ v.amount }}</td>
               </tr>
             </tbody>

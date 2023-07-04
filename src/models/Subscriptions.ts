@@ -41,12 +41,23 @@ export const estados = ref([
     name: 'Expired',
   },
   {
-    value: 'PROX. EXPIRADO',
+    value: 'PROX. CANCELADO',
     name: 'Prox. Expired',
   },
   {
     value: 'HOLD',
     name: 'Hold',
+  },
+])
+
+export const estadosIntentos = ref([
+  {
+    value: 'fallido',
+    name: 'Failed',
+  },
+  {
+    value: 'pagado',
+    name: 'Paid',
   },
 ])
 
