@@ -44,6 +44,10 @@ export const estados = ref([
     value: 'PROX. EXPIRADO',
     name: 'Prox. Expired',
   },
+  {
+    value: 'HOLD',
+    name: 'Hold',
+  },
 ])
 
 //DATA
