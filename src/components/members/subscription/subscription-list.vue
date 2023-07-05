@@ -1,5 +1,13 @@
 <script setup lang="ts">
-import { computed, ref, onMounted, watch, defineProps, defineEmit } from 'vue'
+import {
+  computed,
+  ref,
+  onMounted,
+  watch,
+  defineProps,
+  defineEmit,
+  reactive,
+} from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { API_WEB_URL } from '/@src/services'
 import {
@@ -25,6 +33,7 @@ const props = defineProps({
   suscripciones: {
     type: Array,
     required: true,
+    default: [],
   },
   name: {
     type: String,
@@ -45,6 +54,14 @@ const props = defineProps({
   colgrid: {
     type: String,
     default: 'is-4',
+  },
+  isselectedmultiple: {
+    type: Boolean,
+    default: false,
+  },
+  ispaginator: {
+    type: Boolean,
+    default: true,
   },
   // filterLocal:{
   //   type: Boolean,
@@ -190,10 +207,23 @@ watch(
     }
   }
 )
+
+const idSeleccionados = reactive({
+  data: [],
+})
 </script>
 
 <template>
   <div>
+    <div
+      v-if="idSeleccionados.data.length"
+      class="w-100 d-flex mb-4 justify-content-end align-items-center"
+    >
+      <subscription-method-payment-queue-stripe
+        :id_seleccionados="idSeleccionados"
+        :suscripciones="props.suscripciones"
+      />
+    </div>
     <div class="page-content-inner">
       <div class="tile-grid tile-grid-v1">
         <V-PlaceholderPage
@@ -228,7 +258,6 @@ watch(
             style="cursor: pointer"
           >
             <div
-              @click="openMemberCard(item)"
               class="tile-grid-item cardprofile h-100"
               :class="colorCard(item)"
               v-if="item"
@@ -237,36 +266,59 @@ watch(
                 overflow: 'hidden',
               }"
             >
-              <div class="tile-grid-item-inner align-items-start">
-                <div v-if="item.member">
-                  <V-Avatar
-                    :picture="`${API_WEB_URL}storage/${item.member.photo}`"
-                    color="primary"
-                    :initials="
-                      initials(item.member.name, item.member.last_name)
-                    "
-                    size="medium"
-                    class="mr-4 mb-4"
-                  />
+              <div
+                class="
+                  tile-grid-item-inner
+                  align-items-start
+                  justify-content-between
+                "
+              >
+                <div
+                  @click="openMemberCard(item)"
+                  class="tile-grid-item-inner align-items-start"
+                >
+                  <div v-if="item.member">
+                    <V-Avatar
+                      :picture="`${API_WEB_URL}storage/${item.member.photo}`"
+                      color="primary"
+                      :initials="
+                        initials(item.member.name, item.member.last_name)
+                      "
+                      size="medium"
+                      class="mr-4 mb-4"
+                    />
+                  </div>
+                  <div>
+                    <div v-if="!item.member" class="mb-4 user">
+                      <p style="font-size: 12px">
+                        Username: {{ item.user.name }}
+                      </p>
+                      <p style="font-size: 12px">
+                        Email: {{ item.user.email }}
+                      </p>
+                    </div>
+                    <div v-else class="mb-4 member">
+                      <p style="font-size: 12px">
+                        {{ item.member.name }} {{ item.member.last_name }}
+                      </p>
+                      <p style="font-size: 12px">{{ item.member.email }}</p>
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <div v-if="!item.member" class="mb-4 user">
-                    <p style="font-size: 12px">
-                      Username: {{ item.user.name }}
-                    </p>
-                    <p style="font-size: 12px">Email: {{ item.user.email }}</p>
-                  </div>
-                  <div v-else class="mb-4 member">
-                    <p style="font-size: 12px">
-                      {{ item.member.name }} {{ item.member.last_name }}
-                    </p>
-                    <p style="font-size: 12px">{{ item.member.email }}</p>
-                  </div>
+                <div v-if="props.isselectedmultiple">
+                  <VField class="is-flex">
+                    <VControl raw subcontrol>
+                      <VCheckbox
+                        v-model="idSeleccionados.data"
+                        :value="item.id"
+                      />
+                    </VControl>
+                  </VField>
                 </div>
               </div>
 
-              <div>
-                <p>{{ item.id }}</p>
+              <div @click="openMemberCard(item)">
+                <!-- <p>{{ item.id }}</p> -->
 
                 <div class="mb-4 description">
                   <p v-if="item.recurrence" style="font-size: 12px">
@@ -374,7 +426,7 @@ watch(
         <!--Table Pagination-->
 
         <V-FlexPagination
-          v-if="filteredData.length > 0"
+          v-if="filteredData.length > 0 && props.ispaginator"
           :item-per-page="props.paginationData.per_page ?? 15"
           :total-items="props.paginationData.total ?? 0"
           :current-page="props.paginationData.current_page"

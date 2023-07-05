@@ -64,7 +64,7 @@ export const estadosIntentos = ref([
 //DATA
 export const presupuesto = ref(null)
 
-export const suscripciones = ref(null)
+export const suscripciones = ref([])
 
 export const solicitudDataInicial = {
   memberships_id: null,
@@ -310,5 +310,10 @@ export const calculoSuscripcionRestante = async (id: number) => {
   const response = await Api.post(
     `v2/suscripcion/calculo_suscripcion_restante/${id}`
   )
+  return response
+}
+
+export const queuePayments = async (data: Object) => {
+  const response = await Api.post(`v2/suscripcion/queuePayments`, data)
   return response
 }

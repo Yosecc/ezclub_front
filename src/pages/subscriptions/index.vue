@@ -6,7 +6,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { Api } from '/@src/services'
 // import { members, subscriptionsCreateStripe } from '/@src/models/Members.ts'
 
-import { suscripciones, estados } from '/@src/models/Subscriptions.ts'
+import { suscripciones, estados } from '/@src/models/Subscriptions'
 
 pageTitle.value = 'Suscriptions'
 useHead({
@@ -55,6 +55,7 @@ const getSuscripcion = async () => {
     params: filtro,
   })
     .then((response) => {
+      // console.log('response', response.data.suscripciones)
       suscripciones.value = response.data.suscripciones
       paginationData.value = response.data.pagination
       count.value = response.data.count
@@ -231,6 +232,7 @@ const changeStado = () => {
           :pagination-data="paginationData"
           :filters="filters"
           @onSearch="changeStado"
+          :isselectedmultiple="true"
         />
       </div>
     </div>
