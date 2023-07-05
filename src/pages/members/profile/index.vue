@@ -24,13 +24,13 @@ import {
   sinMembresia,
   DueDate,
   storeNewMembership,
-} from '/@src/models/Members.ts'
+} from '/@src/models/Members'
 
-import { getDiscounts } from '/@src/models/Discounts.ts'
-import { getMeberships } from '/@src/models/Memberships.ts'
-import { getRecurrences, recurrences } from '/@src/models/Recurrences.ts'
-import { getTrainers } from '/@src/models/Staffs.ts'
-import { getLocationsDiciplines } from '/@src/models/Diciplines.ts'
+import { getDiscounts } from '/@src/models/Discounts'
+import { getMeberships } from '/@src/models/Memberships'
+import { getRecurrences, recurrences } from '/@src/models/Recurrences'
+import { getTrainers } from '/@src/models/Staffs'
+import { getLocationsDiciplines } from '/@src/models/Diciplines'
 import {
   setInputModelData,
   setInputValuesData,
@@ -38,9 +38,9 @@ import {
   getInput,
   perpareDataInputs,
   notyf,
-} from '/@src/models/Mixin.ts'
-import { getAllConfig } from '/@src/services/config.ts'
-import { getCompany, locations } from '/@src/models/Companies.ts'
+} from '/@src/models/Mixin'
+import { getAllConfig } from '/@src/services/config'
+import { getCompany, locations } from '/@src/models/Companies'
 
 import { getSuscripcionCode, suscripcion } from '/@src/models/Subscriptions'
 
@@ -74,33 +74,36 @@ const mensaje = ref('ERROR MEMBERSHIP')
 const subMensaje = ref('')
 
 watch(member, (to) => {
-  if (to.sinMembresia) {
-    mensaje.value = 'NO MEMBERSHIP'
-    subMensaje.value = 'Please, select a membership'
-  }
+  if (to) {
+    if (to.sinMembresia) {
+      mensaje.value = 'NO MEMBERSHIP'
+      subMensaje.value = 'Please, select a membership'
+    }
 
-  if (!to.isSolvente && !to.sinMembresia && to.subscription) {
-    mensaje.value = `Membership ${to.subscription.status}`
-    subMensaje.value =
-      to.subscription.latest_invoice &&
-      to.subscription.latest_invoice.payments_intents &&
-      to.subscription.latest_invoice.payments_intents.length > 0
-        ? `Last payment status : ${to.subscription.latest_invoice.payments_intents[0].status}`
-        : ''
-  }
-  if (
-    to.subscription &&
-    to.subscription.subscription &&
-    !to.subscription.latest_invoice
-  ) {
-    subMensaje.value = `Last payment status : ${to.subscription.subscription.status}`
-  }
+    if (!to.isSolvente && !to.sinMembresia && to.subscription) {
+      mensaje.value = `Membership ${to.subscription.status}`
+      subMensaje.value =
+        to.subscription.latest_invoice &&
+        to.subscription.latest_invoice.payments_intents &&
+        to.subscription.latest_invoice.payments_intents.length > 0
+          ? `Last payment status : ${to.subscription.latest_invoice.payments_intents[0].status}`
+          : ''
+    }
 
-  if (to.membership_members) {
-    if (to.membership_members.cacelation_date) {
-      subMensaje.value = `Cancel date : ${moment(
-        to.membership_members.cacelation_date
-      ).format('MM-DD-YYYY')}`
+    if (
+      to.subscription &&
+      to.subscription.subscription &&
+      !to.subscription.latest_invoice
+    ) {
+      subMensaje.value = `Last payment status : ${to.subscription.subscription.status}`
+    }
+
+    if (to.membership_members) {
+      if (to.membership_members.cacelation_date) {
+        subMensaje.value = `Cancel date : ${moment(
+          to.membership_members.cacelation_date
+        ).format('MM-DD-YYYY')}`
+      }
     }
   }
 })
@@ -291,6 +294,13 @@ const mountMember = async () => {
           i,
           response.data[i] == 1 ? true : false
         )
+      } else if (i == 'category') {
+        // console.log(response.data[i], 'es')
+        if (response.data[i] == 'Adult') {
+          getInput(inputsInformation.value, 'category').model = true
+        } else {
+          getInput(inputsInformation.value, 'category').model = false
+        }
       } else {
         setInputModelData(inputsInformation, i, response.data[i])
       }
