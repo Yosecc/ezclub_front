@@ -8,6 +8,9 @@ import {
   initials,
 } from '/@src/models/Members.ts'
 import moment from 'moment'
+
+import { estados, estadosIntentos } from '/@src/models/Subscriptions'
+
 const emit = defineEmit(['filterChange', 'onSearch'])
 
 const route = useRoute()
@@ -314,18 +317,16 @@ watch(
                   </p>
                   <VCard class="px-3 py-2" v-if="item.estado.ultimo_intento">
                     <p style="font-size: 10px">
-                      <b>Status:</b>
-                      {{
-                        item.estado.ultimo_intento.estado == 'fallido'
-                          ? 'Failed'
-                          : ''
-                      }}
-                      {{
-                        item.estado.ultimo_intento.estado == 'pagado'
-                          ? 'Paid'
-                          : ''
-                      }}
-                      <b>Intent:</b> {{ item.estado.ultimo_intento.intento }}
+                      <b
+                        >Status:
+
+                        {{
+                          estadosIntentos.find(
+                            (e) => e.value == item.estado.ultimo_intento.estado
+                          ).name
+                        }}
+                      </b>
+                      <b> Intent:</b> {{ item.estado.ultimo_intento.intento }}
                     </p>
                     <p
                       v-if="item.estado.ultimo_intento.estado != 'pagado'"
