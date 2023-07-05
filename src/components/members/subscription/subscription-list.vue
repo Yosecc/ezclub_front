@@ -19,7 +19,7 @@ import moment from 'moment'
 
 import { estados, estadosIntentos } from '/@src/models/Subscriptions'
 
-const emit = defineEmit(['filterChange', 'onSearch'])
+const emit = defineEmit(['filterChange', 'onSearch', 'onReload'])
 
 const route = useRoute()
 const router = useRouter()
@@ -211,6 +211,11 @@ watch(
 const idSeleccionados = reactive({
   data: [],
 })
+
+const onReload = () => {
+  idSeleccionados.data = []
+  emit('onReload')
+}
 </script>
 
 <template>
@@ -222,6 +227,7 @@ const idSeleccionados = reactive({
       <subscription-method-payment-queue-stripe
         :id_seleccionados="idSeleccionados"
         :suscripciones="props.suscripciones"
+        @onPayment="onReload"
       />
     </div>
     <div class="page-content-inner">

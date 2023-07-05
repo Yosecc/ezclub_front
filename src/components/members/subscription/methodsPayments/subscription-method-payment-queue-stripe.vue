@@ -23,6 +23,7 @@ import { queuePayments } from '/@src/models/Subscriptions'
 import { locationsSelect, company } from '/@src/models/Companies'
 import { moneda, notyf, getInput } from '/@src/models/Mixin'
 import { useCookies } from 'vue3-cookies'
+import { error } from '/@src/models/Members'
 const { cookies } = useCookies()
 
 //import Swal from 'sweetalert2'
@@ -73,17 +74,24 @@ const payment = () => {
       'This action could result in charges to the member. do you wish to continue?'
     )
   ) {
+    isLoaderActive.value = true
     queuePayments({
       data: props.id_seleccionados,
     })
+      .then((response) => {
+        onCloseModal()
+        emit('onPayment', {})
+        isLoaderActive.value = true
+      })
+      .catch((error) => {
+        onCloseModal()
+        emit('onPayment', {})
+        isLoaderActive.value = true
+      })
   } else {
     onCloseModal()
   }
   // openModal.value = false
-  // emit('onPayment', {
-  //   amount: props.total,
-  //   payment_type_id: 5,
-  // })
 }
 
 const onCloseModal = () => {
@@ -131,13 +139,15 @@ const onCloseModal = () => {
       <!-- <VButton @click="cash = 0" class="d-flex justify-content-center" raised
         >Reset</VButton
       >-->
-      <VButton
-        color="success"
-        @click="payment"
-        class="d-flex justify-content-center"
-        raised
-        >Confirm</VButton
-      >
+      <VLoader :active="isLoaderActive">
+        <VButton
+          color="success"
+          @click="payment"
+          class="d-flex justify-content-center"
+          raised
+          >Confirm</VButton
+        >
+      </VLoader>
     </template>
   </VModal>
 </template>

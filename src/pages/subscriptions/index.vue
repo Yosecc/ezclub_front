@@ -232,6 +232,7 @@ const changeStado = () => {
           :pagination-data="paginationData"
           :filters="filters"
           @onSearch="changeStado"
+          @onReload="changeStado"
           :isselectedmultiple="true"
         />
       </div>
