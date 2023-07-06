@@ -94,17 +94,25 @@ const dataListModal = reactive({
 const onButton = ({ itemKey, i }) => {
   console.log('onButton', { itemKey, i })
   suscripcionesData.value = []
+  let isdata = false
   switch (itemKey) {
     case 'data':
+      isdata = true
       getSuscripciones(i)
       break
     default:
+      // if (i.data) {
+      //   isdata = true
+      // getSuscripciones(i.data)
+      // } else {
       dataListModal.data = i
+      // }
       break
   }
 
   modalStatus.value = true
-  dataListModal.type = itemKey
+
+  dataListModal.type = isdata ? 'data' : itemKey
 }
 </script>
 
@@ -125,8 +133,11 @@ const onButton = ({ itemKey, i }) => {
               @click="onGrupo(grupo)"
             >
               <VCard v-if="nombreGrupo != 'count'" class="mb-4 btn-card">
-                <p class="title is-5 m-0" style="text-transform: uppercase">
-                  {{ nombreGrupo }}
+                <p
+                  class="title is-5 m-0 d-flex justify-content-between w-100"
+                  style="text-transform: uppercase"
+                >
+                  {{ nombreGrupo }} <span>{{ grupo.count }}</span>
                 </p>
               </VCard>
             </div>
@@ -135,7 +146,7 @@ const onButton = ({ itemKey, i }) => {
         </div>
         <div class="column is-8 columns is-multiline">
           <!-- <div></div> -->
-          <!-- <p></p> -->
+          <!-- <p>{{ grupoData }}</p> -->
           <listButtoms :data="grupoData" @onAction="onButton" />
         </div>
       </div>
@@ -147,6 +158,10 @@ const onButton = ({ itemKey, i }) => {
       @close="modalStatus = false"
     >
       <template #content>
+        <div v-if="dataListModal.type != 'data'">
+          <!-- <p>{{ dataListModal.data }}</p> -->
+          <listButtoms :data="dataListModal.data" @onAction="onButton" />
+        </div>
         <div v-if="dataListModal.type == 'data'">
           <VLoader
             style="min-height: 300px"
@@ -161,9 +176,6 @@ const onButton = ({ itemKey, i }) => {
               :filter-local="true"
             />
           </VLoader>
-        </div>
-        <div v-else>
-          <listButtoms :data="dataListModal.data" @onAction="onButton" />
         </div>
       </template>
       <template #action>

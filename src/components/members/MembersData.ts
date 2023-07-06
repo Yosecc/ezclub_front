@@ -178,7 +178,7 @@ export const memberData = ref([
         typeInput: 'select',
         name: 'gender',
         placeholder: 'Gender',
-        values: ['Male', 'Female', 'Binario'],
+        values: ['Male', 'Female', 'No gender'],
         model: '',
         required: true,
         class: categories.value.model == 'Prospect' ? 'is-6' : 'is-3',

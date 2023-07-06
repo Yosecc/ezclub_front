@@ -49,10 +49,10 @@ const itemsMenuAdult = [
     name: 'Subscription',
     component: 'susbcriptionIndex',
   },
-  // {
-  //   name: 'Membership/Contract',
-  //   component: 'memberMembership',
-  // },
+  {
+    name: 'Contract',
+    component: 'memberMembership',
+  },
   {
     name: 'Family Members',
     component: 'memberFamily',
