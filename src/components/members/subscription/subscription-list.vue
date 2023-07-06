@@ -420,6 +420,13 @@ const onReload = () => {
                     <div class="mr-1" v-if="item.user.cards.length">
                       <VTag :label="`Cards`" class="mr-1" color="purple" />
                     </div>
+
+                    <div
+                      class="mr-1"
+                      v-if="item.auditoria ? item.auditoria.length : false"
+                    >
+                      <VTag :label="`i`" class="mr-1" />
+                    </div>
                   </div>
 
                   <!-- <p>{{ item.discount }}</p> -->

@@ -70,6 +70,8 @@ const keyOpen = ref(null)
                 <th scope="col">ID</th>
                 <th scope="col">Amount</th>
                 <th scope="col">Date</th>
+                <th scope="col">Status</th>
+                <th scope="col">Status Description</th>
                 <th scope="col">Payment Type</th>
 
                 <!-- <th scope="col">Date create</th>
@@ -79,7 +81,6 @@ const keyOpen = ref(null)
                 <!-- <th scope="col">ID</th>
                 <th scope="col">Date Start</th>
                 <th scope="col">Date End</th>
-                
                 <th scope="col">Date create</th>
                 <th scope="col">Status</th>
                 <th scope="col">Amount</th>
@@ -96,6 +97,12 @@ const keyOpen = ref(null)
                 </td>
                 <td>
                   <p>{{ value.created_ad }}</p>
+                </td>
+                <td>
+                  <p>{{ value.status == 1 ? 'Paid' : 'Error' }}</p>
+                </td>
+                <td>
+                  <p>{{ value.status_description }}</p>
                 </td>
                 <td>
                   <p>{{ value.payment_type.name }}</p>
