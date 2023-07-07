@@ -363,7 +363,7 @@ const reload = () => {
                 </small>
               </p>
               <p>
-                <b>Membership Active:</b> {{ memberMermship.membership.name }}
+                <!-- <b>Membership Active:</b> {{ memberMermship.membership.name }}  -->
               </p>
             </div>
           </div>

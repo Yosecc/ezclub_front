@@ -218,7 +218,7 @@ const onSubmitEvent = () => {
               <td><b>Email:</b></td>
               <td>{{ memberSelect.email }}</td>
             </tr>
-            <tr v-if="memberSelect.user">
+            <!-- <tr v-if="memberSelect.user">
               <td><b>Payment Method: </b></td>
               <td colspan="2" v-if="!memberSelect.user.stripe_id"></td>
               <td v-if="memberSelect.user.pm_type">
@@ -226,7 +226,7 @@ const onSubmitEvent = () => {
                 {{ memberSelect.user.pm_last_four }}
               </td>
               <td v-else>It does not have a default payment method</td>
-            </tr>
+            </tr> -->
           </tbody>
         </table>
       </div>
