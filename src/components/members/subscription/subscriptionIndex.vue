@@ -22,6 +22,7 @@ import {
   // cancelSuscripcion,
   getSuscripcion,
   getSuscripcionCode,
+  estadosIntentos,
 } from '/@src/models/Subscriptions'
 import { API_WEB_URL } from '/@src/services'
 import { useRoute } from 'vue-router'
@@ -30,7 +31,7 @@ import {
   // membersSelected,
   // arregloTrainers,
   initials,
-} from '/@src/models/Members.ts'
+} from '/@src/models/Members'
 import moment from 'moment'
 
 const props = defineProps({
@@ -243,6 +244,7 @@ const proccessCheckout = () => {
                 ).format('MM-DD-YYYY')
               }}
             </p>
+
             <p v-if="suscripcionComputed.estado.fecha_suspencion" class="mr-3">
               <b>Cancellation Date: </b>
               {{
@@ -292,6 +294,38 @@ const proccessCheckout = () => {
               </p>
             </div>
           </div>
+          <VCard
+            class="px-3 py-2"
+            v-if="suscripcionComputed.estado.ultimo_intento"
+          >
+            <p style="font-size: 10px">
+              <b
+                >Status:
+
+                {{
+                  estadosIntentos.find(
+                    (e) =>
+                      e.value ==
+                      suscripcionComputed.estado.ultimo_intento.estado
+                  ).name
+                }}
+              </b>
+              <b> Intent:</b>
+              {{ suscripcionComputed.estado.ultimo_intento.intento }}
+            </p>
+            <p
+              v-if="
+                suscripcionComputed.estado.ultimo_intento.estado != 'pagado'
+              "
+              style="font-size: 10px"
+            >
+              {{ suscripcionComputed.estado.ultimo_intento.pago_id }}
+            </p>
+
+            <p style="font-size: 10px">
+              Date: {{ suscripcionComputed.estado.ultimo_intento.fecha }}
+            </p>
+          </VCard>
         </VCard>
 
         <div

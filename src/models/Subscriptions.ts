@@ -11,10 +11,60 @@ import {
   // convertFormData,
 } from '/@src/models/Mixin'
 
+export const estados = ref([
+  {
+    value: 'All',
+    name: 'All',
+  },
+  {
+    value: 'COBRAR HOY',
+    name: 'Pay Day',
+  },
+  {
+    value: 'PENDIENTE',
+    name: 'Pending',
+  },
+  {
+    value: 'VENCIDO',
+    name: 'Due',
+  },
+  {
+    value: 'PAGADO',
+    name: 'Paid',
+  },
+  {
+    value: 'CANCELADO',
+    name: 'Canceled',
+  },
+  {
+    value: 'EXPIRADO',
+    name: 'Expired',
+  },
+  {
+    value: 'PROX. CANCELADO',
+    name: 'Prox. Expired',
+  },
+  {
+    value: 'HOLD',
+    name: 'Hold',
+  },
+])
+
+export const estadosIntentos = ref([
+  {
+    value: 'fallido',
+    name: 'Failed',
+  },
+  {
+    value: 'pagado',
+    name: 'Paid',
+  },
+])
+
 //DATA
 export const presupuesto = ref(null)
 
-export const suscripciones = ref(null)
+export const suscripciones = ref([])
 
 export const solicitudDataInicial = {
   memberships_id: null,
@@ -111,7 +161,7 @@ export const inputsMembership = ref([
     typeMember: ['Individual'],
   },
   {
-    typeInput: 'date',
+    typeInput: 'hidden',
     name: 'schedules',
     placeholder: 'Subscription Schedules',
     model: '',
@@ -260,5 +310,10 @@ export const calculoSuscripcionRestante = async (id: number) => {
   const response = await Api.post(
     `v2/suscripcion/calculo_suscripcion_restante/${id}`
   )
+  return response
+}
+
+export const queuePayments = async (data: Object) => {
+  const response = await Api.post(`v2/suscripcion/queuePayments`, data)
   return response
 }

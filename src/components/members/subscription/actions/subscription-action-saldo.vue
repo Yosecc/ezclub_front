@@ -109,7 +109,6 @@ const onClick = () => {
       :open="centeredActionsOpen"
       size="big"
       actions="center"
-      noscroll
       @close="closeModal"
     >
       <template #content>

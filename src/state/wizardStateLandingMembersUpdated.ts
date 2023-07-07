@@ -165,7 +165,7 @@ export const inputsInformation = ref([
     typeInput: 'select',
     name: 'gender',
     placeholder: 'Gender',
-    values: ['Male', 'Female', 'Binario'],
+    values: ['Male', 'Female', 'No gender'],
     model: '',
     required: true,
     class: 'is-12',

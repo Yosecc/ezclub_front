@@ -9,6 +9,7 @@ import {
 } from '/@src/models/Members.ts'
 import moment from 'moment'
 const emit = defineEmit(['filterChange', 'onSearch'])
+import { estados, estadosIntentos } from '/@src/models/Subscriptions.ts'
 
 const route = useRoute()
 const router = useRouter()
@@ -176,10 +177,12 @@ watch(
             :key="`${props.name}-${item.id}`"
             class="column is-4"
           >
+            <!-- <p>{{  }}}</p> -->
             <div
               @click="openMemberCard(true, item)"
-              class="tile-grid-item cardprofile"
-              :class="colorCard(item)"
+              class="tile-grid-item cardprofile h-100"
+              v-if="item.estado"
+              :style="{ backgroundColor: item.estado.color }"
             >
               <div
                 class="
@@ -245,17 +248,44 @@ watch(
                 </div>
               </div>
               <div class="d-flex justify-content-between mt-3">
-                <span class="d-flex align-items-center">
-                  <div class="mr-1">
+                <span class="d-flex align-items-center flex-wrap">
+                  <div class="mr-1 mb-1">
                     <VTag
-                      :label="`${
-                        colorCard(item) == 'sincard'
-                          ? 'no_card'
-                          : colorCard(item)
-                      }`"
-                      class="mr-1"
-                      color=""
+                      :label="
+                        estados.find((e) => e.value == item.estado.estado_pago)
+                          .name
+                      "
                     />
+                  </div>
+                  <div class="mr-1 mb-1">
+                    <!-- <VTag
+                        :label="`${
+                          colorCard(item) == 'sincard'
+                            ? 'no_card'
+                            : colorCard(item)
+                        }`"
+                        class="mr-1"
+                        color=""
+                      /> -->
+                    <!-- <p>{{ item.estado.estado_pago }}}</p> -->
+
+                    <VTag
+                      v-if="item.estado.ultimo_intento"
+                      :label="`
+                        ${
+                          estadosIntentos.find(
+                            (e) => e.value == item.estado.ultimo_intento.estado
+                          ).name
+                        }: 
+                        ${
+                          item.estado.ultimo_intento.estado == 'fallido'
+                            ? item.estado.ultimo_intento.pago_id
+                            : ''
+                        }
+                        / ${item.estado.ultimo_intento.fecha}
+                        `"
+                    />
+                    <!-- <p>{{ item.estado.ultimo_intento }}</p> -->
                   </div>
 
                   <VTag
@@ -275,14 +305,14 @@ watch(
                       item.membership_members &&
                       item.membership_members.schedules
                     "
-                    :label="`${moment(item.membership_members.schedules).format(
-                      'MM-DD-YYYY'
-                    )}`"
+                    :label="`Schedules: ${moment(
+                      item.membership_members.schedules
+                    ).format('MM-DD-YYYY')}`"
                     class="mr-1"
                     color=""
                   />
 
-                  <div
+                  <!-- <div
                     class="mr-1"
                     v-if="
                       item.subscription &&
@@ -302,7 +332,7 @@ watch(
                       class="mr-1"
                       color="danger"
                     />
-                  </div>
+                  </div> -->
                 </span>
 
                 <span class="d-flex align-items-center">
@@ -315,7 +345,7 @@ watch(
                   <div class="mr-1" v-if="item.membership_members != undefined">
                     <VTag
                       v-if="item.membership_members.discount"
-                      :label="`-${item.membership_members.discount.value}%`"
+                      :label="`-${item.membership_members.discount.discount.value}%`"
                       class=""
                       color="orange"
                     />
@@ -330,11 +360,11 @@ watch(
                     />
                   </div>
 
-                  <VAvatarStack
+                  <!-- <VAvatarStack
                     v-if="item.trainers"
                     :avatars="arregloTrainers(item.trainers)"
                     size="small"
-                  />
+                  /> -->
                 </span>
               </div>
             </div>

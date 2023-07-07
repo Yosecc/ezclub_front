@@ -1,13 +1,8 @@
 <script setup lang="ts">
 import { ref, computed, defineProps, onMounted } from 'vue'
-import {
-  inputsInformation,
-  putInformation,
-  member,
-} from '/@src/models/Members.ts'
-
-import { memberProcess } from '/@src/models/v2/Members.ts'
-import { perpareDataInputs, notyf, getInput } from '/@src/models/Mixin.ts'
+import { inputsInformation, putInformation, member } from '/@src/models/Members'
+import { memberProcess } from '/@src/models/v2/Members'
+import { perpareDataInputs, notyf, getInput } from '/@src/models/Mixin'
 import { useRoute, useRouter } from 'vue-router'
 const router = useRouter()
 
@@ -33,6 +28,7 @@ onMounted(() => {
     getInput(inputsInformation.value, 'email').disabled = true
     getInput(inputsInformation.value, 'country_id').model = 34
   }
+  console.log(getInput(inputsInformation.value, 'category'))
 })
 
 const isProspect = computed(() => {
@@ -49,13 +45,7 @@ const onSave = () => {
   let fd = new FormData()
 
   for (var i in data) {
-    // if (i == 'id_leo_vet_fr') {
-    //   if (data[i] == null) {
-    //     fd.append(i, 0)
-    //   }
-    // } else {
     fd.append(i, data[i])
-    // }
   }
 
   if (member.value) {
@@ -121,8 +111,8 @@ const inputsFiltrados = computed(() => {
         v-if="props.category == 'Minor'"
         :inputs-step="inputsFiltrados"
       />
-
       <inputsLayaut v-else :inputs-step="inputsInformation" />
+      <!-- <p>{{ inputsInformation }}</p> -->
     </template>
   </VCardAdvanced>
 </template>

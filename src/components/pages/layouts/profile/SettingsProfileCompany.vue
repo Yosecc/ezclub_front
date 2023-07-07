@@ -42,7 +42,7 @@ const menu = ref([
   {
     name: 'Reports',
     subname: 'Create reports',
-    toName: 'settings-reports',
+    toName: 'subscriptions-reportsv2',
     icon: 'lnil lnil-stats-up',
   },
   // {

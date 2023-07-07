@@ -50,7 +50,7 @@ const itemsMenuAdult = [
     component: 'susbcriptionIndex',
   },
   {
-    name: 'Membership/Contract',
+    name: 'Contract',
     component: 'memberMembership',
   },
   {
@@ -65,18 +65,18 @@ const itemsMenuAdult = [
     name: 'Check-ins',
     component: 'memberCheckins',
   },
-  {
-    name: 'Purchases',
-    component: 'memberPurchases',
-  },
+  // {
+  //   name: 'Purchases',
+  //   component: 'memberPurchases',
+  // },
   {
     name: 'Invoices',
     component: 'memberInvoices',
   },
-  {
-    name: 'Credit',
-    component: 'memberCredit',
-  },
+  // {
+  //   name: 'Credit',
+  //   component: 'memberCredit',
+  // },
 ]
 
 const itemsMenuMinor = [
@@ -89,7 +89,7 @@ const itemsMenuMinor = [
     component: 'susbcriptionIndex',
   },
   {
-    name: 'Membership/Contract',
+    name: 'Contract',
     component: 'memberMembership',
   },
   {
@@ -104,14 +104,14 @@ const itemsMenuMinor = [
     name: 'Check-ins',
     component: 'memberCheckins',
   },
-  {
-    name: 'Purchases',
-    component: 'memberPurchases',
-  },
-  {
-    name: 'Credit',
-    component: 'memberCredit',
-  },
+  // {
+  //   name: 'Purchases',
+  //   component: 'memberPurchases',
+  // },
+  // {
+  //   name: 'Credit',
+  //   component: 'memberCredit',
+  // },
   {
     name: 'Invoices',
     component: 'memberInvoices',
@@ -132,7 +132,7 @@ const itemsMenuProspect = [
   //   component: 'memberCreditCard'
   // },
   {
-    name: 'Membership/Contract',
+    name: 'Contract',
     component: 'memberMembership',
   },
   // {
@@ -147,18 +147,18 @@ const itemsMenuProspect = [
     name: 'Check-ins',
     component: 'memberCheckins',
   },
-  {
-    name: 'Purchases',
-    component: 'memberPurchases',
-  },
+  // {
+  //   name: 'Purchases',
+  //   component: 'memberPurchases',
+  // },
   {
     name: 'Invoices',
     component: 'memberInvoices',
   },
-  {
-    name: 'Credit',
-    component: 'memberCredit',
-  },
+  // {
+  //   name: 'Credit',
+  //   component: 'memberCredit',
+  // },
 ]
 
 const menuMemberProfile = computed(() => {

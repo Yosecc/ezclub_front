@@ -84,6 +84,16 @@ const onAction = (data: any = null) => {
           />
         </VLoader>
       </div>
+
+      <div class="is-4 column mx-auto" v-if="props.methods.includes('posnet')">
+        <VLoader size="small" :active="isLoaderActive">
+          <subscription-method-payment-posnet
+            :total="amount"
+            @onPayment="onAction"
+            :define_status="true"
+          />
+        </VLoader>
+      </div>
     </div>
   </VCard>
 </template>

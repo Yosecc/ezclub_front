@@ -22,7 +22,7 @@ const emit = defineEmit(['close'])
             <span>Members List</span>
           </RouterLink>
         </li>
-        <li v-has-nested-router-link class="has-children">
+        <!-- <li v-has-nested-router-link class="has-children">
           <RouterLink
             target="_blank"
             :to="{ name: 'members-create' }"
@@ -32,7 +32,7 @@ const emit = defineEmit(['close'])
 
             <span>New Members</span>
           </RouterLink>
-        </li>
+        </li> -->
         <li v-has-nested-router-link class="has-children">
           <RouterLink :to="{ name: 'members-day_pass' }" class="is-submenu">
             <i aria-hidden="true" class="fas fa-user mr-2"></i>
@@ -42,15 +42,18 @@ const emit = defineEmit(['close'])
         <li v-has-nested-router-link class="has-children">
           <RouterLink :to="{ name: 'subscriptions' }" class="is-submenu">
             <i aria-hidden="true" class="lnil lnil-list-alt mr-2"></i>
-            <span>Subscriptions (v2)</span>
+            <span>Subscriptions</span>
           </RouterLink>
         </li>
-        <li v-has-nested-router-link class="has-children">
-          <RouterLink :to="{ name: 'subscriptions' }" class="is-submenu">
+        <!-- <li v-has-nested-router-link class="has-children">
+          <RouterLink
+            :to="{ name: 'subscriptions-reportsv2' }"
+            class="is-submenu"
+          >
             <i aria-hidden="true" class="lnil lnil-list-alt mr-2"></i>
-            <span>Subscriptions Reports</span>
+            <span>Subscriptions Reports (Beta)</span>
           </RouterLink>
-        </li>
+        </li> -->
         <!-- <li v-has-nested-router-link class="has-children">
           <RouterLink :to="{ name: 'members-create' }" class="is-submenu">
             <i aria-hidden="true" class="fas fa-user mr-2"></i>

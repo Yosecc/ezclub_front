@@ -21,11 +21,11 @@ const closeModal = () => {
 const invoices = computed(() => {
   if (
     !props.suscripcion.memberships_members ||
-    !props.suscripcion.memberships_members.invoice
+    !props.suscripcion.memberships_members.payments
   ) {
     return []
   }
-  return props.suscripcion.memberships_members.invoice
+  return props.suscripcion.memberships_members.payments
 })
 
 const keyOpen = ref(null)
@@ -68,16 +68,53 @@ const keyOpen = ref(null)
             <thead>
               <tr class="has-background-grey-dark">
                 <th scope="col">ID</th>
+                <th scope="col">Amount</th>
+                <th scope="col">Date</th>
+                <th scope="col">Status</th>
+                <th scope="col">Status Description</th>
+                <th scope="col">Payment Type</th>
+
+                <!-- <th scope="col">Date create</th>
+                <th scope="col">Status</th>
+                <th scope="col">Amount</th>
+                <th scope="col" colspan="3">Action</th> -->
+                <!-- <th scope="col">ID</th>
                 <th scope="col">Date Start</th>
                 <th scope="col">Date End</th>
-                <!-- <th scope="col">Payment type subscription</th> -->
                 <th scope="col">Date create</th>
                 <th scope="col">Status</th>
                 <th scope="col">Amount</th>
-                <th scope="col" colspan="3">Action</th>
+                <th scope="col" colspan="3">Action</th> -->
               </tr>
             </thead>
-            <tbody v-for="(value, key) in invoices" :key="`invoice-${key}`">
+            <tbody v-for="(value, key) in invoices" :key="`incoide-${key}`">
+              <tr>
+                <td>
+                  <p>{{ value.id }}</p>
+                </td>
+                <td>
+                  <p>{{ value.amount }}</p>
+                </td>
+                <td>
+                  <p>{{ value.created_ad }}</p>
+                </td>
+                <td>
+                  <p>{{ value.status == 1 ? 'Paid' : 'Error' }}</p>
+                </td>
+                <td>
+                  <p>{{ value.status_description }}</p>
+                </td>
+                <td>
+                  <p>{{ value.payment_type.name }}</p>
+                </td>
+              </tr>
+
+              <tr v-for="(v, ke) in value.items" :key="`item-${ke}`">
+                <td>{{ v.description }} {{ v.type }}</td>
+                <td>{{ v.amount }}</td>
+              </tr>
+            </tbody>
+            <!-- <tbody v-for="(value, key) in invoices" :key="`invoice-${key}`">
               <tr>
                 <td>
                   {{ value.id }}
@@ -88,9 +125,6 @@ const keyOpen = ref(null)
                 <td>
                   {{ moment(value.period_end).format('MM-DD-Y') }}
                 </td>
-                <!-- <td>
-                  {{ value.paymenttype.name }}
-                </td> -->
                 <td>
                   {{ moment(value.created_at).format('MM-DD-Y') }}
                 </td>
@@ -108,12 +142,6 @@ const keyOpen = ref(null)
                   >
                     <i class="fa fa-eye"></i>
                   </VButton>
-                  <!-- <a
-                    :href="value.url_pdf"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    >View Pdf</a
-                  > -->
                 </td>
               </tr>
 
@@ -161,7 +189,6 @@ const keyOpen = ref(null)
                 <th scope="col">Action</th>
               </tr>
               <tr v-show="keyOpen == value.id" v-if="value.membership_payment">
-                <!-- <td></td> -->
                 <td>
                   {{
                     moment(value.membership_payment.created_at).format(
@@ -191,7 +218,7 @@ const keyOpen = ref(null)
               <tr v-show="keyOpen == value.id">
                 <td colspan="9"></td>
               </tr>
-            </tbody>
+            </tbody> -->
           </table>
         </div>
       </template>
