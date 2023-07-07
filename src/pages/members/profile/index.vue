@@ -74,38 +74,35 @@ const mensaje = ref('ERROR MEMBERSHIP')
 const subMensaje = ref('')
 
 watch(member, (to) => {
-  if (to) {
-    if (to.sinMembresia) {
-      mensaje.value = 'NO MEMBERSHIP'
-      subMensaje.value = 'Please, select a membership'
-    }
-
-    if (!to.isSolvente && !to.sinMembresia && to.subscription) {
-      mensaje.value = `Membership ${to.subscription.status}`
-      subMensaje.value =
-        to.subscription.latest_invoice &&
-        to.subscription.latest_invoice.payments_intents &&
-        to.subscription.latest_invoice.payments_intents.length > 0
-          ? `Last payment status : ${to.subscription.latest_invoice.payments_intents[0].status}`
-          : ''
-    }
-
-    if (
-      to.subscription &&
-      to.subscription.subscription &&
-      !to.subscription.latest_invoice
-    ) {
-      subMensaje.value = `Last payment status : ${to.subscription.subscription.status}`
-    }
-
-    if (to.membership_members) {
-      if (to.membership_members.cacelation_date) {
-        subMensaje.value = `Cancel date : ${moment(
-          to.membership_members.cacelation_date
-        ).format('MM-DD-YYYY')}`
-      }
-    }
-  }
+  // if (to) {
+  //   if (to.sinMembresia) {
+  //     mensaje.value = 'NO MEMBERSHIP'
+  //     subMensaje.value = 'Please, select a membership'
+  //   }
+  //   if (!to.isSolvente && !to.sinMembresia && to.subscription) {
+  //     mensaje.value = `Membership ${to.subscription.status}`
+  //     subMensaje.value =
+  //       to.subscription.latest_invoice &&
+  //       to.subscription.latest_invoice.payments_intents &&
+  //       to.subscription.latest_invoice.payments_intents.length > 0
+  //         ? `Last payment status : ${to.subscription.latest_invoice.payments_intents[0].status}`
+  //         : ''
+  //   }
+  //   if (
+  //     to.subscription &&
+  //     to.subscription.subscription &&
+  //     !to.subscription.latest_invoice
+  //   ) {
+  //     subMensaje.value = `Last payment status : ${to.subscription.subscription.status}`
+  //   }
+  //   if (to.membership_members) {
+  //     if (to.membership_members.cacelation_date) {
+  //       subMensaje.value = `Cancel date : ${moment(
+  //         to.membership_members.cacelation_date
+  //       ).format('MM-DD-YYYY')}`
+  //     }
+  //   }
+  // }
 })
 
 watch(
@@ -311,38 +308,8 @@ const mountMember = async () => {
 
 const status = computed(() => {
   let classs = ''
-  if (member.value.subscription) {
-    if (
-      member.value.subscription.subscription &&
-      member.value.subscription.subscription.status == 'active'
-    ) {
-      classs = 'active'
-    } else {
-      classs = member.value.subscription.status
-    }
 
-    if (member.value.subscription.status == 'active') {
-      // $activos++;
-    } else if (member.value.subscription.status == 'sincard') {
-      // $sinCard++;
-    }
-    if (
-      member.value.subscription.status == 'canceled' &&
-      moment() <= moment(member.value.membership_members.cacelation_date)
-    ) {
-      classs = 'active'
-    }
-  } else if (member.value.sinMembresia) {
-    if (member.value.user && member.value.user.pm_last_four) {
-      // $nomembershipcontarjeta++;
-      classs = 'nomembershipcontarjeta'
-    } else {
-      classs = 'nomembership'
-      // $nomembership++;
-    }
-  }
-
-  return classs
+  return member.value.estado.color
 })
 
 const reload = () => {
@@ -373,29 +340,11 @@ const reload = () => {
           style="position: sticky; top: 10px"
           :category="member.category"
           @changeMenu="changeMenu"
-          :class="status"
+          :style="{ background: status }"
         />
       </div>
       <!-- <p>{{ isSolvente }}</p> -->
       <div class="column is-9">
-        <VCard
-          v-if="!isSolvente"
-          class="
-            mb-4
-            d-flex
-            justify-content-between
-            align-items-center
-            cardprofile
-          "
-          :class="status"
-        >
-          <div>
-            <p>{{ subMensaje }}</p>
-            <!-- <small v-if="member.subscription">
-              <p>{{ member.subscription.status }}</p>
-            </small> -->
-          </div>
-        </VCard>
         <memberPayment v-if="renewMembership" class="mb-4" />
         <VCard class="mb-4" v-if="member.membership_members != null">
           <div class="d-flex justify-content-between">
@@ -416,34 +365,6 @@ const reload = () => {
               <p>
                 <b>Membership Active:</b> {{ memberMermship.membership.name }}
               </p>
-              <p
-                v-if="
-                  member.subscription &&
-                  member.subscription.status == 'schedules'
-                "
-              >
-                <b>Schedules: </b>
-                {{
-                  moment(member.membership_members.schedules).format(
-                    'ddd - DD MMM YYYY'
-                  )
-                }}
-              </p>
-              <p v-else>
-                <b>Due Date: </b>
-                {{
-                  moment(member.subscription.proxima_factura).format(
-                    'ddd - DD MMM YYYY'
-                  )
-                }}
-              </p>
-              <p v-if="member.membership_members?.discount">
-                <b>Discount: </b>
-                {{ member.membership_members.discount.name }}
-              </p>
-            </div>
-            <div v-if="member.subscription">
-              <VTag color="info" :label="member.subscription.status" rounded />
             </div>
           </div>
         </VCard>
@@ -469,6 +390,7 @@ const reload = () => {
 
     <div v-if="!isLoading && suscripcionData">
       <VCard
+        v-if="!member"
         class="
           mb-4
           d-flex
@@ -495,7 +417,7 @@ const reload = () => {
         </div>
       </VCard>
 
-      <subscriptionIndex :suscripcion="suscripcionData" />
+      <subscriptionIndex v-if="!member" :suscripcion="suscripcionData" />
 
       <personalInformation
         class="mt-4"

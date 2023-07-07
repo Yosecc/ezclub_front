@@ -88,10 +88,10 @@ const itemsMenuMinor = [
     name: 'Subscription',
     component: 'susbcriptionIndex',
   },
-  // {
-  //   name: 'Membership/Contract',
-  //   component: 'memberMembership',
-  // },
+  {
+    name: 'Contract',
+    component: 'memberMembership',
+  },
   {
     name: 'Parent / Guardian',
     component: 'memberFamily',
@@ -131,10 +131,10 @@ const itemsMenuProspect = [
   //   name:'Credit Card',
   //   component: 'memberCreditCard'
   // },
-  // {
-  //   name: 'Membership/Contract',
-  //   component: 'memberMembership',
-  // },
+  {
+    name: 'Contract',
+    component: 'memberMembership',
+  },
   // {
   //   name: 'Family Members',
   //   component: 'memberFamily',

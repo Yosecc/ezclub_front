@@ -314,7 +314,7 @@ export const memberData = ref([
             typeInput: 'select',
             name: 'gender',
             placeholder: 'Gender',
-            values: ['Male', 'Female', 'Binario'],
+            values: ['Male', 'Female', 'No gender'],
             model: '',
             class: 'is-6',
             required: false,
