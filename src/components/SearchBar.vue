@@ -106,6 +106,7 @@ const selectMember = (member) => {
       }
       emit('update:modelValue', memberSelect.value)
       emit('update:valor', value.value)
+      emit('onSubmit', value)
     })
     .catch((error) => {
       loadingMemberSelected.value = false
