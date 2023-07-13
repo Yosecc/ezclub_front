@@ -315,3 +315,15 @@ fieldset[disabled='false'] .checkbox,
     justify-content: flex-start;
   }
 }
+
+.alertita {
+  .hint--top::after {
+    width: 300px !important;
+    white-space: unset !important;
+  }
+  .is-dark
+    .hint--top:not(.hint--light):not(.hint--info):not(.hint--success):not(.hint--warning):not(.hint--error):not(.hint--bubble):not(.hint--primary)::after {
+    width: 300px;
+    white-space: unset;
+  }
+}

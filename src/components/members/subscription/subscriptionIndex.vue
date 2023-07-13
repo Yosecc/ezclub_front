@@ -223,6 +223,24 @@ const proccessCheckout = () => {
               }}
             </p>
             <p class="mr-3">
+              <b>Created date: </b>
+              {{
+                moment(
+                  suscripcionComputed.estado.fecha_creacion,
+                  'YYYY-MM-DD'
+                ).format('MM-DD-YYYY')
+              }}
+            </p>
+            <p class="mr-3">
+              <b>Start date: </b>
+              {{
+                moment(
+                  suscripcionComputed.estado.fecha_inicio,
+                  'YYYY-MM-DD'
+                ).format('MM-DD-YYYY')
+              }}
+            </p>
+            <p class="mr-3">
               <b>Month: </b>
               {{ suscripcionComputed.estado.meses_pagados }}
             </p>
@@ -294,6 +312,19 @@ const proccessCheckout = () => {
               </p>
             </div>
           </div>
+          <VCard class="mt-4" v-if="suscripcionComputed.estado.alerta">
+            <div
+              v-for="(item, key) in suscripcionComputed.estado.alerta"
+              :key="`alter-${key}`"
+              class="d-flex w-100"
+            >
+              <i
+                style="color: white"
+                class="fa fa-exclamation-triangle mr-4"
+              ></i>
+              <p>{{ item }}</p>
+            </div>
+          </VCard>
           <VCard
             class="px-3 py-2"
             v-if="suscripcionComputed.estado.ultimo_intento"

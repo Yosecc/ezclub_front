@@ -48,6 +48,10 @@ export const estados = ref([
     value: 'HOLD',
     name: 'Hold',
   },
+  {
+    value: 'CANCEL DUE TO DEBT',
+    name: 'Cancel due to debit',
+  },
 ])
 
 export const estadosIntentos = ref([
