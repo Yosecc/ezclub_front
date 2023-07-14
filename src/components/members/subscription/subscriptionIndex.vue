@@ -425,6 +425,7 @@ const proccessCheckout = () => {
 
                 <subscription-action-invoices
                   :suscripcion="suscripcionComputed"
+                  @onReload="onGetSuscripcion"
                 />
               </div>
             </VCard>
@@ -476,13 +477,13 @@ const proccessCheckout = () => {
           </VCard>
         </div>
         <!-- <subscription-payments-list
-      v-if="
-        suscripcionComputed &&
-        suscripcionComputed.estado.estado_pago != 'CANCELADO'
-      "
-      :payments="suscripcionComputed.memberships_members.payments"
-      class="mt-4"
-    /> -->
+          v-if="
+            suscripcionComputed &&
+            suscripcionComputed.estado.estado_pago != 'CANCELADO'
+          "
+          :payments="suscripcionComputed.memberships_members.payments"
+          class="mt-4"
+        /> -->
       </div>
     </div>
   </VLoader>

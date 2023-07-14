@@ -321,3 +321,8 @@ export const queuePayments = async (data: Object) => {
   const response = await Api.post(`v2/suscripcion/queuePayments`, data)
   return response
 }
+
+export const vincularPaymentInvoice = async (data: Object) => {
+  const response = await Api.post(`v2/suscripcion/vincularPaymentInvoice`, data)
+  return response
+}
