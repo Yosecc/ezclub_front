@@ -56,7 +56,7 @@ const facturas = computed(() => {
 })
 
 const presupuesto = computed(() => {
-  return props.suscripcion.presupuesto
+  return props.suscripcion.presupuestonextbill
 })
 
 const keyOpen = ref(null)

@@ -18,7 +18,7 @@ export const estados = ref([
   },
   {
     value: 'COBRAR HOY',
-    name: 'Pay Day',
+    name: 'Payday',
   },
   {
     value: 'PENDIENTE',
