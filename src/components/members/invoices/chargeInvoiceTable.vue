@@ -7,9 +7,9 @@ import {
   memberMembershipsHistory,
   member,
   getListInvoices,
-} from '/@src/models/Members.ts'
+} from '/@src/models/Members'
 
-import { moneda } from '/@src/models/Mixin.ts'
+import { moneda } from '/@src/models/Mixin'
 
 const invoices = reactive({
   data: [],
@@ -61,7 +61,7 @@ onMounted(async () => {
               <th scope="col">Status</th>
             </tr>
           </thead>
-          <tbody v-if="member.subscription && invoices.data">
+          <tbody v-if="invoices.data && invoices.data.length">
             <tr v-for="(invoice, key) in invoices.data" :key="`invoice-${key}`">
               <td>
                 <p>{{ invoice.description }}</p>

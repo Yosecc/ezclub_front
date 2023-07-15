@@ -161,6 +161,30 @@ const changeStado = () => {
             </V-Control>
           </V-Field>
         </div>
+        <div class="is-2 column">
+          <V-Field class="w-100">
+            <V-Control class="input-select">
+              <label for="">
+                <p><small>Recurrence</small></p>
+              </label>
+              <div class="select">
+                <select v-model="filtro.is_recurrence" @change="changeStado">
+                  <option
+                    v-for="(item, key) in [
+                      { value: '', name: 'Select' },
+                      { value: 1, name: 'Recurrence' },
+                      { value: 0, name: 'No recurrence' },
+                    ]"
+                    :key="`payment_type-${key}`"
+                    :value="item.value"
+                  >
+                    {{ item.name }}
+                  </option>
+                </select>
+              </div>
+            </V-Control>
+          </V-Field>
+        </div>
         <V-Field class="is-4 column">
           <label for="">
             <p><small>Email/Name</small></p>
@@ -174,7 +198,8 @@ const changeStado = () => {
             />
           </V-Control>
         </V-Field>
-        <div class="is-2 column">
+
+        <!-- <div class="is-2 column">
           <V-Button
             :to="{ name: 'subscriptions-create' }"
             color="primary"
@@ -184,7 +209,7 @@ const changeStado = () => {
           >
             Add Subscription
           </V-Button>
-        </div>
+        </div> -->
       </div>
 
       <div class="columns is-multiline" v-if="isLoading">
@@ -195,30 +220,6 @@ const changeStado = () => {
 
       <div v-else>
         <div class="columns is-multiline mb-5 justify-content-between">
-          <div class="is-2 column">
-            <V-Field class="w-100">
-              <V-Control class="input-select">
-                <label for="">
-                  <p><small>Recurrence</small></p>
-                </label>
-                <div class="select">
-                  <select v-model="filtro.is_recurrence" @change="changeStado">
-                    <option
-                      v-for="(item, key) in [
-                        { value: '', name: 'Select' },
-                        { value: 1, name: 'Recurrence' },
-                        { value: 0, name: 'No recurrence' },
-                      ]"
-                      :key="`payment_type-${key}`"
-                      :value="item.value"
-                    >
-                      {{ item.name }}
-                    </option>
-                  </select>
-                </div>
-              </V-Control>
-            </V-Field>
-          </div>
           <div class="is-2 column">
             <p>Subscriptions: {{ count }}</p>
           </div>

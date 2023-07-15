@@ -14,7 +14,7 @@ import {
   // membersSelected,
   // arregloTrainers,
   initials,
-} from '/@src/models/Members.ts'
+} from '/@src/models/Members'
 import moment from 'moment'
 
 import { estados, estadosIntentos } from '/@src/models/Subscriptions'
@@ -333,7 +333,12 @@ const onReload = () => {
                   <p v-if="item.membership" class="title is-5 mb-1">
                     {{ item.membership.name }}
                   </p>
-                  <p class="title is-6">{{ item.estado.estado_pago }}</p>
+                  <p class="title is-6">
+                    {{
+                      estados.find((e) => e.value == item.estado.estado_pago)
+                        .name
+                    }}
+                  </p>
                 </div>
 
                 <div class="pago">
@@ -346,7 +351,7 @@ const onReload = () => {
                       )
                     }}
                   </p>
-                  <p style="font-size: 12px">
+                  <p style="font-size: 12px" class="d-flex">
                     Next Payment:
 
                     {{
@@ -355,6 +360,19 @@ const onReload = () => {
                         'YYYY-MM-DD'
                       ).format('MM-DD-YYYY')
                     }}
+
+                    <span v-if="item.estado.alerta" class="d-flex alertita">
+                      <span
+                        v-for="(e, keey) in item.estado.alerta"
+                        :key="`cardalter-${keey}`"
+                        v-tooltip="`${e}`"
+                      >
+                        <i
+                          style="color: yellow"
+                          class="fa fa-exclamation-triangle ml-2"
+                        ></i>
+                      </span>
+                    </span>
                   </p>
                   <p v-if="item.fecha_suspencion" style="font-size: 12px">
                     Canceled:
