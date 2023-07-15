@@ -10,6 +10,8 @@ import {
 } from 'vue'
 import { moneda, notyf } from '/@src/models/Mixin'
 import { vincularPaymentInvoice } from '/@src/models/Subscriptions'
+import { useRoute, useRouter } from 'vue-router'
+const route = useRoute()
 
 import moment from 'moment'
 
@@ -18,6 +20,10 @@ const props = defineProps({
     type: Object,
     required: true,
   },
+})
+
+const isTest = computed(() => {
+  return route.query && route.query.test ? route.query.test : false
 })
 
 const emit = defineEmit(['onReload'])
@@ -47,6 +53,10 @@ const facturas = computed(() => {
     }
   }
   return []
+})
+
+const presupuesto = computed(() => {
+  return props.suscripcion.presupuesto
 })
 
 const keyOpen = ref(null)
@@ -117,8 +127,10 @@ const generalInvoices = computed(() => {
     >
       <template #content>
         <div>
+          <p class="title is-6">Next Bill</p>
+          <Presupuesto :presupuesto="presupuesto"></Presupuesto>
+
           <p class="title is-5">Invoices</p>
-          <!-- <p>{{ invoices }}</p> -->
           <table class="table is-hoverable is-fullwidth">
             <thead>
               <tr class="has-background-grey-dark">
@@ -128,7 +140,7 @@ const generalInvoices = computed(() => {
                 <th scope="col">Status</th>
                 <th scope="col"></th>
                 <th scope="col">Payment Type</th>
-
+                <!-- <th></th> -->
                 <!-- <th scope="col">Date create</th>
                 <th scope="col">Status</th>
                 <th scope="col">Amount</th>
@@ -162,39 +174,46 @@ const generalInvoices = computed(() => {
                   <p>{{ value.status }}</p>
                 </td>
                 <td>
-                  <p>
+                  <!-- <p>
                     <a :href="value.invoice_pdf" target="_blank"
                       ><i class="fa fa-eye mr-2"></i>View PDF</a
                     >
-                  </p>
+                  </p> -->
                 </td>
                 <td>
                   <p>{{ value.payment_type.name }}</p>
                 </td>
+                <!-- <td></td> -->
                 <!-- <td v-if="value.yaexiste">
                   <p>{{ value.yaexiste ? 'Payment Assigned' : '' }}</p>
                 </td> -->
               </tr>
               <tr
                 style="background: #424242 !important"
-                v-if="value.membership_payment"
+                v-if="value.membership_payment && isTest"
               >
                 <th></th>
                 <th>ID</th>
                 <th>Subtotal</th>
                 <th>Tax</th>
                 <th>Amount</th>
+                <th>Date</th>
                 <th>Payment Type</th>
               </tr>
               <tr
                 style="background: #424242 !important"
-                v-if="value.membership_payment"
+                v-if="value.membership_payment && isTest"
               >
                 <td></td>
                 <td>{{ value.membership_payment.id }}</td>
                 <td>{{ value.membership_payment.subtotal }}</td>
                 <td>{{ value.membership_payment.tax }}</td>
                 <td>{{ value.membership_payment.amount }}</td>
+                <td>
+                  {{
+                    moment(value.membership_payment.created_at).format('M-D-Y')
+                  }}
+                </td>
                 <td>{{ value.membership_payment.payment_type.name }}</td>
               </tr>
 
@@ -203,115 +222,9 @@ const generalInvoices = computed(() => {
                 <td>{{ v.amount }}</td>
               </tr> -->
             </tbody>
-
-            <!-- <tbody v-for="(value, key) in invoices" :key="`invoice-${key}`">
-              <tr>
-                <td>
-                  {{ value.id }}
-                </td>
-                <td>
-                  {{ moment(value.period_start).format('MM-DD-Y') }}
-                </td>
-                <td>
-                  {{ moment(value.period_end).format('MM-DD-Y') }}
-                </td>
-                <td>
-                  {{ moment(value.created_at).format('MM-DD-Y') }}
-                </td>
-                <td>
-                  {{ value.status ? 'Payment' : '' }}
-                </td>
-                <td>
-                  {{ moneda(value.amount) }}
-                </td>
-                <td colspan="3">
-                  <VButton
-                    v-tooltip.top="'View payment'"
-                    color="info"
-                    @click="!keyOpen ? (keyOpen = value.id) : (keyOpen = null)"
-                  >
-                    <i class="fa fa-eye"></i>
-                  </VButton>
-                </td>
-              </tr>
-
-              <tr v-show="keyOpen == value.id">
-                <td colspan="9"></td>
-              </tr>
-              <tr v-show="keyOpen == value.id">
-                <td colspan="9" style="text-align: center">Items</td>
-              </tr>
-              <tr class="has-background-grey-dark" v-show="keyOpen == value.id">
-                <th scope="col" colspan="6">Description</th>
-                <th scope="col">Quantity</th>
-                <th scope="col">Subtotal</th>
-                <th scope="col">Amount</th>
-              </tr>
-              <tr
-                v-show="keyOpen == value.id"
-                v-for="(item, ikey) in value.items"
-                :key="`payment-item-${ikey}`"
-              >
-                <td colspan="6">
-                  {{ item.description }} - {{ item.type }}
-                  <small v-if="item.date_start" style="font-size: 10px">
-                    - {{ moment(item.date_start).format('MM-DD-Y') }} -
-                    {{ moment(item.date_end).format('MM-DD-Y') }}</small
-                  >
-                </td>
-                <td>{{ item.quantity }}</td>
-                <td>{{ moneda(item.amount_subtotal) }}</td>
-                <td>{{ moneda(item.amount_total) }}</td>
-              </tr>
-
-              <tr v-show="keyOpen == value.id">
-                <td colspan="9" style="text-align: center">Payment</td>
-              </tr>
-              <tr class="has-background-grey-dark" v-show="keyOpen == value.id">
-                <th scope="col">Create</th>
-                <th scope="col">Payment type</th>
-                <th scope="col">Status</th>
-                <th scope="col">Subtotal</th>
-                <th scope="col">Tax</th>
-                <th scope="col">Total</th>
-                <th scope="col">Cash</th>
-                <th scope="col">Cash Back</th>
-                <th scope="col">Action</th>
-              </tr>
-              <tr v-show="keyOpen == value.id" v-if="value.membership_payment">
-                <td>
-                  {{
-                    moment(value.membership_payment.created_at).format(
-                      'MM-DD-Y'
-                    )
-                  }}
-                </td>
-                <td>{{ value.membership_payment.payment_type.name }}</td>
-                <td>
-                  {{ value.membership_payment.status ? 'Payment' : '' }}
-                  {{ value.membership_payment.status_description }}
-                </td>
-                <td>{{ moneda(value.membership_payment.subtotal) }}</td>
-                <td>{{ moneda(value.membership_payment.tax) }}</td>
-                <td>{{ moneda(value.membership_payment.amount) }}</td>
-                <td>{{ moneda(value.membership_payment.cash) }}</td>
-                <td>{{ moneda(value.membership_payment.cash_back) }}</td>
-                <td>
-                  <a
-                    :href="value.membership_payment.url_pdf"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    >View Pdf</a
-                  >
-                </td>
-              </tr>
-              <tr v-show="keyOpen == value.id">
-                <td colspan="9"></td>
-              </tr>
-            </tbody> -->
           </table>
-          <p class="title is-6">Payments</p>
-          <table class="table is-hoverable is-fullwidth mt-4">
+          <p v-if="isTest" class="title is-6">Payments</p>
+          <table v-if="isTest" class="table is-hoverable is-fullwidth mt-4">
             <tbody
               :style="{
                 backgroundColor: value.yaexiste ? '#607D8B' : '#424242',

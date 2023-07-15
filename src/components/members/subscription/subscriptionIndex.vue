@@ -23,6 +23,7 @@ import {
   getSuscripcion,
   getSuscripcionCode,
   estadosIntentos,
+  estados,
 } from '/@src/models/Subscriptions'
 import { API_WEB_URL } from '/@src/services'
 import { useRoute } from 'vue-router'
@@ -160,8 +161,16 @@ const proccessCheckout = () => {
         >
           <div class="d-flex justify-content-between">
             <span>
-              <p class="title is-5 mb-0">
-                ESTADO : {{ suscripcionComputed.estado.estado_pago }}
+              <p
+                class="title is-5 mb-0"
+                v-if="suscripcionComputed.estado.estado_pago"
+              >
+                Status :
+                {{
+                  estados.find(
+                    (e) => e.value == suscripcionComputed.estado.estado_pago
+                  ).name
+                }}
               </p>
               <p>
                 <small
