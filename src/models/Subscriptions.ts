@@ -326,3 +326,10 @@ export const vincularPaymentInvoice = async (data: Object) => {
   const response = await Api.post(`v2/suscripcion/vincularPaymentInvoice`, data)
   return response
 }
+
+export const createFactura = async (suscripcion_id: Number) => {
+  const response = await Api.post(
+    `v2/suscripcion/createFactura/${suscripcion_id}`
+  )
+  return response
+}

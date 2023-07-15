@@ -9,7 +9,10 @@ import {
   reactive,
 } from 'vue'
 import { moneda, notyf } from '/@src/models/Mixin'
-import { vincularPaymentInvoice } from '/@src/models/Subscriptions'
+import {
+  vincularPaymentInvoice,
+  createFactura,
+} from '/@src/models/Subscriptions'
 import { useRoute, useRouter } from 'vue-router'
 const route = useRoute()
 
@@ -66,34 +69,62 @@ const linkInvoice = reactive({
   payment: {},
   generalInvoice: {},
   loadding: false,
+  changeDate: false,
 })
 
 const vincular = async (value) => {
-  linkInvoice.generalInvoice = value
-  if (
-    Object.keys(linkInvoice.payment).length &&
-    Object.keys(linkInvoice.generalInvoice).length
-  ) {
-    linkInvoice.loadding = true
-    await vincularPaymentInvoice({
-      payment_id: linkInvoice.payment.id,
-      general_invoice: linkInvoice.generalInvoice.id,
-    })
-      .then((response) => {
-        linkInvoice.modal = false
-        linkInvoice.loadding = false
-        notyf.success(response.data.message)
-        emit('onReload')
+  let t = 'Are you sure you want to link a new invoice'
+  if (linkInvoice.changeDate) {
+    t +=
+      '... Modifying the payment date implies marking the subscription as paid'
+  }
+  if (confirm(t)) {
+    linkInvoice.generalInvoice = value
+    if (
+      Object.keys(linkInvoice.payment).length &&
+      Object.keys(linkInvoice.generalInvoice).length
+    ) {
+      linkInvoice.loadding = true
+      await vincularPaymentInvoice({
+        payment_id: linkInvoice.payment.id,
+        general_invoice: linkInvoice.generalInvoice.id,
+        changeDate: linkInvoice.changeDate,
+        suscripcion_id: props.suscripcion.id,
       })
-      .catch((error) => {
-        linkInvoice.loadding = false
-      })
+        .then((response) => {
+          linkInvoice.modal = false
+          linkInvoice.loadding = false
+          notyf.success(response.data.message)
+          emit('onReload')
+        })
+        .catch((error) => {
+          linkInvoice.loadding = false
+        })
+    }
   }
 }
 
 const generalInvoices = computed(() => {
   return facturas.value.data
 })
+
+const loadingCreateFactura = ref(false)
+const onCreateFactura = (id: number) => {
+  let t = 'Are you sure you want to create a new invoice?'
+
+  if (confirm(t)) {
+    loadingCreateFactura.value = true
+    createFactura(id)
+      .then((response) => {
+        loadingCreateFactura.value = false
+        notyf.success(response.data.message)
+        emit('onReload')
+      })
+      .catch((error) => {
+        loadingCreateFactura.value = false
+      })
+  }
+}
 </script>
 
 <template>
@@ -129,6 +160,15 @@ const generalInvoices = computed(() => {
         <div>
           <p class="title is-6">Next Bill</p>
           <Presupuesto :presupuesto="presupuesto"></Presupuesto>
+
+          <div class="d-flex w-100 justify-content-end mb-4">
+            <!--  -->
+            <VLoader size="small" :active="loadingCreateFactura">
+              <VButton @click="onCreateFactura(props.suscripcion.id)"
+                >Create Invoice</VButton
+              >
+            </VLoader>
+          </div>
 
           <p class="title is-5">Invoices</p>
           <table class="table is-hoverable is-fullwidth">
@@ -262,7 +302,6 @@ const generalInvoices = computed(() => {
                     "
                     >Link payment to invoice</VButton
                   >
-
                   <VModal
                     :open="linkInvoice.modal"
                     actions="center"
@@ -305,6 +344,14 @@ const generalInvoices = computed(() => {
                               <p>{{ value.payment_type.name }}</p>
                             </td>
                             <td>
+                              <VField>
+                                <VControl>
+                                  <VSwitchBlock
+                                    v-model="linkInvoice.changeDate"
+                                    label="Update next payment date"
+                                  />
+                                </VControl>
+                              </VField>
                               <VButton @click="vincular(value)" color="primary"
                                 >Link</VButton
                               >
