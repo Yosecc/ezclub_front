@@ -12,9 +12,10 @@ const defaultLocale = useStorage(
 )
 
 import { Api, PUBLIC_KEY_STRIPE } from '/@src/services'
-import { user } from '/@src/pages/auth/auth.ts'
+import { user } from '/@src/pages/auth/auth'
 
 onMounted(() => {
+  console.log(cookies.get('locations_id'))
   if (cookies.get('locations_id')) {
     Api.defaults.headers.common['x-location'] = cookies.get('locations_id')
   }
