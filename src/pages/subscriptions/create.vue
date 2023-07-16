@@ -243,8 +243,12 @@ const scrollHeight = () => {
 
 const selectMember = () => {
   setTimeout(() => {
+    console.log('member', member)
     if (member.value) {
-      console.log(member.value)
+      if (member.value && member.value.user) {
+        cardCargada.value = true
+      }
+
       for (var i in member.value) {
         if (i != 'photo') {
           setInputModelData(inputsInformation, i, member.value[i])
@@ -300,7 +304,6 @@ const validarTarjetaCargadaSiEsCash = computed(() => {
 
 const onActionCard = (data = null) => {
   // console.log('sjs', data)
-
   if (data && data.payment_method_id) {
     cardCargada.value = true
   }
@@ -417,24 +420,25 @@ const onActionCard = (data = null) => {
       <div class="column is-12" v-if="presupuesto && aprobado">
         <h1 class="title is-4">
           3. Enter the member's email.
-          <!-- <br />
-          <small style="font-size: 12px"
-            >* Then select a match if possible...otherwise press ENTER</small
-          >
+          <!-- 
           <br />
-          <small style="font-size: 12px"
-            >* If you want to register a minor, please enter the email of the
-            family member to register</small
-          > -->
-        </h1>
+            <small style="font-size: 12px"
+              >* Then select a match if possible...otherwise press ENTER</small
+            >
+          <br />
+            <small style="font-size: 12px"
+              >* If you want to register a minor, please enter the email of the
+              family member to register</small
+            > 
+        --></h1>
 
         <VCard style="margin-bottom: 24px">
           <SearchBar
             dato="email"
             v-model:valor="dato"
             v-model="member"
-            :not-payment-methods="true"
-            :not-search="true"
+            :not-payment-methods="false"
+            :not-search="false"
             @onSubmit="selectMember"
           />
         </VCard>
@@ -518,8 +522,11 @@ const onActionCard = (data = null) => {
                       <subscription-method-payment-debit-automatic
                         :total="20"
                         :card="false"
-                        :user="{ email: dato, id: null }"
-                        :new-user="true"
+                        :user="{
+                          email: dato,
+                          id: member && member.user ? member.user.id : null,
+                        }"
+                        :new-user="member && member.user ? false : true"
                         :text-card="'Cards (+)'"
                         :outline="true"
                         @onPayment="onActionCard"
@@ -568,10 +575,13 @@ const onActionCard = (data = null) => {
                       :active="isLoaderActive"
                     >
                       <subscription-method-payment-debit-automatic
-                        :total="20"
+                        :total="0"
                         :card="false"
-                        :user="{ email: dato, id: null }"
-                        :new-user="true"
+                        :user="{
+                          email: dato,
+                          id: member && member.user ? member.user.id : null,
+                        }"
+                        :new-user="member && member.user ? false : true"
                         :text-card="'Cards (+)'"
                         :outline="true"
                         @onPayment="onActionCard"

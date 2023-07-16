@@ -18,7 +18,7 @@ export const estados = ref([
   },
   {
     value: 'COBRAR HOY',
-    name: 'Pay Day',
+    name: 'Payday',
   },
   {
     value: 'PENDIENTE',
@@ -47,6 +47,10 @@ export const estados = ref([
   {
     value: 'HOLD',
     name: 'Hold',
+  },
+  {
+    value: 'CANCEL DUE TO DEBT',
+    name: 'Cancel due to debit',
   },
 ])
 
@@ -315,5 +319,17 @@ export const calculoSuscripcionRestante = async (id: number) => {
 
 export const queuePayments = async (data: Object) => {
   const response = await Api.post(`v2/suscripcion/queuePayments`, data)
+  return response
+}
+
+export const vincularPaymentInvoice = async (data: Object) => {
+  const response = await Api.post(`v2/suscripcion/vincularPaymentInvoice`, data)
+  return response
+}
+
+export const createFactura = async (suscripcion_id: Number) => {
+  const response = await Api.post(
+    `v2/suscripcion/createFactura/${suscripcion_id}`
+  )
   return response
 }
