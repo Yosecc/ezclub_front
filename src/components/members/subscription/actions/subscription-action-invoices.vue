@@ -180,18 +180,6 @@ const onCreateFactura = (id: number) => {
                 <th scope="col">Status</th>
                 <th scope="col"></th>
                 <th scope="col">Payment Type</th>
-                <!-- <th></th> -->
-                <!-- <th scope="col">Date create</th>
-                <th scope="col">Status</th>
-                <th scope="col">Amount</th>
-                <th scope="col" colspan="3">Action</th> -->
-                <!-- <th scope="col">ID</th>
-                <th scope="col">Date Start</th>
-                <th scope="col">Date End</th>
-                <th scope="col">Date create</th>
-                <th scope="col">Status</th>
-                <th scope="col">Amount</th>
-                <th scope="col" colspan="3">Action</th> -->
               </tr>
             </thead>
 
@@ -214,11 +202,11 @@ const onCreateFactura = (id: number) => {
                   <p>{{ value.status }}</p>
                 </td>
                 <td>
-                  <!-- <p>
+                  <p>
                     <a :href="value.invoice_pdf" target="_blank"
                       ><i class="fa fa-eye mr-2"></i>View PDF</a
                     >
-                  </p> -->
+                  </p>
                 </td>
                 <td>
                   <p>{{ value.payment_type.name }}</p>
