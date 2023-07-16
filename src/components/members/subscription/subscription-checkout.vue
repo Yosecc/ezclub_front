@@ -26,7 +26,7 @@ const props = defineProps({
   },
   metodos: {
     type: Array,
-    default: ['stripe-debit', 'cash'],
+    default: ['stripe-debit', 'cash', 'posnet'],
   },
 })
 
@@ -250,6 +250,16 @@ const onPayment = (obj: object) => {
         <subscription-method-payment-cash
           :total="props.total"
           @onPayment="onPayment"
+        />
+      </VLoader>
+    </div>
+
+    <div class="is-4 column mx-auto" v-if="props.metodos.includes('posnet')">
+      <VLoader size="small" :active="isLoaderActive">
+        <subscription-method-payment-posnet
+          :total="props.total"
+          @onPayment="onPayment"
+          :define_status="true"
         />
       </VLoader>
     </div>

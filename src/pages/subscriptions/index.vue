@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { useHead } from '@vueuse/head'
-import { onMounted, watch, ref, computed } from 'vue'
+import { onMounted, watch, ref, computed, reactive } from 'vue'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
 import { useRoute, useRouter } from 'vue-router'
 import { Api } from '/@src/services'
 // import { members, subscriptionsCreateStripe } from '/@src/models/Members.ts'
 
-import { suscripciones } from '/@src/models/Subscriptions.ts'
+import { suscripciones, estados } from '/@src/models/Subscriptions'
 
 pageTitle.value = 'Suscriptions'
 useHead({
@@ -16,24 +16,16 @@ useHead({
 const route = useRoute()
 
 const filters = ref('')
-const filterDate = ref('all')
 
 const paginationData = ref([])
 
 const isLoading = ref(true)
-const defalA = ref('all')
+const count = ref(0)
 
 watch(
   () => route.query.page,
   () => {
-    getSuscripcion(
-      'all',
-      filters.value,
-      route.query.page,
-      categoryB.value,
-      false,
-      fecha_pago.value
-    )
+    getSuscripcion()
   }
 )
 
@@ -44,33 +36,32 @@ watch(
   }
 )
 
-const getSuscripcion = async (
-  filter,
-  value = '',
-  page = 1,
-  category = null,
-  reload = true,
-  estado = null,
-  fecha_pago = null
-) => {
-  filterDate.value = filter
+const filtro = reactive({
+  filter: '',
+  // value: '',
+  page: 1,
+  // category: null,
+  reload: true,
+  estado: 'All',
+  fecha_pago: null,
+  payment_type: '',
+  is_recurrence: '',
+})
+
+const getSuscripcion = async () => {
+  // filterDate.value = filter
   isLoading.value = true
   await Api.get('v2/suscripcion', {
-    params: {
-      [filterDate.value]: true,
-      filter: value,
-      page: page,
-      category: category,
-      estado: estado,
-      fecha_pago: fecha_pago,
-    },
+    params: filtro,
   })
     .then((response) => {
+      // console.log('response', response.data.suscripciones)
       suscripciones.value = response.data.suscripciones
       paginationData.value = response.data.pagination
+      count.value = response.data.count
       isLoading.value = false
 
-      if (reload) {
+      if (filtro.reload) {
         reloadForm()
       }
     })
@@ -79,40 +70,18 @@ const getSuscripcion = async (
       console.log(error)
     })
 }
-const categoryB = ref('All')
-const change = (val) => {
-  reloadForm()
-  defalA.value = val
-  getSuscripcion(
-    'all',
-    filters.value,
-    route.query.page,
-    val,
-    false,
-    fecha_pago.value
-  )
-}
+// const change = (val) => {
+//   reloadForm()
+//   defalA.value = val
+//   getSuscripcion()
+// }
 
 onMounted(() => {
-  getSuscripcion(
-    'all',
-    filters.value,
-    route.query.page,
-    'All',
-    fecha_pago.value
-  )
+  getSuscripcion()
 })
 
 const filtersSearch = () => {
-  // console.log(filters.value.length)
-  getSuscripcion(
-    'all',
-    filters.value,
-    1,
-    categoryB.value,
-    false,
-    fecha_pago.value
-  )
+  getSuscripcion()
 }
 
 const reloadForm = () => {
@@ -122,54 +91,8 @@ const reloadForm = () => {
   }, 500)
 }
 
-const fecha_pago = ref(null)
-
-const statusSelect = ref('All')
-const estados = ref([
-  {
-    value: 'All',
-    name: 'All',
-  },
-  {
-    value: 'COBRAR HOY',
-    name: 'COBRAR HOY',
-  },
-  {
-    value: 'PENDIENTE',
-    name: 'PENDIENTE',
-  },
-  {
-    value: 'VENCIDO',
-    name: 'VENCIDO',
-  },
-  {
-    value: 'PAGADO',
-    name: 'PAGADO',
-  },
-  {
-    value: 'CANCELADO',
-    name: 'CANCELADO',
-  },
-  {
-    value: 'EXPIRADO',
-    name: 'EXPIRADO',
-  },
-  {
-    value: 'PROX. EXPIRADO',
-    name: 'PROX. EXPIRADO',
-  },
-])
-
 const changeStado = () => {
-  getSuscripcion(
-    'all',
-    filters.value,
-    1,
-    categoryB.value,
-    false,
-    statusSelect.value,
-    fecha_pago.value
-  )
+  getSuscripcion()
 }
 </script>
 
@@ -181,8 +104,11 @@ const changeStado = () => {
         <div class="is-2 column">
           <V-Field class="w-100">
             <V-Control class="input-select">
+              <label for="fecha_pago">
+                <p><small>Status</small></p>
+              </label>
               <div class="select">
-                <select v-model="statusSelect" @change="changeStado">
+                <select v-model="filtro.estado" @change="changeStado">
                   <option
                     v-for="(item, key) in estados"
                     :key="`estados-${key}`"
@@ -195,17 +121,85 @@ const changeStado = () => {
             </V-Control>
           </V-Field>
         </div>
-        <V-Field class="is-8 column">
+        <div class="is-2 column">
+          <V-Field class="w-100">
+            <V-Control class="input-select">
+              <label for="fecha_pago">
+                <p><small>Payment Type</small></p>
+              </label>
+              <div class="select">
+                <select v-model="filtro.payment_type" @change="changeStado">
+                  <option
+                    v-for="(item, key) in [
+                      { value: '', name: 'Payment Type' },
+                      { value: 3, name: 'Debit Card' },
+                      { value: 1, name: 'Cash' },
+                    ]"
+                    :key="`payment_type-${key}`"
+                    :value="item.value"
+                  >
+                    {{ item.name }}
+                  </option>
+                </select>
+              </div>
+            </V-Control>
+          </V-Field>
+        </div>
+        <div class="is-2 column">
+          <V-Field class="w-100">
+            <V-Control class="input-select">
+              <label for="fecha_pago">
+                <p><small>Payment Date</small></p>
+              </label>
+              <input
+                type="date"
+                @change="changeStado"
+                id="fecha_pago"
+                class="input custom-text-filter"
+                v-model="filtro.fecha_pago"
+              />
+            </V-Control>
+          </V-Field>
+        </div>
+        <div class="is-2 column">
+          <V-Field class="w-100">
+            <V-Control class="input-select">
+              <label for="">
+                <p><small>Recurrence</small></p>
+              </label>
+              <div class="select">
+                <select v-model="filtro.is_recurrence" @change="changeStado">
+                  <option
+                    v-for="(item, key) in [
+                      { value: '', name: 'Select' },
+                      { value: 1, name: 'Recurrence' },
+                      { value: 0, name: 'No recurrence' },
+                    ]"
+                    :key="`payment_type-${key}`"
+                    :value="item.value"
+                  >
+                    {{ item.name }}
+                  </option>
+                </select>
+              </div>
+            </V-Control>
+          </V-Field>
+        </div>
+        <V-Field class="is-4 column">
+          <label for="">
+            <p><small>Email/Name</small></p>
+          </label>
           <V-Control icon="feather:search">
             <input
-              v-model="filters"
+              v-model="filtro.filter"
               class="input custom-text-filter"
               placeholder="Search..."
-              @keyup.enter="filtersSearch"
+              @keyup.enter="changeStado"
             />
           </V-Control>
         </V-Field>
-        <div class="is-2 column">
+
+        <!-- <div class="is-2 column">
           <V-Button
             :to="{ name: 'subscriptions-create' }"
             color="primary"
@@ -215,7 +209,7 @@ const changeStado = () => {
           >
             Add Subscription
           </V-Button>
-        </div>
+        </div> -->
       </div>
 
       <div class="columns is-multiline" v-if="isLoading">
@@ -225,18 +219,9 @@ const changeStado = () => {
       </div>
 
       <div v-else>
-        <div class="d-flex justify-content-end mb-5">
-          <div class="column is-4">
-            <label for="fecha_pago">
-              <p><small>Payment Date</small></p>
-            </label>
-            <input
-              type="date"
-              @change="changeStado"
-              id="fecha_pago"
-              class="input custom-text-filter"
-              v-model="fecha_pago"
-            />
+        <div class="columns is-multiline mb-5 justify-content-between">
+          <div class="is-2 column">
+            <p>Subscriptions: {{ count }}</p>
           </div>
         </div>
 
@@ -247,7 +232,9 @@ const changeStado = () => {
           :suscripciones="suscripciones"
           :pagination-data="paginationData"
           :filters="filters"
-          @onSearch="onSearch"
+          @onSearch="changeStado"
+          @onReload="changeStado"
+          :isselectedmultiple="true"
         />
       </div>
     </div>

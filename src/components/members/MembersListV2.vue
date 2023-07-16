@@ -9,6 +9,7 @@ import {
 } from '/@src/models/Members.ts'
 import moment from 'moment'
 const emit = defineEmit(['filterChange', 'onSearch'])
+import { estados, estadosIntentos } from '/@src/models/Subscriptions.ts'
 
 const route = useRoute()
 const router = useRouter()
@@ -124,21 +125,6 @@ const colorCard = (member) => {
   return classs
 }
 
-const users = [
-  {
-    id: 0,
-    picture: '/demo/avatars/7.jpg',
-    initials: 'AC',
-    color: 'info',
-  },
-  {
-    id: 1,
-    picture: null,
-    initials: 'JP',
-    color: 'info',
-  },
-]
-
 const All = ref([])
 
 watch(
@@ -159,6 +145,7 @@ watch(
 <template>
   <div>
     <div class="page-content-inner">
+      <!-- <p>{{ props.members }}</p> -->
       <div class="tile-grid tile-grid-v1">
         <V-PlaceholderPage
           :class="[filteredData.length !== 0 && 'is-hidden']"
@@ -183,16 +170,19 @@ watch(
         </V-PlaceholderPage>
 
         <transition-group name="list" tag="div" class="columns is-multiline">
+          <!-- <p>lorem</p> -->
           <!--Grid item-->
           <div
             v-for="item in filteredData"
             :key="`${props.name}-${item.id}`"
             class="column is-4"
           >
+            <!-- <p>{{  }}}</p> -->
             <div
               @click="openMemberCard(true, item)"
-              class="tile-grid-item cardprofile"
-              :class="colorCard(item)"
+              class="tile-grid-item cardprofile h-100"
+              v-if="item.estado"
+              :style="{ backgroundColor: item.estado.color }"
             >
               <div
                 class="
@@ -229,10 +219,6 @@ watch(
                         >
                           {{ item.name }} {{ item.second_name }}
                           {{ item.last_name }}
-                          <!-- <br> -->
-                          <!-- {{ colorCard(item) }} -->
-                          <!-- <br> -->
-                          <!-- {{ member.subscription ? member.subscription.status:'no subscription' }} -->
                         </router-link>
                       </span>
                     </div>
@@ -254,28 +240,52 @@ watch(
                 </div>
 
                 <div class="align-items-center d-flex">
-                  <!-- <V-Checkbox
-                    class="p-0"
-                    v-model="membersSelected"
-                    color="primary"
-                    :label="' '"
-                    :value="item.id"
-                  /> -->
-                  <FlexTableDropdown :id-member="item.id" :member="item" />
+                  <FlexTableDropdown
+                    :id-member="item.id"
+                    :member="item"
+                    v-if="item"
+                  />
                 </div>
               </div>
               <div class="d-flex justify-content-between mt-3">
-                <span class="d-flex align-items-center">
-                  <div class="mr-1">
+                <span class="d-flex align-items-center flex-wrap">
+                  <div class="mr-1 mb-1">
                     <VTag
-                      :label="`${
-                        colorCard(item) == 'sincard'
-                          ? 'no_card'
-                          : colorCard(item)
-                      }`"
-                      class="mr-1"
-                      color=""
+                      :label="
+                        estados.find((e) => e.value == item.estado.estado_pago)
+                          .name
+                      "
                     />
+                  </div>
+                  <div class="mr-1 mb-1">
+                    <!-- <VTag
+                        :label="`${
+                          colorCard(item) == 'sincard'
+                            ? 'no_card'
+                            : colorCard(item)
+                        }`"
+                        class="mr-1"
+                        color=""
+                      /> -->
+                    <!-- <p>{{ item.estado.estado_pago }}}</p> -->
+
+                    <VTag
+                      v-if="item.estado.ultimo_intento"
+                      :label="`
+                        ${
+                          estadosIntentos.find(
+                            (e) => e.value == item.estado.ultimo_intento.estado
+                          ).name
+                        }: 
+                        ${
+                          item.estado.ultimo_intento.estado == 'fallido'
+                            ? item.estado.ultimo_intento.pago_id
+                            : ''
+                        }
+                        / ${item.estado.ultimo_intento.fecha}
+                        `"
+                    />
+                    <!-- <p>{{ item.estado.ultimo_intento }}</p> -->
                   </div>
 
                   <VTag
@@ -295,14 +305,14 @@ watch(
                       item.membership_members &&
                       item.membership_members.schedules
                     "
-                    :label="`${moment(item.membership_members.schedules).format(
-                      'MM-DD-YYYY'
-                    )}`"
+                    :label="`Schedules: ${moment(
+                      item.membership_members.schedules
+                    ).format('MM-DD-YYYY')}`"
                     class="mr-1"
                     color=""
                   />
 
-                  <div
+                  <!-- <div
                     class="mr-1"
                     v-if="
                       item.subscription &&
@@ -322,7 +332,7 @@ watch(
                       class="mr-1"
                       color="danger"
                     />
-                  </div>
+                  </div> -->
                 </span>
 
                 <span class="d-flex align-items-center">
@@ -335,14 +345,13 @@ watch(
                   <div class="mr-1" v-if="item.membership_members != undefined">
                     <VTag
                       v-if="item.membership_members.discount"
-                      :label="`-${item.membership_members.discount.value}%`"
+                      :label="`-${item.membership_members.discount.discount.value}%`"
                       class=""
                       color="orange"
                     />
                   </div>
 
-                  <div class="mr-3" v-if="item.cards.length">
-                    <!-- <p>{{ item.cards[0] }}</p> -->
+                  <div class="mr-3" v-if="item.cards && item.cards.length">
                     <VTag
                       v-if="item.cards[0].last4 != null"
                       :label="`Cards`"
@@ -351,11 +360,11 @@ watch(
                     />
                   </div>
 
-                  <VAvatarStack
+                  <!-- <VAvatarStack
                     v-if="item.trainers"
                     :avatars="arregloTrainers(item.trainers)"
                     size="small"
-                  />
+                  /> -->
                 </span>
               </div>
             </div>

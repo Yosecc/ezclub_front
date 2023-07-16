@@ -11,10 +11,64 @@ import {
   // convertFormData,
 } from '/@src/models/Mixin'
 
+export const estados = ref([
+  {
+    value: 'All',
+    name: 'All',
+  },
+  {
+    value: 'COBRAR HOY',
+    name: 'Payday',
+  },
+  {
+    value: 'PENDIENTE',
+    name: 'Pending',
+  },
+  {
+    value: 'VENCIDO',
+    name: 'Due',
+  },
+  {
+    value: 'PAGADO',
+    name: 'Paid',
+  },
+  {
+    value: 'CANCELADO',
+    name: 'Canceled',
+  },
+  {
+    value: 'EXPIRADO',
+    name: 'Expired',
+  },
+  {
+    value: 'PROX. CANCELADO',
+    name: 'Prox. Expired',
+  },
+  {
+    value: 'HOLD',
+    name: 'Hold',
+  },
+  {
+    value: 'CANCEL DUE TO DEBT',
+    name: 'Cancel due to debit',
+  },
+])
+
+export const estadosIntentos = ref([
+  {
+    value: 'fallido',
+    name: 'Failed',
+  },
+  {
+    value: 'pagado',
+    name: 'Paid',
+  },
+])
+
 //DATA
 export const presupuesto = ref(null)
 
-export const suscripciones = ref(null)
+export const suscripciones = ref([])
 
 export const solicitudDataInicial = {
   memberships_id: null,
@@ -111,7 +165,7 @@ export const inputsMembership = ref([
     typeMember: ['Individual'],
   },
   {
-    typeInput: 'date',
+    typeInput: 'hidden',
     name: 'schedules',
     placeholder: 'Subscription Schedules',
     model: '',
@@ -259,6 +313,23 @@ export const getAmountMultigym = async (id: number, obj: Object) => {
 export const calculoSuscripcionRestante = async (id: number) => {
   const response = await Api.post(
     `v2/suscripcion/calculo_suscripcion_restante/${id}`
+  )
+  return response
+}
+
+export const queuePayments = async (data: Object) => {
+  const response = await Api.post(`v2/suscripcion/queuePayments`, data)
+  return response
+}
+
+export const vincularPaymentInvoice = async (data: Object) => {
+  const response = await Api.post(`v2/suscripcion/vincularPaymentInvoice`, data)
+  return response
+}
+
+export const createFactura = async (suscripcion_id: Number) => {
+  const response = await Api.post(
+    `v2/suscripcion/createFactura/${suscripcion_id}`
   )
   return response
 }

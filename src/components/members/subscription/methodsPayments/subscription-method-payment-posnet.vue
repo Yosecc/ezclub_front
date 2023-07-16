@@ -37,12 +37,17 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
+  email: {
+    type: String,
+    default: '',
+  },
 })
 
 const terminales = ref([])
 
 const onOpenModal = () => {
   openModal.value = true
+  confirmMail.modal = false
 
   let locaciones = company.value.locations
 
@@ -275,6 +280,20 @@ const onCleanAndClose = (terminal: object) => {
   }
 }
 
+const confirmMail = reactive({
+  modal: false,
+  confirm: false,
+  email: '',
+})
+const conmfirmEmail = () => {
+  if (props.email == '' || props.email == null) {
+    notyf.error('Email is required')
+    return
+  }
+  confirmMail.email = props.email
+  confirmMail.modal = true
+}
+
 const conteo = ref(0)
 
 const initContador = () => {
@@ -291,7 +310,7 @@ const initContador = () => {
 
 <template>
   <VCard
-    @click="onOpenModal"
+    @click="conmfirmEmail"
     :color="props.define_status ? 'info' : undefined"
     class="btn-card w-100 justify-content-center"
   >
@@ -457,6 +476,21 @@ const initContador = () => {
         raised
         >Confirm</VButton
       > -->
+    </template>
+  </VModal>
+  <VModal
+    :open="confirmMail.modal"
+    actions="center"
+    @close="confirmMail.modal = false"
+  >
+    <template #content>
+      <VPlaceholderSection
+        :title="confirmMail.email"
+        subtitle="Please confirm the email before continuing"
+      />
+    </template>
+    <template #action>
+      <VButton @click="onOpenModal" color="primary" raised>Confirm</VButton>
     </template>
   </VModal>
 </template>

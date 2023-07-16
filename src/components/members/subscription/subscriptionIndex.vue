@@ -22,6 +22,8 @@ import {
   // cancelSuscripcion,
   getSuscripcion,
   getSuscripcionCode,
+  estadosIntentos,
+  estados,
 } from '/@src/models/Subscriptions'
 import { API_WEB_URL } from '/@src/services'
 import { useRoute } from 'vue-router'
@@ -30,7 +32,7 @@ import {
   // membersSelected,
   // arregloTrainers,
   initials,
-} from '/@src/models/Members.ts'
+} from '/@src/models/Members'
 import moment from 'moment'
 
 const props = defineProps({
@@ -159,8 +161,16 @@ const proccessCheckout = () => {
         >
           <div class="d-flex justify-content-between">
             <span>
-              <p class="title is-5 mb-0">
-                ESTADO : {{ suscripcionComputed.estado.estado_pago }}
+              <p
+                class="title is-5 mb-0"
+                v-if="suscripcionComputed.estado.estado_pago"
+              >
+                Status :
+                {{
+                  estados.find(
+                    (e) => e.value == suscripcionComputed.estado.estado_pago
+                  ).name
+                }}
               </p>
               <p>
                 <small
@@ -222,6 +232,24 @@ const proccessCheckout = () => {
               }}
             </p>
             <p class="mr-3">
+              <b>Created date: </b>
+              {{
+                moment(
+                  suscripcionComputed.estado.fecha_creacion,
+                  'YYYY-MM-DD'
+                ).format('MM-DD-YYYY')
+              }}
+            </p>
+            <p class="mr-3">
+              <b>Start date: </b>
+              {{
+                moment(
+                  suscripcionComputed.estado.fecha_inicio,
+                  'YYYY-MM-DD'
+                ).format('MM-DD-YYYY')
+              }}
+            </p>
+            <p class="mr-3">
               <b>Month: </b>
               {{ suscripcionComputed.estado.meses_pagados }}
             </p>
@@ -243,6 +271,7 @@ const proccessCheckout = () => {
                 ).format('MM-DD-YYYY')
               }}
             </p>
+
             <p v-if="suscripcionComputed.estado.fecha_suspencion" class="mr-3">
               <b>Cancellation Date: </b>
               {{
@@ -292,6 +321,51 @@ const proccessCheckout = () => {
               </p>
             </div>
           </div>
+          <VCard class="mt-4" v-if="suscripcionComputed.estado.alerta">
+            <div
+              v-for="(item, key) in suscripcionComputed.estado.alerta"
+              :key="`alter-${key}`"
+              class="d-flex w-100"
+            >
+              <i
+                style="color: white"
+                class="fa fa-exclamation-triangle mr-4"
+              ></i>
+              <p>{{ item }}</p>
+            </div>
+          </VCard>
+          <VCard
+            class="px-3 py-2"
+            v-if="suscripcionComputed.estado.ultimo_intento"
+          >
+            <p style="font-size: 10px">
+              <b
+                >Status:
+
+                {{
+                  estadosIntentos.find(
+                    (e) =>
+                      e.value ==
+                      suscripcionComputed.estado.ultimo_intento.estado
+                  ).name
+                }}
+              </b>
+              <b> Intent:</b>
+              {{ suscripcionComputed.estado.ultimo_intento.intento }}
+            </p>
+            <p
+              v-if="
+                suscripcionComputed.estado.ultimo_intento.estado != 'pagado'
+              "
+              style="font-size: 10px"
+            >
+              {{ suscripcionComputed.estado.ultimo_intento.pago_id }}
+            </p>
+
+            <p style="font-size: 10px">
+              Date: {{ suscripcionComputed.estado.ultimo_intento.fecha }}
+            </p>
+          </VCard>
         </VCard>
 
         <div
@@ -360,6 +434,7 @@ const proccessCheckout = () => {
 
                 <subscription-action-invoices
                   :suscripcion="suscripcionComputed"
+                  @onReload="onGetSuscripcion"
                 />
               </div>
             </VCard>
@@ -411,13 +486,13 @@ const proccessCheckout = () => {
           </VCard>
         </div>
         <!-- <subscription-payments-list
-      v-if="
-        suscripcionComputed &&
-        suscripcionComputed.estado.estado_pago != 'CANCELADO'
-      "
-      :payments="suscripcionComputed.memberships_members.payments"
-      class="mt-4"
-    /> -->
+          v-if="
+            suscripcionComputed &&
+            suscripcionComputed.estado.estado_pago != 'CANCELADO'
+          "
+          :payments="suscripcionComputed.memberships_members.payments"
+          class="mt-4"
+        /> -->
       </div>
     </div>
   </VLoader>

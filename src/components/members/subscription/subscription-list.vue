@@ -1,14 +1,25 @@
 <script setup lang="ts">
-import { computed, ref, onMounted, watch, defineProps, defineEmit } from 'vue'
+import {
+  computed,
+  ref,
+  onMounted,
+  watch,
+  defineProps,
+  defineEmit,
+  reactive,
+} from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { API_WEB_URL } from '/@src/services'
 import {
   // membersSelected,
   // arregloTrainers,
   initials,
-} from '/@src/models/Members.ts'
+} from '/@src/models/Members'
 import moment from 'moment'
-const emit = defineEmit(['filterChange', 'onSearch'])
+
+import { estados, estadosIntentos } from '/@src/models/Subscriptions'
+
+const emit = defineEmit(['filterChange', 'onSearch', 'onReload'])
 
 const route = useRoute()
 const router = useRouter()
@@ -22,6 +33,7 @@ const props = defineProps({
   suscripciones: {
     type: Array,
     required: true,
+    default: [],
   },
   name: {
     type: String,
@@ -42,6 +54,14 @@ const props = defineProps({
   colgrid: {
     type: String,
     default: 'is-4',
+  },
+  isselectedmultiple: {
+    type: Boolean,
+    default: false,
+  },
+  ispaginator: {
+    type: Boolean,
+    default: true,
   },
   // filterLocal:{
   //   type: Boolean,
@@ -187,10 +207,29 @@ watch(
     }
   }
 )
+
+const idSeleccionados = reactive({
+  data: [],
+})
+
+const onReload = () => {
+  idSeleccionados.data = []
+  emit('onReload')
+}
 </script>
 
 <template>
   <div>
+    <div
+      v-if="idSeleccionados.data.length"
+      class="w-100 d-flex mb-4 justify-content-end align-items-center"
+    >
+      <subscription-method-payment-queue-stripe
+        :id_seleccionados="idSeleccionados"
+        :suscripciones="props.suscripciones"
+        @onPayment="onReload"
+      />
+    </div>
     <div class="page-content-inner">
       <div class="tile-grid tile-grid-v1">
         <V-PlaceholderPage
@@ -225,42 +264,68 @@ watch(
             style="cursor: pointer"
           >
             <div
-              @click="openMemberCard(item)"
-              class="tile-grid-item cardprofile"
+              class="tile-grid-item cardprofile h-100"
               :class="colorCard(item)"
               v-if="item"
-              :style="{ backgroundColor: item.estado.color }"
+              :style="{
+                backgroundColor: item.estado.color,
+                overflow: 'hidden',
+              }"
             >
-              <div class="tile-grid-item-inner align-items-start">
-                <div v-if="item.member">
-                  <V-Avatar
-                    :picture="`${API_WEB_URL}storage/${item.member.photo}`"
-                    color="primary"
-                    :initials="
-                      initials(item.member.name, item.member.last_name)
-                    "
-                    size="medium"
-                    class="mr-4 mb-4"
-                  />
+              <div
+                class="
+                  tile-grid-item-inner
+                  align-items-start
+                  justify-content-between
+                "
+              >
+                <div
+                  @click="openMemberCard(item)"
+                  class="tile-grid-item-inner align-items-start"
+                >
+                  <div v-if="item.member">
+                    <V-Avatar
+                      :picture="`${API_WEB_URL}storage/${item.member.photo}`"
+                      color="primary"
+                      :initials="
+                        initials(item.member.name, item.member.last_name)
+                      "
+                      size="medium"
+                      class="mr-4 mb-4"
+                    />
+                  </div>
+                  <div>
+                    <div v-if="!item.member" class="mb-4 user">
+                      <p style="font-size: 12px">
+                        Username: {{ item.user.name }}
+                      </p>
+                      <p style="font-size: 12px">
+                        Email: {{ item.user.email }}
+                      </p>
+                    </div>
+                    <div v-else class="mb-4 member">
+                      <p style="font-size: 12px">
+                        {{ item.member.name }} {{ item.member.last_name }}
+                      </p>
+                      <p style="font-size: 12px">{{ item.member.email }}</p>
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <div v-if="!item.member" class="mb-4 user">
-                    <p style="font-size: 12px">
-                      Username: {{ item.user.name }}
-                    </p>
-                    <p style="font-size: 12px">Email: {{ item.user.email }}</p>
-                  </div>
-                  <div v-else class="mb-4 member">
-                    <p style="font-size: 12px">
-                      {{ item.member.name }} {{ item.member.last_name }}
-                    </p>
-                    <p style="font-size: 12px">{{ item.member.email }}</p>
-                  </div>
+                <div v-if="props.isselectedmultiple">
+                  <VField class="is-flex">
+                    <VControl raw subcontrol>
+                      <VCheckbox
+                        v-model="idSeleccionados.data"
+                        :value="item.id"
+                      />
+                    </VControl>
+                  </VField>
                 </div>
               </div>
 
-              <div>
-                <p>{{ item.id }}</p>
+              <div @click="openMemberCard(item)">
+                <!-- <p>{{ item.id }}</p> -->
+
                 <div class="mb-4 description">
                   <p v-if="item.recurrence" style="font-size: 12px">
                     {{ item.recurrence.recurrencia.descriptions }}
@@ -268,7 +333,12 @@ watch(
                   <p v-if="item.membership" class="title is-5 mb-1">
                     {{ item.membership.name }}
                   </p>
-                  <p class="title is-6">{{ item.estado.estado_pago }}</p>
+                  <p class="title is-6">
+                    {{
+                      estados.find((e) => e.value == item.estado.estado_pago)
+                        .name
+                    }}
+                  </p>
                 </div>
 
                 <div class="pago">
@@ -281,7 +351,7 @@ watch(
                       )
                     }}
                   </p>
-                  <p style="font-size: 12px">
+                  <p style="font-size: 12px" class="d-flex">
                     Next Payment:
 
                     {{
@@ -290,6 +360,19 @@ watch(
                         'YYYY-MM-DD'
                       ).format('MM-DD-YYYY')
                     }}
+
+                    <span v-if="item.estado.alerta" class="d-flex alertita">
+                      <span
+                        v-for="(e, keey) in item.estado.alerta"
+                        :key="`cardalter-${keey}`"
+                        v-tooltip="`${e}`"
+                      >
+                        <i
+                          style="color: yellow"
+                          class="fa fa-exclamation-triangle ml-2"
+                        ></i>
+                      </span>
+                    </span>
                   </p>
                   <p v-if="item.fecha_suspencion" style="font-size: 12px">
                     Canceled:
@@ -301,9 +384,40 @@ watch(
                     }}
                   </p>
 
-                  <p v-if="item.payment_type" style="font-size: 12px">
+                  <p
+                    v-if="item.payment_type"
+                    style="font-size: 12px"
+                    class="mb-4"
+                  >
                     Payment Type: {{ item.payment_type.name }}
                   </p>
+                  <VCard class="px-3 py-2" v-if="item.estado.ultimo_intento">
+                    <p style="font-size: 10px">
+                      <b
+                        >Status:
+
+                        {{
+                          estadosIntentos.find(
+                            (e) => e.value == item.estado.ultimo_intento.estado
+                          ).name
+                        }}
+                      </b>
+                      <b> Intent:</b> {{ item.estado.ultimo_intento.intento }}
+                    </p>
+                    <p
+                      v-if="item.estado.ultimo_intento.estado != 'pagado'"
+                      style="font-size: 10px"
+                    >
+                      {{ item.estado.ultimo_intento.pago_id }}
+                    </p>
+
+                    <p style="font-size: 10px">
+                      Date: {{ item.estado.ultimo_intento.fecha }}
+                    </p>
+                  </VCard>
+                  <div v-else>
+                    <p></p>
+                  </div>
 
                   <div class="d-flex mt-2">
                     <div
@@ -324,6 +438,13 @@ watch(
                     <div class="mr-1" v-if="item.user.cards.length">
                       <VTag :label="`Cards`" class="mr-1" color="purple" />
                     </div>
+
+                    <div
+                      class="mr-1"
+                      v-if="item.auditoria ? item.auditoria.length : false"
+                    >
+                      <VTag :label="`i`" class="mr-1" />
+                    </div>
                   </div>
 
                   <!-- <p>{{ item.discount }}</p> -->
@@ -336,7 +457,7 @@ watch(
         <!--Table Pagination-->
 
         <V-FlexPagination
-          v-if="filteredData.length > 0"
+          v-if="filteredData.length > 0 && props.ispaginator"
           :item-per-page="props.paginationData.per_page ?? 15"
           :total-items="props.paginationData.total ?? 0"
           :current-page="props.paginationData.current_page"
@@ -348,7 +469,6 @@ watch(
       :open="centeredActionsOpen"
       size="big"
       actions="center"
-      noscroll
       @close="closeModal"
     >
       <template #content>

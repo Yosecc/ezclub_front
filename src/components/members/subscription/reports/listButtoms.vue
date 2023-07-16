@@ -26,39 +26,54 @@ const getRandomArbitrary = (min, max) => {
 const random = ref(getRandomArbitrary(100, 50000))
 const random2 = ref(getRandomArbitrary(100, 30000))
 const onButton = ({ itemKey, i }) => {
+  // console.log({ itemKey, i })
   emit('onAction', { itemKey, i })
 }
 </script>
 
 <template>
-  <div
-    v-for="(item, keysGrupo) in data"
-    :key="`report-${keysGrupo}-${random}`"
-    class="is-12 column"
-  >
-    <VCard class="">
-      <div class="d-flex justify-content-between w-100 mb-4">
-        <p class="title is-5 m-0" style="text-transform: uppercase">
-          {{ keysGrupo }}
-        </p>
-        <p class="title is-5 m-0" style="text-transform: uppercase">
-          {{ item.count }}
-        </p>
-      </div>
-      <div class="d-flex">
-        <div
-          v-for="(i, itemKey) in item"
-          :key="`list-button-${itemKey}-${random2}`"
-        >
-          <VButton
-            v-if="itemKey != 'count'"
-            class="mr-4"
-            @click="onButton({ itemKey, i })"
-          >
-            <p class="title is-6 m-0">View {{ itemKey }}</p>
+  <div v-for="(item, keysGrupo) in data" :key="`report-${keysGrupo}-${random}`">
+    <div class="is-12 column" v-if="keysGrupo != 'count'">
+      <VCard class="">
+        <div class="d-flex justify-content-between w-100 mb-4">
+          <VButton v-if="keysGrupo == 'data'" class="m-0">
+            <p class="title is-6 m-0 d-flex justify-content-between w-100">
+              View Subscriptions {{ item.length }}
+              <i class="ml-4 fa fa-eye"></i>
+            </p>
           </VButton>
+
+          <p v-else class="title is-5 m-0" style="text-transform: uppercase">
+            {{ keysGrupo }}
+          </p>
+
+          <p
+            class="title is-5 m-0"
+            v-if="item.count"
+            style="text-transform: uppercase"
+          >
+            {{ item.count }}
+          </p>
         </div>
-      </div>
-    </VCard>
+
+        <div v-if="keysGrupo != 'data'" class="d-flex flex-wrap">
+          <div
+            v-for="(i, itemKey) in item"
+            :key="`list-button-${itemKey}-${random2}`"
+          >
+            <VButton
+              v-if="itemKey != 'count'"
+              class="mr-4 mb-4"
+              @click="onButton({ itemKey, i })"
+            >
+              <p class="title is-6 m-0 d-flex justify-content-between w-100">
+                {{ itemKey }}
+                <span class="ml-4"> {{ i.count ? i.count : '' }}</span>
+              </p>
+            </VButton>
+          </div>
+        </div>
+      </VCard>
+    </div>
   </div>
 </template>

@@ -178,7 +178,7 @@ const changeStado = () => {
             />
           </V-Control>
         </V-Field>
-        <div class="is-2 column">
+        <!-- <div class="is-2 column">
           <V-Button
             :to="{ name: 'members-create' }"
             color="primary"
@@ -188,7 +188,7 @@ const changeStado = () => {
           >
             Add Members
           </V-Button>
-        </div>
+        </div> -->
       </div>
 
       <div class="columns is-multiline" v-if="isLoading">
