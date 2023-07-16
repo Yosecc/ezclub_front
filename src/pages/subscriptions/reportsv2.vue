@@ -9,10 +9,6 @@ import type { Chart } from 'billboard.js'
 // import { suscripciones } from '/@src/models/Subscriptions.ts'
 import { moneda } from '/@src/models/Mixin'
 
-// import * as suscripcionPayment from '/@src/models/v2/reports/suscripcionPayment'
-// import * as suscripcionXmembresia from '/@src/models/v2/reports/suscripcionXmembresia'
-// import * as subscriptionsStripe from '/@src/models/v2/reports/subscriptionsStripe'
-
 pageTitle.value = 'Suscriptions'
 
 useHead({
@@ -20,23 +16,16 @@ useHead({
 })
 
 const route = useRoute()
-
-// const filters = ref('')
-// const filterDate = ref('all')
-
-// const paginationData = ref([])
-
 const isLoading = ref(true)
-// const defalA = ref('all')
-
-watch(
-  () => route.query.page,
-  () => {
-    getReport()
-  }
-)
-
+const isLoadingSuscripcionesData = ref(true)
+const suscripcionesData = ref([])
 const suscripciones = ref(null)
+const grupoData = ref(null)
+const modalStatus = ref(false)
+
+onMounted(() => {
+  getReport()
+})
 
 const getReport = async () => {
   isLoading.value = true
@@ -51,8 +40,12 @@ const getReport = async () => {
     })
 }
 
-const isLoadingSuscripcionesData = ref(true)
-const suscripcionesData = ref([])
+watch(
+  () => route.query.page,
+  () => {
+    getReport()
+  }
+)
 
 const getSuscripciones = async (data: object) => {
   console.log(typeof data, data)
@@ -68,18 +61,6 @@ const getSuscripciones = async (data: object) => {
       console.log(error)
     })
 }
-
-onMounted(() => {
-  getReport()
-})
-
-// const filtersSearch = () => {
-//   // console.log(filters.value.length)
-//   getReport('all', filters.value, 1, categoryB.value, false, fecha_pago.value)
-// }
-
-const grupoData = ref(null)
-const modalStatus = ref(false)
 
 const onGrupo = (grup) => {
   grupoData.value = grup
@@ -125,7 +106,7 @@ const onButton = ({ itemKey, i }) => {
           <p class="title is-5 m-0">{{ suscripciones.count }}</p>
         </VCard>
 
-        <div class="column is-4">
+        <div class="column is-3">
           <VCard class="d-flex justify-content-between flex-column">
             <div
               v-for="(grupo, nombreGrupo) in suscripciones"
@@ -144,43 +125,39 @@ const onButton = ({ itemKey, i }) => {
             <!-- <p class="title is-5 m-0">{{suscripciones.count}}</p> -->
           </VCard>
         </div>
-        <div class="column is-8 columns is-multiline">
-          <!-- <div></div> -->
-          <!-- <p>{{ grupoData }}</p> -->
+        <div class="column is-9 columns is-multiline">
           <listButtoms :data="grupoData" @onAction="onButton" />
         </div>
+        <VModal
+          :open="modalStatus"
+          actions="center"
+          size="big"
+          @close="modalStatus = false"
+        >
+          <template #content>
+            <div v-if="dataListModal.type != 'data'">
+              <listButtoms :data="dataListModal.data" @onAction="onButton" />
+            </div>
+            <div v-if="dataListModal.type == 'data'">
+              <VLoader
+                style="min-height: 300px"
+                size="large"
+                :active="isLoadingSuscripcionesData"
+              >
+                <subscription-list
+                  v-if="suscripcionesData.length"
+                  :colgrid="'is-4'"
+                  :suscripciones="suscripcionesData"
+                  :filter-local="true"
+                />
+              </VLoader>
+            </div>
+          </template>
+          <template #action>
+            <!-- <VButton color="primary" raised>Confirm</VButton> -->
+          </template>
+        </VModal>
       </div>
     </div>
-    <VModal
-      :open="modalStatus"
-      actions="center"
-      size="big"
-      @close="modalStatus = false"
-    >
-      <template #content>
-        <div v-if="dataListModal.type != 'data'">
-          <!-- <p>{{ dataListModal.data }}</p> -->
-          <listButtoms :data="dataListModal.data" @onAction="onButton" />
-        </div>
-        <div v-if="dataListModal.type == 'data'">
-          <VLoader
-            style="min-height: 300px"
-            size="large"
-            :active="isLoadingSuscripcionesData"
-          >
-            <!-- content ... --->
-            <subscription-list
-              v-if="suscripcionesData.length"
-              :colgrid="'is-4'"
-              :suscripciones="suscripcionesData"
-              :filter-local="true"
-            />
-          </VLoader>
-        </div>
-      </template>
-      <template #action>
-        <!-- <VButton color="primary" raised>Confirm</VButton> -->
-      </template>
-    </VModal>
   </SidebarLayout>
 </template>
