@@ -41,7 +41,7 @@ const router = useRouter()
 const memberships = ref([])
 const recurring = ref(true)
 const aprobado = ref(false)
-
+const colorCard = ref(undefined)
 const member = ref(null)
 const dato = ref(null)
 const tiempo = reactive({
@@ -122,6 +122,10 @@ const initSuscripcion = () => {
     })
     .catch((error) => {
       isLoaderActive.value = false
+      colorCard.value = 'info'
+      setTimeout(() => {
+        colorCard.value = undefined
+      }, 500)
       // console.log('por aqui', error)
       // const data = error.response.data
       // for (var i in data) {
@@ -315,7 +319,7 @@ const onActionCard = (data = null) => {
     <div class="columns is-multiline">
       <div class="column is-9">
         <h1 class="title is-4">1. Select a membership</h1>
-        <VCard class="mb-4">
+        <VCard :color="colorCard" class="mb-4">
           <VLoader size="large" :active="!memberships.length">
             <div class="columns is-multiline">
               <div
@@ -344,18 +348,22 @@ const onActionCard = (data = null) => {
         </VCard>
       </div>
       <div class="column is-3">
-        <VCard class="h-100 d-flex flex-column justify-content-between">
+        <VCard
+          :color="colorCard"
+          class="h-100 d-flex flex-column justify-content-between"
+        >
           <div>
-            <VField>
-              <VControl>
-                <VSwitchBlock
-                  v-model="recurring"
-                  label="Recurring Subscription"
-                  color="primary"
-                />
-              </VControl>
-            </VField>
-
+            <VCard class="px-3 py-3 my-3">
+              <VField>
+                <VControl>
+                  <VSwitchBlock
+                    v-model="recurring"
+                    label="Recurring Subscription"
+                    color="primary"
+                  />
+                </VControl>
+              </VField>
+            </VCard>
             <div
               v-for="(item, key) in precios"
               :key="`membership-precios-${key}`"
@@ -462,6 +470,7 @@ const onActionCard = (data = null) => {
               <VLoader size="small" :active="isLoaderActive">
                 <subscription-method-stripe-checkout
                   :total="presupuesto.total"
+                  :email="dato"
                   @onPayment="proccessSuscripcion"
                 />
               </VLoader>
@@ -495,6 +504,7 @@ const onActionCard = (data = null) => {
               <VLoader size="small" :active="isLoaderActive">
                 <subscription-method-payment-cash
                   :total="presupuesto.total"
+                  :email="dato"
                   @onPayment="proccessSuscripcion"
                   :define_status="validarTarjetaCargadaSiEsCash"
                 >
@@ -553,6 +563,7 @@ const onActionCard = (data = null) => {
                   :total="presupuesto.total"
                   @onPayment="proccessSuscripcion"
                   :define_status="!(paymentType == 3 && !cardCargada)"
+                  :email="dato"
                 >
                   <template #righttop>
                     <VTag

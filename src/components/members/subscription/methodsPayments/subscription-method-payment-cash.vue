@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, watch, ref, computed, defineProps, defineEmit } from 'vue'
+import { reactive, ref, computed, defineProps, defineEmit } from 'vue'
 import { locationsSelect, terminales } from '/@src/models/Companies.ts'
 import { moneda, notyf, getInput } from '/@src/models/Mixin.ts'
 // import {
@@ -24,6 +24,11 @@ const props = defineProps({
   define_status: {
     type: Boolean,
     default: true,
+  },
+
+  email: {
+    type: String,
+    default: '',
   },
 })
 
@@ -55,13 +60,29 @@ const payment = () => {
 const onOpenModal = () => {
   // if (props.define_status) {
   openModalCash.value = true
+  confirmMail.modal = false
+
   // }
+}
+
+const confirmMail = reactive({
+  modal: false,
+  confirm: false,
+  email: '',
+})
+const conmfirmEmail = () => {
+  if (props.email == '' || props.email == null) {
+    notyf.error('Email is required')
+    return
+  }
+  confirmMail.email = props.email
+  confirmMail.modal = true
 }
 </script>
 
 <template>
   <VCard
-    @click="onOpenModal"
+    @click="conmfirmEmail"
     :color="props.define_status ? 'warning' : undefined"
     class="btn-card w-100 justify-content-center"
   >
@@ -160,6 +181,21 @@ const onOpenModal = () => {
         raised
         >Confirm</VButton
       >
+    </template>
+  </VModal>
+  <VModal
+    :open="confirmMail.modal"
+    actions="center"
+    @close="confirmMail.modal = false"
+  >
+    <template #content>
+      <VPlaceholderSection
+        :title="confirmMail.email"
+        subtitle="Please confirm the email before continuing"
+      />
+    </template>
+    <template #action>
+      <VButton @click="onOpenModal" color="primary" raised>Confirm</VButton>
     </template>
   </VModal>
 </template>

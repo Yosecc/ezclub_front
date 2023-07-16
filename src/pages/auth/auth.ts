@@ -12,9 +12,10 @@ export const flipped = ref(null)
 export const remember = ref(false)
 
 export const onLogout = () => {
-  removeCookies()
+  // removeCookies()
   user.value = null
   router.push({ name: 'auth' })
+  window.location.reload()
 }
 
 const getUserStorage = () => {
@@ -45,7 +46,7 @@ const removeCookies = () => {
 }
 
 export const setAuthStorage = async (response: any) => {
-  removeCookies()
+  // removeCookies()
 
   cookies.set('remember', remember.value)
   cookies.set('user', JSON.stringify(response))
