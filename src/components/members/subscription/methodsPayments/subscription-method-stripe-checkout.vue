@@ -22,6 +22,10 @@ const props = defineProps({
     type: String,
     default: '',
   },
+  confirmar_email: {
+    type: Boolean,
+    default: false,
+  },
   // member_id: {
   //   type: Number,
   //   required: true,
@@ -43,6 +47,11 @@ const confirmMail = reactive({
   email: '',
 })
 const conmfirmEmail = () => {
+  if (!props.confirmar_email) {
+    payment()
+    return
+  }
+
   if (props.email == '' || props.email == null) {
     notyf.error('Email is required')
     return

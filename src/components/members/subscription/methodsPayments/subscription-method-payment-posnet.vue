@@ -41,6 +41,10 @@ const props = defineProps({
     type: String,
     default: '',
   },
+  confirmar_email: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const terminales = ref([])
@@ -286,6 +290,10 @@ const confirmMail = reactive({
   email: '',
 })
 const conmfirmEmail = () => {
+  if (!props.confirmar_email) {
+    onOpenModal()
+    return
+  }
   if (props.email == '' || props.email == null) {
     notyf.error('Email is required')
     return

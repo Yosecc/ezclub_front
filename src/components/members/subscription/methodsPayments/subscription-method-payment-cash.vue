@@ -25,10 +25,13 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
-
   email: {
     type: String,
     default: '',
+  },
+  confirmar_email: {
+    type: Boolean,
+    default: false,
   },
 })
 
@@ -61,7 +64,6 @@ const onOpenModal = () => {
   // if (props.define_status) {
   openModalCash.value = true
   confirmMail.modal = false
-
   // }
 }
 
@@ -71,10 +73,15 @@ const confirmMail = reactive({
   email: '',
 })
 const conmfirmEmail = () => {
+  if (!props.confirmar_email) {
+    onOpenModal()
+    return
+  }
   if (props.email == '' || props.email == null) {
     notyf.error('Email is required')
     return
   }
+
   confirmMail.email = props.email
   confirmMail.modal = true
 }
