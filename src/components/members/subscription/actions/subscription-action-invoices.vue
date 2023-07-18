@@ -27,6 +27,7 @@ const props = defineProps({
 })
 
 const isTest = computed(() => {
+  return true
   return route.query && route.query.test ? route.query.test : false
 })
 
