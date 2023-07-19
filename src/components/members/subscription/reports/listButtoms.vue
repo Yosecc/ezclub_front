@@ -9,6 +9,7 @@ import {
   defineEmit,
 } from 'vue'
 // import { moneda } from '/@src/models/Mixin'
+import { estados } from '/@src/models/Subscriptions'
 
 const emit = defineEmit(['onAction'])
 
@@ -29,6 +30,10 @@ const onButton = ({ itemKey, i }) => {
   // console.log({ itemKey, i })
   emit('onAction', { itemKey, i })
 }
+
+const viewSuscripciones = ({ itemKey, i }) => {
+  emit('onAction', { itemKey, i })
+}
 </script>
 
 <template>
@@ -36,7 +41,11 @@ const onButton = ({ itemKey, i }) => {
     <div class="is-12 column" v-if="keysGrupo != 'count'">
       <VCard class="">
         <div class="d-flex justify-content-between w-100 mb-4">
-          <VButton v-if="keysGrupo == 'data'" class="m-0">
+          <VButton
+            v-if="keysGrupo == 'data'"
+            @click="viewSuscripciones({ itemKey: keysGrupo, i: item })"
+            class="m-0"
+          >
             <p class="title is-6 m-0 d-flex justify-content-between w-100">
               View Subscriptions {{ item.length }}
               <i class="ml-4 fa fa-eye"></i>
@@ -67,7 +76,10 @@ const onButton = ({ itemKey, i }) => {
               @click="onButton({ itemKey, i })"
             >
               <p class="title is-6 m-0 d-flex justify-content-between w-100">
-                {{ itemKey }}
+                <span v-if="keysGrupo == 'status'">
+                  {{ estados.find((e) => e.value == itemKey).name }}</span
+                >
+                <span v-else> {{ itemKey }}</span>
                 <span class="ml-4"> {{ i.count ? i.count : '' }}</span>
               </p>
             </VButton>

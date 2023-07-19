@@ -333,3 +333,14 @@ export const createFactura = async (suscripcion_id: Number) => {
   )
   return response
 }
+
+export const createFacturaOfPayment = async (
+  suscripcion_id: Number,
+  payment_id: number
+) => {
+  const response = await Api.post(
+    `v2/suscripcion/createFacturaOfPayment/${suscripcion_id}`,
+    { payment_id: payment_id }
+  )
+  return response
+}

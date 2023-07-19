@@ -15,7 +15,7 @@ export const onLogout = () => {
   // removeCookies()
   user.value = null
   router.push({ name: 'auth' })
-  window.location.reload()
+  // window.location.reload()
 }
 
 const getUserStorage = () => {

@@ -276,6 +276,7 @@ watch(
             </V-Control>
           </V-Field>
         </div>
+
         <MembersListV2
           :members="computedMembers"
           :pagination-data="paginationData"

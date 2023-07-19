@@ -12,6 +12,7 @@ import { moneda, notyf } from '/@src/models/Mixin'
 import {
   vincularPaymentInvoice,
   createFactura,
+  createFacturaOfPayment,
 } from '/@src/models/Subscriptions'
 import { useRoute, useRouter } from 'vue-router'
 const route = useRoute()
@@ -26,6 +27,7 @@ const props = defineProps({
 })
 
 const isTest = computed(() => {
+  return true
   return route.query && route.query.test ? route.query.test : false
 })
 
@@ -115,6 +117,21 @@ const onCreateFactura = (id: number) => {
   if (confirm(t)) {
     loadingCreateFactura.value = true
     createFactura(id)
+      .then((response) => {
+        loadingCreateFactura.value = false
+        notyf.success(response.data.message)
+        emit('onReload')
+      })
+      .catch((error) => {
+        loadingCreateFactura.value = false
+      })
+  }
+}
+const convert = async (payment: Object) => {
+  let t = 'Are you sure you want to create a new invoice?'
+  if (confirm(t)) {
+    loadingCreateFactura.value = true
+    createFacturaOfPayment(props.suscripcion.id, payment.id)
       .then((response) => {
         loadingCreateFactura.value = false
         notyf.success(response.data.message)
@@ -289,6 +306,9 @@ const onCreateFactura = (id: number) => {
                       ;(linkInvoice.modal = true), (linkInvoice.payment = value)
                     "
                     >Link payment to invoice</VButton
+                  >
+                  <VButton @click="convert(value)"
+                    >Convert and link to Invoice</VButton
                   >
                   <VModal
                     :open="linkInvoice.modal"

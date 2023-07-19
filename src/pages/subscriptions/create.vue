@@ -471,6 +471,7 @@ const onActionCard = (data = null) => {
                 <subscription-method-stripe-checkout
                   :total="presupuesto.total"
                   :email="dato"
+                  :confirmar_email="true"
                   @onPayment="proccessSuscripcion"
                 />
               </VLoader>
@@ -505,6 +506,7 @@ const onActionCard = (data = null) => {
                 <subscription-method-payment-cash
                   :total="presupuesto.total"
                   :email="dato"
+                  :confirmar_email="true"
                   @onPayment="proccessSuscripcion"
                   :define_status="validarTarjetaCargadaSiEsCash"
                 >
@@ -564,6 +566,7 @@ const onActionCard = (data = null) => {
                   @onPayment="proccessSuscripcion"
                   :define_status="!(paymentType == 3 && !cardCargada)"
                   :email="dato"
+                  :confirmar_email="true"
                 >
                   <template #righttop>
                     <VTag
