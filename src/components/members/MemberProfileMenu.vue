@@ -70,7 +70,7 @@ const itemsMenuAdult = [
   //   component: 'memberPurchases',
   // },
   {
-    name: 'Invoices',
+    name: 'History Invoices',
     component: 'memberInvoices',
   },
   // {

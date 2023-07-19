@@ -27,7 +27,7 @@ import {
 } from '/@src/models/Subscriptions'
 import { API_WEB_URL } from '/@src/services'
 import { useRoute } from 'vue-router'
-import { moneda } from '/@src/models/Mixin'
+import { moneda, notyf } from '/@src/models/Mixin'
 import {
   // membersSelected,
   // arregloTrainers,
@@ -79,8 +79,8 @@ const onGetSuscripcion = () => {
     return
   }
   // console.log(id, props.code)
-  if (id == null && props.code) {
-    getSuscripcionCode(props.code).then((response) => {
+  if (id == null && codeComputed.value) {
+    getSuscripcionCode(codeComputed.value).then((response) => {
       suscripcionD.value = response.data.suscripcion
       isLoaderActiveG.value = false
     })
@@ -92,6 +92,17 @@ const onGetSuscripcion = () => {
     isLoaderActiveG.value = false
   })
 }
+
+const codeComputed = computed(() => {
+  if (props.code) {
+    return props.code
+  }
+
+  if (route.query.code) {
+    return route.query.code
+  }
+  return null
+})
 
 const suscripcionComputed = computed(() => {
   if (props.suscripcion) {
@@ -113,7 +124,8 @@ watch(
 )
 
 const proccessCheckout = () => {
-  onGetSuscripcion()
+  window.location.reload()
+  // onGetSuscripcion()
 }
 </script>
 <template>

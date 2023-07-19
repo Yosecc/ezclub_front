@@ -38,7 +38,7 @@ const onPayment = (obj: object) => {
   paymentSuscripcion(props.suscripcion_id, obj)
     .then((response: any) => {
       isLoaderActive.value = false
-
+      notyf.success('Payment Success')
       emit('proccessCheckout')
     })
     .catch((error: any) => {
