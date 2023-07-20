@@ -426,7 +426,7 @@ const proccessCheckout = () => {
               <div class="column is-12">
                 <subscription-action-saldo
                   :suscripcion="suscripcionComputed"
-                  @reload="onGetSuscripcion"
+                  @reload="window.location.reload()"
                 />
               </div>
               <div class="column is-12">
@@ -497,6 +497,8 @@ const proccessCheckout = () => {
             ></Presupuesto>
           </VCard>
         </div>
+
+        <subscription-action-auditory :suscripcion="suscripcionComputed" />
         <!-- <subscription-payments-list
           v-if="
             suscripcionComputed &&

@@ -33,6 +33,14 @@ const props = defineProps({
 })
 
 const payment = () => {
+  if (props.confirmar_email) {
+    if (confirmMail.email != confirmMail.emailConfirm) {
+      notyf.error('Email does not match')
+      return
+    }
+  }
+  confirmMail.email = ''
+  confirmMail.emailConfirm = ''
   openModal.value = false
   confirmMail.modal = false
   emit('onPayment', {
@@ -45,6 +53,7 @@ const confirmMail = reactive({
   modal: false,
   confirm: false,
   email: '',
+  emailConfirm: '',
 })
 const conmfirmEmail = () => {
   if (!props.confirmar_email) {
@@ -89,6 +98,17 @@ const conmfirmEmail = () => {
           :title="confirmMail.email"
           subtitle="Please confirm the email before continuing"
         />
+        <VField>
+          <VControl>
+            <input
+              v-model="confirmMail.emailConfirm"
+              type="text"
+              class="input text-center"
+              placeholder="Email"
+              style="font-size: 20px"
+            />
+          </VControl>
+        </VField>
       </template>
       <template #action>
         <VButton @click="payment" color="primary" raised>Confirm</VButton>

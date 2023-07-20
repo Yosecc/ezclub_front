@@ -41,7 +41,7 @@ const onAction = (obj = null) => {
       emit('reload')
     })
     .catch((error) => {
-      error = error.response.data
+      // error = error.response.data
       isLoaderActive.value = false
       centeredActionsOpen.value = false
 

@@ -344,3 +344,10 @@ export const createFacturaOfPayment = async (
   )
   return response
 }
+
+export const getAuditoriaSuscripcion = async (suscripcion_id: Number) => {
+  const response = await Api.post(
+    `v2/suscripcion/getAuditoriaSuscripcion/${suscripcion_id}`
+  )
+  return response
+}

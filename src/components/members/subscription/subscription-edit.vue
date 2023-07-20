@@ -120,7 +120,7 @@ const config = async () => {
   isLoader.value = true
 
   getInput(form.value, 'fecha_vencimiento').model = moment(
-    props.suscripcion.estado.fecha_vencimiento,
+    props.suscripcion.fecha_vencimiento,
     'YYYY-MM-DD'
   ).format('YYYY-MM-DD')
 
