@@ -417,6 +417,7 @@ const onPayment = (obj: any) => {
               </tr> -->
             </tbody>
           </table>
+
           <p v-if="isTest" class="title is-6">Payments</p>
           <table v-if="isTest" class="table is-hoverable is-fullwidth mt-4">
             <tbody
@@ -446,10 +447,45 @@ const onPayment = (obj: any) => {
                 <td>
                   <p>{{ value.payment_type.name }}</p>
                 </td>
-                <td v-if="value.yaexiste">
-                  <p>{{ value.yaexiste ? 'Payment Assigned' : '' }}</p>
+                <td
+                  v-if="
+                    facturas.data.find((e) =>
+                      e.membership_payment_id
+                        ? e.membership_payment_id == value.id
+                        : false
+                    )
+                  "
+                >
+                  <p>
+                    {{
+                      `Payment Assigned invoice: ${
+                        facturas.data.find((e) =>
+                          e.membership_payment_id
+                            ? e.membership_payment_id == value.id
+                            : false
+                        ).id
+                      }`
+                    }}
+                  </p>
                 </td>
-                <td v-if="!value.yaexiste">
+                <td
+                  v-if="
+                    !facturas.data.find((e) =>
+                      e.membership_payment_id
+                        ? e.membership_payment_id == value.id
+                        : false
+                    )
+                  "
+                >
+                  <p>
+                    {{
+                      facturas.data.find((e) =>
+                        e.membership_payment_id
+                          ? e.membership_payment_id == value.id
+                          : false
+                      )
+                    }}
+                  </p>
                   <VButton
                     @click="
                       ;(linkInvoice.modal = true), (linkInvoice.payment = value)
@@ -462,9 +498,18 @@ const onPayment = (obj: any) => {
                   <VModal
                     :open="linkInvoice.modal"
                     actions="center"
+                    size="big"
                     @close="linkInvoice.modal = false"
                   >
                     <template #content>
+                      <VField>
+                        <VControl>
+                          <VSwitchBlock
+                            v-model="linkInvoice.changeDate"
+                            label="Update next payment date"
+                          />
+                        </VControl>
+                      </VField>
                       <table class="table is-hoverable is-fullwidth">
                         <thead>
                           <tr class="has-background-grey-dark">
@@ -501,14 +546,6 @@ const onPayment = (obj: any) => {
                               <p>{{ value.payment_type.name }}</p>
                             </td>
                             <td>
-                              <VField>
-                                <VControl>
-                                  <VSwitchBlock
-                                    v-model="linkInvoice.changeDate"
-                                    label="Update next payment date"
-                                  />
-                                </VControl>
-                              </VField>
                               <VButton @click="vincular(value)" color="primary"
                                 >Link</VButton
                               >
