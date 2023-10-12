@@ -345,6 +345,31 @@ export const createFacturaOfPayment = async (
   return response
 }
 
+export const deleteFactura = async (
+  suscripcion_id: Number,
+  general_invoice_id: number
+) => {
+  const response = await Api.post(
+    `v2/suscripcion/deleteFactura/${suscripcion_id}`,
+    { general_invoice_id: general_invoice_id }
+  )
+  return response
+}
+
+export const paymentFactura = async (
+  obj = {
+    suscripcion_id: 0,
+    general_invoice_id: 0,
+    payment: null,
+  }
+) => {
+  const response = await Api.post(
+    `v2/suscripcion/paymentFactura/${obj.suscripcion_id}`,
+    obj
+  )
+  return response
+}
+
 export const getAuditoriaSuscripcion = async (suscripcion_id: Number) => {
   const response = await Api.post(
     `v2/suscripcion/getAuditoriaSuscripcion/${suscripcion_id}`

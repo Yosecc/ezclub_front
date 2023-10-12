@@ -51,6 +51,9 @@ const terminales = ref([])
 
 const onOpenModal = () => {
   if (props.confirmar_email) {
+    if (confirmMail.emailConfirm == '') {
+      notyf.error('Please confirm email')
+    }
     if (confirmMail.email != confirmMail.emailConfirm) {
       notyf.error('Email does not match')
       return
@@ -512,7 +515,7 @@ const initContador = () => {
             v-model="confirmMail.emailConfirm"
             type="text"
             class="input text-center"
-            placeholder="Email"
+            placeholder="Write the email"
             style="font-size: 20px"
           />
         </VControl>

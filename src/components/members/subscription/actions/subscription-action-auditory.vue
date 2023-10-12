@@ -40,6 +40,7 @@ const vieAllAuditory = () => {
   getAuditoriaSuscripcion(props.suscripcion.id).then((response) => {
     // console.log(response.data)
     consulta.value = response.data.data
+
     // response.count
   })
 }

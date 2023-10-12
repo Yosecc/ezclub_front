@@ -13,7 +13,10 @@ import {
   vincularPaymentInvoice,
   createFactura,
   createFacturaOfPayment,
+  deleteFactura,
+  paymentFactura,
 } from '/@src/models/Subscriptions'
+
 import { useRoute, useRouter } from 'vue-router'
 const route = useRoute()
 
@@ -35,6 +38,8 @@ const emit = defineEmit(['onReload'])
 
 const centeredActionsOpen = ref(false)
 const isLoaderActive = ref(false)
+
+const showPaymentMethods = ref(false)
 
 const closeModal = () => {
   centeredActionsOpen.value = false
@@ -142,6 +147,64 @@ const convert = async (payment: Object) => {
       })
   }
 }
+
+const paymentIntent = reactive({
+  total: 0,
+  metodos: ['stripe-debit', 'stripe-checkout', 'cash', 'posnet'],
+  user: null,
+  factura: {
+    id: 0,
+  },
+})
+
+const initPayment = (id: number) => {
+  if (
+    confirm(
+      'This action could generate charges attributable to the customer. do you wish to continue?'
+    )
+  ) {
+    const factura = generalInvoices.value.find((e: any) => e.id == id)
+    if (factura != undefined) {
+      // factura.id
+      showPaymentMethods.value = true
+      paymentIntent.total = factura.total
+      paymentIntent.user = props.suscripcion.user
+      paymentIntent.factura = factura
+    }
+  }
+}
+const onDelete = (id: number) => {
+  if (confirm('Are you sure to delete this record?')) {
+    const factura = generalInvoices.value.find((e: any) => e.id == id)
+
+    if (factura != undefined) {
+      deleteFactura(props.suscripcion.id, factura.id)
+        .then((response) => {
+          notyf.success(response.data.message)
+          emit('onReload')
+        })
+        .catch((error) => {})
+    }
+  }
+}
+
+const onPayment = (obj: any) => {
+  console.log(obj)
+  paymentFactura({
+    suscripcion_id: props.suscripcion.id,
+    general_invoice_id: paymentIntent.factura.id,
+    payment: obj,
+  })
+    .then((response) => {
+      notyf.success(response.data.message)
+      showPaymentMethods.value = false
+      paymentIntent.total = 0
+      paymentIntent.user = null
+      paymentIntent.factura = { id: 0 }
+      emit('onReload')
+    })
+    .catch((error) => {})
+}
 </script>
 
 <template>
@@ -187,6 +250,83 @@ const convert = async (payment: Object) => {
             </VLoader>
           </div>
 
+          <VModal
+            :open="showPaymentMethods"
+            actions="center"
+            @close="showPaymentMethods = false"
+            size="big"
+          >
+            <template #content>
+              <div
+                v-if="showPaymentMethods"
+                class="columns is-multiline"
+                style="min-height: 350px"
+              >
+                <div class="column is-3">
+                  <VLoader size="small" :active="isLoaderActive">
+                    <VCard class="mb-4">
+                      <slot></slot>
+                      <div>
+                        <p class="title is-6 mb-1"><b>Total</b></p>
+                        <p class="title is-3 mb-0">
+                          {{ moneda(paymentIntent.total) }}
+                        </p>
+                      </div>
+                    </VCard>
+                  </VLoader>
+                </div>
+
+                <div class="column is-9">
+                  <!-- <SearchBar class="" v-model="member" /> -->
+                </div>
+
+                <div
+                  class="is-4 column mx-auto"
+                  v-if="
+                    paymentIntent.metodos.includes('stripe-debit') &&
+                    paymentIntent.user
+                  "
+                >
+                  <VLoader size="small" :active="isLoaderActive">
+                    <subscription-method-payment-debit-automatic
+                      :total="paymentIntent.total"
+                      :user="paymentIntent.user"
+                      @onPayment="onPayment"
+                    />
+                  </VLoader>
+                </div>
+
+                <div
+                  class="is-4 column mx-auto"
+                  v-if="paymentIntent.metodos.includes('cash')"
+                >
+                  <VLoader size="small" :active="isLoaderActive">
+                    <subscription-method-payment-cash
+                      :total="paymentIntent.total"
+                      @onPayment="onPayment"
+                    />
+                  </VLoader>
+                </div>
+
+                <div
+                  class="is-4 column mx-auto"
+                  v-if="paymentIntent.metodos.includes('posnet')"
+                >
+                  <VLoader size="small" :active="isLoaderActive">
+                    <subscription-method-payment-posnet
+                      :total="paymentIntent.total"
+                      @onPayment="onPayment"
+                      :define_status="true"
+                    />
+                  </VLoader>
+                </div>
+              </div>
+            </template>
+            <template #action>
+              <VButton color="primary" raised>Confirm</VButton>
+            </template>
+          </VModal>
+
           <p class="title is-5">Invoices</p>
           <table class="table is-hoverable is-fullwidth">
             <thead>
@@ -197,6 +337,7 @@ const convert = async (payment: Object) => {
                 <th scope="col">Status</th>
                 <th scope="col"></th>
                 <th scope="col">Payment Type</th>
+                <th scope="col"></th>
               </tr>
             </thead>
 
@@ -228,7 +369,15 @@ const convert = async (payment: Object) => {
                 <td>
                   <p>{{ value.payment_type.name }}</p>
                 </td>
-                <!-- <td></td> -->
+                <td v-if="value.status != 'paid'">
+                  <VButton @click="initPayment(value.id)" color="info"
+                    >Payment</VButton
+                  >
+
+                  <VButton @click="onDelete(value.id)" color="danger"
+                    >Delete</VButton
+                  >
+                </td>
                 <!-- <td v-if="value.yaexiste">
                   <p>{{ value.yaexiste ? 'Payment Assigned' : '' }}</p>
                 </td> -->

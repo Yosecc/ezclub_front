@@ -25,7 +25,7 @@ export const options = {
     bottom: 20,
   },
   title: {
-    text: 'Memberships',
+    text: 'Gender',
     position: 'top-left',
     padding: {
       bottom: 20,
