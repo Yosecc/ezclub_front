@@ -1,10 +1,10 @@
 import type { Chart } from 'billboard.js'
 import { themeColors } from '/@src/utils/themeColors'
-import { bar, pie } from 'billboard.js'
+import { bar } from 'billboard.js'
 
 export const options = {
   data: {
-    type: pie(),
+    type: bar(),
     columns: [],
     colors: {
       data1: themeColors.accent,
@@ -13,13 +13,7 @@ export const options = {
       data4: themeColors.purple,
     },
   },
-  pie: {
-    label: {
-      format: function (value, ratio, id) {
-        return value
-      },
-    },
-  },
+
   bar: {
     width: {
       ratio: 0.5,
