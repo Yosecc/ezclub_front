@@ -457,7 +457,6 @@ const onReload = () => {
         <!--Table Pagination-->
 
         <V-FlexPagination
-          v-if="filteredData.length > 0 && props.ispaginator"
           :item-per-page="props.paginationData.per_page ?? 15"
           :total-items="props.paginationData.total ?? 0"
           :current-page="props.paginationData.current_page"

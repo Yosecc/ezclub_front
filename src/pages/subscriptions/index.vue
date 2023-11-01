@@ -18,13 +18,20 @@ const route = useRoute()
 const filters = ref('')
 
 const paginationData = ref([])
+const count_suscripciones = ref(0)
 
 const isLoading = ref(true)
 const count = ref(0)
 
 watch(
   () => route.query.page,
-  () => {
+  (to) => {
+    if (to != undefined) {
+      filtro.page = to
+    }
+    if (to == undefined) {
+      filtro.page = 1
+    }
     getSuscripcion()
   }
 )
@@ -39,7 +46,7 @@ watch(
 const filtro = reactive({
   filter: '',
   // value: '',
-  page: 1,
+  page: route.query.page != undefined ? route.query.page : 1,
   // category: null,
   reload: true,
   estado: 'All',
@@ -59,6 +66,7 @@ const getSuscripcion = async () => {
       suscripciones.value = response.data.suscripciones
       paginationData.value = response.data.pagination
       count.value = response.data.count
+      count_suscripciones.value = response.data.count_suscripciones
       isLoading.value = false
 
       if (filtro.reload) {
@@ -221,7 +229,7 @@ const changeStado = () => {
       <div v-else>
         <div class="columns is-multiline mb-5 justify-content-between">
           <div class="is-2 column">
-            <p>Subscriptions: {{ count }}</p>
+            <p>Subscriptions: {{ count }}/{{ count_suscripciones }}</p>
           </div>
         </div>
 
