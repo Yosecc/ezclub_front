@@ -12,6 +12,7 @@ import moment from 'moment'
 import { moneda, monedaDecimal } from '/@src/models/Mixin'
 import * as pieChart from '/@src/models/v2/reports/pieChart'
 import * as barChart from '/@src/models/v2/reports/barChart'
+import { Api } from '/@src/services'
 
 const suscripciones = ref(null)
 
@@ -153,6 +154,19 @@ const pieConfig = (pre = '') => {
     },
   }
 }
+
+const centeredActionsOpen = ref(false)
+const grupoSelect = ref(null)
+const title = ref('')
+
+const onGroupSelect = (grupo: any, key: string) => {
+  title.value = key
+  centeredActionsOpen.value = true
+  grupoSelect.value = grupo
+}
+const closemodal = (value: boolean) => {
+  centeredActionsOpen.value = value
+}
 </script>
 
 <template>
@@ -168,25 +182,52 @@ const pieConfig = (pre = '') => {
           <div class="column is-6">
             <VCard v-if="paymentType && paymentTypeGrafico">
               <V-BillboardJS :options="paymentTypeGrafico.options" />
+              <VButton
+                @click="onGroupSelect(paymentType, 'Payment Type')"
+                color="undefined"
+                ><i class="fa fa-eye"></i> View Subscription
+              </VButton>
             </VCard>
           </div>
           <div class="column is-6">
             <VCard v-if="membresia && membresiaGrafico">
               <V-BillboardJS :options="membresiaGrafico.options" />
+              <VButton
+                @click="onGroupSelect(membresia, 'Membership')"
+                color="undefined"
+                ><i class="fa fa-eye"></i> View Subscription</VButton
+              >
             </VCard>
           </div>
           <div class="column is-6">
             <VCard v-if="diciplinas && diciplinasGrafico">
               <V-BillboardJS :options="diciplinasGrafico.options" />
+              <VButton
+                @click="onGroupSelect(diciplinas, 'Disciplines')"
+                color="undefined"
+                ><i class="fa fa-eye"></i> View Subscription</VButton
+              >
             </VCard>
           </div>
           <div class="column is-6">
             <VCard v-if="category && categoryGrafico">
               <V-BillboardJS :options="categoryGrafico.options" />
+              <VButton
+                @click="onGroupSelect(category, 'Category')"
+                color="undefined"
+                ><i class="fa fa-eye"></i> View Subscription</VButton
+              >
             </VCard>
           </div>
         </div>
       </VCard>
     </div>
+    <ModalesChartSuscripciones
+      :gruposelect="grupoSelect"
+      :statusmodalgrupo="centeredActionsOpen"
+      :title="title"
+      :isdata="false"
+      @closemodal="closemodal"
+    />
   </div>
 </template>

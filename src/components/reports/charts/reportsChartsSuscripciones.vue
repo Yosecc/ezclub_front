@@ -138,6 +138,7 @@ const generoGrafico = computed(() => {
     chart.options.data.columns = arr
     chart.options.title.text = 'Gender'
     chart.options.pie = pieConfig()
+    chart.options.data.onclick = openSuscripciones
     return chart
   }
   return null
@@ -152,7 +153,7 @@ const zipCodeGrafico = computed(() => {
     const chart = JSON.parse(JSON.stringify(barChart))
     chart.options.data.columns = arr
     chart.options.title.text = 'Zip Code'
-
+    chart.options.data.onclick = openSuscripciones
     return chart
   }
   return null
@@ -167,7 +168,7 @@ const diciplinasGrafico = computed(() => {
     const chart = JSON.parse(JSON.stringify(barChart))
     chart.options.data.columns = arr
     chart.options.title.text = 'Dicipline'
-
+    chart.options.data.onclick = openSuscripciones
     return chart
   }
   return null
@@ -183,6 +184,7 @@ const categoryGrafico = computed(() => {
     chart.options.data.columns = arr
     chart.options.title.text = 'Category'
     chart.options.pie = pieConfig()
+    chart.options.data.onclick = openSuscripciones
     return chart
   }
   return null
@@ -198,6 +200,7 @@ const minorGrafico = computed(() => {
     chart.options.data.columns = arr
     chart.options.title.text = `Minor (${minor.value.count})`
     chart.options.pie = pieConfig()
+    chart.options.data.onclick = openSuscripciones
     return chart
   }
   return null
@@ -213,6 +216,7 @@ const adultGrafico = computed(() => {
     chart.options.data.columns = arr
     chart.options.title.text = `Adult (${adult.value.count})`
     chart.options.pie = pieConfig()
+    chart.options.data.onclick = openSuscripciones
     return chart
   }
   return null
@@ -227,6 +231,7 @@ const estadoGrafico = computed(() => {
     const chart = JSON.parse(JSON.stringify(barChart))
     chart.options.data.columns = arr
     chart.options.title.text = `Status`
+    chart.options.data.onclick = openSuscripciones
     // chart.options.pie = pieConfig()
     return chart
   }
@@ -242,6 +247,13 @@ const paymentTypeGrafico = computed(() => {
     const chart = JSON.parse(JSON.stringify(barChart))
     chart.options.data.columns = arr
     chart.options.title.text = `Payment Type`
+    chart.options.data.keys = {
+      x: 'year',
+      value: ['operation1', 'operation2'],
+    }
+    chart.options.data.onclick = function (d, i) {
+      console.log(this)
+    }
     // chart.options.pie = pieConfig()
     return chart
   }
@@ -263,7 +275,23 @@ const pieConfig = () => {
 }
 
 const openSuscripciones = (d, i) => {
-  console.log('onclick', d, i)
+  console.log('onclick', d)
+  console.log('grupoSeleccionado.value', grupoSeleccionado.value)
+}
+
+const centeredActionsOpen = ref(false)
+const grupoSelect: any = ref(null)
+const title = ref('')
+const isDataValue = ref(false)
+
+const onGroupSelect = (grupo: any, key: string, isData: boolean = false) => {
+  title.value = key
+  isDataValue.value = isData
+  centeredActionsOpen.value = true
+  grupoSelect.value = grupo
+}
+const closemodal = (value: boolean) => {
+  centeredActionsOpen.value = value
 }
 </script>
 
@@ -299,49 +327,97 @@ const openSuscripciones = (d, i) => {
       <div class="column is-6">
         <VCard v-if="estado && estadoGrafico">
           <V-BillboardJS :options="estadoGrafico.options" />
+          <VButton @click="onGroupSelect(estado, 'Status')" color="undefined"
+            ><i class="fa fa-eye"></i> View Subscription</VButton
+          >
         </VCard>
       </div>
       <div class="column is-6">
         <VCard v-if="paymentType && paymentTypeGrafico">
           <V-BillboardJS :options="paymentTypeGrafico.options" />
+          <VButton
+            @click="onGroupSelect(paymentType, 'Payment Type')"
+            color="undefined"
+            ><i class="fa fa-eye"></i> View Subscription</VButton
+          >
         </VCard>
       </div>
 
       <div class="column is-6">
         <VCard v-if="membresias && membresiaGrafico">
           <V-BillboardJS :options="membresiaGrafico.options" />
+          <VButton
+            @click="onGroupSelect(membresias, 'Membership')"
+            color="undefined"
+            ><i class="fa fa-eye"></i> View Subscription</VButton
+          >
         </VCard>
       </div>
       <div class="column is-6">
         <VCard v-if="genero && generoGrafico">
           <V-BillboardJS :options="generoGrafico.options" />
+          <VButton @click="onGroupSelect(genero, 'Gender')" color="undefined"
+            ><i class="fa fa-eye"></i> View Subscription</VButton
+          >
         </VCard>
       </div>
       <div class="column is-4">
         <VCard v-if="category && categoryGrafico">
           <V-BillboardJS :options="categoryGrafico.options" />
+          <VButton
+            @click="onGroupSelect(category, 'Category')"
+            color="undefined"
+            ><i class="fa fa-eye"></i> View Subscription</VButton
+          >
         </VCard>
       </div>
       <div class="column is-4">
         <VCard v-if="adult && adultGrafico">
           <V-BillboardJS :options="adultGrafico.options" />
+          <VButton
+            @click="onGroupSelect(adult, 'Adult', true)"
+            color="undefined"
+            ><i class="fa fa-eye"></i> View Subscription</VButton
+          >
         </VCard>
       </div>
       <div class="column is-4">
         <VCard v-if="minor && minorGrafico">
           <V-BillboardJS :options="minorGrafico.options" />
+          <VButton
+            @click="onGroupSelect(minor, 'Minor', true)"
+            color="undefined"
+            ><i class="fa fa-eye"></i> View Subscription</VButton
+          >
         </VCard>
       </div>
       <div class="column is-12">
         <VCard v-if="diciplinas && diciplinasGrafico">
           <V-BillboardJS :options="diciplinasGrafico.options" />
+          <VButton
+            @click="onGroupSelect(diciplinas, 'Diciplines')"
+            color="undefined"
+            ><i class="fa fa-eye"></i> View Subscription</VButton
+          >
         </VCard>
       </div>
       <div class="column is-12">
         <VCard v-if="zip_code && zipCodeGrafico">
           <V-BillboardJS :options="zipCodeGrafico.options" />
+          <VButton
+            @click="onGroupSelect(zip_code, 'Zip Code')"
+            color="undefined"
+            ><i class="fa fa-eye"></i> View Subscription</VButton
+          >
         </VCard>
       </div>
     </div>
+    <ModalesChartSuscripciones
+      :gruposelect="grupoSelect"
+      :statusmodalgrupo="centeredActionsOpen"
+      :title="title"
+      :isdata="isDataValue"
+      @closemodal="closemodal"
+    />
   </div>
 </template>
