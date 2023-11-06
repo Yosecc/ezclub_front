@@ -51,7 +51,7 @@ const emit = defineEmit(['close'])
             <span>New Subscriptions</span>
           </RouterLink>
         </li>
-        <li v-has-nested-router-link class="has-children">
+        <!-- <li v-has-nested-router-link class="has-children">
           <RouterLink
             :to="{ name: 'subscriptions-reports' }"
             class="is-submenu"
@@ -59,7 +59,7 @@ const emit = defineEmit(['close'])
             <i aria-hidden="true" class="lnil lnil-list-alt mr-2"></i>
             <span>Charts (Beta)</span>
           </RouterLink>
-        </li>
+        </li> -->
 
         <!-- <li v-has-nested-router-link class="has-children">
           <RouterLink :to="{ name: 'members-create' }" class="is-submenu">
